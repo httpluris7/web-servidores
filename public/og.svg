@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#0a1f1a"/>
+      <stop offset="60%" stop-color="#05070d"/>
+    </radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-opacity="0.05"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <g transform="translate(80,90)">
+    <circle cx="10" cy="10" r="8" fill="#00e5a0"/>
+    <text x="34" y="18" font-family="monospace" font-size="22" fill="#95a0b3" letter-spacing="4">AS201234 · NODARA.EU</text>
+  </g>
+  <text x="80" y="300" font-family="system-ui, sans-serif" font-size="92" font-weight="700" fill="#e7ecf3" letter-spacing="-2">Servidores europeos</text>
+  <text x="80" y="400" font-family="system-ui, sans-serif" font-size="92" font-weight="700" letter-spacing="-2">
+    <tspan fill="#e7ecf3">desplegados en </tspan><tspan fill="#00e5a0">60 s.</tspan>
+  </text>
+  <text x="80" y="490" font-family="monospace" font-size="26" fill="#95a0b3">VPS · Bare metal · Mitigación DDoS 25 Tbps · NVMe Gen4</text>
+</svg>

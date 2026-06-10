@@ -1,0 +1,190 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   NODARA — Sistema de diseño (Tailwind v4, CSS-first).
+   Dark-only. Monocromo gris-azulado + un único acento verde eléctrico.
+   ========================================================================== */
+
+@theme {
+  /* Fondo y superficies */
+  --color-bg-base: #05070d;
+  --color-bg-raised: #0a0e17;
+  --color-bg-overlay: #0d1320;
+
+  /* Texto */
+  --color-fg: #e7ecf3;
+  --color-fg-muted: #95a0b3;
+  --color-fg-dim: #5b6677;
+
+  /* Bordes sutiles */
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-line-strong: rgb(255 255 255 / 0.14);
+
+  /* Acento — verde eléctrico (CTAs, estados online, datos en vivo) */
+  --color-accent: #00e5a0;
+  --color-accent-dim: #06c08a;
+  --color-accent-glow: rgb(0 229 160 / 0.18);
+
+  /* Estados */
+  --color-danger: #ff4d4d;
+
+  /* Tipografía */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "JetBrains Mono", monospace;
+
+  /* Radios poco redondeados */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-bg-base);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Textura sutil de fondo: rejilla técnica muy tenue. */
+  background-image:
+    radial-gradient(1200px 600px at 50% -10%, rgb(0 229 160 / 0.06), transparent 70%),
+    linear-gradient(to bottom, var(--color-bg-base), var(--color-bg-base));
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #05070d;
+}
+
+/* Foco visible y consistente para accesibilidad. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Utilidades de proyecto
+   -------------------------------------------------------------------------- */
+@layer utilities {
+  .container-edge {
+    width: 100%;
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-edge {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Etiqueta mono tipo kicker / sección */
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+
+  .text-accent {
+    color: var(--color-accent);
+  }
+
+  /* Rejilla técnica sutil para fondos de sección */
+  .grid-lines {
+    background-image:
+      linear-gradient(var(--color-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 100%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 100%);
+  }
+
+  /* Resplandor del acento */
+  .glow-accent {
+    box-shadow: 0 0 0 1px var(--color-accent-glow), 0 0 40px -8px var(--color-accent-glow);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Marquees (CSS puro, sólo transform)
+   -------------------------------------------------------------------------- */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee var(--marquee-duration, 30s) linear infinite;
+}
+
+/* Pulso de los puntos del mapa (CSS puro) */
+@keyframes node-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.node-pulse {
+  animation: node-pulse 2.6s ease-out infinite;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* --------------------------------------------------------------------------
+   prefers-reduced-motion: desactiva animaciones / las reduce a fades
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-marquee,
+  .node-pulse,
+  .cursor-blink {
+    animation: none !important;
+  }
+}
