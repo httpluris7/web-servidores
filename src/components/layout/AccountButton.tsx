@@ -79,7 +79,7 @@ export function AccountButton() {
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label={me ? "Mi cuenta" : "Crear cuenta o iniciar sesión"}
-        className="relative flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-line-strong)] text-[var(--color-fg-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-fg)]"
+        className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-line-strong)] text-[var(--color-fg-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-fg)]"
       >
         <PersonIcon />
         {me && (
