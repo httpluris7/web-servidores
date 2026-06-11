@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { site, deployUrl } from "@/data/site";
 import { regions, dedicatedTypes } from "@/data/products";
@@ -33,9 +34,13 @@ const directLinks = [
   { href: "/sobre-nosotros", label: "Sobre nosotros" },
 ];
 
+type Me = { id: string; nombre: string; email: string } | null;
+
 export function MobileMenu() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [section, setSection] = useState<string | null>(null);
+  const [me, setMe] = useState<Me>(null);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -43,6 +48,34 @@ export function MobileMenu() {
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  // Al abrir el menú, consulta la sesión para mostrar perfil o acceso/registro.
+  useEffect(() => {
+    if (!open) return;
+    let active = true;
+    fetch("/api/me", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => {
+        if (active) setMe(d.user ?? null);
+      })
+      .catch(() => {
+        if (active) setMe(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [open]);
+
+  async function logout() {
+    setOpen(false);
+    try {
+      await fetch("/api/logout", { method: "POST" });
+    } finally {
+      setMe(null);
+      router.push("/");
+      router.refresh();
+    }
+  }
 
   return (
     <>
@@ -84,6 +117,48 @@ export function MobileMenu() {
             </div>
 
             <nav className="container-edge flex-1 overflow-y-auto py-6" aria-label="Móvil">
+              {/* Cuenta */}
+              {me ? (
+                <div className="mb-2 border-b border-[var(--color-line)] pb-4">
+                  <div className="py-2">
+                    <p className="text-lg font-medium">{me.nombre}</p>
+                    <p className="truncate font-mono text-xs text-[var(--color-fg-muted)]">{me.email}</p>
+                  </div>
+                  <Link
+                    href="/cuenta"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center justify-between py-2.5 text-[var(--color-fg-muted)]"
+                  >
+                    Mi perfil
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={logout}
+                    className="w-full py-2.5 text-left text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-danger)]"
+                  >
+                    Cerrar sesión
+                  </button>
+                </div>
+              ) : (
+                <div className="mb-2 grid grid-cols-2 gap-3 border-b border-[var(--color-line)] pb-4">
+                  <Link
+                    href="/acceder"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] py-3 text-sm font-medium transition-colors hover:border-[var(--color-accent)]"
+                  >
+                    Iniciar sesión
+                  </Link>
+                  <Link
+                    href="/registro"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] py-3 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
+                  >
+                    Crear cuenta
+                  </Link>
+                </div>
+              )}
+
               {groups.map((g) => {
                 const isOpen = section === g.label;
                 return (
