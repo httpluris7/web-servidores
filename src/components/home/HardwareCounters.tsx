@@ -29,6 +29,7 @@ const items = [
 
 export function HardwareCounters() {
   const root = useRef<HTMLDivElement>(null);
+  const pinned = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const [values, setValues] = useState(items.map(() => 0));
   const [progress, setProgress] = useState(0);
@@ -61,7 +62,11 @@ export function HardwareCounters() {
             start: "top top",
             end: "+=1400",
             scrub: 0.6,
-            pin: true,
+            // Pineamos un wrapper interno, NO el <section> raíz del componente.
+            // Si GSAP envuelve la raíz en su pin-spacer, al desmontar la página
+            // React intenta removeChild sobre un nodo que ya no es hijo directo
+            // de su padre y la app entera peta (NotFoundError: removeChild).
+            pin: pinned.current,
             anticipatePin: 1,
           },
           onUpdate: () => {
@@ -81,8 +86,9 @@ export function HardwareCounters() {
   return (
     <section
       ref={root}
-      className="relative flex min-h-screen items-center overflow-hidden border-y border-[var(--color-line)]"
+      className="relative border-y border-[var(--color-line)]"
     >
+      <div ref={pinned} className="relative flex min-h-screen items-center overflow-hidden">
       <div className="pointer-events-none absolute inset-0 grid-lines opacity-40" aria-hidden="true" />
       <div className="container-edge relative w-full py-14 md:py-20">
         <div className="flex items-center gap-3">
@@ -118,6 +124,7 @@ export function HardwareCounters() {
             style={{ width: `${Math.round(progress * 100)}%` }}
           />
         </div>
+      </div>
       </div>
     </section>
   );
