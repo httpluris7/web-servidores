@@ -159,6 +159,12 @@ export function Header() {
         {/* CTA + móvil */}
         <div className="flex items-center gap-3">
           <Link
+            href="/acceder"
+            className="hidden rounded px-3 py-2 text-sm text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-fg)] sm:inline-flex"
+          >
+            Acceder
+          </Link>
+          <Link
             href={deployUrl()}
             className="hidden rounded-[var(--radius-md)] bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-black transition-all hover:bg-[var(--color-accent-dim)] hover:shadow-[0_0_30px_-6px_var(--color-accent-glow)] sm:inline-flex"
           >
