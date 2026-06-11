@@ -30,7 +30,6 @@ export const services: ServiceStatus[] = [
 /** Estado por región (alineado con los slugs de products.ts). */
 export const regionStatus: Record<string, StatusLevel> = {
   francia: "operational",
-  alemania: "operational",
 };
 
 /** Histórico reciente de incidencias (placeholder). */

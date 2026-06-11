@@ -51,15 +51,6 @@ export const regions: Region[] = [
     latencyNote: "< 5 ms a Europa Occidental",
     map: { x: 42, y: 54 },
   },
-  {
-    slug: "alemania",
-    name: "Alemania",
-    flag: "🇩🇪",
-    city: "Fráncfort",
-    priceFrom: 5,
-    latencyNote: "Nodo central DE-CIX",
-    map: { x: 58, y: 46 },
-  },
 ];
 
 /* -------------------------------------------------------------------------- */
