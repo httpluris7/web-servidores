@@ -13,7 +13,7 @@ export function CtaBand({
 }: Props) {
   return (
     <section className="border-t border-[var(--color-line)]">
-      <div className="container-edge py-20 text-center md:py-24">
+      <div className="container-edge py-14 md:py-20 text-center md:py-24">
         <Reveal>
           <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h2>
           <div className="mt-8 flex flex-wrap justify-center gap-3">

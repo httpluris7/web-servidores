@@ -13,7 +13,7 @@ const miniStats = [
 export function NetworkBackbone() {
   return (
     <section className="border-y border-[var(--color-line)] bg-[var(--color-bg-raised)]">
-      <div className="container-edge grid gap-12 py-24 md:grid-cols-2 md:items-center md:py-32">
+      <div className="container-edge grid gap-12 py-16 md:py-24 md:grid-cols-2 md:items-center md:py-32">
         {/* Izquierda: copy + stats */}
         <Reveal>
           <span className="inline-block rounded border border-[var(--color-line)] px-2.5 py-1 font-mono text-xs text-[var(--color-accent)]">

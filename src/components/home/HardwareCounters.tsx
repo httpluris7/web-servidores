@@ -84,7 +84,7 @@ export function HardwareCounters() {
       className="relative flex min-h-screen items-center overflow-hidden border-y border-[var(--color-line)]"
     >
       <div className="pointer-events-none absolute inset-0 grid-lines opacity-40" aria-hidden="true" />
-      <div className="container-edge relative w-full py-20">
+      <div className="container-edge relative w-full py-14 md:py-20">
         <div className="flex items-center gap-3">
           <span className="font-mono text-sm text-[var(--color-accent)]">/04</span>
           <span className="mono-label">Hardware sin compromisos</span>

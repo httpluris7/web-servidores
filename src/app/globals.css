@@ -50,6 +50,13 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Red de seguridad: evita scroll horizontal accidental en móvil
+   (marquees, rejillas y elementos posicionados de fondo). */
+html,
+body {
+  overflow-x: hidden;
+}
+
 body {
   background-color: var(--color-bg-base);
   color: var(--color-fg);

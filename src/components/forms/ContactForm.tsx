@@ -15,6 +15,7 @@ export function ContactForm() {
   const [values, setValues] = useState({ name: "", email: "", message: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [formError, setFormError] = useState<string | null>(null);
 
   function validate(): boolean {
     const e: Errors = {};
@@ -27,15 +28,28 @@ export function ContactForm() {
 
   async function onSubmit(ev: React.FormEvent) {
     ev.preventDefault();
+    setFormError(null);
     if (!validate()) return;
     setStatus("sending");
 
-    // TODO (API): enviar a tu backend / servicio de email. Ejemplo:
-    //   await fetch("/api/contacto", { method: "POST", body: JSON.stringify({ ...values, topic }) });
-    // El destino sugerido según el asunto:
-    //   ventas → site.contact.sales · soporte → site.contact.support · abuse → site.contact.abuse
-    await new Promise((r) => setTimeout(r, 700));
-    setStatus("sent");
+    try {
+      const res = await fetch("/api/contacto", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...values, topic }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        if (data?.errors) setErrors(data.errors as Errors);
+        setFormError(data?.error ?? "No se pudo enviar el mensaje. Inténtalo de nuevo.");
+        setStatus("idle");
+        return;
+      }
+      setStatus("sent");
+    } catch {
+      setFormError("Error de conexión. Revisa tu red e inténtalo de nuevo.");
+      setStatus("idle");
+    }
   }
 
   if (status === "sent") {
@@ -132,6 +146,12 @@ export function ContactForm() {
           </a>
         </p>
       </div>
+
+      {formError && (
+        <p role="alert" className="text-sm text-[var(--color-danger)]">
+          {formError}
+        </p>
+      )}
     </form>
   );
 }

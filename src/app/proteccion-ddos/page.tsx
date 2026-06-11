@@ -61,7 +61,7 @@ export default function DdosPage() {
       </section>
 
       {/* Cómo funciona */}
-      <section className="container-edge py-20 md:py-28">
+      <section className="container-edge py-14 md:py-28">
         <SectionHeader index="/02" kicker="Cómo funciona" title="Tres pasos, cero intervención." />
         <div className="mt-12 grid gap-5 md:grid-cols-3">
           {steps.map((s, i) => (
@@ -76,7 +76,7 @@ export default function DdosPage() {
 
       {/* Features */}
       <section className="border-t border-[var(--color-line)] bg-[var(--color-bg-raised)]">
-        <div className="container-edge py-20 md:py-24">
+        <div className="container-edge py-14 md:py-24">
           <SectionHeader index="/03" kicker="Capacidades" title="Defensa de varias capas." />
           <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {ddosFeatures.map((f) => (

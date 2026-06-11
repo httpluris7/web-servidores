@@ -9,8 +9,8 @@
 export const site = {
   brand: "NODARA",
   // Marca inventada y coherente. Sustituye por la real en este único punto.
-  domain: "nodara.eu",
-  url: "https://nodara.eu",
+  domain: "viahost.xyz",
+  url: "https://viahost.xyz",
   tagline: "Infraestructura europea desplegada en 60 segundos.",
   description:
     "Hosting VPS, servidores dedicados y mitigación DDoS sobre red propia en Europa. Provisioning en 60 segundos, NVMe Gen4 y uplinks de 10 Gbps.",
@@ -22,15 +22,15 @@ export const site = {
   statusUrl: "/estado",
   // Panel de facturación externo: SOLO se usa como destino final tras confirmar
   // el pedido (handoff al pago). El resto del sitio es autónomo.
-  billingUrl: "https://panel.nodara.eu", // TODO: URL real del panel WHMCS/billing del cliente
+  billingUrl: "https://panel.viahost.xyz", // TODO: URL real del panel WHMCS/billing del cliente
 
   // UTM aplicado a todos los CTAs salientes hacia el panel.
   utm: "?utm_source=web&utm_medium=site&utm_campaign=deploy",
 
   contact: {
-    sales: "ventas@nodara.eu", // TODO: email comercial real
-    support: "soporte@nodara.eu", // TODO: email de soporte real
-    abuse: "abuse@nodara.eu", // TODO: email de abuse real
+    sales: "ventas@viahost.xyz", // TODO: email comercial real
+    support: "soporte@viahost.xyz", // TODO: email de soporte real
+    abuse: "abuse@viahost.xyz", // TODO: email de abuse real
   },
 
   social: {

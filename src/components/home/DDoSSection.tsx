@@ -29,7 +29,7 @@ export function DDoSSection() {
         }}
         aria-hidden="true"
       />
-      <div className="container-edge relative py-24 md:py-32">
+      <div className="container-edge relative py-16 md:py-32">
         <div className="flex items-center gap-3">
           <span className="font-mono text-sm text-[var(--color-accent)]">/09</span>
           <span className="mono-label">Protección DDoS siempre activa</span>

@@ -70,7 +70,7 @@ export const useCases: UseCase[] = [
       "RAM ECC en bare metal",
       "Red privada de baja latencia",
     ],
-    href: "/dedicados/1gbps",
+    href: "/dedicados/francia",
   },
   {
     n: "/03",
@@ -80,7 +80,7 @@ export const useCases: UseCase[] = [
       "10 Gbps con puerto garantizado",
       "SLA y soporte prioritario",
     ],
-    href: "/dedicados/10gbps",
+    href: "/dedicados/holanda",
   },
   {
     n: "/04",

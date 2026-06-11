@@ -51,7 +51,7 @@ export default function NetworkPage() {
       </section>
 
       {/* Mapa + peering */}
-      <section className="container-edge grid gap-12 py-20 md:grid-cols-2 md:items-center md:py-28">
+      <section className="container-edge grid gap-12 py-14 md:py-20 md:grid-cols-2 md:items-center md:py-28">
         <Reveal>
           <SectionHeader
             index="/02"
@@ -85,7 +85,7 @@ export default function NetworkPage() {
 
       {/* Compromisos de red */}
       <section className="border-t border-[var(--color-line)] bg-[var(--color-bg-raised)]">
-        <div className="container-edge py-20 md:py-24">
+        <div className="container-edge py-14 md:py-24">
           <SectionHeader index="/03" kicker="Compromisos" title="Lo que garantizamos." />
           <div className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)] md:grid-cols-3">
             {[

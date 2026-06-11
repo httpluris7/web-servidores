@@ -16,7 +16,7 @@ export function Hero() {
         </div>
 
         {/* Titular gigante */}
-        <h1 className="mt-8 max-w-5xl text-balance font-semibold uppercase leading-[0.92] tracking-tight text-[clamp(2.6rem,9vw,8rem)]">
+        <h1 className="mt-8 max-w-5xl text-balance font-semibold uppercase leading-[0.92] tracking-tight text-[clamp(2.2rem,9vw,8rem)]">
           Tu servidor,
           <br />
           en <span className="text-accent">60 segundos</span>.
@@ -24,7 +24,7 @@ export function Hero() {
 
         <p className="mt-8 max-w-xl text-lg text-[var(--color-fg-muted)] md:text-xl">
           VPS, bare metal y mitigación DDoS sobre red propia. NVMe Gen4, uplinks de 10 Gbps y
-          presencia en seis regiones europeas. Sin esperas, sin sorpresas.
+          presencia en regiones europeas estratégicas. Sin esperas, sin sorpresas.
         </p>
 
         <div className="mt-10 flex flex-wrap gap-3">

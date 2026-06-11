@@ -15,30 +15,30 @@ const cards = [
   },
   {
     n: "/02",
-    title: "Dedicado 10 Gbps",
-    tagline: "Bare metal para saturar la red.",
-    specs: ["EPYC hasta 192 hilos", "Puerto de 10 Gbps dedicado", "IPMI/KVM fuera de banda"],
-    priceFrom: Math.min(...(dedicatedTypes.find((d) => d.slug === "10gbps")?.plans.map((p) => p.price) ?? [0])),
-    href: "/dedicados/10gbps",
+    title: "Dedicados Francia",
+    tagline: "Bare metal AMD en París.",
+    specs: ["EPYC hasta 192 hilos", "Uplinks de 1 y 10 Gbps", "IPMI/KVM fuera de banda"],
+    priceFrom: Math.min(...(dedicatedTypes.find((d) => d.slug === "francia")?.plans.map((p) => p.price) ?? [0])),
+    href: "/dedicados/francia",
   },
   {
     n: "/03",
-    title: "Storage Server",
-    tagline: "Capacidad masiva, coste por TB mínimo.",
-    specs: ["Hasta 360 TB por nodo", "Caché NVMe para lecturas", "Backup, archivo y data lakes"],
-    priceFrom: Math.min(...(dedicatedTypes.find((d) => d.slug === "storage")?.plans.map((p) => p.price) ?? [0])),
-    href: "/dedicados/storage",
+    title: "Dedicados Holanda",
+    tagline: "Bare metal AMD en Ámsterdam.",
+    specs: ["EPYC hasta 192 hilos", "Peering directo en AMS-IX", "Hasta 360 TB de storage"],
+    priceFrom: Math.min(...(dedicatedTypes.find((d) => d.slug === "holanda")?.plans.map((p) => p.price) ?? [0])),
+    href: "/dedicados/holanda",
   },
 ];
 
 export function ProductsGrid() {
   return (
-    <section className="container-edge py-24 md:py-32">
+    <section className="container-edge py-16 md:py-32">
       <SectionHeader
         index="/05"
         kicker="Productos"
         title="Elige tu punto de partida."
-        description="Tres líneas de cómputo sobre la misma red y la misma protección. Empieza pequeño y escala sin migrar."
+        description="Cómputo sobre la misma red y la misma protección. Empieza pequeño y escala sin migrar."
       />
 
       <div className="mt-12 grid gap-5 md:grid-cols-3">

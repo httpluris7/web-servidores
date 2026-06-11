@@ -14,7 +14,7 @@ type Props = {
 /** Grid de planes reutilizable por VPS regional y dedicados. */
 export function PlanGrid({ index, kicker, title, description, plans }: Props) {
   return (
-    <section className="container-edge py-20 md:py-24">
+    <section className="container-edge py-14 md:py-24">
       <SectionHeader index={index} kicker={kicker} title={title} description={description} />
       <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {plans.map((p, i) => (

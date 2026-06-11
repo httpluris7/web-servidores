@@ -29,6 +29,7 @@ export function OrderForm({
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
+  const [formError, setFormError] = useState<string | null>(null);
 
   function validate(): boolean {
     const e: Errors = {};
@@ -41,12 +42,28 @@ export function OrderForm({
 
   async function onSubmit(ev: React.FormEvent) {
     ev.preventDefault();
+    setFormError(null);
     if (!validate()) return;
     setStatus("sending");
-    // TODO (API): registrar el pedido en tu backend antes del handoff al pago.
-    //   await fetch("/api/pedidos", { method: "POST", body: JSON.stringify({ planId: plan.id, ...values }) });
-    await new Promise((r) => setTimeout(r, 700));
-    setStatus("done");
+
+    try {
+      const res = await fetch("/api/pedidos", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ planId: plan.id, ...values }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        if (data?.errors) setErrors(data.errors as Errors);
+        setFormError(data?.error ?? "No se pudo registrar el pedido. Inténtalo de nuevo.");
+        setStatus("idle");
+        return;
+      }
+      setStatus("done");
+    } catch {
+      setFormError("Error de conexión. Revisa tu red e inténtalo de nuevo.");
+      setStatus("idle");
+    }
   }
 
   const regionName = regions?.find((r) => r.slug === values.region)?.name;
@@ -159,6 +176,11 @@ export function OrderForm({
             <p className="font-mono text-xs text-[var(--color-fg-dim)]">
               sin permanencia · cancela cuando quieras · soporte 24/7
             </p>
+            {formError && (
+              <p role="alert" className="text-sm text-[var(--color-danger)]">
+                {formError}
+              </p>
+            )}
           </form>
         )}
       </div>

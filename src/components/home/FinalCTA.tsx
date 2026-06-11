@@ -15,7 +15,7 @@ export function FinalCTA() {
         }}
         aria-hidden="true"
       />
-      <div className="container-edge relative flex min-h-[70vh] flex-col items-center justify-center py-28 text-center">
+      <div className="container-edge relative flex min-h-[70vh] flex-col items-center justify-center py-16 md:py-28 text-center">
         <Reveal>
           <span className="mono-label">/11 — Empieza ahora</span>
         </Reveal>

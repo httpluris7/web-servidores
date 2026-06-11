@@ -30,11 +30,7 @@ export const services: ServiceStatus[] = [
 /** Estado por región (alineado con los slugs de products.ts). */
 export const regionStatus: Record<string, StatusLevel> = {
   francia: "operational",
-  "paises-bajos": "operational",
   alemania: "operational",
-  espana: "operational",
-  "reino-unido": "degraded",
-  polonia: "operational",
 };
 
 /** Histórico reciente de incidencias (placeholder). */
@@ -43,9 +39,9 @@ export type Incident = { date: string; title: string; resolved: boolean; detail:
 export const incidents: Incident[] = [
   {
     date: "2026-06-08",
-    title: "Latencia elevada en Reino Unido",
+    title: "Latencia elevada en París",
     resolved: false,
-    detail: "Estamos investigando un aumento de latencia en el nodo de Londres. Sin impacto en disponibilidad.",
+    detail: "Estamos investigando un aumento de latencia en el nodo de París. Sin impacto en disponibilidad.",
   },
   {
     date: "2026-06-02",

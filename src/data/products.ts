@@ -49,16 +49,7 @@ export const regions: Region[] = [
     city: "París",
     priceFrom: 4,
     latencyNote: "< 5 ms a Europa Occidental",
-    map: { x: 44, y: 52 },
-  },
-  {
-    slug: "paises-bajos",
-    name: "Países Bajos",
-    flag: "🇳🇱",
-    city: "Ámsterdam",
-    priceFrom: 4,
-    latencyNote: "Peering directo en AMS-IX",
-    map: { x: 48, y: 42 },
+    map: { x: 42, y: 54 },
   },
   {
     slug: "alemania",
@@ -67,34 +58,7 @@ export const regions: Region[] = [
     city: "Fráncfort",
     priceFrom: 5,
     latencyNote: "Nodo central DE-CIX",
-    map: { x: 53, y: 46 },
-  },
-  {
-    slug: "espana",
-    name: "España",
-    flag: "🇪🇸",
-    city: "Madrid",
-    priceFrom: 5,
-    latencyNote: "< 10 ms a la Península",
-    map: { x: 34, y: 70 },
-  },
-  {
-    slug: "reino-unido",
-    name: "Reino Unido",
-    flag: "🇬🇧",
-    city: "Londres",
-    priceFrom: 6,
-    latencyNote: "Peering LINX",
-    map: { x: 40, y: 40 },
-  },
-  {
-    slug: "polonia",
-    name: "Polonia",
-    flag: "🇵🇱",
-    city: "Varsovia",
-    priceFrom: 5,
-    latencyNote: "Cobertura Europa del Este",
-    map: { x: 62, y: 42 },
+    map: { x: 58, y: 46 },
   },
 ];
 
@@ -163,93 +127,78 @@ export type DedicatedType = {
   plans: Plan[];
 };
 
+/**
+ * Catálogo de planes dedicados (bare metal), compartido entre países.
+ * El mismo hardware se ofrece en cada ubicación; el `id` se prefija por país
+ * para que cada combinación país+plan tenga una URL de contratación única.
+ */
+const dedicatedBasePlans: Omit<Plan, "id" | "orderUrl">[] = [
+  {
+    name: "Ryzen 7950X",
+    cpu: "AMD Ryzen 9 7950X · 16C/32T",
+    ram: "64 GB DDR5 ECC",
+    storage: "2 × 1 TB NVMe Gen4",
+    bandwidth: "1 Gbps garantizado",
+    price: 89,
+    popular: true,
+  },
+  {
+    name: "EPYC 7443",
+    cpu: "AMD EPYC 7443 · 24C/48T",
+    ram: "128 GB DDR4 ECC",
+    storage: "2 × 1.92 TB NVMe Gen4",
+    bandwidth: "1 Gbps garantizado",
+    price: 159,
+  },
+  {
+    name: "EPYC 9354",
+    cpu: "AMD EPYC 9354 · 32C/64T",
+    ram: "256 GB DDR5 ECC",
+    storage: "4 × 3.84 TB NVMe Gen4",
+    bandwidth: "10 Gbps dedicado",
+    price: 349,
+  },
+  {
+    name: "Dual EPYC 9454",
+    cpu: "2 × AMD EPYC 9454 · 96C/192T",
+    ram: "512 GB DDR5 ECC",
+    storage: "6 × 3.84 TB NVMe Gen4",
+    bandwidth: "10 Gbps dedicado",
+    price: 699,
+  },
+  {
+    name: "Storage 360",
+    cpu: "AMD EPYC 7443 · 24C/48T",
+    ram: "128 GB DDR4 ECC",
+    storage: "18 × 20 TB HDD + 2 TB NVMe caché",
+    bandwidth: "2 Gbps garantizado",
+    price: 549,
+  },
+];
+
+/** Genera los planes dedicados de un país a partir del catálogo base. */
+function dedicatedPlansFor(prefix: string): Plan[] {
+  return dedicatedBasePlans.map((p) => {
+    const slug = p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    const id = `ded-${prefix}-${slug}`;
+    return { ...p, id, orderUrl: deployUrl(`/order/${id}`) };
+  });
+}
+
 export const dedicatedTypes: DedicatedType[] = [
   {
-    slug: "1gbps",
-    title: "Dedicado 1 Gbps",
-    tagline: "Bare metal de propósito general con uplink garantizado de 1 Gbps.",
-    highlight: "1 Gbps · sin overselling",
-    plans: [
-      {
-        id: "ded-1g-ryzen",
-        name: "Ryzen 7950X",
-        cpu: "AMD Ryzen 9 7950X · 16C/32T",
-        ram: "64 GB DDR5 ECC",
-        storage: "2 × 1 TB NVMe Gen4",
-        bandwidth: "1 Gbps garantizado",
-        price: 89,
-        orderUrl: deployUrl("/order/ded-1g-ryzen"),
-        popular: true,
-      },
-      {
-        id: "ded-1g-epyc",
-        name: "EPYC 7443",
-        cpu: "AMD EPYC 7443 · 24C/48T",
-        ram: "128 GB DDR4 ECC",
-        storage: "2 × 1.92 TB NVMe Gen4",
-        bandwidth: "1 Gbps garantizado",
-        price: 159,
-        orderUrl: deployUrl("/order/ded-1g-epyc"),
-      },
-    ],
+    slug: "francia",
+    title: "Dedicados Francia",
+    tagline: "Bare metal AMD EPYC y Ryzen en nuestro datacenter de París. Uplinks garantizados y NVMe Gen4, sin overselling.",
+    highlight: "🇫🇷 París · bare metal",
+    plans: dedicatedPlansFor("fr"),
   },
   {
-    slug: "10gbps",
-    title: "Dedicado 10 Gbps",
-    tagline: "Para CDN, streaming y cargas que saturan la red. Uplink de 10 Gbps.",
-    highlight: "10 Gbps · puerto dedicado",
-    plans: [
-      {
-        id: "ded-10g-epyc",
-        name: "EPYC 9354",
-        cpu: "AMD EPYC 9354 · 32C/64T",
-        ram: "256 GB DDR5 ECC",
-        storage: "4 × 3.84 TB NVMe Gen4",
-        bandwidth: "10 Gbps dedicado",
-        price: 349,
-        orderUrl: deployUrl("/order/ded-10g-epyc"),
-        popular: true,
-      },
-      {
-        id: "ded-10g-dual",
-        name: "Dual EPYC 9454",
-        cpu: "2 × AMD EPYC 9454 · 96C/192T",
-        ram: "512 GB DDR5 ECC",
-        storage: "6 × 3.84 TB NVMe Gen4",
-        bandwidth: "10 Gbps dedicado",
-        price: 699,
-        orderUrl: deployUrl("/order/ded-10g-dual"),
-      },
-    ],
-  },
-  {
-    slug: "storage",
-    title: "Storage Server",
-    tagline: "Capacidad masiva para backup, archivo y data lakes. Coste por TB imbatible.",
-    highlight: "Hasta 360 TB · HDD + caché NVMe",
-    plans: [
-      {
-        id: "ded-storage-90",
-        name: "Storage 90",
-        cpu: "AMD Ryzen 9 7900 · 12C/24T",
-        ram: "64 GB DDR5 ECC",
-        storage: "6 × 16 TB HDD + 1 TB NVMe caché",
-        bandwidth: "1 Gbps garantizado",
-        price: 199,
-        orderUrl: deployUrl("/order/ded-storage-90"),
-      },
-      {
-        id: "ded-storage-360",
-        name: "Storage 360",
-        cpu: "AMD EPYC 7443 · 24C/48T",
-        ram: "128 GB DDR4 ECC",
-        storage: "18 × 20 TB HDD + 2 TB NVMe caché",
-        bandwidth: "2 Gbps garantizado",
-        price: 549,
-        orderUrl: deployUrl("/order/ded-storage-360"),
-        popular: true,
-      },
-    ],
+    slug: "holanda",
+    title: "Dedicados Holanda",
+    tagline: "Bare metal AMD EPYC y Ryzen en Ámsterdam con peering directo en AMS-IX. Uplinks garantizados y NVMe Gen4, sin overselling.",
+    highlight: "🇳🇱 Ámsterdam · bare metal",
+    plans: dedicatedPlansFor("nl"),
   },
 ];
 

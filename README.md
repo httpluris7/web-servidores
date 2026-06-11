@@ -182,7 +182,7 @@ npm run start        # escucha en :3000 (usa PORT=xxxx para cambiarlo)
 Proxy inverso de ejemplo en Nginx:
 ```nginx
 server {
-  server_name nodara.eu;
+  server_name viahost.xyz;
   location / {
     proxy_pass http://127.0.0.1:3000;
     proxy_set_header Host $host;

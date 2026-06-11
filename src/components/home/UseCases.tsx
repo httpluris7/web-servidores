@@ -6,7 +6,7 @@ import { Reveal } from "@/components/ui/Reveal";
 export function UseCases() {
   return (
     <section className="border-t border-[var(--color-line)] bg-[var(--color-bg-raised)]">
-      <div className="container-edge py-24 md:py-32">
+      <div className="container-edge py-16 md:py-32">
         <SectionHeader
           index="/08"
           kicker="Casos de uso"

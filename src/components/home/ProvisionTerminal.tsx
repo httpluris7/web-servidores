@@ -36,7 +36,7 @@ export function ProvisionTerminal() {
   }, [inView, reduce]);
 
   return (
-    <section className="container-edge py-24 md:py-32">
+    <section className="container-edge py-16 md:py-32">
       <SectionHeader
         index="/03"
         kicker="Provisioning automatizado"

@@ -45,7 +45,7 @@ export default function AboutPage() {
       />
 
       {/* TODO: sustituir por la historia real de la empresa, hitos y equipo. */}
-      <section className="container-edge py-20 md:py-28">
+      <section className="container-edge py-14 md:py-28">
         <SectionHeader index="/02" kicker="Cómo trabajamos" title="Cuatro principios, sin excepciones." />
         <div className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-2">
           {principles.map((p) => (

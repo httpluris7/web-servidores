@@ -26,7 +26,7 @@ export default function UseCasesPage() {
         description="Da igual lo que despliegues: debajo siempre hay NVMe Gen4, 10 Gbps de red y mitigación DDoS. Elige por dónde empezar."
       />
 
-      <section className="container-edge py-20 md:py-24">
+      <section className="container-edge py-14 md:py-24">
         <div className="grid gap-5 sm:grid-cols-2">
           {useCases.map((c, i) => (
             <Reveal key={c.title} delay={i % 2} as="article">

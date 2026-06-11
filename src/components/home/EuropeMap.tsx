@@ -4,15 +4,18 @@ import { motion, useReducedMotion } from "framer-motion";
 import { regions } from "@/data/products";
 import { viewportOnce } from "@/lib/motion";
 
-// Nodo central (hub) desde el que parten los enlaces animados.
-const HUB = { x: 53, y: 46 }; // Fráncfort
-
 /**
  * Mapa estilizado de Europa en SVG propio (sin librería de mapas).
- * Silueta abstracta + nodos con pulso CSS + líneas que se dibujan una vez.
+ * Silueta abstracta + nodos con pulso CSS + backbone que se dibuja una vez.
  */
 export function EuropeMap() {
   const reduce = useReducedMotion();
+
+  // Punto medio del backbone: centro de masa de los nodos activos.
+  const center = {
+    x: regions.reduce((s, r) => s + r.map.x, 0) / regions.length,
+    y: regions.reduce((s, r) => s + r.map.y, 0) / regions.length,
+  };
 
   return (
     <div className="relative aspect-square w-full">
@@ -32,23 +35,41 @@ export function EuropeMap() {
           strokeWidth="0.4"
         />
 
-        {/* Enlaces animados hub → regiones */}
-        {regions.map((r, i) => (
-          <motion.line
-            key={`link-${r.slug}`}
-            x1={HUB.x}
-            y1={HUB.y}
-            x2={r.map.x}
-            y2={r.map.y}
-            stroke="var(--color-accent)"
-            strokeWidth="0.3"
-            strokeOpacity="0.45"
-            initial={reduce ? { pathLength: 1 } : { pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
-            viewport={viewportOnce}
-            transition={{ duration: 1, delay: 0.1 * i, ease: "easeInOut" }}
-          />
-        ))}
+        {/* Backbone animado: enlaza los nodos en secuencia (París ↔ Fráncfort) */}
+        {regions.slice(1).map((r, i) => {
+          const prev = regions[i];
+          if (!prev) return null;
+          return (
+            <motion.line
+              key={`link-${r.slug}`}
+              x1={prev.map.x}
+              y1={prev.map.y}
+              x2={r.map.x}
+              y2={r.map.y}
+              stroke="var(--color-accent)"
+              strokeWidth="0.4"
+              strokeOpacity="0.5"
+              initial={reduce ? { pathLength: 1 } : { pathLength: 0 }}
+              whileInView={{ pathLength: 1 }}
+              viewport={viewportOnce}
+              transition={{ duration: 1.1, delay: 0.15 * i, ease: "easeInOut" }}
+            />
+          );
+        })}
+
+        {/* Marcador central tenue del backbone */}
+        <circle cx={center.x} cy={center.y} r="0.9" fill="var(--color-accent)" fillOpacity="0.4" />
+        <circle
+          cx={center.x}
+          cy={center.y}
+          r="0.9"
+          fill="none"
+          stroke="var(--color-accent)"
+          strokeWidth="0.4"
+          strokeOpacity="0.6"
+          className="node-pulse"
+          style={{ transformOrigin: `${center.x}px ${center.y}px` }}
+        />
 
         {/* Nodos con pulso CSS */}
         {regions.map((r) => (

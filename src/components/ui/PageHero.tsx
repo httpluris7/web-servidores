@@ -13,7 +13,7 @@ export function PageHero({ index, kicker, title, description, children }: Props)
   return (
     <section className="relative overflow-hidden border-b border-[var(--color-line)]">
       <div className="pointer-events-none absolute inset-0 grid-lines opacity-40" aria-hidden="true" />
-      <div className="container-edge relative py-20 md:py-28">
+      <div className="container-edge relative py-14 md:py-28">
         <Reveal>
           <div className="flex items-center gap-3">
             <span className="font-mono text-sm text-[var(--color-accent)]">{index}</span>

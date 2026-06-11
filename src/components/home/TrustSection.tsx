@@ -12,7 +12,7 @@ const stats = [
 
 export function TrustSection() {
   return (
-    <section className="container-edge py-24 md:py-28">
+    <section className="container-edge py-16 md:py-28">
       <Reveal>
         <span className="mono-label">/10 — Confianza</span>
       </Reveal>
@@ -35,7 +35,7 @@ export function TrustSection() {
           {partners.map((p) => (
             <span
               key={p}
-              className="mx-8 whitespace-nowrap font-mono text-lg text-[var(--color-fg-dim)] transition-colors hover:text-[var(--color-fg-muted)]"
+              className="mx-5 whitespace-nowrap font-mono text-base text-[var(--color-fg-dim)] transition-colors hover:text-[var(--color-fg-muted)] sm:mx-8 sm:text-lg"
             >
               {p}
             </span>

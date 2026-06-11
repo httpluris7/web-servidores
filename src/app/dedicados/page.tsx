@@ -30,13 +30,13 @@ export default function DedicatedPage() {
         description="Hardware AMD EPYC y Ryzen dedicado en exclusiva. Uplinks garantizados, NVMe Gen4 y gestión IPMI/KVM. Lo que contratas es lo que tienes."
       />
 
-      <section className="container-edge py-20 md:py-24">
+      <section className="container-edge py-14 md:py-24">
         <SectionHeader
           index="/02"
-          kicker="Líneas"
-          title="Tres líneas, un objetivo: rendimiento real."
+          kicker="Ubicaciones"
+          title="Dos ubicaciones, un objetivo: rendimiento real."
         />
-        <div className="mt-12 grid gap-5 lg:grid-cols-3">
+        <div className="mt-12 grid gap-5 sm:grid-cols-2">
           {dedicatedTypes.map((d, i) => {
             const from = Math.min(...d.plans.map((p) => p.price));
             return (

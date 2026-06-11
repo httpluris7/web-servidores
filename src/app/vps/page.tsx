@@ -14,7 +14,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 export const metadata: Metadata = {
   title: "Cloud VPS — NVMe Gen4 y 10 Gbps",
   description:
-    "VPS NVMe Gen4 con red de 10 Gbps y protección DDoS incluida, en seis regiones europeas. Desde " +
+    "VPS NVMe Gen4 con red de 10 Gbps y protección DDoS incluida, en regiones europeas estratégicas. Desde " +
     eur(Math.min(...vps.plans.map((p) => p.price))) +
     "/mes. Provisioning en 60 segundos.",
   alternates: { canonical: "/vps" },
@@ -64,12 +64,12 @@ export default function VpsPage() {
 
       {/* Regiones */}
       <section className="border-t border-[var(--color-line)] bg-[var(--color-bg-raised)]">
-        <div className="container-edge py-20 md:py-24">
+        <div className="container-edge py-14 md:py-24">
           <SectionHeader
             index="/03"
             kicker="Ubicaciones"
             title="Despliega cerca de tus usuarios."
-            description="Seis regiones europeas con peering directo. Misma experiencia, menos latencia."
+            description="Regiones europeas con peering directo. Misma experiencia, menos latencia."
           />
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {regions.map((r, i) => (
