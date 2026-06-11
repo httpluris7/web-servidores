@@ -130,7 +130,7 @@ const dedicatedBasePlans: Omit<Plan, "id" | "orderUrl">[] = [
     ram: "64 GB DDR5 ECC",
     storage: "2 × 1 TB NVMe Gen4",
     bandwidth: "1 Gbps garantizado",
-    price: 89,
+    price: 150,
     popular: true,
   },
   {
@@ -139,7 +139,7 @@ const dedicatedBasePlans: Omit<Plan, "id" | "orderUrl">[] = [
     ram: "128 GB DDR4 ECC",
     storage: "2 × 1.92 TB NVMe Gen4",
     bandwidth: "1 Gbps garantizado",
-    price: 159,
+    price: 300,
   },
   {
     name: "EPYC 9354",
@@ -147,7 +147,7 @@ const dedicatedBasePlans: Omit<Plan, "id" | "orderUrl">[] = [
     ram: "256 GB DDR5 ECC",
     storage: "4 × 3.84 TB NVMe Gen4",
     bandwidth: "10 Gbps dedicado",
-    price: 349,
+    price: 500,
   },
   {
     name: "Dual EPYC 9454",
@@ -155,7 +155,7 @@ const dedicatedBasePlans: Omit<Plan, "id" | "orderUrl">[] = [
     ram: "512 GB DDR5 ECC",
     storage: "6 × 3.84 TB NVMe Gen4",
     bandwidth: "10 Gbps dedicado",
-    price: 699,
+    price: 900,
   },
   {
     name: "Storage 360",
@@ -163,7 +163,7 @@ const dedicatedBasePlans: Omit<Plan, "id" | "orderUrl">[] = [
     ram: "128 GB DDR4 ECC",
     storage: "18 × 20 TB HDD + 2 TB NVMe caché",
     bandwidth: "2 Gbps garantizado",
-    price: 549,
+    price: 1700,
   },
 ];
 
