@@ -1,5 +1,5 @@
 /**
- * NODARA — configuración global de marca.
+ * ViaHost — configuración global de marca.
  * ----------------------------------------------------------------------------
  * ESTE ES EL ÚNICO SITIO donde tienes que tocar para renombrar la marca o
  * cambiar datos corporativos. Todo lo marcado con `TODO:` son datos reales del
@@ -7,7 +7,7 @@
  */
 
 export const site = {
-  brand: "NODARA",
+  brand: "ViaHost",
   // Marca inventada y coherente. Sustituye por la real en este único punto.
   domain: "viahost.xyz",
   url: "https://viahost.xyz",
@@ -34,14 +34,14 @@ export const site = {
   },
 
   social: {
-    x: "https://x.com/nodara", // TODO: handle real
-    github: "https://github.com/nodara", // TODO
-    linkedin: "https://linkedin.com/company/nodara", // TODO
+    x: "https://x.com/viahost", // TODO: handle real
+    github: "https://github.com/viahost", // TODO
+    linkedin: "https://linkedin.com/company/viahost", // TODO
   },
 
   // Datos legales del footer. Entidad: Limited Liability Company (LLC).
   legal: {
-    companyName: "NODARA Infrastructure LLC", // TODO: razón social real de la LLC
+    companyName: "ViaHost Infrastructure LLC", // TODO: razón social real de la LLC
     jurisdiction: "Delaware, EE. UU.", // TODO: estado/país de constitución de la LLC
     taxId: "EIN 00-0000000", // TODO: EIN real (registro fiscal de la LLC)
     address: "16192 Coastal Highway, Lewes, DE 19958, EE. UU.", // TODO: dirección registrada real

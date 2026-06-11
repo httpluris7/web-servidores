@@ -3,7 +3,7 @@ import { LegalLayout } from "@/components/legal/LegalLayout";
 
 export const metadata: Metadata = {
   title: "Términos y condiciones",
-  description: "Condiciones de uso y contratación de los servicios de NODARA.",
+  description: "Condiciones de uso y contratación de los servicios de ViaHost.",
   alternates: { canonical: "/legal/terminos" },
   robots: { index: true, follow: true },
 };

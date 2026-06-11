@@ -3,7 +3,7 @@ import { LegalLayout } from "@/components/legal/LegalLayout";
 
 export const metadata: Metadata = {
   title: "Política de cookies",
-  description: "Qué cookies utiliza NODARA y cómo gestionarlas.",
+  description: "Qué cookies utiliza ViaHost y cómo gestionarlas.",
   alternates: { canonical: "/legal/cookies" },
   robots: { index: true, follow: true },
 };

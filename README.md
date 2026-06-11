@@ -1,11 +1,11 @@
-# NODARA — Web de hosting (infra premium)
+# ViaHost — Web de hosting (infra premium)
 
 Web de marketing para un proveedor de hosting (VPS, dedicados y mitigación DDoS),
 construida con Next.js 15 (App Router) + Tailwind v4. Estética dark-only tipo
 infraestructura premium: fondo casi negro, tipografía oversized, datos técnicos en
 mono y un único acento verde eléctrico (`#00E5A0`).
 
-> **NODARA** es una marca **inventada** y coherente, usada como placeholder. Todo el
+> **ViaHost** es una marca **inventada** y coherente, usada como placeholder. Todo el
 > contenido es original. Renómbrala en un único punto (ver abajo).
 
 ---
@@ -191,7 +191,7 @@ server {
   }
 }
 ```
-Gestiona el proceso con `pm2 start "npm run start" --name nodara` o un servicio systemd.
+Gestiona el proceso con `pm2 start "npm run start" --name viahost` o un servicio systemd.
 
 > Recuerda actualizar `site.url` en `src/data/site.ts` al dominio real para que
 > canonical, OpenGraph, sitemap y robots apunten bien.

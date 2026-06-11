@@ -10,7 +10,7 @@ import Link from "next/link";
  * el consentimiento al cargador de scripts.
  */
 const enabled = true; // Activo. Al integrar analítica, inicialízala en decide("accepted").
-const STORAGE_KEY = "nodara.cookie-consent";
+const STORAGE_KEY = "viahost.cookie-consent";
 
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);

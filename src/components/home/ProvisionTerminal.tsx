@@ -51,7 +51,7 @@ export function ProvisionTerminal() {
           <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
           <span className="h-3 w-3 rounded-full bg-[#28c840]" />
           <span className="ml-3 font-mono text-xs text-[var(--color-fg-dim)]">
-            nodara@deploy — provision
+            viahost@deploy — provision
           </span>
         </div>
 

@@ -8,7 +8,7 @@ import { Reveal } from "@/components/ui/Reveal";
 export const metadata: Metadata = {
   title: "Casos de uso",
   description:
-    "Aplicaciones web, bases de datos, cargas enterprise y plataformas SaaS sobre la infraestructura de NODARA: misma red, misma protección, distinto tamaño.",
+    "Aplicaciones web, bases de datos, cargas enterprise y plataformas SaaS sobre la infraestructura de ViaHost: misma red, misma protección, distinto tamaño.",
   alternates: { canonical: "/casos-de-uso" },
 };
 

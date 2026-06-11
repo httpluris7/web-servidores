@@ -7,7 +7,7 @@ export function WhyUs() {
     <section className="container-edge py-16 md:py-32">
       <SectionHeader
         index="/07"
-        kicker="Por qué NODARA"
+        kicker="Por qué ViaHost"
         title="El dato manda. Lo demás, ruido."
         description="Sin iconografía de stock ni promesas vacías: cada motivo es una cifra que puedes verificar."
       />

@@ -1,5 +1,5 @@
 /**
- * Catálogo de productos NODARA (sin CMS — fuente única tipada).
+ * Catálogo de productos ViaHost (sin CMS — fuente única tipada).
  * Precios y specs son datos de demostración realistas marcados con `TODO:`.
  * Edita aquí para cambiar planes, precios o regiones.
  */

@@ -4,7 +4,7 @@ import { LegalLayout } from "@/components/legal/LegalLayout";
 export const metadata: Metadata = {
   title: "Política de privacidad",
   description:
-    "Cómo NODARA trata los datos personales conforme al RGPD para clientes del EEE y a la normativa de protección de datos aplicable.",
+    "Cómo ViaHost trata los datos personales conforme al RGPD para clientes del EEE y a la normativa de protección de datos aplicable.",
   alternates: { canonical: "/legal/privacidad" },
   robots: { index: true, follow: true },
 };
@@ -14,7 +14,7 @@ export default function PrivacyPage() {
     <LegalLayout
       index="/ Privacidad"
       title="Política de privacidad"
-      intro="Cómo recogemos, tratamos y protegemos tus datos personales. NODARA Infrastructure LLC actúa como responsable; a los clientes del Espacio Económico Europeo les aplica el RGPD (UE 2016/679)."
+      intro="Cómo recogemos, tratamos y protegemos tus datos personales. ViaHost Infrastructure LLC actúa como responsable; a los clientes del Espacio Económico Europeo les aplica el RGPD (UE 2016/679)."
       updated="TODO: fecha"
       sections={[
         { heading: "Responsable del tratamiento", todo: "Identidad y datos de contacto del responsable: razón social de la LLC, EIN/registro, dirección registrada, y representante en la UE / DPO si aplica (art. 27 RGPD para empresas fuera de la UE)." },
