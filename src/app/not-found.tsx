@@ -16,7 +16,7 @@ export default function NotFound() {
 
         <div className="mt-8 max-w-md rounded-[var(--radius-md)] border border-[var(--color-line)] bg-[#070b12] p-4 font-mono text-sm">
           <span className="text-[var(--color-accent)]">$</span>{" "}
-          <span className="text-[var(--color-fg-muted)]">curl https://viahost.xyz/&lt;ruta&gt;</span>
+          <span className="text-[var(--color-fg-muted)]">curl https://viahost.top/&lt;ruta&gt;</span>
           <br />
           <span className="text-[var(--color-danger)]">↳ 404 · no route to resource</span>
         </div>
