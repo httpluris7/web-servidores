@@ -7,6 +7,7 @@ import { eur, fmtDate } from "@/lib/utils";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { InvoiceActions } from "@/components/admin/InvoiceActions";
 import { InvoiceForm } from "@/components/admin/InvoiceForm";
+import { ResetPasswordForm } from "@/components/admin/ResetPasswordForm";
 
 export const dynamic = "force-dynamic";
 
@@ -64,6 +65,17 @@ export default async function ClienteDetallePage({
             </div>
           ))}
         </dl>
+      </section>
+
+      {/* Restablecer contraseña del cliente */}
+      <section>
+        <h3 className="mono-label mb-1">Restablecer contraseña</h3>
+        <p className="mb-4 text-sm text-[var(--color-fg-muted)]">
+          Asigna una contraseña nueva a este cliente. No necesitas la anterior; introdúcela dos veces para confirmar.
+        </p>
+        <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-5 md:p-6">
+          <ResetPasswordForm userId={cliente.id} />
+        </div>
       </section>
 
       {/* Resumen de facturación */}

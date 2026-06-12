@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { site } from "@/data/site";
 import { PageHero } from "@/components/ui/PageHero";
 import { LogoutButton } from "@/components/forms/LogoutButton";
+import { ChangePasswordForm } from "@/components/forms/ChangePasswordForm";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
 
@@ -57,6 +58,14 @@ export default async function CuentaPage() {
             </div>
           ))}
         </dl>
+
+        <section className="mt-12 border-t border-[var(--color-line)] pt-10">
+          <h2 className="mono-label mb-1">Seguridad</h2>
+          <p className="mb-6 text-sm text-[var(--color-fg-muted)]">
+            Cambia tu contraseña. Tendrás que introducir la actual y repetir la nueva.
+          </p>
+          <ChangePasswordForm />
+        </section>
 
         <div className="mt-8">
           <LogoutButton />

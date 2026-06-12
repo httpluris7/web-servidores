@@ -1,5 +1,5 @@
 import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
-import { appendFile, mkdir, readFile } from "node:fs/promises";
+import { appendFile, mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 /**
@@ -125,4 +125,28 @@ export async function createUser(input: NewUserInput): Promise<PublicUser> {
   await mkdir(DATA_DIR, { recursive: true });
   await appendFile(USERS_FILE, JSON.stringify(user) + "\n", "utf8");
   return toPublic(user);
+}
+
+/**
+ * Cambia la contraseña de un usuario (identificado por id) y reescribe el
+ * fichero completo de forma atómica (escribe a un temporal y hace rename).
+ *
+ * Devuelve `true` si el usuario existía y se actualizó; `false` si no se
+ * encontró. Como el resto del módulo, el control de concurrencia es best-effort
+ * (sin lock): suficiente a esta escala. Reescribir entero es necesario porque el
+ * almacén es JSONL append-only y no soporta updates in-place.
+ */
+export async function updateUserPassword(id: string, newPassword: string): Promise<boolean> {
+  const users = await readAllUsers();
+  const target = users.find((u) => u.id === id);
+  if (!target) return false;
+
+  target.passwordHash = hashPassword(newPassword);
+  const content = users.map((u) => JSON.stringify(u)).join("\n") + "\n";
+
+  await mkdir(DATA_DIR, { recursive: true });
+  const tmp = `${USERS_FILE}.${randomUUID()}.tmp`;
+  await writeFile(tmp, content, "utf8");
+  await rename(tmp, USERS_FILE);
+  return true;
 }
