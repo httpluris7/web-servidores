@@ -111,7 +111,15 @@ export default async function FacturasPage() {
                       </p>
                     </td>
                     <td className="px-4 py-3">
-                      <InvoiceActions id={f.id} estado={f.estado} />
+                      <div className="flex flex-wrap items-center justify-end gap-1.5">
+                        <Link
+                          href={`/admin/facturas/${f.id}`}
+                          className="rounded-[var(--radius-sm)] border border-[var(--color-line-strong)] px-2.5 py-1 text-xs transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                        >
+                          PDF
+                        </Link>
+                        <InvoiceActions id={f.id} estado={f.estado} />
+                      </div>
                     </td>
                   </tr>
                 ))}
