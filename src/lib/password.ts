@@ -12,10 +12,10 @@ export type PasswordRule = { key: string; label: string; test: (pw: string) => b
  * con al menos una mayúscula y un símbolo especial.
  */
 export const passwordRules: PasswordRule[] = [
-  { key: "length", label: "Mínimo 8 caracteres", test: (p) => p.length >= 8 },
-  { key: "upper", label: "Al menos una letra mayúscula", test: (p) => /[A-Z]/.test(p) },
-  { key: "number", label: "Al menos un número", test: (p) => /[0-9]/.test(p) },
-  { key: "special", label: "Al menos un símbolo especial (!@#$…)", test: (p) => /[^A-Za-z0-9]/.test(p) },
+  { key: "length", label: "At least 8 characters", test: (p) => p.length >= 8 },
+  { key: "upper", label: "One uppercase letter", test: (p) => /[A-Z]/.test(p) },
+  { key: "number", label: "One number", test: (p) => /[0-9]/.test(p) },
+  { key: "special", label: "One symbol (!@#$…)", test: (p) => /[^A-Za-z0-9]/.test(p) },
 ];
 
 /** Devuelve las claves de las reglas que NO cumple la contraseña. */

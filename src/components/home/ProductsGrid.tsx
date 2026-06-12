@@ -8,24 +8,24 @@ const cards = [
   {
     n: "/01",
     title: "Cloud VPS",
-    tagline: "Máquinas NVMe listas en 60 s.",
-    specs: ["2–16 vCore AMD EPYC", "NVMe Gen4 en todos los planes", "10 Gbps + DDoS incluido"],
+    tagline: "NVMe machines ready in 60s.",
+    specs: ["2–16 vCore AMD EPYC", "NVMe Gen4 on every plan", "10 Gbps + DDoS included"],
     priceFrom: Math.min(...vps.plans.map((p) => p.price)),
     href: "/vps",
   },
   {
     n: "/02",
-    title: "Dedicados Francia",
-    tagline: "Bare metal AMD en París.",
-    specs: ["EPYC hasta 192 hilos", "Uplinks de 1 y 10 Gbps", "IPMI/KVM fuera de banda"],
+    title: "Dedicated Servers France",
+    tagline: "AMD bare metal in Paris.",
+    specs: ["EPYC up to 192 threads", "1 and 10 Gbps uplinks", "Out-of-band IPMI/KVM"],
     priceFrom: Math.min(...(dedicatedTypes.find((d) => d.slug === "francia")?.plans.map((p) => p.price) ?? [0])),
     href: "/dedicados/francia",
   },
   {
     n: "/03",
-    title: "Dedicados Holanda",
-    tagline: "Bare metal AMD en Ámsterdam.",
-    specs: ["EPYC hasta 192 hilos", "Peering directo en AMS-IX", "Hasta 360 TB de storage"],
+    title: "Dedicated Servers Netherlands",
+    tagline: "AMD bare metal in Amsterdam.",
+    specs: ["EPYC up to 192 threads", "Direct peering at AMS-IX", "Up to 360 TB of storage"],
     priceFrom: Math.min(...(dedicatedTypes.find((d) => d.slug === "holanda")?.plans.map((p) => p.price) ?? [0])),
     href: "/dedicados/holanda",
   },
@@ -36,9 +36,9 @@ export function ProductsGrid() {
     <section className="container-edge py-16 md:py-32">
       <SectionHeader
         index="/05"
-        kicker="Productos"
-        title="Elige tu punto de partida."
-        description="Cómputo sobre la misma red y la misma protección. Empieza pequeño y escala sin migrar."
+        kicker="Products"
+        title="Choose your starting point."
+        description="Compute on the same network and the same protection. Start small and scale without migrating."
       />
 
       <div className="mt-12 grid gap-5 md:grid-cols-3">
@@ -68,10 +68,10 @@ export function ProductsGrid() {
               </ul>
 
               <div className="mt-auto pt-8">
-                <span className="mono-label block text-[0.65rem]">Desde</span>
+                <span className="mono-label block text-[0.65rem]">From</span>
                 <span className="font-mono text-3xl font-semibold tracking-tight">
                   {eur(c.priceFrom)}
-                  <span className="text-base text-[var(--color-fg-muted)]">/mes</span>
+                  <span className="text-base text-[var(--color-fg-muted)]">/mo</span>
                 </span>
               </div>
             </Link>
@@ -84,7 +84,7 @@ export function ProductsGrid() {
           href="/vps"
           className="font-mono text-sm text-[var(--color-accent)] transition-opacity hover:opacity-80"
         >
-          Ver todos los productos →
+          View all products →
         </Link>
       </div>
     </section>

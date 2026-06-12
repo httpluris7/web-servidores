@@ -11,10 +11,10 @@ export const site = {
   // Marca inventada y coherente. Sustituye por la real en este único punto.
   domain: "viahost.top",
   url: "https://viahost.top",
-  tagline: "Infraestructura europea desplegada en 60 segundos.",
+  tagline: "European infrastructure deployed in 60 seconds.",
   description:
-    "Hosting VPS, servidores dedicados y mitigación DDoS sobre red propia en Europa. Provisioning en 60 segundos, NVMe Gen4 y uplinks de 10 Gbps.",
-  locale: "es",
+    "VPS hosting, dedicated servers and DDoS mitigation on our own network across Europe. 60-second provisioning, NVMe Gen4 and 10 Gbps uplinks.",
+  locale: "en",
   accent: "#00E5A0",
 
   // Páginas internas funcionales (la web no depende de dominios externos).
@@ -42,15 +42,15 @@ export const site = {
   // Datos legales del footer. Entidad: Limited Liability Company (LLC).
   legal: {
     companyName: "ViaHost Infrastructure LLC", // TODO: razón social real de la LLC
-    jurisdiction: "Delaware, EE. UU.", // TODO: estado/país de constitución de la LLC
+    jurisdiction: "Delaware, USA", // TODO: estado/país de constitución de la LLC
     taxId: "EIN 00-0000000", // TODO: EIN real (registro fiscal de la LLC)
-    address: "16192 Coastal Highway, Lewes, DE 19958, EE. UU.", // TODO: dirección registrada real
+    address: "16192 Coastal Highway, Lewes, DE 19958, USA", // TODO: dirección registrada real
     addressCountry: "US", // código ISO del país de la sede legal
     trustpilotUrl: "", // TODO: URL de Trustpilot si existe (vacío = no se muestra el badge)
   },
 
   // Métodos de pago mostrados en el footer (texto estilizado, sin logos con licencia).
-  paymentMethods: ["Visa", "Mastercard", "PayPal", "SEPA", "Bizum", "Cripto"], // TODO: confirmar
+  paymentMethods: ["Visa", "Mastercard", "PayPal", "SEPA", "Bizum", "Crypto"], // TODO: confirmar
 
   // Red / backbone.
   network: {
@@ -58,7 +58,7 @@ export const site = {
     peers: 320, // TODO: nº real de peers
     capacityTbps: 12, // TODO: capacidad total de red en Tbps
     portMaxGbps: 100, // TODO: puerto máximo por servidor (Gbps)
-    rankingNote: "Top 50 IXP Europa", // TODO: ranking real si aplica
+    rankingNote: "Top 50 IXP Europe", // TODO: ranking real si aplica
   },
 
   // Mitigación DDoS.

@@ -12,15 +12,15 @@ export async function POST(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ ok: false, error: "JSON inválido." }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Invalid JSON." }, { status: 400 });
   }
 
   const email = clean(body.email, 200);
   const password = typeof body.password === "string" ? body.password : "";
 
   const errors: Record<string, string> = {};
-  if (!emailRe.test(email)) errors.email = "Introduce un email válido.";
-  if (!password) errors.password = "Introduce tu contraseña.";
+  if (!emailRe.test(email)) errors.email = "Enter a valid email.";
+  if (!password) errors.password = "Enter your password.";
   if (Object.keys(errors).length > 0) {
     return NextResponse.json({ ok: false, errors }, { status: 422 });
   }
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   const user = await findUserByEmail(email);
   if (!user || !verifyPassword(password, user.passwordHash)) {
     return NextResponse.json(
-      { ok: false, error: "Email o contraseña incorrectos." },
+      { ok: false, error: "Invalid credentials." },
       { status: 401 }
     );
   }

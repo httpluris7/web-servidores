@@ -57,7 +57,7 @@ export default async function DedicatedTypePage({ params }: { params: Promise<Pa
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
       />
       <PageHero
-        index="/ Dedicados"
+        index="/ Dedicated"
         kicker={line.highlight}
         title={line.title}
         description={line.tagline}
@@ -65,14 +65,14 @@ export default async function DedicatedTypePage({ params }: { params: Promise<Pa
 
       <PlanGrid
         index="/01"
-        kicker="Configuraciones"
-        title="Configuraciones disponibles."
-        description="Entrega automatizada para modelos en stock. Todas incluyen IPMI/KVM y protección DDoS."
+        kicker="Configurations"
+        title="Available configurations."
+        description="Automated delivery for in-stock models. All include IPMI/KVM and DDoS protection."
         plans={line.plans}
       />
 
       <FaqSection items={dedicatedFaq} index="/02" />
-      <CtaBand title={`Contrata tu ${line.title}`} />
+      <CtaBand title={`Order your ${line.title}`} />
     </>
   );
 }

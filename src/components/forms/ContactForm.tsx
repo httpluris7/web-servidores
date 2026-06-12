@@ -19,9 +19,9 @@ export function ContactForm() {
 
   function validate(): boolean {
     const e: Errors = {};
-    if (values.name.trim().length < 2) e.name = "Indica tu nombre.";
-    if (!emailRe.test(values.email)) e.email = "Introduce un email válido.";
-    if (values.message.trim().length < 10) e.message = "Cuéntanos un poco más (mín. 10 caracteres).";
+    if (values.name.trim().length < 2) e.name = "Enter your name.";
+    if (!emailRe.test(values.email)) e.email = "Enter a valid email.";
+    if (values.message.trim().length < 10) e.message = "Tell us a bit more (min. 10 characters).";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -41,13 +41,13 @@ export function ContactForm() {
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         if (data?.errors) setErrors(data.errors as Errors);
-        setFormError(data?.error ?? "No se pudo enviar el mensaje. Inténtalo de nuevo.");
+        setFormError(data?.error ?? "Could not send the message. Try again.");
         setStatus("idle");
         return;
       }
       setStatus("sent");
     } catch {
-      setFormError("Error de conexión. Revisa tu red e inténtalo de nuevo.");
+      setFormError("Connection error. Check your network and try again.");
       setStatus("idle");
     }
   }
@@ -55,11 +55,11 @@ export function ContactForm() {
   if (status === "sent") {
     return (
       <div className="rounded-[var(--radius-lg)] border border-[var(--color-accent)] bg-[var(--color-bg-raised)] p-8 glow-accent">
-        <div className="font-mono text-sm text-[var(--color-accent)]">● mensaje recibido</div>
-        <h3 className="mt-3 text-xl font-semibold">Gracias, {values.name.split(" ")[0]}.</h3>
+        <div className="font-mono text-sm text-[var(--color-accent)]">● message received</div>
+        <h3 className="mt-3 text-xl font-semibold">Thanks, {values.name.split(" ")[0]}.</h3>
         <p className="mt-2 text-sm text-[var(--color-fg-muted)]">
-          Hemos registrado tu mensaje. Te responderemos a{" "}
-          <span className="text-[var(--color-fg)]">{values.email}</span> lo antes posible.
+          We have logged your message. We will reply to{" "}
+          <span className="text-[var(--color-fg)]">{values.email}</span> as soon as possible.
         </p>
         <button
           type="button"
@@ -69,7 +69,7 @@ export function ContactForm() {
           }}
           className="mt-6 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-4 py-2 text-sm transition-colors hover:border-[var(--color-accent)]"
         >
-          Enviar otro mensaje
+          Send another message
         </button>
       </div>
     );
@@ -78,25 +78,25 @@ export function ContactForm() {
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-5">
       <div>
-        <Label htmlFor="topic">Asunto</Label>
+        <Label htmlFor="topic">Subject</Label>
         <Select id="topic" value={topic} onChange={(e) => setTopic(e.target.value as Topic)}>
-          <option value="ventas">Ventas y presupuestos</option>
-          <option value="soporte">Soporte técnico</option>
-          <option value="abuse">Reporte de abuso</option>
-          <option value="otro">Otro</option>
+          <option value="ventas">Sales and quotes</option>
+          <option value="soporte">Technical support</option>
+          <option value="abuse">Abuse report</option>
+          <option value="otro">Other</option>
         </Select>
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <Label htmlFor="name" required>
-            Nombre
+            Name
           </Label>
           <Input
             id="name"
             value={values.name}
             onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
-            placeholder="Tu nombre"
+            placeholder="Your name"
             aria-invalid={!!errors.name}
           />
           <FieldError>{errors.name}</FieldError>
@@ -119,13 +119,13 @@ export function ContactForm() {
 
       <div>
         <Label htmlFor="message" required>
-          Mensaje
+          Message
         </Label>
         <Textarea
           id="message"
           value={values.message}
           onChange={(e) => setValues((v) => ({ ...v, message: e.target.value }))}
-          placeholder="¿En qué podemos ayudarte?"
+          placeholder="How can we help you?"
           aria-invalid={!!errors.message}
         />
         <FieldError>{errors.message}</FieldError>
@@ -137,10 +137,10 @@ export function ContactForm() {
           disabled={status === "sending"}
           className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60"
         >
-          {status === "sending" ? "Enviando…" : "Enviar mensaje →"}
+          {status === "sending" ? "Sending…" : "Send message →"}
         </button>
         <p className="font-mono text-xs text-[var(--color-fg-dim)]">
-          o escribe a{" "}
+          or email{" "}
           <a href={`mailto:${site.contact.sales}`} className="text-[var(--color-accent)]">
             {site.contact.sales}
           </a>

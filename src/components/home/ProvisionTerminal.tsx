@@ -39,9 +39,9 @@ export function ProvisionTerminal() {
     <section className="container-edge py-16 md:py-32">
       <SectionHeader
         index="/03"
-        kicker="Provisioning automatizado"
-        title="Esto pasa al pulsar “Desplegar”."
-        description="Sin tickets, sin colas, sin intervención humana. El sistema asigna, instala y conecta tu servidor mientras lees esta frase."
+        kicker="Automated provisioning"
+        title="This happens when you hit “Deploy”."
+        description="No tickets, no queues, no human intervention. The system allocates, installs and connects your server while you read this sentence."
       />
 
       <div ref={ref} className="mt-12 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[#070b12]">
@@ -82,8 +82,8 @@ export function ProvisionTerminal() {
       </div>
 
       <p className="mt-6 max-w-xl font-mono text-sm text-[var(--color-fg-muted)]">
-        ↳ Esto es lo que pasa{" "}
-        <span className="text-[var(--color-accent)]">54 segundos</span> después de pagar.
+        ↳ This is what happens{" "}
+        <span className="text-[var(--color-accent)]">54 seconds</span> after you pay.
       </p>
     </section>
   );

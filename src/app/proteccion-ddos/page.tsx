@@ -7,26 +7,26 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
 export const metadata: Metadata = {
-  title: "Protección DDoS",
-  description: `Mitigación DDoS de hasta ${site.ddos.mitigationTbps} Tbps siempre activa e incluida en todos los planes. Filtrado L3/L4 y L7 en el borde de la red, sin coste por ataque.`,
+  title: "DDoS Protection",
+  description: `Always-on DDoS mitigation of up to ${site.ddos.mitigationTbps} Tbps included in all plans. L3/L4 and L7 filtering at the network edge, with no cost per attack.`,
   alternates: { canonical: "/proteccion-ddos" },
 };
 
 const steps = [
   {
     n: "/01",
-    t: "Detección en el borde",
-    d: "El tráfico se analiza al entrar a la red. Las firmas de ataque se identifican en menos de 2 segundos.",
+    t: "Edge detection",
+    d: "Traffic is analyzed as it enters the network. Attack signatures are identified in under 2 seconds.",
   },
   {
     n: "/02",
-    t: "Filtrado adaptativo",
-    d: "Reglas L3/L4 y L7 que se ajustan a la firma del ataque, sin reroute ni ventanas de corte.",
+    t: "Adaptive filtering",
+    d: "L3/L4 and L7 rules that adjust to the attack signature, with no reroute or downtime windows.",
   },
   {
     n: "/03",
-    t: "Tráfico limpio",
-    d: "Sólo el tráfico legítimo llega a tu servidor. Tú no haces nada; nosotros no cobramos extra.",
+    t: "Clean traffic",
+    d: "Only legitimate traffic reaches your server. You do nothing; we charge nothing extra.",
   },
 ];
 
@@ -35,22 +35,22 @@ export default function DdosPage() {
     <>
       <PageHero
         index="/01"
-        kicker="Protección DDoS"
+        kicker="DDoS Protection"
         title={
           <>
-            El ataque llega. A tu servidor, <span className="text-accent">cero</span>.
+            The attack hits. To your server, <span className="text-accent">zero</span>.
           </>
         }
-        description={`Mitigación de hasta ${site.ddos.mitigationTbps} Tbps siempre activa, incluida en cada VPS y cada dedicado. Sin coste por ataque, sin reconfiguración por tu parte.`}
+        description={`Always-on mitigation of up to ${site.ddos.mitigationTbps} Tbps, included with every VPS and every dedicated server. No cost per attack, no reconfiguration on your end.`}
       />
 
       {/* Métricas */}
       <section className="border-b border-[var(--color-line)]">
         <div className="container-edge grid gap-px bg-[var(--color-line)] sm:grid-cols-3">
           {[
-            { v: `${site.ddos.mitigationTbps} Tbps`, l: "Capacidad de mitigación" },
-            { v: site.ddos.absorbedAttacks, l: "Ataques absorbidos" },
-            { v: `${site.ddos.filteredToServer}`, l: "Paquetes de ataque al servidor" },
+            { v: `${site.ddos.mitigationTbps} Tbps`, l: "Mitigation capacity" },
+            { v: site.ddos.absorbedAttacks, l: "Attacks absorbed" },
+            { v: `${site.ddos.filteredToServer}`, l: "Attack packets to your server" },
           ].map((s, i) => (
             <Reveal key={s.l} delay={i} className="bg-[var(--color-bg-base)] px-6 py-10">
               <div className="font-mono text-4xl font-semibold text-[var(--color-accent)]">{s.v}</div>
@@ -62,7 +62,7 @@ export default function DdosPage() {
 
       {/* Cómo funciona */}
       <section className="container-edge py-14 md:py-28">
-        <SectionHeader index="/02" kicker="Cómo funciona" title="Tres pasos, cero intervención." />
+        <SectionHeader index="/02" kicker="How it works" title="Three steps, zero intervention." />
         <div className="mt-12 grid gap-5 md:grid-cols-3">
           {steps.map((s, i) => (
             <Reveal key={s.n} delay={i} className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-7">
@@ -77,7 +77,7 @@ export default function DdosPage() {
       {/* Features */}
       <section className="border-t border-[var(--color-line)] bg-[var(--color-bg-raised)]">
         <div className="container-edge py-14 md:py-24">
-          <SectionHeader index="/03" kicker="Capacidades" title="Defensa de varias capas." />
+          <SectionHeader index="/03" kicker="Capabilities" title="Multi-layer defense." />
           <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {ddosFeatures.map((f) => (
               <li
@@ -92,7 +92,7 @@ export default function DdosPage() {
         </div>
       </section>
 
-      <CtaBand title="Despliega ya protegido" subtitle="DDoS incluido · sin coste por ataque · sin configurar nada" />
+      <CtaBand title="Deploy protected from day one" subtitle="DDoS included · no cost per attack · nothing to configure" />
     </>
   );
 }

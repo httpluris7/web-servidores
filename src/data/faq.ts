@@ -4,54 +4,54 @@ export type FAQItem = { q: string; a: string };
 
 export const vpsFaq: FAQItem[] = [
   {
-    q: "¿Cuánto tarda en estar listo el VPS?",
-    a: "El provisioning es automático: desde que se confirma el pago, tu servidor está online y accesible por SSH en menos de 60 segundos.",
+    q: "How long does it take for the VPS to be ready?",
+    a: "Provisioning is automatic: from the moment payment is confirmed, your server is online and reachable over SSH in under 60 seconds.",
   },
   {
-    q: "¿La protección DDoS tiene coste extra?",
-    a: "No. La mitigación está siempre activa en el borde de la red e incluida en todos los planes, sin límite por ataque ni cargos sorpresa.",
+    q: "Does DDoS protection cost extra?",
+    a: "No. Mitigation is always active at the network edge and included in every plan, with no per-attack limit and no surprise charges.",
   },
   {
-    q: "¿Puedo cambiar de plan más adelante?",
-    a: "Sí. Puedes escalar de plan desde el panel sin migrar de host. El cambio se aplica en caliente y solo pagas la diferencia prorrateada.",
+    q: "Can I change plans later on?",
+    a: "Yes. You can scale your plan from the panel without migrating hosts. The change is applied live and you only pay the prorated difference.",
   },
   {
-    q: "¿Qué sistemas operativos puedo instalar?",
-    a: "Imágenes de Ubuntu, Debian, AlmaLinux, Rocky y Windows Server, además de plantillas con Docker preinstalado. También puedes subir tu propia ISO.",
+    q: "Which operating systems can I install?",
+    a: "Images for Ubuntu, Debian, AlmaLinux, Rocky and Windows Server, plus templates with Docker preinstalled. You can also upload your own ISO.",
   },
   {
-    q: "¿El tráfico es realmente ilimitado?",
-    a: "El tráfico no se factura por volumen. El uplink es de 10 Gbps compartido de forma justa; no hay overselling del puerto ni cortes por consumo.",
+    q: "Is traffic really unlimited?",
+    a: "Traffic is not billed by volume. The uplink is 10 Gbps fairly shared; there is no port overselling and no throttling based on usage.",
   },
   {
-    q: "¿Hay permanencia?",
-    a: "No. La facturación es mensual y puedes cancelar cuando quieras desde el panel. Sin cuotas de alta ni penalización por baja.",
+    q: "Is there a minimum contract term?",
+    a: "No. Billing is monthly and you can cancel whenever you want from the panel. No setup fees and no early-cancellation penalty.",
   },
 ];
 
 export const dedicatedFaq: FAQItem[] = [
   {
-    q: "¿El ancho de banda es garantizado o compartido?",
-    a: "El uplink indicado en cada plan es dedicado y garantizado a nivel de puerto. No hay overselling: la capacidad que contratas es la que tienes disponible en todo momento.",
+    q: "Is the bandwidth guaranteed or shared?",
+    a: "The uplink listed on each plan is dedicated and guaranteed at the port level. There is no overselling: the capacity you order is the capacity available to you at all times.",
   },
   {
-    q: "¿Cuánto tarda la entrega de un dedicado?",
-    a: "Los modelos en stock se entregan automatizados en pocos minutos. Configuraciones a medida pueden requerir hasta 24 horas; lo verás indicado al pedir.",
+    q: "How long does delivery of a dedicated server take?",
+    a: "In-stock models are delivered automatically within minutes. Custom configurations may take up to 24 hours; you'll see this indicated when ordering.",
   },
   {
-    q: "¿Incluye acceso IPMI/KVM?",
-    a: "Sí. Todos los dedicados incluyen gestión remota fuera de banda (IPMI/KVM) para reinstalar, acceder a consola y diagnosticar sin depender de soporte.",
+    q: "Does it include IPMI/KVM access?",
+    a: "Yes. Every dedicated server includes out-of-band remote management (IPMI/KVM) to reinstall, access the console and run diagnostics without relying on support.",
   },
   {
-    q: "¿Puedo pedir una configuración personalizada?",
-    a: "Sí. Discos, RAM, tarjetas de red de 25/100 Gbps o RAID a medida: contacta con el equipo comercial y preparamos una oferta.",
+    q: "Can I request a custom configuration?",
+    a: "Yes. Custom disks, RAM, 25/100 Gbps network cards or RAID: contact the sales team and we'll put together a quote.",
   },
   {
-    q: "¿Qué RAID y discos soportáis?",
-    a: "RAID por software y hardware sobre NVMe Gen4 y HDD de alta capacidad. Las configuraciones de storage admiten caché NVMe para acelerar lecturas.",
+    q: "Which RAID and disks do you support?",
+    a: "Software and hardware RAID on NVMe Gen4 and high-capacity HDD. Storage configurations support an NVMe cache to speed up reads.",
   },
   {
-    q: "¿La protección DDoS también aplica al bare metal?",
-    a: "Sí. La misma mitigación de hasta 25 Tbps protege VPS y dedicados por igual, sin coste adicional ni reconfiguración por tu parte.",
+    q: "Does DDoS protection also apply to bare metal?",
+    a: "Yes. The same mitigation of up to 25 Tbps protects VPS and dedicated servers alike, at no additional cost and with no reconfiguration on your part.",
   },
 ];

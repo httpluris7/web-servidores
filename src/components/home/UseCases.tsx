@@ -9,9 +9,9 @@ export function UseCases() {
       <div className="container-edge py-16 md:py-32">
         <SectionHeader
           index="/08"
-          kicker="Casos de uso"
-          title="Pensado para cargas reales."
-          description="Desde una API que arranca hoy hasta una plataforma SaaS multi-región. La misma red debajo."
+          kicker="Use cases"
+          title="Built for real workloads."
+          description="From an API launching today to a multi-region SaaS platform. The same network underneath."
         />
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -32,7 +32,7 @@ export function UseCases() {
                   ))}
                 </ul>
                 <span className="mt-auto pt-6 font-mono text-xs text-[var(--color-fg-dim)] transition-colors group-hover:text-[var(--color-accent)]">
-                  Ver producto →
+                  View product →
                 </span>
               </Link>
             </Reveal>

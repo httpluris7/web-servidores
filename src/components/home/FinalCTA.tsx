@@ -17,23 +17,23 @@ export function FinalCTA() {
       />
       <div className="container-edge relative flex min-h-[70vh] flex-col items-center justify-center py-16 md:py-28 text-center">
         <Reveal>
-          <span className="mono-label">/11 — Empieza ahora</span>
+          <span className="mono-label">/11 — Get started now</span>
         </Reveal>
         <Reveal delay={1}>
           <h2 className="mt-8 text-balance font-semibold uppercase leading-[0.95] tracking-tight text-[clamp(2.4rem,8vw,6.5rem)]">
-            Tu slot está
+            Your slot is
             <br />
-            <span className="text-accent">esperando.</span>
+            <span className="text-accent">waiting.</span>
           </h2>
         </Reveal>
         <Reveal delay={2}>
           <div className="mt-10 flex justify-center">
             <Cta href={deployUrl()} className="px-7 py-4 text-base">
-              Desplegar en 60 segundos →
+              Deploy in 60 seconds →
             </Cta>
           </div>
           <p className="mt-6 font-mono text-xs text-[var(--color-fg-muted)]">
-            provisioning en 60 s · sin setup · cancela cuando quieras
+            provisioning in 60s · no setup · cancel anytime
           </p>
         </Reveal>
       </div>

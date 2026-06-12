@@ -4,33 +4,33 @@ import { regions, dedicatedTypes } from "@/data/products";
 
 const columns = [
   {
-    title: "Productos",
+    title: "Products",
     links: [
       { href: "/vps", label: "Cloud VPS" },
       ...dedicatedTypes.map((d) => ({ href: `/dedicados/${d.slug}`, label: d.title })),
-      { href: "/proteccion-ddos", label: "Protección DDoS" },
+      { href: "/proteccion-ddos", label: "DDoS Protection" },
     ],
   },
   {
-    title: "Ubicaciones",
+    title: "Locations",
     links: regions.map((r) => ({ href: `/vps/${r.slug}`, label: `${r.flag} ${r.name}` })),
   },
   {
-    title: "Recursos",
+    title: "Resources",
     links: [
-      { href: "/estado", label: "Estado del servicio" },
-      { href: "/soporte", label: "Centro de soporte" },
-      { href: "/red", label: "Backbone y peering" },
-      { href: "/casos-de-uso", label: "Casos de uso" },
+      { href: "/estado", label: "Service status" },
+      { href: "/soporte", label: "Support center" },
+      { href: "/red", label: "Backbone and peering" },
+      { href: "/casos-de-uso", label: "Use cases" },
     ],
   },
   {
-    title: "Empresa",
+    title: "Company",
     links: [
-      { href: "/sobre-nosotros", label: "Sobre nosotros" },
-      { href: "/contacto", label: "Contacto" },
-      { href: "/legal/privacidad", label: "Privacidad" },
-      { href: "/legal/terminos", label: "Términos" },
+      { href: "/sobre-nosotros", label: "About us" },
+      { href: "/contacto", label: "Contact" },
+      { href: "/legal/privacidad", label: "Privacy" },
+      { href: "/legal/terminos", label: "Terms" },
       { href: "/legal/cookies", label: "Cookies" },
     ],
   },
@@ -85,7 +85,7 @@ export function Footer() {
 
         {/* Métodos de pago */}
         <div className="mt-12 flex flex-wrap items-center gap-2 border-t border-[var(--color-line)] pt-8">
-          <span className="mono-label mr-2">Pago</span>
+          <span className="mono-label mr-2">Payment</span>
           {site.paymentMethods.map((m) => (
             <span
               key={m}

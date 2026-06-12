@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ ok: false, error: "JSON inválido." }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Invalid JSON." }, { status: 400 });
   }
 
   const nombre = clean(body.nombre, 80);
@@ -26,17 +26,17 @@ export async function POST(req: Request) {
   const password = typeof body.password === "string" ? body.password : "";
 
   const errors: Record<string, string> = {};
-  if (nombre.length < 2) errors.nombre = "Indica tu nombre.";
-  if (apellidos.length < 2) errors.apellidos = "Indica tus apellidos.";
-  if (direccion.length < 3) errors.direccion = "Indica tu dirección.";
-  if (ciudad.length < 2) errors.ciudad = "Indica tu ciudad.";
-  if (pais.length < 2) errors.pais = "Indica tu país.";
-  if (!isPhoneValid(telefono)) errors.telefono = "Introduce un número de teléfono válido.";
-  if (codigoPostal.length < 3) errors.codigoPostal = "Indica tu código postal.";
-  if (!emailRe.test(email)) errors.email = "Introduce un email válido.";
+  if (nombre.length < 2) errors.nombre = "Enter your name.";
+  if (apellidos.length < 2) errors.apellidos = "Enter your last name.";
+  if (direccion.length < 3) errors.direccion = "Enter your address.";
+  if (ciudad.length < 2) errors.ciudad = "Enter your city.";
+  if (pais.length < 2) errors.pais = "Enter your country.";
+  if (!isPhoneValid(telefono)) errors.telefono = "Enter a valid phone number.";
+  if (codigoPostal.length < 3) errors.codigoPostal = "Enter your postal code.";
+  if (!emailRe.test(email)) errors.email = "Enter a valid email.";
   if (!isPasswordValid(password)) {
     errors.password =
-      "La contraseña debe tener mínimo 8 caracteres, con una mayúscula, un número y un símbolo especial.";
+      "The password must be at least 8 characters long, with an uppercase letter, a number and a special symbol.";
   }
 
   if (Object.keys(errors).length > 0) {
@@ -59,12 +59,12 @@ export async function POST(req: Request) {
   } catch (err) {
     if (err instanceof Error && err.message === "EMAIL_TAKEN") {
       return NextResponse.json(
-        { ok: false, errors: { email: "Ya existe una cuenta con este email." } },
+        { ok: false, errors: { email: "An account with this email already exists." } },
         { status: 409 }
       );
     }
     return NextResponse.json(
-      { ok: false, error: "No se pudo crear la cuenta. Inténtalo de nuevo." },
+      { ok: false, error: "The account could not be created. Please try again." },
       { status: 500 }
     );
   }

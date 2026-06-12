@@ -15,20 +15,20 @@ export default async function PedidosPage() {
       {/* Pedidos */}
       <section>
         <h2 className="mb-4 text-lg font-semibold">
-          Pedidos <span className="font-mono text-sm text-[var(--color-fg-muted)]">({pedidos.length})</span>
+          Orders <span className="font-mono text-sm text-[var(--color-fg-muted)]">({pedidos.length})</span>
         </h2>
         {pedidos.length === 0 ? (
-          <p className="text-sm text-[var(--color-fg-muted)]">No hay pedidos registrados.</p>
+          <p className="text-sm text-[var(--color-fg-muted)]">No orders registered.</p>
         ) : (
           <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--color-line)]">
             <table className="w-full min-w-[680px] border-collapse text-sm">
               <thead>
                 <tr className="border-b border-[var(--color-line)] text-left">
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Cliente</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">Customer</th>
                   <th className="px-4 py-3 mono-label text-[0.6rem]">Plan</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Región</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem] text-right">Precio</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Recibido</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">Region</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem] text-right">Price</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">Received</th>
                 </tr>
               </thead>
               <tbody>
@@ -41,7 +41,7 @@ export default async function PedidosPage() {
                     <td className="px-4 py-3">{str(p.planName) || str(p.planId) || "—"}</td>
                     <td className="px-4 py-3 text-[var(--color-fg-muted)]">{str(p.region) || "—"}</td>
                     <td className="px-4 py-3 text-right font-mono">
-                      {typeof p.price === "number" ? `${eur(p.price)}/mes` : "—"}
+                      {typeof p.price === "number" ? `${eur(p.price)}/mo` : "—"}
                     </td>
                     <td className="px-4 py-3 font-mono text-xs text-[var(--color-fg-muted)]">
                       {fmtDate(str(p.receivedAt) || null, true)}
@@ -57,11 +57,11 @@ export default async function PedidosPage() {
       {/* Contactos */}
       <section>
         <h2 className="mb-4 text-lg font-semibold">
-          Mensajes de contacto{" "}
+          Contact messages{" "}
           <span className="font-mono text-sm text-[var(--color-fg-muted)]">({contactos.length})</span>
         </h2>
         {contactos.length === 0 ? (
-          <p className="text-sm text-[var(--color-fg-muted)]">No hay mensajes de contacto.</p>
+          <p className="text-sm text-[var(--color-fg-muted)]">No contact messages.</p>
         ) : (
           <ul className="grid gap-3">
             {contactos.map((c, i) => (

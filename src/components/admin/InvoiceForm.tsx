@@ -87,14 +87,14 @@ export function InvoiceForm({ clientes, preset }: Props) {
         return;
       }
 
-      setDone(data.factura?.numero ?? "Factura creada");
+      setDone(data.factura?.numero ?? "Invoice created");
       // Limpia el concepto/importe pero conserva el cliente para emitir varias.
       setConcepto("");
       setBase("");
       setNotas("");
       router.refresh();
     } catch {
-      setGeneralError("No se pudo conectar. Inténtalo de nuevo.");
+      setGeneralError("Could not connect. Try again.");
     } finally {
       setBusy(false);
     }
@@ -104,9 +104,9 @@ export function InvoiceForm({ clientes, preset }: Props) {
     <form onSubmit={onSubmit} className="grid gap-5">
       {!preset && (
         <div>
-          <Label htmlFor="cliente">Cliente registrado</Label>
+          <Label htmlFor="cliente">Registered customer</Label>
           <Select id="cliente" value={userId} onChange={(e) => onPickCliente(e.target.value)}>
-            <option value="">— Manual (sin cuenta) —</option>
+            <option value="">— Manual (no account) —</option>
             {clientes.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.nombre} {c.apellidos} · {c.email}
@@ -119,7 +119,7 @@ export function InvoiceForm({ clientes, preset }: Props) {
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <Label htmlFor="clienteNombre" required>
-            Nombre del cliente
+            Customer name
           </Label>
           <Input
             id="clienteNombre"
@@ -131,7 +131,7 @@ export function InvoiceForm({ clientes, preset }: Props) {
         </div>
         <div>
           <Label htmlFor="clienteEmail" required>
-            Email del cliente
+            Customer email
           </Label>
           <Input
             id="clienteEmail"
@@ -146,13 +146,13 @@ export function InvoiceForm({ clientes, preset }: Props) {
 
       <div>
         <Label htmlFor="concepto" required>
-          Concepto
+          Description
         </Label>
         <Input
           id="concepto"
           value={concepto}
           onChange={(e) => setConcepto(e.target.value)}
-          placeholder="VPS Pro · Francia · junio 2026"
+          placeholder="VPS Pro · France · June 2026"
         />
         <FieldError>{errors.concepto}</FieldError>
       </div>
@@ -160,7 +160,7 @@ export function InvoiceForm({ clientes, preset }: Props) {
       <div className="grid gap-5 sm:grid-cols-3">
         <div>
           <Label htmlFor="base" required>
-            Base imponible (€)
+            Taxable base (€)
           </Label>
           <Input
             id="base"
@@ -174,7 +174,7 @@ export function InvoiceForm({ clientes, preset }: Props) {
           <FieldError>{errors.base}</FieldError>
         </div>
         <div>
-          <Label htmlFor="ivaPct">IVA (%)</Label>
+          <Label htmlFor="ivaPct">VAT (%)</Label>
           <Input
             id="ivaPct"
             type="number"
@@ -187,7 +187,7 @@ export function InvoiceForm({ clientes, preset }: Props) {
           <FieldError>{errors.ivaPct}</FieldError>
         </div>
         <div>
-          <Label htmlFor="vencimientoDias">Vencimiento (días)</Label>
+          <Label htmlFor="vencimientoDias">Due (days)</Label>
           <Input
             id="vencimientoDias"
             type="number"
@@ -201,7 +201,7 @@ export function InvoiceForm({ clientes, preset }: Props) {
       </div>
 
       <div>
-        <Label htmlFor="notas">Notas (opcional)</Label>
+        <Label htmlFor="notas">Notes (optional)</Label>
         <Textarea
           id="notas"
           value={notas}
@@ -212,7 +212,7 @@ export function InvoiceForm({ clientes, preset }: Props) {
 
       <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[var(--color-line)] pt-5">
         <p className="text-sm text-[var(--color-fg-muted)]">
-          Total con IVA:{" "}
+          Total with VAT:{" "}
           <span className="font-mono text-base text-[var(--color-fg)]">{eur(total, 2)}</span>
         </p>
         <button
@@ -220,13 +220,13 @@ export function InvoiceForm({ clientes, preset }: Props) {
           disabled={busy}
           className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-5 py-2.5 text-sm font-medium text-black transition-all hover:bg-[var(--color-accent-dim)] disabled:opacity-60"
         >
-          {busy ? "Emitiendo…" : "Emitir factura"}
+          {busy ? "Issuing…" : "Issue invoice"}
         </button>
       </div>
 
       {generalError && <p className="text-sm text-[var(--color-danger)]">{generalError}</p>}
       {done && (
-        <p className="text-sm text-[var(--color-accent)]">Factura {done} emitida correctamente.</p>
+        <p className="text-sm text-[var(--color-accent)]">Invoice {done} issued successfully.</p>
       )}
     </form>
   );

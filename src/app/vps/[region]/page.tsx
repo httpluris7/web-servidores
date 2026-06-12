@@ -24,8 +24,8 @@ export async function generateMetadata({
   const region = getRegion(slug);
   if (!region) return {};
   return {
-    title: `VPS en ${region.name} (${region.city})`,
-    description: `VPS NVMe Gen4 en ${region.city}, ${region.name}. ${region.latencyNote}. Desde ${eur(region.priceFrom)}/mes con red de 10 Gbps y DDoS incluido.`,
+    title: `VPS in ${region.name} (${region.city})`,
+    description: `NVMe Gen4 VPS in ${region.city}, ${region.name}. ${region.latencyNote}. From ${eur(region.priceFrom)}/mo with 10 Gbps networking and DDoS included.`,
     alternates: { canonical: `/vps/${region.slug}` },
   };
 }
@@ -39,7 +39,7 @@ export default async function RegionPage({ params }: { params: Promise<Params> }
     "@context": "https://schema.org",
     "@type": "Product",
     name: `${site.brand} VPS — ${region.name}`,
-    description: `VPS en ${region.city}, ${region.name}.`,
+    description: `VPS in ${region.city}, ${region.name}.`,
     brand: { "@type": "Brand", name: site.brand },
     offers: vps.plans.map((p) => ({
       "@type": "Offer",
@@ -62,17 +62,17 @@ export default async function RegionPage({ params }: { params: Promise<Params> }
         kicker={`${region.flag} ${region.name} · ${region.city}`}
         title={
           <>
-            VPS en <span className="text-accent">{region.city}</span>.
+            VPS in <span className="text-accent">{region.city}</span>.
           </>
         }
-        description={`${region.latencyNote ?? ""}. NVMe Gen4, red de 10 Gbps y protección DDoS incluida. Provisioning en 60 segundos.`}
+        description={`${region.latencyNote ?? ""}. NVMe Gen4, 10 Gbps networking and DDoS protection included. Provisioning in 60 seconds.`}
       >
         <div className="flex flex-wrap gap-3 font-mono text-xs">
           <span className="rounded border border-[var(--color-line)] px-3 py-1.5 text-[var(--color-fg-muted)]">
             {site.network.asn}
           </span>
           <span className="rounded border border-[var(--color-line)] px-3 py-1.5 text-[var(--color-fg-muted)]">
-            desde {eur(region.priceFrom)}/mes
+            from {eur(region.priceFrom)}/mo
           </span>
           <span className="rounded border border-[var(--color-line)] px-3 py-1.5 text-[var(--color-accent)]">
             ● online
@@ -82,14 +82,14 @@ export default async function RegionPage({ params }: { params: Promise<Params> }
 
       <PlanGrid
         index="/01"
-        kicker={`Planes · ${region.name}`}
-        title="Planes disponibles en esta región."
-        description="Precios mensuales sin permanencia. El plan se despliega automáticamente en esta ubicación."
+        kicker={`Plans · ${region.name}`}
+        title="Plans available in this region."
+        description="Monthly pricing with no lock-in. The plan is deployed automatically in this location."
         plans={vps.plans}
       />
 
       <FaqSection items={vpsFaq} index="/02" />
-      <CtaBand title={`Despliega tu VPS en ${region.city}`} />
+      <CtaBand title={`Deploy your VPS in ${region.city}`} />
     </>
   );
 }

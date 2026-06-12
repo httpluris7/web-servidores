@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { LegalLayout } from "@/components/legal/LegalLayout";
 
 export const metadata: Metadata = {
-  title: "Política de privacidad",
+  title: "Privacy Policy",
   description:
-    "Cómo ViaHost trata los datos personales conforme al RGPD para clientes del EEE y a la normativa de protección de datos aplicable.",
+    "How ViaHost processes personal data in accordance with the GDPR for EEA customers and applicable data protection law.",
   alternates: { canonical: "/legal/privacidad" },
   robots: { index: true, follow: true },
 };
@@ -12,18 +12,18 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <LegalLayout
-      index="/ Privacidad"
-      title="Política de privacidad"
-      intro="Cómo recogemos, tratamos y protegemos tus datos personales. ViaHost Infrastructure LLC actúa como responsable; a los clientes del Espacio Económico Europeo les aplica el RGPD (UE 2016/679)."
-      updated="TODO: fecha"
+      index="/ Privacy"
+      title="Privacy Policy"
+      intro="How we collect, process and protect your personal data. ViaHost Infrastructure LLC acts as the controller; the GDPR (EU 2016/679) applies to customers in the European Economic Area."
+      updated="TODO: date"
       sections={[
-        { heading: "Responsable del tratamiento", todo: "Identidad y datos de contacto del responsable: razón social de la LLC, EIN/registro, dirección registrada, y representante en la UE / DPO si aplica (art. 27 RGPD para empresas fuera de la UE)." },
-        { heading: "Datos que recogemos", todo: "Categorías de datos: cuenta, facturación, logs técnicos, cookies. Detallar cada finalidad." },
-        { heading: "Finalidad y base legal", todo: "Finalidades del tratamiento y base jurídica (ejecución de contrato, consentimiento, interés legítimo)." },
-        { heading: "Conservación de datos", todo: "Plazos de conservación por categoría y criterios aplicados." },
-        { heading: "Destinatarios y encargados", todo: "Terceros con acceso (proveedores de pago, infraestructura) y transferencias internacionales si las hay." },
-        { heading: "Derechos del usuario", todo: "Acceso, rectificación, supresión, oposición, portabilidad y limitación; cómo ejercerlos y reclamar ante la autoridad de control competente (los clientes del EEE, ante su autoridad de protección de datos)." },
-        { heading: "Seguridad", todo: "Medidas técnicas y organizativas aplicadas para proteger los datos." },
+        { heading: "Data controller", todo: "Identity and contact details of the controller: LLC legal name, EIN/registration, registered address, and EU representative / DPO if applicable (GDPR art. 27 for companies outside the EU)." },
+        { heading: "Data we collect", todo: "Data categories: account, billing, technical logs, cookies. Detail each purpose." },
+        { heading: "Purpose and legal basis", todo: "Processing purposes and legal basis (performance of a contract, consent, legitimate interest)." },
+        { heading: "Data retention", todo: "Retention periods by category and applied criteria." },
+        { heading: "Recipients and processors", todo: "Third parties with access (payment providers, infrastructure) and international transfers, if any." },
+        { heading: "Your rights", todo: "Access, rectification, erasure, objection, portability and restriction; how to exercise them and lodge a complaint with the competent supervisory authority (EEA customers, with their data protection authority)." },
+        { heading: "Security", todo: "Technical and organizational measures applied to protect the data." },
       ]}
     />
   );

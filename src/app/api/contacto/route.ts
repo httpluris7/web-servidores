@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ ok: false, error: "JSON inválido." }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Invalid JSON." }, { status: 400 });
   }
 
   const name = clean(body.name, 120);
@@ -20,10 +20,10 @@ export async function POST(req: Request) {
   const topic = clean(body.topic, 20) || "otro";
 
   const errors: Record<string, string> = {};
-  if (name.length < 2) errors.name = "Indica tu nombre.";
-  if (!emailRe.test(email)) errors.email = "Introduce un email válido.";
-  if (message.length < 10) errors.message = "Cuéntanos un poco más (mín. 10 caracteres).";
-  if (!TOPICS.has(topic)) errors.topic = "Asunto no válido.";
+  if (name.length < 2) errors.name = "Enter your name.";
+  if (!emailRe.test(email)) errors.email = "Enter a valid email.";
+  if (message.length < 10) errors.message = "Tell us a little more (min. 10 characters).";
+  if (!TOPICS.has(topic)) errors.topic = "Invalid subject.";
 
   if (Object.keys(errors).length > 0) {
     return NextResponse.json({ ok: false, errors }, { status: 422 });
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     await saveLead("contacto", { name, email, message, topic });
   } catch {
     return NextResponse.json(
-      { ok: false, error: "No se pudo registrar el mensaje. Inténtalo de nuevo." },
+      { ok: false, error: "The message could not be saved. Please try again." },
       { status: 500 }
     );
   }

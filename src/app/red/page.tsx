@@ -8,32 +8,32 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
 export const metadata: Metadata = {
-  title: "Red y backbone",
-  description: `Sistema autónomo ${site.network.asn} con ${site.network.peers}+ peers y ${site.network.capacityTbps} Tbps de capacidad. Peering directo en los IXP europeos de referencia.`,
+  title: "Network and backbone",
+  description: `Autonomous system ${site.network.asn} with ${site.network.peers}+ peers and ${site.network.capacityTbps} Tbps of capacity. Direct peering at Europe's leading IXPs.`,
   alternates: { canonical: "/red" },
 };
 
 const bigStats = [
-  { v: site.network.asn, l: "Sistema autónomo" },
+  { v: site.network.asn, l: "Autonomous system" },
   { v: `${site.network.peers}+`, l: "Peers" },
-  { v: `${site.network.capacityTbps} Tbps`, l: "Capacidad de red" },
-  { v: `${site.network.portMaxGbps} Gbps`, l: "Puerto máximo" },
+  { v: `${site.network.capacityTbps} Tbps`, l: "Network capacity" },
+  { v: `${site.network.portMaxGbps} Gbps`, l: "Maximum port" },
 ];
 
-const peeringPoints = ["DE-CIX Fráncfort", "AMS-IX Ámsterdam", "LINX Londres", "ESPANIX Madrid"];
+const peeringPoints = ["DE-CIX Frankfurt", "AMS-IX Amsterdam", "LINX London", "ESPANIX Madrid"];
 
 export default function NetworkPage() {
   return (
     <>
       <PageHero
         index="/01"
-        kicker={`${site.network.asn} · backbone propio`}
+        kicker={`${site.network.asn} · our own backbone`}
         title={
           <>
-            Una red que <span className="text-accent">controlamos</span>, de extremo a extremo.
+            A network we <span className="text-accent">control</span>, end to end.
           </>
         }
-        description="Operamos nuestro propio sistema autónomo con peering directo en los puntos de intercambio europeos clave. Rutas más cortas, latencia menor y previsibilidad total."
+        description="We operate our own autonomous system with direct peering at key European exchange points. Shorter routes, lower latency and total predictability."
       />
 
       {/* Stats grandes */}
@@ -55,9 +55,9 @@ export default function NetworkPage() {
         <Reveal>
           <SectionHeader
             index="/02"
-            kicker="Cobertura"
-            title="Presencia distribuida en Europa."
-            description="Cada punto es una región con cómputo y mitigación local. Las líneas representan la interconexión de nuestro backbone."
+            kicker="Coverage"
+            title="Distributed presence across Europe."
+            description="Each point is a region with local compute and mitigation. The lines represent the interconnection of our backbone."
           />
           <ul className="mt-8 space-y-3">
             {peeringPoints.map((p) => (
@@ -86,20 +86,20 @@ export default function NetworkPage() {
       {/* Compromisos de red */}
       <section className="border-t border-[var(--color-line)] bg-[var(--color-bg-raised)]">
         <div className="container-edge py-14 md:py-24">
-          <SectionHeader index="/03" kicker="Compromisos" title="Lo que garantizamos." />
+          <SectionHeader index="/03" kicker="Commitments" title="What we guarantee." />
           <div className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)] md:grid-cols-3">
             {[
               {
-                t: "Sin overselling de puerto",
-                d: "El ancho de banda contratado es capacidad real, no un máximo teórico compartido.",
+                t: "No port overselling",
+                d: "The bandwidth you order is real capacity, not a shared theoretical maximum.",
               },
               {
-                t: "Rutas optimizadas",
-                d: "Peering directo en lugar de tránsito siempre que existe ruta. Menos saltos, menos latencia.",
+                t: "Optimized routes",
+                d: "Direct peering instead of transit whenever a route exists. Fewer hops, lower latency.",
               },
               {
-                t: "Mitigación en el borde",
-                d: "El tráfico de ataque se filtra antes de entrar a la red, no en tu servidor.",
+                t: "Edge mitigation",
+                d: "Attack traffic is filtered before it enters the network, not on your server.",
               },
             ].map((c) => (
               <div key={c.t} className="bg-[var(--color-bg-raised)] p-7">
@@ -111,7 +111,7 @@ export default function NetworkPage() {
         </div>
       </section>
 
-      <CtaBand title="Despliega sobre nuestra red" />
+      <CtaBand title="Deploy on our network" />
     </>
   );
 }

@@ -19,7 +19,7 @@ export function EuropeMap() {
 
   return (
     <div className="relative aspect-square w-full">
-      <svg viewBox="0 0 100 100" className="h-full w-full" role="img" aria-label="Red europea de ViaHost">
+      <svg viewBox="0 0 100 100" className="h-full w-full" role="img" aria-label="ViaHost European network">
         <defs>
           <radialGradient id="landGrad" cx="50%" cy="40%" r="70%">
             <stop offset="0%" stopColor="#0e1828" />

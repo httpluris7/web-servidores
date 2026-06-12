@@ -6,8 +6,8 @@ import { LoginForm } from "@/components/forms/LoginForm";
 import { getSession } from "@/lib/session";
 
 export const metadata: Metadata = {
-  title: "Iniciar sesión",
-  description: `Accede a tu cuenta de ${site.brand}.`,
+  title: "Log in",
+  description: `Access your ${site.brand} account.`,
   alternates: { canonical: "/acceder" },
   robots: { index: false, follow: false },
 };
@@ -19,13 +19,13 @@ export default async function AccederPage() {
     <>
       <PageHero
         index="/01"
-        kicker="Acceso"
+        kicker="Access"
         title={
           <>
-            Inicia <span className="text-accent">sesión</span>.
+            Log <span className="text-accent">in</span>.
           </>
         }
-        description="Entra con tu correo y contraseña para acceder a tu panel."
+        description="Enter your email and password to access your dashboard."
       />
 
       <section className="container-edge max-w-md py-16 md:py-20">

@@ -13,33 +13,33 @@ export type Feature = {
 export const whyUs: Feature[] = [
   {
     metric: "60 s",
-    label: "Deploy real",
-    body: "Del pago al servidor online en menos de un minuto. Sin colas, sin aprobación manual.",
+    label: "Real deploy",
+    body: "From payment to a live server in under a minute. No queues, no manual approval.",
   },
   {
     metric: "25 Tbps",
-    label: "Mitigación DDoS",
-    body: "Filtrado siempre activo en el borde de la red. No pagas extra por estar protegido.",
+    label: "DDoS Mitigation",
+    body: "Always-on filtering at the network edge. You don't pay extra to stay protected.",
   },
   {
     metric: "Gen4",
-    label: "NVMe en todo",
-    body: "Cada plan, hasta el más pequeño, arranca sobre NVMe Gen4. Cero discos giratorios en cómputo.",
+    label: "NVMe everywhere",
+    body: "Every plan, down to the smallest, boots on NVMe Gen4. Zero spinning disks in compute.",
   },
   {
     metric: "10 Gbps",
-    label: "Red por servidor",
-    body: "Uplinks de 10 Gbps sin overselling. El ancho de banda que ves es el que tienes.",
+    label: "Network per server",
+    body: "10 Gbps uplinks with no overselling. The bandwidth you see is the bandwidth you get.",
   },
   {
     metric: "6",
-    label: "Regiones EU",
-    body: "Presencia distribuida en Europa con peering directo en los IXP principales.",
+    label: "EU regions",
+    body: "Distributed presence across Europe with direct peering at the major IXPs.",
   },
   {
     metric: "24/7",
-    label: "Soporte humano",
-    body: "Ingeniería de guardia las 24 horas. Respuesta media bajo 10 minutos en incidencias.",
+    label: "Human support",
+    body: "Engineering on call around the clock. Average response under 10 minutes on incidents.",
   },
 ];
 
@@ -54,21 +54,21 @@ export type UseCase = {
 export const useCases: UseCase[] = [
   {
     n: "/01",
-    title: "Aplicaciones web",
+    title: "Web applications",
     bullets: [
-      "Deploy en 60 s con NVMe Gen4",
-      "Escala vertical sin migrar de host",
-      "DDoS incluido para picos de tráfico",
+      "Deploy in 60 s on NVMe Gen4",
+      "Scale up without migrating hosts",
+      "DDoS included for traffic spikes",
     ],
     href: "/vps",
   },
   {
     n: "/02",
-    title: "Bases de datos",
+    title: "Databases",
     bullets: [
-      "IOPS sostenidos sobre NVMe Gen4",
-      "RAM ECC en bare metal",
-      "Red privada de baja latencia",
+      "Sustained IOPS on NVMe Gen4",
+      "ECC RAM on bare metal",
+      "Low-latency private network",
     ],
     href: "/dedicados/francia",
   },
@@ -76,19 +76,19 @@ export const useCases: UseCase[] = [
     n: "/03",
     title: "Enterprise",
     bullets: [
-      "Bare metal dual EPYC dedicado",
-      "10 Gbps con puerto garantizado",
-      "SLA y soporte prioritario",
+      "Dedicated dual EPYC bare metal",
+      "10 Gbps with guaranteed port",
+      "SLA and priority support",
     ],
     href: "/dedicados/holanda",
   },
   {
     n: "/04",
-    title: "SaaS y plataformas",
+    title: "SaaS and platforms",
     bullets: [
-      "Multi-región para baja latencia",
-      "API de provisioning para autoescalar",
-      "Facturación previsible por servidor",
+      "Multi-region for low latency",
+      "Provisioning API for autoscaling",
+      "Predictable per-server billing",
     ],
     href: "/vps",
   },
@@ -96,12 +96,12 @@ export const useCases: UseCase[] = [
 
 /** 6 features cortas de seguridad para la sección DDoS. */
 export const ddosFeatures: string[] = [
-  "Detección en el borde < 2 s",
-  "Filtrado L3/L4 y L7",
-  "Reglas adaptativas por firma",
-  "Always-on, sin reroute",
-  "Sin coste por ataque",
-  "Reporte de incidentes en panel",
+  "Edge detection < 2 s",
+  "L3/L4 and L7 filtering",
+  "Adaptive per-signature rules",
+  "Always-on, no reroute",
+  "No per-attack charge",
+  "Incident reporting in the panel",
 ];
 
 /** Líneas de la terminal de provisioning (typing secuencial). */
@@ -130,9 +130,9 @@ export const partners: string[] = [
 /** Ciudades para el marquee de relojes en tiempo real del CTA final. */
 export const clockCities: { city: string; tz: string }[] = [
   { city: "Madrid", tz: "Europe/Madrid" },
-  { city: "París", tz: "Europe/Paris" },
-  { city: "Ámsterdam", tz: "Europe/Amsterdam" },
-  { city: "Fráncfort", tz: "Europe/Berlin" },
-  { city: "Londres", tz: "Europe/London" },
-  { city: "Varsovia", tz: "Europe/Warsaw" },
+  { city: "Paris", tz: "Europe/Paris" },
+  { city: "Amsterdam", tz: "Europe/Amsterdam" },
+  { city: "Frankfurt", tz: "Europe/Berlin" },
+  { city: "London", tz: "Europe/London" },
+  { city: "Warsaw", tz: "Europe/Warsaw" },
 ];

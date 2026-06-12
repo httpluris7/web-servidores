@@ -44,11 +44,11 @@ export type ProductLine = {
 export const regions: Region[] = [
   {
     slug: "francia",
-    name: "Francia",
+    name: "France",
     flag: "🇫🇷",
-    city: "París",
+    city: "Paris",
     priceFrom: 8,
-    latencyNote: "< 5 ms a Europa Occidental",
+    latencyNote: "< 5 ms to Western Europe",
     map: { x: 42, y: 54 },
   },
 ];
@@ -59,7 +59,7 @@ export const regions: Region[] = [
 export const vps: ProductLine = {
   slug: "vps",
   title: "Cloud VPS",
-  tagline: "Máquinas virtuales NVMe con red de 10 Gbps y protección DDoS incluida.",
+  tagline: "NVMe virtual machines with a 10 Gbps network and DDoS protection included.",
   regions,
   plans: [
     {
@@ -68,7 +68,7 @@ export const vps: ProductLine = {
       cpu: "2 vCore AMD EPYC",
       ram: "4 GB DDR5",
       storage: "60 GB NVMe Gen4",
-      bandwidth: "10 Gbps · tráfico ilimitado",
+      bandwidth: "10 Gbps · unlimited traffic",
       price: 8,
       orderUrl: deployUrl("/order/vps-start"),
     },
@@ -78,7 +78,7 @@ export const vps: ProductLine = {
       cpu: "4 vCore AMD EPYC",
       ram: "8 GB DDR5",
       storage: "120 GB NVMe Gen4",
-      bandwidth: "10 Gbps · tráfico ilimitado",
+      bandwidth: "10 Gbps · unlimited traffic",
       price: 14,
       orderUrl: deployUrl("/order/vps-pro"),
       popular: true,
@@ -89,7 +89,7 @@ export const vps: ProductLine = {
       cpu: "8 vCore AMD EPYC",
       ram: "16 GB DDR5",
       storage: "240 GB NVMe Gen4",
-      bandwidth: "10 Gbps · tráfico ilimitado",
+      bandwidth: "10 Gbps · unlimited traffic",
       price: 30,
       orderUrl: deployUrl("/order/vps-max"),
     },
@@ -99,7 +99,7 @@ export const vps: ProductLine = {
       cpu: "16 vCore AMD EPYC",
       ram: "32 GB DDR5",
       storage: "480 GB NVMe Gen4",
-      bandwidth: "10 Gbps · tráfico ilimitado",
+      bandwidth: "10 Gbps · unlimited traffic",
       price: 42,
       orderUrl: deployUrl("/order/vps-scale"),
     },
@@ -129,7 +129,7 @@ const dedicatedBasePlans: Omit<Plan, "id" | "orderUrl">[] = [
     cpu: "AMD Ryzen 9 7950X · 16C/32T",
     ram: "64 GB DDR5 ECC",
     storage: "2 × 1 TB NVMe Gen4",
-    bandwidth: "1 Gbps garantizado",
+    bandwidth: "1 Gbps guaranteed",
     price: 150,
     popular: true,
   },
@@ -138,7 +138,7 @@ const dedicatedBasePlans: Omit<Plan, "id" | "orderUrl">[] = [
     cpu: "AMD EPYC 7443 · 24C/48T",
     ram: "128 GB DDR4 ECC",
     storage: "2 × 1.92 TB NVMe Gen4",
-    bandwidth: "1 Gbps garantizado",
+    bandwidth: "1 Gbps guaranteed",
     price: 300,
   },
   {
@@ -146,7 +146,7 @@ const dedicatedBasePlans: Omit<Plan, "id" | "orderUrl">[] = [
     cpu: "AMD EPYC 9354 · 32C/64T",
     ram: "256 GB DDR5 ECC",
     storage: "4 × 3.84 TB NVMe Gen4",
-    bandwidth: "10 Gbps dedicado",
+    bandwidth: "10 Gbps dedicated",
     price: 500,
   },
   {
@@ -154,15 +154,15 @@ const dedicatedBasePlans: Omit<Plan, "id" | "orderUrl">[] = [
     cpu: "2 × AMD EPYC 9454 · 96C/192T",
     ram: "512 GB DDR5 ECC",
     storage: "6 × 3.84 TB NVMe Gen4",
-    bandwidth: "10 Gbps dedicado",
+    bandwidth: "10 Gbps dedicated",
     price: 900,
   },
   {
     name: "Storage 360",
     cpu: "AMD EPYC 7443 · 24C/48T",
     ram: "128 GB DDR4 ECC",
-    storage: "18 × 20 TB HDD + 2 TB NVMe caché",
-    bandwidth: "2 Gbps garantizado",
+    storage: "18 × 20 TB HDD + 2 TB NVMe cache",
+    bandwidth: "2 Gbps guaranteed",
     price: 1700,
   },
 ];
@@ -179,16 +179,16 @@ function dedicatedPlansFor(prefix: string): Plan[] {
 export const dedicatedTypes: DedicatedType[] = [
   {
     slug: "francia",
-    title: "Dedicados Francia",
-    tagline: "Bare metal AMD EPYC y Ryzen en nuestro datacenter de París. Uplinks garantizados y NVMe Gen4, sin overselling.",
-    highlight: "🇫🇷 París · bare metal",
+    title: "Dedicated Servers France",
+    tagline: "AMD EPYC and Ryzen bare metal in our Paris datacenter. Guaranteed uplinks and NVMe Gen4, with no overselling.",
+    highlight: "🇫🇷 Paris · bare metal",
     plans: dedicatedPlansFor("fr"),
   },
   {
     slug: "holanda",
-    title: "Dedicados Holanda",
-    tagline: "Bare metal AMD EPYC y Ryzen en Ámsterdam con peering directo en AMS-IX. Uplinks garantizados y NVMe Gen4, sin overselling.",
-    highlight: "🇳🇱 Ámsterdam · bare metal",
+    title: "Dedicated Servers Netherlands",
+    tagline: "AMD EPYC and Ryzen bare metal in Amsterdam with direct peering at AMS-IX. Guaranteed uplinks and NVMe Gen4, with no overselling.",
+    highlight: "🇳🇱 Amsterdam · bare metal",
     plans: dedicatedPlansFor("nl"),
   },
 ];

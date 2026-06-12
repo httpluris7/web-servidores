@@ -10,9 +10,9 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
 export const metadata: Metadata = {
-  title: "Servidores dedicados — Bare metal AMD EPYC",
+  title: "Dedicated Servers — Bare metal AMD EPYC",
   description:
-    "Servidores dedicados bare metal AMD EPYC y Ryzen con uplinks de 1 y 10 Gbps, NVMe Gen4 y storage de alta capacidad. Sin overselling, con DDoS incluido.",
+    "Bare metal AMD EPYC and Ryzen dedicated servers with 1 and 10 Gbps uplinks, NVMe Gen4 and high-capacity storage. No overselling, DDoS included.",
   alternates: { canonical: "/dedicados" },
 };
 
@@ -21,20 +21,20 @@ export default function DedicatedPage() {
     <>
       <PageHero
         index="/01"
-        kicker="Servidores dedicados"
+        kicker="Dedicated Servers"
         title={
           <>
-            Bare metal <span className="text-accent">sin overselling</span>.
+            Bare metal <span className="text-accent">with no overselling</span>.
           </>
         }
-        description="Hardware AMD EPYC y Ryzen dedicado en exclusiva. Uplinks garantizados, NVMe Gen4 y gestión IPMI/KVM. Lo que contratas es lo que tienes."
+        description="Exclusively dedicated AMD EPYC and Ryzen hardware. Guaranteed uplinks, NVMe Gen4 and IPMI/KVM management. What you order is what you get."
       />
 
       <section className="container-edge py-14 md:py-24">
         <SectionHeader
           index="/02"
-          kicker="Ubicaciones"
-          title="Dos ubicaciones, un objetivo: rendimiento real."
+          kicker="Locations"
+          title="Two locations, one goal: real performance."
         />
         <div className="mt-12 grid gap-5 sm:grid-cols-2">
           {dedicatedTypes.map((d, i) => {
@@ -49,14 +49,14 @@ export default function DedicatedPage() {
                   <h3 className="mt-4 text-2xl font-semibold tracking-tight">{d.title}</h3>
                   <p className="mt-2 text-sm text-[var(--color-fg-muted)]">{d.tagline}</p>
                   <div className="mt-auto pt-8">
-                    <span className="mono-label block text-[0.65rem]">Desde</span>
+                    <span className="mono-label block text-[0.65rem]">From</span>
                     <span className="font-mono text-3xl font-semibold">
                       {eur(from)}
-                      <span className="text-base text-[var(--color-fg-muted)]">/mes</span>
+                      <span className="text-base text-[var(--color-fg-muted)]">/mo</span>
                     </span>
                   </div>
                   <span className="mt-4 font-mono text-xs text-[var(--color-fg-dim)] transition-colors group-hover:text-[var(--color-accent)]">
-                    Ver configuraciones →
+                    View configurations →
                   </span>
                 </Link>
               </Reveal>
@@ -66,7 +66,7 @@ export default function DedicatedPage() {
       </section>
 
       <FaqSection items={dedicatedFaq} index="/03" />
-      <CtaBand title="¿Necesitas una configuración a medida?" />
+      <CtaBand title="Need a custom configuration?" />
     </>
   );
 }

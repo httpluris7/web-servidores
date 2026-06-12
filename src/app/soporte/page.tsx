@@ -8,22 +8,22 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 
 export const metadata: Metadata = {
-  title: "Soporte",
-  description: `Centro de ayuda de ${site.brand}: guías rápidas, preguntas frecuentes, estado del servicio y contacto con ingeniería 24/7.`,
+  title: "Support",
+  description: `${site.brand} help center: quick guides, frequently asked questions, service status and 24/7 contact with engineering.`,
   alternates: { canonical: "/soporte" },
 };
 
 const quickLinks = [
-  { href: "/estado", title: "Estado del servicio", desc: "Incidencias y mantenimientos en tiempo real.", arrow: "→" },
-  { href: "/contacto", title: "Abrir una consulta", desc: "Ventas, soporte técnico o abuse.", arrow: "→" },
-  { href: "/desplegar", title: "Desplegar un servidor", desc: "Elige plan y despliega en 60 s.", arrow: "→" },
+  { href: "/estado", title: "Service status", desc: "Incidents and maintenance in real time.", arrow: "→" },
+  { href: "/contacto", title: "Open a request", desc: "Sales, technical support or abuse.", arrow: "→" },
+  { href: "/desplegar", title: "Deploy a server", desc: "Pick a plan and deploy in 60 s.", arrow: "→" },
 ];
 
 const categories = [
-  { title: "Primeros pasos", items: ["Acceso por SSH", "Reinstalar el sistema", "Claves y usuarios"] },
-  { title: "Red y DNS", items: ["IPs y rDNS", "Apuntar tu dominio", "Reverse proxy"] },
-  { title: "Seguridad", items: ["Protección DDoS", "Reglas de firewall", "Buenas prácticas"] },
-  { title: "Facturación", items: ["Métodos de pago", "Cambiar de plan", "Cancelar servicio"] },
+  { title: "Getting started", items: ["SSH access", "Reinstall the system", "Keys and users"] },
+  { title: "Network and DNS", items: ["IPs and rDNS", "Point your domain", "Reverse proxy"] },
+  { title: "Security", items: ["DDoS protection", "Firewall rules", "Best practices"] },
+  { title: "Billing", items: ["Payment methods", "Change plan", "Cancel service"] },
 ];
 
 export default function SupportPage() {
@@ -31,13 +31,13 @@ export default function SupportPage() {
     <>
       <PageHero
         index="/01"
-        kicker="Centro de soporte"
+        kicker="Support center"
         title={
           <>
-            Ayuda <span className="text-accent">cuando</span> la necesitas.
+            Help <span className="text-accent">when</span> you need it.
           </>
         }
-        description="Ingeniería de guardia 24/7 con respuesta media bajo 10 minutos en incidencias. Empieza por aquí."
+        description="On-call engineering 24/7 with an average response under 10 minutes on incidents. Start here."
       />
 
       {/* Accesos rápidos */}
@@ -65,7 +65,7 @@ export default function SupportPage() {
       {/* Categorías de ayuda */}
       <section className="border-y border-[var(--color-line)] bg-[var(--color-bg-raised)]">
         <div className="container-edge py-16 md:py-20">
-          <SectionHeader index="/02" kicker="Documentación" title="Explora por categoría." />
+          <SectionHeader index="/02" kicker="Documentation" title="Browse by category." />
           <div className="mt-10 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-2 lg:grid-cols-4">
             {categories.map((c) => (
               <div key={c.title} className="bg-[var(--color-bg-raised)] p-6">
@@ -87,18 +87,18 @@ export default function SupportPage() {
 
       {/* FAQ combinada */}
       <section className="container-edge py-16 md:py-20">
-        <SectionHeader index="/03" kicker="Preguntas frecuentes" title="Las dudas más comunes." />
+        <SectionHeader index="/03" kicker="Frequently asked questions" title="The most common questions." />
         <div className="mt-10 max-w-3xl">
           <Accordion items={[...vpsFaq, ...dedicatedFaq].slice(0, 8)} />
         </div>
         <p className="mt-8 text-sm text-[var(--color-fg-muted)]">
-          ¿No encuentras lo que buscas?{" "}
+          Can&apos;t find what you&apos;re looking for?{" "}
           <Link href="/contacto" className="text-[var(--color-accent)] hover:underline">
-            Escríbenos
+            Write to us
           </Link>{" "}
-          o consulta el{" "}
+          or check the{" "}
           <Link href="/estado" className="text-[var(--color-accent)] hover:underline">
-            estado del servicio
+            service status
           </Link>
           .
         </p>

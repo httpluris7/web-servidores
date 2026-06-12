@@ -8,8 +8,8 @@ import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "Mi cuenta",
-  description: `Panel de cuenta de ${site.brand}.`,
+  title: "My account",
+  description: `${site.brand} account dashboard.`,
   robots: { index: false, follow: false },
 };
 
@@ -17,14 +17,14 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 const fields: { key: string; label: string }[] = [
-  { key: "nombre", label: "Nombre" },
-  { key: "apellidos", label: "Apellidos" },
-  { key: "email", label: "Correo electrónico" },
-  { key: "telefono", label: "Teléfono" },
-  { key: "direccion", label: "Dirección" },
-  { key: "codigoPostal", label: "Código postal" },
-  { key: "ciudad", label: "Ciudad" },
-  { key: "pais", label: "País" },
+  { key: "nombre", label: "Name" },
+  { key: "apellidos", label: "Last name" },
+  { key: "email", label: "Email" },
+  { key: "telefono", label: "Phone" },
+  { key: "direccion", label: "Address" },
+  { key: "codigoPostal", label: "Postal code" },
+  { key: "ciudad", label: "City" },
+  { key: "pais", label: "Country" },
 ];
 
 export default async function CuentaPage() {
@@ -38,13 +38,13 @@ export default async function CuentaPage() {
     <>
       <PageHero
         index="/01"
-        kicker="Mi cuenta"
+        kicker="My account"
         title={
           <>
-            Hola, <span className="text-accent">{user.nombre}</span>.
+            Hello, <span className="text-accent">{user.nombre}</span>.
           </>
         }
-        description="Tus datos de cuenta. Próximamente podrás gestionar aquí tus servicios y facturación."
+        description="Your account details. Soon you'll be able to manage your services and billing here."
       />
 
       <section className="container-edge max-w-2xl py-16 md:py-20">
@@ -60,9 +60,9 @@ export default async function CuentaPage() {
         </dl>
 
         <section className="mt-12 border-t border-[var(--color-line)] pt-10">
-          <h2 className="mono-label mb-1">Seguridad</h2>
+          <h2 className="mono-label mb-1">Security</h2>
           <p className="mb-6 text-sm text-[var(--color-fg-muted)]">
-            Cambia tu contraseña. Tendrás que introducir la actual y repetir la nueva.
+            Change your password. You&apos;ll need to enter your current one and repeat the new one.
           </p>
           <ChangePasswordForm />
         </section>

@@ -27,8 +27,8 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
 
   function validate(): boolean {
     const e: Errors = {};
-    if (failedPasswordRules(values.password).length > 0) e.password = "La contraseña no cumple los requisitos.";
-    if (values.passwordConfirm !== values.password) e.passwordConfirm = "Las contraseñas no coinciden.";
+    if (failedPasswordRules(values.password).length > 0) e.password = "The password does not meet the requirements.";
+    if (values.passwordConfirm !== values.password) e.passwordConfirm = "The passwords do not match.";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -49,7 +49,7 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         if (data?.errors) setErrors(data.errors as Errors);
-        setFormError(data?.error ?? "No se pudo restablecer la contraseña.");
+        setFormError(data?.error ?? "Could not reset the password.");
         setStatus("idle");
         return;
       }
@@ -59,7 +59,7 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
       setDone(true);
       router.refresh();
     } catch {
-      setFormError("Error de conexión. Inténtalo de nuevo.");
+      setFormError("Connection error. Try again.");
       setStatus("idle");
     }
   }
@@ -67,7 +67,7 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
   return (
     <form onSubmit={onSubmit} noValidate className="max-w-md space-y-5">
       <div>
-        <Label htmlFor="password" required>Nueva contraseña</Label>
+        <Label htmlFor="password" required>New password</Label>
         <Input
           id="password"
           type="password"
@@ -82,7 +82,7 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
       </div>
 
       <div>
-        <Label htmlFor="passwordConfirm" required>Repetir nueva contraseña</Label>
+        <Label htmlFor="passwordConfirm" required>Repeat new password</Label>
         <Input
           id="passwordConfirm"
           type="password"
@@ -100,13 +100,13 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
         disabled={status === "sending"}
         className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60 sm:w-auto"
       >
-        {status === "sending" ? "Guardando…" : "Restablecer contraseña →"}
+        {status === "sending" ? "Saving…" : "Reset password →"}
       </button>
 
       {formError && <p role="alert" className="text-sm text-[var(--color-danger)]">{formError}</p>}
       {done && (
         <p role="status" className="text-sm text-[var(--color-accent)]">
-          Contraseña del cliente restablecida correctamente.
+          Customer password reset successfully.
         </p>
       )}
     </form>

@@ -7,8 +7,8 @@ import { isAdminEmail } from "@/lib/admin";
 import { AdminNav } from "@/components/admin/AdminNav";
 
 export const metadata: Metadata = {
-  title: "Administración",
-  description: `Panel de administración de ${site.brand}.`,
+  title: "Administration",
+  description: `Administration dashboard for ${site.brand}.`,
   robots: { index: false, follow: false },
 };
 
@@ -28,14 +28,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div>
           <div className="flex items-center gap-3">
             <span className="font-mono text-sm text-[var(--color-accent)]">/admin</span>
-            <span className="mono-label">Panel de administración</span>
+            <span className="mono-label">Administration dashboard</span>
           </div>
           <h1 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
             {site.brand} · Backoffice
           </h1>
         </div>
         <p className="font-mono text-xs text-[var(--color-fg-muted)]">
-          Sesión: <span className="text-[var(--color-fg)]">{session.email}</span>
+          Session: <span className="text-[var(--color-fg)]">{session.email}</span>
         </p>
       </header>
 
@@ -46,7 +46,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             href="/cuenta"
             className="mt-4 hidden text-xs text-[var(--color-fg-dim)] transition-colors hover:text-[var(--color-fg-muted)] md:block"
           >
-            ← Volver a mi cuenta
+            ← Back to my account
           </Link>
         </aside>
         <div className="min-w-0">{children}</div>

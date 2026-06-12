@@ -9,22 +9,22 @@ export const statusMeta: Record<
   StatusLevel,
   { label: string; color: string; dot: string }
 > = {
-  operational: { label: "Operativo", color: "var(--color-accent)", dot: "bg-[var(--color-accent)]" },
-  degraded: { label: "Rendimiento degradado", color: "#febc2e", dot: "bg-[#febc2e]" },
-  maintenance: { label: "Mantenimiento", color: "#5b9dff", dot: "bg-[#5b9dff]" },
-  outage: { label: "Incidencia", color: "var(--color-danger)", dot: "bg-[var(--color-danger)]" },
+  operational: { label: "Operational", color: "var(--color-accent)", dot: "bg-[var(--color-accent)]" },
+  degraded: { label: "Degraded performance", color: "#febc2e", dot: "bg-[#febc2e]" },
+  maintenance: { label: "Maintenance", color: "#5b9dff", dot: "bg-[#5b9dff]" },
+  outage: { label: "Outage", color: "var(--color-danger)", dot: "bg-[var(--color-danger)]" },
 };
 
 export type ServiceStatus = { name: string; status: StatusLevel; note?: string };
 
 /** Servicios de la plataforma. */
 export const services: ServiceStatus[] = [
-  { name: "API de provisioning", status: "operational" },
-  { name: "Panel de cliente", status: "operational" },
-  { name: "Red / backbone", status: "operational" },
-  { name: "Mitigación DDoS", status: "operational" },
-  { name: "Almacenamiento NVMe", status: "operational" },
-  { name: "Facturación y pagos", status: "maintenance", note: "Mantenimiento programado 02:00–03:00 CET" },
+  { name: "Provisioning API", status: "operational" },
+  { name: "Customer panel", status: "operational" },
+  { name: "Network / backbone", status: "operational" },
+  { name: "DDoS Mitigation", status: "operational" },
+  { name: "NVMe storage", status: "operational" },
+  { name: "Billing and payments", status: "maintenance", note: "Scheduled maintenance 02:00–03:00 CET" },
 ];
 
 /** Estado por región (alineado con los slugs de products.ts). */
@@ -38,15 +38,15 @@ export type Incident = { date: string; title: string; resolved: boolean; detail:
 export const incidents: Incident[] = [
   {
     date: "2026-06-08",
-    title: "Latencia elevada en París",
+    title: "Elevated latency in Paris",
     resolved: false,
-    detail: "Estamos investigando un aumento de latencia en el nodo de París. Sin impacto en disponibilidad.",
+    detail: "We are investigating an increase in latency on the Paris node. No impact on availability.",
   },
   {
     date: "2026-06-02",
-    title: "Mantenimiento de red en Fráncfort",
+    title: "Network maintenance in Frankfurt",
     resolved: true,
-    detail: "Actualización de routers completada sin incidencias. Sin tiempo de inactividad.",
+    detail: "Router upgrade completed without incident. No downtime.",
   },
 ];
 

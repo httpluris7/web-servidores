@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/admin", label: "Resumen", exact: true },
-  { href: "/admin/clientes", label: "Clientes" },
-  { href: "/admin/facturas", label: "Facturas" },
-  { href: "/admin/pedidos", label: "Pedidos y contactos" },
+  { href: "/admin", label: "Overview", exact: true },
+  { href: "/admin/clientes", label: "Customers" },
+  { href: "/admin/facturas", label: "Invoices" },
+  { href: "/admin/pedidos", label: "Orders and contacts" },
 ];
 
 /** Navegación lateral del panel de administración, con item activo resaltado. */
@@ -16,7 +16,7 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Administración" className="flex gap-1 overflow-x-auto md:flex-col md:overflow-visible">
+    <nav aria-label="Administration" className="flex gap-1 overflow-x-auto md:flex-col md:overflow-visible">
       {links.map((l) => {
         const active = l.exact ? pathname === l.href : pathname.startsWith(l.href);
         return (

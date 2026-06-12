@@ -5,7 +5,7 @@ import { clockCities } from "@/data/content";
 import { Marquee } from "@/components/ui/Marquee";
 
 function timeFor(tz: string, now: Date): string {
-  return new Intl.DateTimeFormat("es-ES", {
+  return new Intl.DateTimeFormat("en-US", {
     timeZone: tz,
     hour: "2-digit",
     minute: "2-digit",

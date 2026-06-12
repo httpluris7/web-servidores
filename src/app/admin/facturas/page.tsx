@@ -24,7 +24,7 @@ export default async function FacturasPage() {
       <section>
         <details className="group rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)]">
           <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4">
-            <span className="font-medium">Nueva factura</span>
+            <span className="font-medium">New invoice</span>
             <span className="font-mono text-xs text-[var(--color-fg-muted)] transition-transform group-open:rotate-180">
               ▾
             </span>
@@ -38,30 +38,30 @@ export default async function FacturasPage() {
       <section>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold">
-            Facturas{" "}
+            Invoices{" "}
             <span className="font-mono text-sm text-[var(--color-fg-muted)]">({stats.total})</span>
           </h2>
           <p className="font-mono text-xs text-[var(--color-fg-muted)]">
-            Facturado <span className="text-[var(--color-fg)]">{eur(stats.facturado, 2)}</span> ·
-            cobrado <span className="text-[var(--color-accent)]">{eur(stats.cobrado, 2)}</span> ·
-            pendiente <span className="text-amber-300">{eur(stats.pendiente, 2)}</span>
+            Invoiced <span className="text-[var(--color-fg)]">{eur(stats.facturado, 2)}</span> ·
+            collected <span className="text-[var(--color-accent)]">{eur(stats.cobrado, 2)}</span> ·
+            outstanding <span className="text-amber-300">{eur(stats.pendiente, 2)}</span>
           </p>
         </div>
 
         {facturas.length === 0 ? (
           <p className="text-sm text-[var(--color-fg-muted)]">
-            Aún no has emitido ninguna factura. Crea la primera arriba.
+            You haven&apos;t issued any invoices yet. Create the first one above.
           </p>
         ) : (
           <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--color-line)]">
             <table className="w-full min-w-[760px] border-collapse text-sm">
               <thead>
                 <tr className="border-b border-[var(--color-line)] text-left">
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Nº</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Cliente</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Concepto</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Emitida</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Estado</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">No.</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">Customer</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">Description</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">Issued</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">Status</th>
                   <th className="px-4 py-3 mono-label text-[0.6rem] text-right">Total</th>
                   <th className="px-4 py-3" />
                 </tr>
@@ -107,7 +107,7 @@ export default async function FacturasPage() {
                     <td className="px-4 py-3 text-right">
                       <span className="font-mono">{eur(f.total, 2)}</span>
                       <p className="text-[0.65rem] text-[var(--color-fg-dim)]">
-                        base {eur(f.base, 2)} · IVA {f.ivaPct}%
+                        net {eur(f.base, 2)} · VAT {f.ivaPct}%
                       </p>
                     </td>
                     <td className="px-4 py-3">

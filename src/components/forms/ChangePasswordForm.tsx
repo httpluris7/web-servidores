@@ -31,9 +31,9 @@ export function ChangePasswordForm() {
 
   function validate(): boolean {
     const e: Errors = {};
-    if (!values.currentPassword) e.currentPassword = "Introduce tu contraseña actual.";
-    if (failedPasswordRules(values.password).length > 0) e.password = "La contraseña no cumple los requisitos.";
-    if (values.passwordConfirm !== values.password) e.passwordConfirm = "Las contraseñas no coinciden.";
+    if (!values.currentPassword) e.currentPassword = "Enter your current password.";
+    if (failedPasswordRules(values.password).length > 0) e.password = "The password does not meet the requirements.";
+    if (values.passwordConfirm !== values.password) e.passwordConfirm = "The passwords do not match.";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -54,7 +54,7 @@ export function ChangePasswordForm() {
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         if (data?.errors) setErrors(data.errors as Errors);
-        setFormError(data?.error ?? "No se pudo cambiar la contraseña. Revisa los campos.");
+        setFormError(data?.error ?? "Could not change the password. Check the fields.");
         setStatus("idle");
         return;
       }
@@ -64,7 +64,7 @@ export function ChangePasswordForm() {
       setDone(true);
       router.refresh();
     } catch {
-      setFormError("Error de conexión. Revisa tu red e inténtalo de nuevo.");
+      setFormError("Connection error. Check your network and try again.");
       setStatus("idle");
     }
   }
@@ -72,7 +72,7 @@ export function ChangePasswordForm() {
   return (
     <form onSubmit={onSubmit} noValidate className="max-w-md space-y-5">
       <div>
-        <Label htmlFor="currentPassword" required>Contraseña actual</Label>
+        <Label htmlFor="currentPassword" required>Current password</Label>
         <Input
           id="currentPassword"
           type="password"
@@ -86,7 +86,7 @@ export function ChangePasswordForm() {
       </div>
 
       <div>
-        <Label htmlFor="password" required>Nueva contraseña</Label>
+        <Label htmlFor="password" required>New password</Label>
         <Input
           id="password"
           type="password"
@@ -101,7 +101,7 @@ export function ChangePasswordForm() {
       </div>
 
       <div>
-        <Label htmlFor="passwordConfirm" required>Repetir nueva contraseña</Label>
+        <Label htmlFor="passwordConfirm" required>Repeat new password</Label>
         <Input
           id="passwordConfirm"
           type="password"
@@ -119,13 +119,13 @@ export function ChangePasswordForm() {
         disabled={status === "sending"}
         className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60 sm:w-auto"
       >
-        {status === "sending" ? "Guardando…" : "Cambiar contraseña →"}
+        {status === "sending" ? "Saving…" : "Change password →"}
       </button>
 
       {formError && <p role="alert" className="text-sm text-[var(--color-danger)]">{formError}</p>}
       {done && (
         <p role="status" className="text-sm text-[var(--color-accent)]">
-          Contraseña actualizada correctamente.
+          Password updated successfully.
         </p>
       )}
     </form>

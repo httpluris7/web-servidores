@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { LegalLayout } from "@/components/legal/LegalLayout";
 
 export const metadata: Metadata = {
-  title: "Política de cookies",
-  description: "Qué cookies utiliza ViaHost y cómo gestionarlas.",
+  title: "Cookie Policy",
+  description: "Which cookies ViaHost uses and how to manage them.",
   alternates: { canonical: "/legal/cookies" },
   robots: { index: true, follow: true },
 };
@@ -12,15 +12,15 @@ export default function CookiesPage() {
   return (
     <LegalLayout
       index="/ Cookies"
-      title="Política de cookies"
-      intro="Información sobre las cookies y tecnologías similares que utiliza este sitio web y cómo puedes gestionarlas."
-      updated="TODO: fecha"
+      title="Cookie Policy"
+      intro="Information about the cookies and similar technologies used by this website and how you can manage them."
+      updated="TODO: date"
       sections={[
-        { heading: "Qué son las cookies", todo: "Definición y explicación general de las cookies y su finalidad." },
-        { heading: "Cookies que utilizamos", todo: "Tabla con cada cookie: nombre, tipo (técnica, analítica, etc.), finalidad, duración y proveedor. Actualmente el sitio NO carga analítica; rellenar cuando se añada." },
-        { heading: "Base legal y consentimiento", todo: "Cómo se obtiene el consentimiento para cookies no esenciales (banner) y cómo revocarlo." },
-        { heading: "Gestión de cookies", todo: "Instrucciones para configurar o eliminar cookies en los principales navegadores." },
-        { heading: "Cambios en la política", todo: "Cómo se comunicarán futuras actualizaciones de esta política." },
+        { heading: "What cookies are", todo: "Definition and general explanation of cookies and their purpose." },
+        { heading: "Cookies we use", todo: "Table for each cookie: name, type (technical, analytics, etc.), purpose, duration and provider. The site currently does NOT load analytics; fill in when added." },
+        { heading: "Legal basis and consent", todo: "How consent is obtained for non-essential cookies (banner) and how to withdraw it." },
+        { heading: "Managing cookies", todo: "Instructions for configuring or deleting cookies in the main browsers." },
+        { heading: "Changes to the policy", todo: "How future updates to this policy will be communicated." },
       ]}
     />
   );

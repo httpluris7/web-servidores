@@ -6,9 +6,9 @@ import { CtaBand } from "@/components/ui/CtaBand";
 import { Reveal } from "@/components/ui/Reveal";
 
 export const metadata: Metadata = {
-  title: "Casos de uso",
+  title: "Use cases",
   description:
-    "Aplicaciones web, bases de datos, cargas enterprise y plataformas SaaS sobre la infraestructura de ViaHost: misma red, misma protección, distinto tamaño.",
+    "Web applications, databases, enterprise workloads and SaaS platforms on ViaHost infrastructure: same network, same protection, different scale.",
   alternates: { canonical: "/casos-de-uso" },
 };
 
@@ -17,13 +17,13 @@ export default function UseCasesPage() {
     <>
       <PageHero
         index="/01"
-        kicker="Casos de uso"
+        kicker="Use cases"
         title={
           <>
-            Una base. <span className="text-accent">Muchas</span> cargas.
+            One foundation. <span className="text-accent">Many</span> workloads.
           </>
         }
-        description="Da igual lo que despliegues: debajo siempre hay NVMe Gen4, 10 Gbps de red y mitigación DDoS. Elige por dónde empezar."
+        description="No matter what you deploy: underneath there is always NVMe Gen4, 10 Gbps networking and DDoS mitigation. Pick where to start."
       />
 
       <section className="container-edge py-14 md:py-24">
@@ -45,7 +45,7 @@ export default function UseCasesPage() {
                   ))}
                 </ul>
                 <span className="mt-auto pt-6 font-mono text-xs text-[var(--color-fg-dim)] transition-colors group-hover:text-[var(--color-accent)]">
-                  Ver producto recomendado →
+                  View recommended product →
                 </span>
               </Link>
             </Reveal>

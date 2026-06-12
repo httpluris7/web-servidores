@@ -78,7 +78,7 @@ export function AccountButton() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="menu"
-        aria-label={me ? "Mi cuenta" : "Crear cuenta o iniciar sesión"}
+        aria-label={me ? "My account" : "Create account or log in"}
         className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-line-strong)] text-[var(--color-fg-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-fg)]"
       >
         <PersonIcon />
@@ -102,7 +102,7 @@ export function AccountButton() {
                 <p className="truncate font-mono text-xs text-[var(--color-fg-muted)]">{me.email}</p>
               </div>
               <Link href="/cuenta" role="menuitem" onClick={() => setOpen(false)} className={itemClass}>
-                Mi perfil
+                My profile
               </Link>
               {me.isAdmin && (
                 <Link
@@ -111,7 +111,7 @@ export function AccountButton() {
                   onClick={() => setOpen(false)}
                   className={itemClass + " text-[var(--color-accent)]"}
                 >
-                  Panel de administración
+                  Admin panel
                 </Link>
               )}
               <button
@@ -120,7 +120,7 @@ export function AccountButton() {
                 onClick={logout}
                 className={itemClass + " w-full text-left text-[var(--color-fg-muted)] hover:text-[var(--color-danger)]"}
               >
-                Cerrar sesión
+                Log out
               </button>
             </>
           ) : (
@@ -131,10 +131,10 @@ export function AccountButton() {
                 onClick={() => setOpen(false)}
                 className={itemClass + " font-medium text-[var(--color-accent)]"}
               >
-                Crear cuenta
+                Create account
               </Link>
               <Link href="/acceder" role="menuitem" onClick={() => setOpen(false)} className={itemClass}>
-                Iniciar sesión
+                Log in
               </Link>
             </>
           )}

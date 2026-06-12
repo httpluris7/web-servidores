@@ -8,22 +8,22 @@ const items = [
     to: 5.7,
     decimals: 1,
     suffix: " GHz",
-    label: "Boost de CPU",
-    copy: "AMD EPYC y Ryzen de última generación. Single-thread que no se queda corto.",
+    label: "CPU boost",
+    copy: "Latest-generation AMD EPYC and Ryzen. Single-thread performance that never falls short.",
   },
   {
     to: 14,
     decimals: 0,
     suffix: " GB/s",
     label: "NVMe Gen4",
-    copy: "Almacenamiento que alimenta la CPU sin cuellos de botella. Cero discos lentos.",
+    copy: "Storage that feeds the CPU with no bottlenecks. Zero slow disks.",
   },
   {
     to: 10,
     decimals: 0,
     suffix: " Gbps",
-    label: "Red por servidor",
-    copy: "Uplink dedicado y simétrico. El ancho de banda no es un extra, es la base.",
+    label: "Network per server",
+    copy: "Dedicated, symmetric uplink. Bandwidth isn't an add-on, it's the baseline.",
   },
 ];
 
@@ -93,10 +93,10 @@ export function HardwareCounters() {
       <div className="container-edge relative w-full py-14 md:py-20">
         <div className="flex items-center gap-3">
           <span className="font-mono text-sm text-[var(--color-accent)]">/04</span>
-          <span className="mono-label">Hardware sin compromisos</span>
+          <span className="mono-label">No-compromise hardware</span>
         </div>
         <h2 className="mt-6 max-w-3xl text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
-          Cada cifra, medida. Ninguna, inflada.
+          Every figure, measured. None, inflated.
         </h2>
 
         <div className="mt-14 grid gap-px bg-[var(--color-line)] md:grid-cols-3">
@@ -104,7 +104,7 @@ export function HardwareCounters() {
             <div key={it.label} className="bg-[var(--color-bg-base)] p-6 md:p-8">
               <div className="flex items-baseline font-mono text-5xl font-semibold tracking-tight md:text-6xl">
                 <span className="tabular-nums">
-                  {(values[i] ?? 0).toLocaleString("es-ES", {
+                  {(values[i] ?? 0).toLocaleString("en-US", {
                     minimumFractionDigits: it.decimals,
                     maximumFractionDigits: it.decimals,
                   })}

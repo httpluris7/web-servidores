@@ -5,9 +5,9 @@ import { EuropeMap } from "./EuropeMap";
 
 const miniStats = [
   { value: `${site.network.peers}+`, label: "Peers" },
-  { value: `${site.network.capacityTbps} Tbps`, label: "Capacidad" },
-  { value: site.network.rankingNote, label: "Ranking IXP" },
-  { value: `${site.network.portMaxGbps} Gbps`, label: "Puerto máx." },
+  { value: `${site.network.capacityTbps} Tbps`, label: "Capacity" },
+  { value: site.network.rankingNote, label: "IXP ranking" },
+  { value: `${site.network.portMaxGbps} Gbps`, label: "Max port" },
 ];
 
 export function NetworkBackbone() {
@@ -20,11 +20,11 @@ export function NetworkBackbone() {
             {site.network.asn}
           </span>
           <h2 className="mt-6 text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
-            Una red propia, no alquilada.
+            Our own network, not rented.
           </h2>
           <p className="mt-5 max-w-md text-base text-[var(--color-fg-muted)] md:text-lg">
-            Operamos nuestro sistema autónomo con peering directo en los IXP europeos de referencia.
-            Menos saltos, menos latencia y rutas que controlamos de extremo a extremo.
+            We operate our own autonomous system with direct peering at the leading European IXPs.
+            Fewer hops, lower latency and routes we control end to end.
           </p>
 
           <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)]">
@@ -40,7 +40,7 @@ export function NetworkBackbone() {
             href="/red"
             className="mt-8 inline-block font-mono text-sm text-[var(--color-accent)] hover:opacity-80"
           >
-            Ver red y backbone →
+            View network and backbone →
           </Link>
         </Reveal>
 

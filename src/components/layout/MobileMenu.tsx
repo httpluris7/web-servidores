@@ -12,26 +12,26 @@ type Group = { label: string; items: { href: string; label: string; note?: strin
 
 const groups: Group[] = [
   {
-    label: "VPS por región",
+    label: "VPS by region",
     items: regions.map((r) => ({
       href: `/vps/${r.slug}`,
       label: r.name,
-      note: `desde ${eur(r.priceFrom)}`,
+      note: `from ${eur(r.priceFrom)}`,
     })),
   },
   {
-    label: "Dedicados",
+    label: "Dedicated",
     items: dedicatedTypes.map((d) => ({ href: `/dedicados/${d.slug}`, label: d.title, note: d.highlight })),
   },
 ];
 
 const directLinks = [
-  { href: "/red", label: "Red" },
-  { href: "/proteccion-ddos", label: "Protección DDoS" },
-  { href: "/casos-de-uso", label: "Casos de uso" },
-  { href: "/soporte", label: "Soporte" },
-  { href: "/contacto", label: "Contacto" },
-  { href: "/sobre-nosotros", label: "Sobre nosotros" },
+  { href: "/red", label: "Network" },
+  { href: "/proteccion-ddos", label: "DDoS Protection" },
+  { href: "/casos-de-uso", label: "Use cases" },
+  { href: "/soporte", label: "Support" },
+  { href: "/contacto", label: "Contact" },
+  { href: "/sobre-nosotros", label: "About us" },
 ];
 
 type Me = { id: string; nombre: string; email: string } | null;
@@ -82,7 +82,7 @@ export function MobileMenu() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Abrir menú"
+        aria-label="Open menu"
         className="inline-flex h-10 w-10 items-center justify-center rounded border border-[var(--color-line)] lg:hidden"
       >
         <span className="flex flex-col gap-1">
@@ -109,14 +109,14 @@ export function MobileMenu() {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                aria-label="Cerrar menú"
+                aria-label="Close menu"
                 className="inline-flex h-10 w-10 items-center justify-center rounded border border-[var(--color-line)] text-xl"
               >
                 ✕
               </button>
             </div>
 
-            <nav className="container-edge flex-1 overflow-y-auto py-6" aria-label="Móvil">
+            <nav className="container-edge flex-1 overflow-y-auto py-6" aria-label="Mobile">
               {/* Cuenta */}
               {me ? (
                 <div className="mb-2 border-b border-[var(--color-line)] pb-4">
@@ -129,7 +129,7 @@ export function MobileMenu() {
                     onClick={() => setOpen(false)}
                     className="flex items-center justify-between py-2.5 text-[var(--color-fg-muted)]"
                   >
-                    Mi perfil
+                    My profile
                     <span aria-hidden="true">→</span>
                   </Link>
                   <button
@@ -137,7 +137,7 @@ export function MobileMenu() {
                     onClick={logout}
                     className="w-full py-2.5 text-left text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-danger)]"
                   >
-                    Cerrar sesión
+                    Log out
                   </button>
                 </div>
               ) : (
@@ -147,14 +147,14 @@ export function MobileMenu() {
                     onClick={() => setOpen(false)}
                     className="flex items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] py-3 text-sm font-medium transition-colors hover:border-[var(--color-accent)]"
                   >
-                    Iniciar sesión
+                    Log in
                   </Link>
                   <Link
                     href="/registro"
                     onClick={() => setOpen(false)}
                     className="flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] py-3 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
                   >
-                    Crear cuenta
+                    Create account
                   </Link>
                 </div>
               )}
@@ -218,7 +218,7 @@ export function MobileMenu() {
                 onClick={() => setOpen(false)}
                 className="mt-6 flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-5 py-3.5 font-medium text-black"
               >
-                Desplegar servidor →
+                Deploy server →
               </Link>
             </nav>
           </motion.div>

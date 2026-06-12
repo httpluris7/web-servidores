@@ -26,7 +26,7 @@ export function InvoiceActions({ id, estado }: Props) {
   }
 
   async function remove() {
-    if (!confirm("¿Eliminar esta factura de forma permanente?")) return;
+    if (!confirm("Permanently delete this invoice?")) return;
     setBusy(true);
     try {
       await fetch(`/api/admin/facturas/${id}`, { method: "DELETE" });
@@ -48,7 +48,7 @@ export function InvoiceActions({ id, estado }: Props) {
           disabled={busy}
           className={btn + " hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"}
         >
-          Marcar pagada
+          Mark paid
         </button>
       )}
       {estado !== "pendiente" && (
@@ -58,7 +58,7 @@ export function InvoiceActions({ id, estado }: Props) {
           disabled={busy}
           className={btn + " hover:border-[var(--color-fg)] hover:text-[var(--color-fg)]"}
         >
-          Reabrir
+          Reopen
         </button>
       )}
       {estado !== "cancelada" && (
@@ -68,17 +68,17 @@ export function InvoiceActions({ id, estado }: Props) {
           disabled={busy}
           className={btn + " hover:border-[var(--color-fg)] hover:text-[var(--color-fg)]"}
         >
-          Anular
+          Cancel
         </button>
       )}
       <button
         type="button"
         onClick={remove}
         disabled={busy}
-        aria-label="Eliminar factura"
+        aria-label="Delete invoice"
         className={btn + " hover:border-[var(--color-danger)] hover:text-[var(--color-danger)]"}
       >
-        Eliminar
+        Delete
       </button>
     </div>
   );

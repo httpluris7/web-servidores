@@ -12,11 +12,11 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
 export const metadata: Metadata = {
-  title: "Cloud VPS — NVMe Gen4 y 10 Gbps",
+  title: "Cloud VPS — NVMe Gen4 and 10 Gbps",
   description:
-    "VPS NVMe Gen4 con red de 10 Gbps y protección DDoS incluida, en regiones europeas estratégicas. Desde " +
+    "NVMe Gen4 VPS with 10 Gbps networking and DDoS protection included, in strategic European regions. From " +
     eur(Math.min(...vps.plans.map((p) => p.price))) +
-    "/mes. Provisioning en 60 segundos.",
+    "/mo. Provisioning in 60 seconds.",
   alternates: { canonical: "/vps" },
 };
 
@@ -48,7 +48,7 @@ export default function VpsPage() {
         kicker="Cloud VPS"
         title={
           <>
-            Máquinas virtuales <span className="text-accent">NVMe</span>, listas en 60 s.
+            <span className="text-accent">NVMe</span> virtual machines, ready in 60 s.
           </>
         }
         description={vps.tagline}
@@ -56,9 +56,9 @@ export default function VpsPage() {
 
       <PlanGrid
         index="/02"
-        kicker="Planes"
-        title="Elige tu tamaño."
-        description="Mismo NVMe Gen4, misma red de 10 Gbps y la misma protección DDoS en todos los planes."
+        kicker="Plans"
+        title="Choose your size."
+        description="Same NVMe Gen4, same 10 Gbps network and the same DDoS protection across all plans."
         plans={vps.plans}
       />
 
@@ -67,9 +67,9 @@ export default function VpsPage() {
         <div className="container-edge py-14 md:py-24">
           <SectionHeader
             index="/03"
-            kicker="Ubicaciones"
-            title="Despliega cerca de tus usuarios."
-            description="Regiones europeas con peering directo. Misma experiencia, menos latencia."
+            kicker="Locations"
+            title="Deploy close to your users."
+            description="European regions with direct peering. Same experience, lower latency."
           />
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {regions.map((r, i) => (
@@ -88,7 +88,7 @@ export default function VpsPage() {
                     </span>
                   </div>
                   <span className="text-right">
-                    <span className="mono-label block text-[0.6rem]">desde</span>
+                    <span className="mono-label block text-[0.6rem]">from</span>
                     <span className="font-mono text-lg">{eur(r.priceFrom)}</span>
                   </span>
                 </Link>

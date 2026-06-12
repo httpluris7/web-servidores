@@ -8,8 +8,8 @@ type Props = {
 };
 
 export function CtaBand({
-  title = "¿Listo para desplegar?",
-  subtitle = "provisioning en 60 s · sin setup · cancela cuando quieras",
+  title = "Ready to deploy?",
+  subtitle = "provisioning in 60s · no setup · cancel anytime",
 }: Props) {
   return (
     <section className="border-t border-[var(--color-line)]">
@@ -18,10 +18,10 @@ export function CtaBand({
           <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h2>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Cta href={deployUrl()}>
-              Desplegar en 60 segundos →
+              Deploy in 60 seconds →
             </Cta>
             <Cta href="/proteccion-ddos" variant="secondary">
-              Ver protección DDoS
+              View DDoS Protection
             </Cta>
           </div>
           <p className="mt-6 font-mono text-xs text-[var(--color-fg-muted)]">{subtitle}</p>

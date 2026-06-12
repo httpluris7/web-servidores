@@ -14,14 +14,14 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   const session = await getSession();
   if (!session) {
-    return NextResponse.json({ ok: false, error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ ok: false, error: "Not authenticated." }, { status: 401 });
   }
 
   let body: Record<string, unknown>;
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ ok: false, error: "JSON inválido." }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Invalid JSON." }, { status: 400 });
   }
 
   const currentPassword = typeof body.currentPassword === "string" ? body.currentPassword : "";
@@ -29,12 +29,12 @@ export async function POST(req: Request) {
   const passwordConfirm = typeof body.passwordConfirm === "string" ? body.passwordConfirm : "";
 
   const errors: Record<string, string> = {};
-  if (!currentPassword) errors.currentPassword = "Introduce tu contraseña actual.";
+  if (!currentPassword) errors.currentPassword = "Enter your current password.";
   if (!isPasswordValid(password)) {
     errors.password =
-      "La contraseña debe tener mínimo 8 caracteres, con una mayúscula, un número y un símbolo especial.";
+      "The password must be at least 8 characters long, with an uppercase letter, a number and a special symbol.";
   }
-  if (passwordConfirm !== password) errors.passwordConfirm = "Las contraseñas no coinciden.";
+  if (passwordConfirm !== password) errors.passwordConfirm = "The passwords do not match.";
   if (Object.keys(errors).length > 0) {
     return NextResponse.json({ ok: false, errors }, { status: 422 });
   }
@@ -43,14 +43,14 @@ export async function POST(req: Request) {
   const user = await findUserByEmail(session.email);
   if (!user || !verifyPassword(currentPassword, user.passwordHash)) {
     return NextResponse.json(
-      { ok: false, errors: { currentPassword: "La contraseña actual no es correcta." } },
+      { ok: false, errors: { currentPassword: "The current password is not correct." } },
       { status: 422 }
     );
   }
 
   if (verifyPassword(password, user.passwordHash)) {
     return NextResponse.json(
-      { ok: false, errors: { password: "La nueva contraseña debe ser distinta de la actual." } },
+      { ok: false, errors: { password: "The new password must be different from the current one." } },
       { status: 422 }
     );
   }
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
   const updated = await updateUserPassword(user.id, password);
   if (!updated) {
     return NextResponse.json(
-      { ok: false, error: "No se pudo actualizar la contraseña. Inténtalo de nuevo." },
+      { ok: false, error: "The password could not be updated. Please try again." },
       { status: 500 }
     );
   }

@@ -29,14 +29,14 @@ export default async function AdminDashboard() {
   return (
     <div className="grid gap-10">
       <section>
-        <h2 className="mono-label mb-4">Resumen</h2>
+        <h2 className="mono-label mb-4">Summary</h2>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-          <Stat label="Clientes" value={String(clientes.length)} hint="cuentas registradas" />
-          <Stat label="Facturas" value={String(stats.total)} hint="emitidas" />
-          <Stat label="Pedidos" value={String(pedidos.length)} hint="solicitudes recibidas" />
-          <Stat label="Facturado" value={eur(stats.facturado, 2)} hint="IVA incluido" />
-          <Stat label="Pendiente de cobro" value={eur(stats.pendiente, 2)} hint="facturas no pagadas" />
-          <Stat label="Cobrado" value={eur(stats.cobrado, 2)} hint="facturas pagadas" />
+          <Stat label="Customers" value={String(clientes.length)} hint="registered accounts" />
+          <Stat label="Invoices" value={String(stats.total)} hint="issued" />
+          <Stat label="Orders" value={String(pedidos.length)} hint="requests received" />
+          <Stat label="Invoiced" value={eur(stats.facturado, 2)} hint="VAT included" />
+          <Stat label="Outstanding" value={eur(stats.pendiente, 2)} hint="unpaid invoices" />
+          <Stat label="Collected" value={eur(stats.cobrado, 2)} hint="paid invoices" />
         </div>
       </section>
 
@@ -44,13 +44,13 @@ export default async function AdminDashboard() {
         {/* Últimas facturas */}
         <section>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="mono-label">Últimas facturas</h2>
+            <h2 className="mono-label">Latest invoices</h2>
             <Link href="/admin/facturas" className="text-xs text-[var(--color-accent)] hover:underline">
-              Ver todas →
+              View all →
             </Link>
           </div>
           {facturas.length === 0 ? (
-            <p className="text-sm text-[var(--color-fg-muted)]">Aún no hay facturas.</p>
+            <p className="text-sm text-[var(--color-fg-muted)]">No invoices yet.</p>
           ) : (
             <ul className="divide-y divide-[var(--color-line)] rounded-[var(--radius-lg)] border border-[var(--color-line)]">
               {facturas.slice(0, 5).map((f) => (
@@ -75,13 +75,13 @@ export default async function AdminDashboard() {
         {/* Últimos clientes */}
         <section>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="mono-label">Últimos clientes</h2>
+            <h2 className="mono-label">Latest customers</h2>
             <Link href="/admin/clientes" className="text-xs text-[var(--color-accent)] hover:underline">
-              Ver todos →
+              View all →
             </Link>
           </div>
           {clientes.length === 0 ? (
-            <p className="text-sm text-[var(--color-fg-muted)]">Aún no hay clientes.</p>
+            <p className="text-sm text-[var(--color-fg-muted)]">No customers yet.</p>
           ) : (
             <ul className="divide-y divide-[var(--color-line)] rounded-[var(--radius-lg)] border border-[var(--color-line)]">
               {clientes.slice(0, 5).map((c) => (
@@ -104,10 +104,10 @@ export default async function AdminDashboard() {
 
       {contactos.length > 0 && (
         <p className="text-sm text-[var(--color-fg-muted)]">
-          Tienes <span className="text-[var(--color-fg)]">{contactos.length}</span> mensaje(s) de
-          contacto.{" "}
+          You have <span className="text-[var(--color-fg)]">{contactos.length}</span> contact
+          message(s).{" "}
           <Link href="/admin/pedidos" className="text-[var(--color-accent)] hover:underline">
-            Revisar →
+            Review →
           </Link>
         </p>
       )}

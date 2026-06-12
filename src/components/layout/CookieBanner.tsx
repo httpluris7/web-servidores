@@ -39,13 +39,13 @@ export function CookieBanner() {
   return (
     <div
       role="dialog"
-      aria-label="Aviso de cookies"
+      aria-label="Cookie notice"
       className="fixed inset-x-4 bottom-4 z-[70] mx-auto max-w-2xl rounded-[var(--radius-lg)] border border-[var(--color-line-strong)] bg-[var(--color-bg-overlay)] p-5 shadow-2xl shadow-black/50 md:flex md:items-center md:gap-6"
     >
       <p className="text-sm text-[var(--color-fg-muted)]">
-        Usamos cookies para mejorar tu experiencia. Consulta nuestra{" "}
+        We use cookies to improve your experience. See our{" "}
         <Link href="/legal/cookies" className="text-[var(--color-accent)] underline">
-          política de cookies
+          cookie policy
         </Link>
         .
       </p>
@@ -55,14 +55,14 @@ export function CookieBanner() {
           onClick={() => decide("rejected")}
           className="rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-4 py-2 text-sm transition-colors hover:border-[var(--color-accent)]"
         >
-          Rechazar
+          Reject
         </button>
         <button
           type="button"
           onClick={() => decide("accepted")}
           className="rounded-[var(--radius-md)] bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-black"
         >
-          Aceptar
+          Accept
         </button>
       </div>
     </div>

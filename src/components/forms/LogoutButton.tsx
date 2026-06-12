@@ -25,7 +25,7 @@ export function LogoutButton() {
       disabled={busy}
       className="inline-flex items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-5 py-2.5 text-sm font-medium text-[var(--color-fg)] transition-colors hover:border-[var(--color-danger)] hover:text-[var(--color-danger)] disabled:opacity-60"
     >
-      {busy ? "Cerrando…" : "Cerrar sesión"}
+      {busy ? "Logging out…" : "Log out"}
     </button>
   );
 }

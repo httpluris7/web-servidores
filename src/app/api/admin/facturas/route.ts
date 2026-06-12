@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 /** Lista todas las facturas (solo admin). */
 export async function GET() {
   if (!(await getAdminSession())) {
-    return NextResponse.json({ ok: false, error: "No autorizado." }, { status: 403 });
+    return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 403 });
   }
   return NextResponse.json({ ok: true, facturas: await listInvoices() });
 }
@@ -17,14 +17,14 @@ export async function GET() {
 /** Crea una factura nueva (solo admin). */
 export async function POST(req: Request) {
   if (!(await getAdminSession())) {
-    return NextResponse.json({ ok: false, error: "No autorizado." }, { status: 403 });
+    return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 403 });
   }
 
   let body: Record<string, unknown>;
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ ok: false, error: "JSON inválido." }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Invalid JSON." }, { status: 400 });
   }
 
   const clienteNombre = clean(body.clienteNombre, 160);
@@ -40,13 +40,13 @@ export async function POST(req: Request) {
       : Number(body.vencimientoDias);
 
   const errors: Record<string, string> = {};
-  if (clienteNombre.length < 2) errors.clienteNombre = "Indica el nombre del cliente.";
-  if (!emailRe.test(clienteEmail)) errors.clienteEmail = "Email del cliente no válido.";
-  if (concepto.length < 3) errors.concepto = "Describe el concepto de la factura.";
-  if (!Number.isFinite(base) || base <= 0) errors.base = "Importe (base) no válido.";
-  if (!Number.isFinite(ivaPct) || ivaPct < 0 || ivaPct > 100) errors.ivaPct = "IVA no válido.";
+  if (clienteNombre.length < 2) errors.clienteNombre = "Enter the customer's name.";
+  if (!emailRe.test(clienteEmail)) errors.clienteEmail = "Invalid customer email.";
+  if (concepto.length < 3) errors.concepto = "Describe the invoice concept.";
+  if (!Number.isFinite(base) || base <= 0) errors.base = "Invalid amount (base).";
+  if (!Number.isFinite(ivaPct) || ivaPct < 0 || ivaPct > 100) errors.ivaPct = "Invalid VAT.";
   if (!Number.isFinite(vencimientoDias) || vencimientoDias < 0)
-    errors.vencimientoDias = "Vencimiento no válido.";
+    errors.vencimientoDias = "Invalid due date.";
 
   if (Object.keys(errors).length > 0) {
     return NextResponse.json({ ok: false, errors }, { status: 422 });
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, factura });
   } catch {
     return NextResponse.json(
-      { ok: false, error: "No se pudo crear la factura. Inténtalo de nuevo." },
+      { ok: false, error: "The invoice could not be created. Please try again." },
       { status: 500 }
     );
   }

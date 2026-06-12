@@ -4,17 +4,17 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Marquee } from "@/components/ui/Marquee";
 
 const stats = [
-  { to: 14000, suffix: "+", label: "Servidores activos" },
+  { to: 14000, suffix: "+", label: "Active servers" },
   { to: 99.99, decimals: 2, suffix: " %", label: "Uptime SLA" },
-  { to: 6, suffix: "", label: "Regiones EU" },
-  { to: 24, suffix: "/7", label: "Soporte" },
+  { to: 6, suffix: "", label: "EU regions" },
+  { to: 24, suffix: "/7", label: "Support" },
 ];
 
 export function TrustSection() {
   return (
     <section className="container-edge py-16 md:py-28">
       <Reveal>
-        <span className="mono-label">/10 — Confianza</span>
+        <span className="mono-label">/10 — Trust</span>
       </Reveal>
 
       <div className="mt-8 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-2 lg:grid-cols-4">
@@ -30,7 +30,7 @@ export function TrustSection() {
 
       {/* Marquee de partners de hardware/red */}
       <div className="mt-12">
-        <p className="mono-label mb-6 text-center">Hardware y red de primer nivel</p>
+        <p className="mono-label mb-6 text-center">Top-tier hardware and network</p>
         <Marquee duration={36}>
           {partners.map((p) => (
             <span

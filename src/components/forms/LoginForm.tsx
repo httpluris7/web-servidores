@@ -16,8 +16,8 @@ export function LoginForm() {
 
   function validate(): boolean {
     const e: Errors = {};
-    if (!emailRe.test(values.email)) e.email = "Introduce un email válido.";
-    if (!values.password) e.password = "Introduce tu contraseña.";
+    if (!emailRe.test(values.email)) e.email = "Enter a valid email.";
+    if (!values.password) e.password = "Enter your password.";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -37,14 +37,14 @@ export function LoginForm() {
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         if (data?.errors) setErrors(data.errors as Errors);
-        setFormError(data?.error ?? "No se pudo iniciar sesión.");
+        setFormError(data?.error ?? "Could not log in.");
         setStatus("idle");
         return;
       }
       router.push("/cuenta");
       router.refresh();
     } catch {
-      setFormError("Error de conexión. Revisa tu red e inténtalo de nuevo.");
+      setFormError("Connection error. Check your network and try again.");
       setStatus("idle");
     }
   }
@@ -52,7 +52,7 @@ export function LoginForm() {
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-5">
       <div>
-        <Label htmlFor="email" required>Correo electrónico</Label>
+        <Label htmlFor="email" required>Email</Label>
         <Input
           id="email"
           type="email"
@@ -66,7 +66,7 @@ export function LoginForm() {
       </div>
 
       <div>
-        <Label htmlFor="password" required>Contraseña</Label>
+        <Label htmlFor="password" required>Password</Label>
         <Input
           id="password"
           type="password"
@@ -84,7 +84,7 @@ export function LoginForm() {
         disabled={status === "sending"}
         className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60 sm:w-auto"
       >
-        {status === "sending" ? "Entrando…" : "Iniciar sesión →"}
+        {status === "sending" ? "Logging in…" : "Log in →"}
       </button>
 
       {formError && (
@@ -92,8 +92,8 @@ export function LoginForm() {
       )}
 
       <p className="text-sm text-[var(--color-fg-muted)]">
-        ¿No tienes cuenta?{" "}
-        <a href="/registro" className="text-[var(--color-accent)] underline">Regístrate</a>.
+        Don&apos;t have an account?{" "}
+        <a href="/registro" className="text-[var(--color-accent)] underline">Sign up</a>.
       </p>
     </form>
   );

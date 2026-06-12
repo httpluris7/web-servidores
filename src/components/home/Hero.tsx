@@ -11,26 +11,26 @@ export function Hero() {
         <div className="flex items-center gap-2">
           <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-accent)]" />
           <span className="mono-label">
-            {site.network.asn} · red propia en Europa · provisioning 60 s
+            {site.network.asn} · our own network in Europe · 60s provisioning
           </span>
         </div>
 
         {/* Titular gigante */}
         <h1 className="mt-8 max-w-5xl text-balance font-semibold uppercase leading-[0.92] tracking-tight text-[clamp(2.2rem,9vw,8rem)]">
-          Tu servidor,
+          Your server,
           <br />
-          en <span className="text-accent">60 segundos</span>.
+          in <span className="text-accent">60 seconds</span>.
         </h1>
 
         <p className="mt-8 max-w-xl text-lg text-[var(--color-fg-muted)] md:text-xl">
-          VPS, bare metal y mitigación DDoS sobre red propia. NVMe Gen4, uplinks de 10 Gbps y
-          presencia en regiones europeas estratégicas. Sin esperas, sin sorpresas.
+          VPS, bare metal and DDoS mitigation over our own network. NVMe Gen4, 10 Gbps uplinks and
+          presence in strategic European regions. No waiting, no surprises.
         </p>
 
         <div className="mt-10 flex flex-wrap gap-3">
-          <Cta href={deployUrl()}>Desplegar en 60 segundos →</Cta>
+          <Cta href={deployUrl()}>Deploy in 60 seconds →</Cta>
           <Cta href="/vps" variant="secondary">
-            Ver precios
+            View pricing
           </Cta>
         </div>
 

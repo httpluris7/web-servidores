@@ -18,10 +18,10 @@ export const metadata: Metadata = {
   keywords: [
     "hosting",
     "VPS",
-    "servidores dedicados",
+    "dedicated servers",
     "bare metal",
-    "protección DDoS",
-    "Europa",
+    "DDoS protection",
+    "Europe",
     "NVMe",
     site.brand,
   ],
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    locale: "es_ES",
+    locale: "en_US",
     url: site.url,
     siteName: site.brand,
     title: `${site.brand} — ${site.tagline}`,
@@ -69,7 +69,7 @@ const organizationJsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="min-h-screen antialiased">
         <script
           type="application/ld+json"
@@ -79,7 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="#contenido"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded focus:bg-[var(--color-accent)] focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-black"
         >
-          Saltar al contenido
+          Skip to content
         </a>
         <Header />
         <main id="contenido">{children}</main>

@@ -4,15 +4,15 @@ import { PageHero } from "@/components/ui/PageHero";
 import { ContactForm } from "@/components/forms/ContactForm";
 
 export const metadata: Metadata = {
-  title: "Contacto",
-  description: `Habla con el equipo de ${site.brand}: ventas, soporte técnico o reportes de abuso. Respuesta media bajo 10 minutos en incidencias.`,
+  title: "Contact",
+  description: `Talk to the ${site.brand} team: sales, technical support or abuse reports. Average response under 10 minutes on incidents.`,
   alternates: { canonical: "/contacto" },
 };
 
 const channels = [
-  { label: "Ventas", value: site.contact.sales, note: "Presupuestos y configuraciones a medida" },
-  { label: "Soporte", value: site.contact.support, note: "Clientes con servicio activo" },
-  { label: "Abuse", value: site.contact.abuse, note: "Reportes de uso indebido" },
+  { label: "Sales", value: site.contact.sales, note: "Quotes and custom configurations" },
+  { label: "Support", value: site.contact.support, note: "Customers with active service" },
+  { label: "Abuse", value: site.contact.abuse, note: "Misuse reports" },
 ];
 
 export default function ContactPage() {
@@ -20,13 +20,13 @@ export default function ContactPage() {
     <>
       <PageHero
         index="/01"
-        kicker="Contacto"
+        kicker="Contact"
         title={
           <>
-            Hablemos. <span className="text-accent">De verdad</span>.
+            Let&apos;s talk. <span className="text-accent">Really</span>.
           </>
         }
-        description="Personas reales al otro lado, 24/7. Escríbenos por el formulario o directamente al canal que mejor encaje."
+        description="Real people on the other side, 24/7. Reach us through the form or directly via the channel that fits best."
       />
 
       <section className="container-edge grid gap-12 py-16 md:grid-cols-[1fr_320px] md:py-20">
@@ -36,7 +36,7 @@ export default function ContactPage() {
 
         <aside className="space-y-6">
           <div>
-            <span className="mono-label">Canales directos</span>
+            <span className="mono-label">Direct channels</span>
             <ul className="mt-4 space-y-4">
               {channels.map((c) => (
                 <li key={c.label} className="rounded-[var(--radius-md)] border border-[var(--color-line)] p-4">
@@ -54,12 +54,12 @@ export default function ContactPage() {
           </div>
 
           <div className="rounded-[var(--radius-md)] border border-[var(--color-line)] p-4">
-            <span className="mono-label text-[0.65rem]">Estado del servicio</span>
+            <span className="mono-label text-[0.65rem]">Service status</span>
             <p className="mt-2 text-sm text-[var(--color-fg-muted)]">
-              Consulta incidencias y mantenimientos en tiempo real.
+              Check incidents and maintenance in real time.
             </p>
             <a href="/estado" className="mt-2 inline-block font-mono text-sm text-[var(--color-accent)] hover:underline">
-              Ver estado →
+              View status →
             </a>
           </div>
         </aside>

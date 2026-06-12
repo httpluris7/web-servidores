@@ -10,7 +10,7 @@ const ESTADOS: InvoiceStatus[] = ["pendiente", "pagada", "cancelada"];
 /** Cambia el estado de una factura (solo admin). */
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await getAdminSession())) {
-    return NextResponse.json({ ok: false, error: "No autorizado." }, { status: 403 });
+    return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 403 });
   }
 
   const { id } = await params;
@@ -19,17 +19,17 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ ok: false, error: "JSON inválido." }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Invalid JSON." }, { status: 400 });
   }
 
   const estado = body.estado as InvoiceStatus;
   if (!ESTADOS.includes(estado)) {
-    return NextResponse.json({ ok: false, error: "Estado no válido." }, { status: 422 });
+    return NextResponse.json({ ok: false, error: "Invalid status." }, { status: 422 });
   }
 
   const factura = await setInvoiceStatus(id, estado);
   if (!factura) {
-    return NextResponse.json({ ok: false, error: "Factura no encontrada." }, { status: 404 });
+    return NextResponse.json({ ok: false, error: "Invoice not found." }, { status: 404 });
   }
   return NextResponse.json({ ok: true, factura });
 }
@@ -37,13 +37,13 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 /** Elimina una factura (solo admin). */
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await getAdminSession())) {
-    return NextResponse.json({ ok: false, error: "No autorizado." }, { status: 403 });
+    return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 403 });
   }
 
   const { id } = await params;
   const removed = await deleteInvoice(id);
   if (!removed) {
-    return NextResponse.json({ ok: false, error: "Factura no encontrada." }, { status: 404 });
+    return NextResponse.json({ ok: false, error: "Invoice not found." }, { status: 404 });
   }
   return NextResponse.json({ ok: true });
 }

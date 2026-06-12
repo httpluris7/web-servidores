@@ -6,20 +6,20 @@ const stats = [
   {
     to: site.network.peers,
     suffix: "+",
-    label: "Peers de red",
-    context: "Interconexión directa en los principales IXP europeos para latencia mínima.",
+    label: "Network peers",
+    context: "Direct interconnection at the leading European IXPs for minimal latency.",
   },
   {
     to: 10,
     suffix: " Gbps",
-    label: "Por servidor",
-    context: "Uplink garantizado sin overselling, desde el VPS más pequeño al bare metal.",
+    label: "Per server",
+    context: "Guaranteed uplink with no overselling, from the smallest VPS to bare metal.",
   },
   {
     to: site.ddos.mitigationTbps,
     suffix: " Tbps",
-    label: "Mitigación DDoS",
-    context: "Capacidad de filtrado siempre activa en el borde, incluida en cada plan.",
+    label: "DDoS Mitigation",
+    context: "Always-on filtering capacity at the edge, included in every plan.",
   },
 ];
 

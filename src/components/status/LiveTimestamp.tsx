@@ -8,7 +8,7 @@ export function LiveTimestamp() {
 
   useEffect(() => {
     const fmt = () =>
-      new Intl.DateTimeFormat("es-ES", {
+      new Intl.DateTimeFormat("en-US", {
         dateStyle: "medium",
         timeStyle: "medium",
         timeZone: "Europe/Madrid",
@@ -20,7 +20,7 @@ export function LiveTimestamp() {
 
   return (
     <span className="font-mono text-xs text-[var(--color-fg-dim)]" suppressHydrationWarning>
-      Actualizado: {now ?? "—"} CET
+      Updated: {now ?? "—"} CET
     </span>
   );
 }

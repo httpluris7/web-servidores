@@ -7,9 +7,9 @@ const styles: Record<InvoiceStatus, string> = {
 };
 
 const labels: Record<InvoiceStatus, string> = {
-  pendiente: "Pendiente",
-  pagada: "Pagada",
-  cancelada: "Anulada",
+  pendiente: "Pending",
+  pagada: "Paid",
+  cancelada: "Cancelled",
 };
 
 /** Etiqueta de estado de factura, coloreada según su estado. */

@@ -6,8 +6,8 @@ import { RegisterForm } from "@/components/forms/RegisterForm";
 import { getSession } from "@/lib/session";
 
 export const metadata: Metadata = {
-  title: "Crear cuenta",
-  description: `Crea tu cuenta en ${site.brand} para gestionar tus servicios.`,
+  title: "Create account",
+  description: `Create your ${site.brand} account to manage your services.`,
   alternates: { canonical: "/registro" },
   robots: { index: false, follow: false },
 };
@@ -20,13 +20,13 @@ export default async function RegistroPage() {
     <>
       <PageHero
         index="/01"
-        kicker="Registro"
+        kicker="Sign up"
         title={
           <>
-            Crea tu <span className="text-accent">cuenta</span>.
+            Create your <span className="text-accent">account</span>.
           </>
         }
-        description="Regístrate para gestionar tus VPS, dedicados y facturación desde un único panel."
+        description="Sign up to manage your VPS, dedicated servers and billing from a single dashboard."
       />
 
       <section className="container-edge max-w-2xl py-16 md:py-20">

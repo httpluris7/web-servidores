@@ -12,9 +12,9 @@ type Metric = {
 };
 
 const metrics: Metric[] = [
-  { label: "Tráfico de red", base: 8.4, jitter: 0.6, decimals: 2, suffix: " Tbps" },
-  { label: "Paquetes mitigados", base: 1.42, jitter: 0.05, decimals: 2, suffix: "M/s" },
-  { label: "Servidores online", base: 14820, jitter: 12, decimals: 0, suffix: "" },
+  { label: "Network traffic", base: 8.4, jitter: 0.6, decimals: 2, suffix: " Tbps" },
+  { label: "Packets mitigated", base: 1.42, jitter: 0.05, decimals: 2, suffix: "M/s" },
+  { label: "Servers online", base: 14820, jitter: 12, decimals: 0, suffix: "" },
   { label: "Uptime 90 d", base: 99.997, jitter: 0.002, decimals: 3, suffix: " %" },
 ];
 
@@ -56,7 +56,7 @@ export function LiveMetrics() {
               className="font-mono text-lg tabular-nums text-[var(--color-fg)] transition-opacity duration-500"
               style={{ opacity: mounted ? 1 : 0.85 }}
             >
-              {(values[i] ?? m.base).toLocaleString("es-ES", {
+              {(values[i] ?? m.base).toLocaleString("en-US", {
                 minimumFractionDigits: m.decimals,
                 maximumFractionDigits: m.decimals,
               })}

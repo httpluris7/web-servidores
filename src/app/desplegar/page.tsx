@@ -7,8 +7,8 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
 export const metadata: Metadata = {
-  title: "Desplegar servidor",
-  description: "Elige tu plan VPS o servidor dedicado y despliégalo en 60 segundos.",
+  title: "Deploy server",
+  description: "Choose your VPS or dedicated server plan and deploy it in 60 seconds.",
   alternates: { canonical: "/desplegar" },
 };
 
@@ -47,13 +47,13 @@ export default function DeployPage() {
     <>
       <PageHero
         index="/ Deploy"
-        kicker="Desplegar servidor"
+        kicker="Deploy server"
         title={
           <>
-            Elige tu plan y <span className="text-accent">despliégalo</span>.
+            Choose your plan and <span className="text-accent">deploy it</span>.
           </>
         }
-        description="Selecciona un plan para ir al checkout. Misma red, mismo NVMe Gen4 y la misma protección DDoS en todos."
+        description="Select a plan to go to checkout. Same network, same NVMe Gen4 and the same DDoS protection on all of them."
       />
 
       <section className="container-edge py-16 md:py-20">

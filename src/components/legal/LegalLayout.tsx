@@ -26,13 +26,13 @@ export function LegalLayout({ index, title, intro, updated, sections }: Props) {
 
       <article className="container-edge max-w-3xl py-16 md:py-20">
         <p className="font-mono text-xs text-[var(--color-fg-dim)]">
-          Última actualización: {updated} · {site.legal.companyName}
+          Last updated: {updated} · {site.legal.companyName}
         </p>
 
         <div className="mt-4 rounded-[var(--radius-md)] border border-[var(--color-accent)]/40 bg-[var(--color-accent-glow)]/10 p-4 text-sm text-[var(--color-fg-muted)]">
-          <strong className="text-[var(--color-accent)]">Aviso para el cliente:</strong> esta página
-          es una plantilla estructurada. El contenido legal definitivo debe ser redactado o validado
-          por un abogado. Cada apartado indica qué falta por rellenar.
+          <strong className="text-[var(--color-accent)]">Notice to the client:</strong> this page
+          is a structured template. The final legal content must be drafted or validated
+          by a lawyer. Each section indicates what remains to be filled in.
         </div>
 
         <ol className="mt-12 space-y-10">
@@ -52,7 +52,7 @@ export function LegalLayout({ index, title, intro, updated, sections }: Props) {
         </ol>
 
         <div className="mt-12 border-t border-[var(--color-line)] pt-6 text-sm text-[var(--color-fg-muted)]">
-          Para cualquier consulta sobre esta política, escribe a{" "}
+          For any questions about this policy, email{" "}
           <a href={`mailto:${site.contact.support}`} className="text-[var(--color-accent)]">
             {site.contact.support}
           </a>

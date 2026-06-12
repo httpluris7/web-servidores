@@ -10,10 +10,10 @@ import { MobileMenu } from "./MobileMenu";
 import { AccountButton } from "./AccountButton";
 
 const navLinks = [
-  { href: "/red", label: "Red" },
-  { href: "/proteccion-ddos", label: "Protección DDoS" },
-  { href: "/casos-de-uso", label: "Casos de uso" },
-  { href: "/soporte", label: "Soporte", external: false },
+  { href: "/red", label: "Network" },
+  { href: "/proteccion-ddos", label: "DDoS Protection" },
+  { href: "/casos-de-uso", label: "Use cases" },
+  { href: "/soporte", label: "Support", external: false },
 ];
 
 export function Header() {
@@ -38,13 +38,13 @@ export function Header() {
     >
       <div className="container-edge flex h-16 items-center justify-between gap-6">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2" aria-label={`${site.brand} inicio`}>
+        <Link href="/" className="flex items-center gap-2" aria-label={`${site.brand} home`}>
           <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-accent)] shadow-[0_0_12px_var(--color-accent)]" />
           <span className="text-lg font-semibold tracking-tight">{site.brand}</span>
         </Link>
 
         {/* Nav desktop */}
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Principal">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
           {/* Mega-menú Productos */}
           <div
             className="relative"
@@ -58,7 +58,7 @@ export function Header() {
               onClick={() => setMegaOpen((v) => !v)}
               className="flex items-center gap-1.5 rounded px-3 py-2 text-sm text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-fg)]"
             >
-              Productos
+              Products
               <span
                 className="text-xs transition-transform duration-200"
                 style={{ transform: megaOpen ? "rotate(180deg)" : "none" }}
@@ -74,12 +74,12 @@ export function Header() {
                   {/* Columna VPS */}
                   <div className="rounded-[var(--radius-md)] p-3">
                     <div className="mb-3 flex items-center justify-between">
-                      <span className="mono-label">VPS por región</span>
+                      <span className="mono-label">VPS by region</span>
                       <Link
                         href="/vps"
                         className="text-xs text-[var(--color-accent)] hover:underline"
                       >
-                        Ver todo →
+                        View all →
                       </Link>
                     </div>
                     <ul className="space-y-0.5">
@@ -94,7 +94,7 @@ export function Header() {
                               {r.name}
                             </span>
                             <span className="font-mono text-xs text-[var(--color-fg-muted)]">
-                              desde {eur(r.priceFrom)}
+                              from {eur(r.priceFrom)}
                             </span>
                           </Link>
                         </li>
@@ -105,12 +105,12 @@ export function Header() {
                   {/* Columna Dedicados */}
                   <div className="rounded-[var(--radius-md)] bg-white/[0.02] p-3">
                     <div className="mb-3 flex items-center justify-between">
-                      <span className="mono-label">Dedicados</span>
+                      <span className="mono-label">Dedicated</span>
                       <Link
                         href="/dedicados"
                         className="text-xs text-[var(--color-accent)] hover:underline"
                       >
-                        Ver todo →
+                        View all →
                       </Link>
                     </div>
                     <ul className="space-y-0.5">
@@ -163,7 +163,7 @@ export function Header() {
             href={deployUrl()}
             className="hidden rounded-[var(--radius-md)] bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-black transition-all hover:bg-[var(--color-accent-dim)] hover:shadow-[0_0_30px_-6px_var(--color-accent-glow)] sm:inline-flex"
           >
-            Desplegar servidor
+            Deploy server
           </Link>
           <AccountButton />
           <MobileMenu />

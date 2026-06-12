@@ -10,13 +10,13 @@ export default function NotFound() {
           host not found
         </h1>
         <p className="mt-6 max-w-md text-lg text-[var(--color-fg-muted)]">
-          La ruta que buscas no resuelve a ningún recurso. Puede que el enlace haya cambiado o que
-          el servidor nunca existiera.
+          The path you are looking for does not resolve to any resource. The link may have changed
+          or the server may have never existed.
         </p>
 
         <div className="mt-8 max-w-md rounded-[var(--radius-md)] border border-[var(--color-line)] bg-[#070b12] p-4 font-mono text-sm">
           <span className="text-[var(--color-accent)]">$</span>{" "}
-          <span className="text-[var(--color-fg-muted)]">curl https://viahost.top/&lt;ruta&gt;</span>
+          <span className="text-[var(--color-fg-muted)]">curl https://viahost.top/&lt;path&gt;</span>
           <br />
           <span className="text-[var(--color-danger)]">↳ 404 · no route to resource</span>
         </div>
@@ -26,13 +26,13 @@ export default function NotFound() {
             href="/"
             className="inline-flex items-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-5 py-3 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
           >
-            Volver al inicio →
+            Back to home →
           </Link>
           <Link
             href="/vps"
             className="inline-flex items-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-5 py-3 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
           >
-            Ver productos
+            View products
           </Link>
         </div>
       </div>

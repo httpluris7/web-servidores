@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 const specRows: { key: keyof Plan; label: string }[] = [
   { key: "cpu", label: "CPU" },
   { key: "ram", label: "RAM" },
-  { key: "storage", label: "Disco" },
-  { key: "bandwidth", label: "Red" },
+  { key: "storage", label: "Storage" },
+  { key: "bandwidth", label: "Network" },
 ];
 
 export function PlanCard({ plan }: { plan: Plan }) {
@@ -22,7 +22,7 @@ export function PlanCard({ plan }: { plan: Plan }) {
     >
       {plan.popular && (
         <span className="absolute -top-2.5 left-6 rounded bg-[var(--color-accent)] px-2 py-0.5 font-mono text-[0.65rem] font-medium uppercase tracking-wider text-black">
-          Popular
+          Most popular
         </span>
       )}
 
@@ -30,7 +30,7 @@ export function PlanCard({ plan }: { plan: Plan }) {
 
       <div className="mt-4 flex items-baseline gap-1">
         <span className="font-mono text-4xl font-semibold tracking-tight">{eur(plan.price)}</span>
-        <span className="text-sm text-[var(--color-fg-muted)]">/mes</span>
+        <span className="text-sm text-[var(--color-fg-muted)]">/mo</span>
       </div>
 
       <dl className="mt-6 space-y-2.5 border-t border-[var(--color-line)] pt-6 text-sm">
@@ -51,7 +51,7 @@ export function PlanCard({ plan }: { plan: Plan }) {
             : "border border-[var(--color-line-strong)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
         )}
       >
-        Contratar →
+        Order →
       </Link>
     </div>
   );

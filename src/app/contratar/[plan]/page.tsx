@@ -20,8 +20,8 @@ export async function generateMetadata({
   const located = getPlanById(id);
   if (!located) return {};
   return {
-    title: `Contratar ${located.plan.name}`,
-    description: `Despliega ${located.plan.name} (${located.lineTitle}) en 60 segundos. ${located.plan.cpu}, ${located.plan.ram}.`,
+    title: `Order ${located.plan.name}`,
+    description: `Deploy ${located.plan.name} (${located.lineTitle}) in 60 seconds. ${located.plan.cpu}, ${located.plan.ram}.`,
     alternates: { canonical: `/contratar/${id}` },
     robots: { index: false, follow: true },
   };
@@ -38,13 +38,13 @@ export default async function OrderPage({ params }: { params: Promise<Params> })
     <>
       <PageHero
         index="/ Checkout"
-        kicker={`Contratar · ${located.lineTitle}`}
+        kicker={`Order · ${located.lineTitle}`}
         title={
           <>
-            Despliega tu <span className="text-accent">{located.plan.name}</span>.
+            Deploy your <span className="text-accent">{located.plan.name}</span>.
           </>
         }
-        description="Revisa la configuración, completa tus datos y confirma. El provisioning empieza en cuanto se confirma el pago."
+        description="Review the configuration, complete your details and confirm. Provisioning begins as soon as payment is confirmed."
       />
 
       <section className="container-edge py-16 md:py-20">
@@ -55,9 +55,9 @@ export default async function OrderPage({ params }: { params: Promise<Params> })
         />
 
         <p className="mt-10 text-sm text-[var(--color-fg-muted)]">
-          ¿Prefieres otra configuración?{" "}
+          Prefer a different configuration?{" "}
           <Link href="/desplegar" className="text-[var(--color-accent)] hover:underline">
-            Ver todos los planes
+            View all plans
           </Link>
           .
         </p>

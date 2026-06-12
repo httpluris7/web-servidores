@@ -14,8 +14,8 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LiveTimestamp } from "@/components/status/LiveTimestamp";
 
 export const metadata: Metadata = {
-  title: "Estado del sistema",
-  description: `Estado en tiempo real de los servicios y regiones de ${site.brand}: provisioning, red, mitigación DDoS y más.`,
+  title: "System status",
+  description: `Real-time status of ${site.brand} services and regions: provisioning, network, DDoS mitigation and more.`,
   alternates: { canonical: "/estado" },
 };
 
@@ -37,19 +37,19 @@ export default function StatusPage() {
     <>
       <PageHero
         index="/01"
-        kicker="Estado del sistema"
+        kicker="System status"
         title={
           allOk ? (
             <>
-              Todos los sistemas <span className="text-accent">operativos</span>.
+              All systems <span className="text-accent">operational</span>.
             </>
           ) : (
             <>
-              Estado <span className="text-accent">en vivo</span> del servicio.
+              <span className="text-accent">Live</span> service status.
             </>
           )
         }
-        description="Disponibilidad de servicios y regiones en tiempo real. Suscríbete a las actualizaciones desde el panel."
+        description="Real-time availability of services and regions. Subscribe to updates from the dashboard."
       >
         <div className="flex flex-wrap items-center gap-4">
           <span
@@ -57,7 +57,7 @@ export default function StatusPage() {
             style={{ borderColor: statusMeta[overall].color, color: statusMeta[overall].color }}
           >
             <span className={`inline-block h-2.5 w-2.5 rounded-full ${statusMeta[overall].dot}`} />
-            {allOk ? "Operativo" : statusMeta[overall].label}
+            {allOk ? "Operational" : statusMeta[overall].label}
           </span>
           <LiveTimestamp />
         </div>
@@ -65,7 +65,7 @@ export default function StatusPage() {
 
       {/* Servicios */}
       <section className="container-edge py-16 md:py-20">
-        <SectionHeader index="/02" kicker="Servicios" title="Plataforma." />
+        <SectionHeader index="/02" kicker="Services" title="Platform." />
         <ul className="mt-10 divide-y divide-[var(--color-line)] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)]">
           {services.map((s) => (
             <li key={s.name} className="flex items-center justify-between gap-4 bg-[var(--color-bg-raised)] px-5 py-4">
@@ -82,7 +82,7 @@ export default function StatusPage() {
       {/* Regiones */}
       <section className="border-t border-[var(--color-line)] bg-[var(--color-bg-raised)]">
         <div className="container-edge py-16 md:py-20">
-          <SectionHeader index="/03" kicker="Regiones" title="Cobertura europea." />
+          <SectionHeader index="/03" kicker="Regions" title="European coverage." />
           <div className="mt-10 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-2 lg:grid-cols-3">
             {regions.map((r) => {
               const level = regionStatus[r.slug] ?? "operational";
@@ -102,7 +102,7 @@ export default function StatusPage() {
 
       {/* Incidencias */}
       <section className="container-edge py-16 md:py-20">
-        <SectionHeader index="/04" kicker="Histórico" title="Incidencias recientes." />
+        <SectionHeader index="/04" kicker="History" title="Recent incidents." />
         <ul className="mt-10 space-y-4">
           {incidents.map((inc) => (
             <li
@@ -115,7 +115,7 @@ export default function StatusPage() {
                   className="font-mono text-xs"
                   style={{ color: inc.resolved ? "var(--color-accent)" : "#febc2e" }}
                 >
-                  {inc.resolved ? "● resuelto" : "● en seguimiento"}
+                  {inc.resolved ? "● resolved" : "● monitoring"}
                 </span>
               </div>
               <p className="mt-2 text-sm text-[var(--color-fg-muted)]">{inc.detail}</p>
@@ -125,7 +125,7 @@ export default function StatusPage() {
         </ul>
         <p className="mt-8 font-mono text-xs text-[var(--color-fg-dim)]">
           {/* TODO: conectar a una fuente de monitorización real (status API). */}
-          Datos de demostración · pendiente de conectar a monitorización real.
+          Demo data · pending connection to real monitoring.
         </p>
       </section>
     </>

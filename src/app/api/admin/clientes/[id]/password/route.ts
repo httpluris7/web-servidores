@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const admin = await getAdminSession();
   if (!admin) {
-    return NextResponse.json({ ok: false, error: "No autorizado." }, { status: 403 });
+    return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 403 });
   }
 
   const { id } = await params;
@@ -23,7 +23,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ ok: false, error: "JSON inválido." }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Invalid JSON." }, { status: 400 });
   }
 
   const password = typeof body.password === "string" ? body.password : "";
@@ -32,22 +32,22 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const errors: Record<string, string> = {};
   if (!isPasswordValid(password)) {
     errors.password =
-      "La contraseña debe tener mínimo 8 caracteres, con una mayúscula, un número y un símbolo especial.";
+      "The password must be at least 8 characters long, with an uppercase letter, a number and a special symbol.";
   }
-  if (passwordConfirm !== password) errors.passwordConfirm = "Las contraseñas no coinciden.";
+  if (passwordConfirm !== password) errors.passwordConfirm = "The passwords do not match.";
   if (Object.keys(errors).length > 0) {
     return NextResponse.json({ ok: false, errors }, { status: 422 });
   }
 
   const cliente = await getPublicUserById(id);
   if (!cliente) {
-    return NextResponse.json({ ok: false, error: "Cliente no encontrado." }, { status: 404 });
+    return NextResponse.json({ ok: false, error: "Customer not found." }, { status: 404 });
   }
 
   const updated = await updateUserPassword(id, password);
   if (!updated) {
     return NextResponse.json(
-      { ok: false, error: "No se pudo actualizar la contraseña. Inténtalo de nuevo." },
+      { ok: false, error: "The password could not be updated. Please try again." },
       { status: 500 }
     );
   }

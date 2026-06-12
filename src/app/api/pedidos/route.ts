@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ ok: false, error: "JSON inválido." }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Invalid JSON." }, { status: 400 });
   }
 
   const name = clean(body.name, 120);
@@ -19,11 +19,11 @@ export async function POST(req: Request) {
   const region = clean(body.region, 60);
 
   const errors: Record<string, string> = {};
-  if (name.length < 2) errors.name = "Indica tu nombre o empresa.";
-  if (!emailRe.test(email)) errors.email = "Introduce un email válido.";
+  if (name.length < 2) errors.name = "Enter your name or company.";
+  if (!emailRe.test(email)) errors.email = "Enter a valid email.";
 
   const located = getPlanById(planId);
-  if (!located) errors.planId = "Plan no válido.";
+  if (!located) errors.planId = "Invalid plan.";
 
   if (Object.keys(errors).length > 0) {
     return NextResponse.json({ ok: false, errors }, { status: 422 });
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     });
   } catch {
     return NextResponse.json(
-      { ok: false, error: "No se pudo registrar el pedido. Inténtalo de nuevo." },
+      { ok: false, error: "The order could not be saved. Please try again." },
       { status: 500 }
     );
   }
