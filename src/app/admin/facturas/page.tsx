@@ -72,7 +72,14 @@ export default async function FacturasPage() {
                     key={f.id}
                     className="border-b border-[var(--color-line)] last:border-0 align-top transition-colors hover:bg-white/[0.02]"
                   >
-                    <td className="px-4 py-3 font-mono text-xs text-[var(--color-fg-muted)]">{f.numero}</td>
+                    <td className="px-4 py-3">
+                      <Link
+                        href={`/admin/facturas/${f.id}`}
+                        className="font-mono text-xs text-[var(--color-fg-muted)] underline-offset-2 hover:text-[var(--color-accent)] hover:underline"
+                      >
+                        {f.numero}
+                      </Link>
+                    </td>
                     <td className="px-4 py-3">
                       {f.userId ? (
                         <Link

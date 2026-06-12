@@ -195,3 +195,45 @@ body {
     animation: none !important;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Impresión: aísla la hoja de la factura (.invoice-sheet) para guardar a PDF.
+   Oculta toda la maqueta (header, footer, nav admin, botones) y deja solo el
+   documento, en blanco sobre blanco y sin sombras ni bordes redondeados.
+   -------------------------------------------------------------------------- */
+@media print {
+  @page {
+    margin: 16mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+    overflow: visible !important;
+  }
+  /* Oculta la tinta de todo salvo la hoja, conservando el flujo del layout. */
+  body * {
+    visibility: hidden !important;
+  }
+  .invoice-sheet,
+  .invoice-sheet * {
+    visibility: visible !important;
+  }
+  .invoice-sheet {
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    /* Asegura que los colores claros del documento se respeten al imprimir. */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

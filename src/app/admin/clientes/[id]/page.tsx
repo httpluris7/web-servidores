@@ -92,7 +92,13 @@ export default async function ClienteDetallePage({
               <li key={f.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
                 <div className="min-w-0">
                   <p className="text-sm">
-                    <span className="font-mono text-xs text-[var(--color-fg-muted)]">{f.numero}</span> · {f.concepto}
+                    <Link
+                      href={`/admin/facturas/${f.id}`}
+                      className="font-mono text-xs text-[var(--color-fg-muted)] underline-offset-2 hover:text-[var(--color-accent)] hover:underline"
+                    >
+                      {f.numero}
+                    </Link>{" "}
+                    · {f.concepto}
                   </p>
                   <p className="text-xs text-[var(--color-fg-muted)]">
                     Emitida {fmtDate(f.emitidaAt)} · vence {fmtDate(f.vencimientoAt)}
