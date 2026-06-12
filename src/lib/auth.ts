@@ -1,4 +1,4 @@
-import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
 import { appendFile, mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -41,6 +41,24 @@ export function hashPassword(password: string): string {
   const salt = randomBytes(16);
   const derived = scryptSync(password, salt, 64);
   return `scrypt$${salt.toString("hex")}$${derived.toString("hex")}`;
+}
+
+/**
+ * "Versión de autenticación" de un usuario: huella corta y estable derivada del
+ * hash de su contraseña. Se incrusta en la cookie de sesión; cuando la
+ * contraseña cambia, el hash cambia y con él esta huella, de modo que toda
+ * cookie emitida con la huella anterior queda invalidada. Es un derivado
+ * unidireccional: no expone el hash.
+ */
+export function authVersionFromHash(passwordHash: string): string {
+  return createHash("sha256").update(passwordHash).digest("base64url").slice(0, 22);
+}
+
+/** Huella de autenticación del usuario indicado (por id), o null si no existe. */
+export async function getUserAuthVersion(id: string): Promise<string | null> {
+  const users = await readAllUsers();
+  const user = users.find((u) => u.id === id);
+  return user ? authVersionFromHash(user.passwordHash) : null;
 }
 
 /** Verifica una contraseña contra el hash almacenado (comparación timing-safe). */

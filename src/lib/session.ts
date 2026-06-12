@@ -1,13 +1,20 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
+import { getUserAuthVersion } from "./auth";
 
 /**
- * Sesión stateless mediante cookie firmada (HMAC-SHA256).
+ * Sesión semi-stateless mediante cookie firmada (HMAC-SHA256).
  *
- * La cookie es `httpOnly` y guarda `{ uid, email, exp }` firmado con
- * `AUTH_SECRET`. No requiere almacén de sesiones: si la firma es válida y no ha
- * expirado, la sesión es buena. Para invalidar todas las sesiones basta con
- * rotar `AUTH_SECRET`.
+ * La cookie es `httpOnly` y guarda `{ uid, email, pv, exp }` firmado con
+ * `AUTH_SECRET`. `pv` es la "versión de autenticación" del usuario (huella
+ * derivada del hash de su contraseña). Al validar, se recalcula esa huella
+ * contra el usuario almacenado: si la contraseña ha cambiado desde que se emitió
+ * la cookie, `pv` ya no coincide y la sesión se considera inválida. Así, cambiar
+ * la contraseña invalida automáticamente todas las cookies anteriores.
+ *
+ * Esto añade una lectura del almacén de usuarios por petición autenticada
+ * (asumible a esta escala, como el resto del módulo). Para invalidar TODAS las
+ * sesiones de golpe sigue bastando con rotar `AUTH_SECRET`.
  */
 
 const COOKIE_NAME = "vh_session";
@@ -29,13 +36,19 @@ function safeEqual(a: string, b: string): boolean {
   return ab.length === bb.length && timingSafeEqual(ab, bb);
 }
 
-export type SessionData = { uid: string; email: string; exp: number };
+export type SessionData = { uid: string; email: string; pv: string; exp: number };
 
-/** Crea la cookie de sesión para un usuario autenticado. */
+/**
+ * Crea la cookie de sesión para un usuario autenticado. Incrusta la huella de
+ * autenticación vigente del usuario (`pv`), de modo que la cookie quede ligada a
+ * su contraseña actual. Llamar de nuevo a `createSession` tras un cambio de
+ * contraseña re-emite la cookie del dispositivo actual con la nueva huella.
+ */
 export async function createSession(user: { id: string; email: string }): Promise<void> {
   const payload: SessionData = {
     uid: user.id,
     email: user.email,
+    pv: (await getUserAuthVersion(user.id)) ?? "",
     exp: Date.now() + MAX_AGE_SECONDS * 1000,
   };
   const data = Buffer.from(JSON.stringify(payload)).toString("base64url");
@@ -63,6 +76,12 @@ export async function getSession(): Promise<SessionData | null> {
   try {
     const payload = JSON.parse(Buffer.from(data, "base64url").toString("utf8")) as SessionData;
     if (typeof payload.exp !== "number" || payload.exp < Date.now()) return null;
+
+    // Liga la sesión a la contraseña vigente: si cambió (o el usuario ya no
+    // existe), la huella deja de coincidir y la sesión queda invalidada.
+    const currentPv = await getUserAuthVersion(payload.uid);
+    if (!currentPv || currentPv !== payload.pv) return null;
+
     return payload;
   } catch {
     return null;

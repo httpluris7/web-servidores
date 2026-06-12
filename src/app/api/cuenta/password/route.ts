@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { isPasswordValid } from "@/lib/password";
 import { findUserByEmail, updateUserPassword, verifyPassword } from "@/lib/auth";
-import { getSession } from "@/lib/session";
+import { createSession, getSession } from "@/lib/session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -62,6 +62,11 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+
+  // El cambio invalida toda cookie emitida con la huella anterior (resto de
+  // dispositivos). Re-emitimos la del dispositivo actual con la nueva huella
+  // para no cerrar la sesión desde la que se hizo el cambio.
+  await createSession({ id: user.id, email: user.email });
 
   return NextResponse.json({ ok: true });
 }
