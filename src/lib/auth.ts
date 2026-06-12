@@ -96,6 +96,16 @@ export async function getPublicUserById(id: string): Promise<PublicUser | null> 
 }
 
 /**
+ * Lista todos los usuarios registrados (sin hash), del más reciente al más
+ * antiguo. Pensado para el panel de administración; protégelo siempre con un
+ * guard de admin antes de exponerlo.
+ */
+export async function listUsers(): Promise<PublicUser[]> {
+  const users = await readAllUsers();
+  return users.map(toPublic).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+/**
  * Crea y persiste un usuario nuevo. Lanza `EMAIL_TAKEN` si el email ya existe.
  * Nota: el control de duplicados es best-effort (sin lock de fichero), suficiente
  * para esta escala; una BD real aportaría unicidad transaccional.

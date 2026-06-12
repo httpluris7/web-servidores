@@ -1,4 +1,4 @@
-import { appendFile, mkdir } from "node:fs/promises";
+import { appendFile, mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 /**
@@ -38,6 +38,32 @@ export async function saveLead(kind: LeadKind, payload: Record<string, unknown>)
       // El webhook es best-effort: si falla, el lead ya quedó persistido en disco.
     }
   }
+}
+
+export type SavedLead = Record<string, unknown> & { receivedAt?: string };
+
+/**
+ * Lee los leads persistidos de un tipo (`contacto` | `pedido`), del más
+ * reciente al más antiguo. Para uso del panel de administración: protégelo
+ * siempre con un guard de admin. Si el fichero no existe, devuelve [].
+ */
+export async function readLeads(kind: LeadKind): Promise<SavedLead[]> {
+  let content: string;
+  try {
+    content = await readFile(path.join(DATA_DIR, `${kind}s.jsonl`), "utf8");
+  } catch {
+    return [];
+  }
+  const out: SavedLead[] = [];
+  for (const line of content.split("\n")) {
+    if (!line.trim()) continue;
+    try {
+      out.push(JSON.parse(line) as SavedLead);
+    } catch {
+      // Línea corrupta: la ignoramos.
+    }
+  }
+  return out.reverse();
 }
 
 export const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

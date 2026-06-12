@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-type Me = { id: string; nombre: string; email: string } | null;
+type Me = { id: string; nombre: string; email: string; isAdmin?: boolean } | null;
 
 /** Icono de persona (heroicons user-circle, outline). */
 function PersonIcon() {
@@ -104,6 +104,16 @@ export function AccountButton() {
               <Link href="/cuenta" role="menuitem" onClick={() => setOpen(false)} className={itemClass}>
                 Mi perfil
               </Link>
+              {me.isAdmin && (
+                <Link
+                  href="/admin"
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className={itemClass + " text-[var(--color-accent)]"}
+                >
+                  Panel de administración
+                </Link>
+              )}
               <button
                 type="button"
                 role="menuitem"

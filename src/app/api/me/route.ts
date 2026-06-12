@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
+import { isAdminEmail } from "@/lib/admin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,6 +13,13 @@ export async function GET() {
 
   const user = await getPublicUserById(session.uid);
   return NextResponse.json({
-    user: user ? { id: user.id, nombre: user.nombre, email: user.email } : null,
+    user: user
+      ? {
+          id: user.id,
+          nombre: user.nombre,
+          email: user.email,
+          isAdmin: isAdminEmail(user.email),
+        }
+      : null,
   });
 }
