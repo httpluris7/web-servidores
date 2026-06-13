@@ -22,6 +22,7 @@ export type StoredUser = {
   apellidos: string;
   direccion: string;
   ciudad: string;
+  estado: string;
   pais: string;
   telefono: string;
   codigoPostal: string;

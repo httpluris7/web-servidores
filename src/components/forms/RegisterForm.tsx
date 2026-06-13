@@ -10,6 +10,7 @@ type FieldKey =
   | "apellidos"
   | "direccion"
   | "ciudad"
+  | "estado"
   | "pais"
   | "telefono"
   | "codigoPostal"
@@ -24,6 +25,7 @@ const empty: Values = {
   apellidos: "",
   direccion: "",
   ciudad: "",
+  estado: "",
   pais: "",
   telefono: "",
   codigoPostal: "",
@@ -50,6 +52,7 @@ export function RegisterForm() {
     if (values.apellidos.trim().length < 2) e.apellidos = "Enter your last name.";
     if (values.direccion.trim().length < 3) e.direccion = "Enter your address.";
     if (values.ciudad.trim().length < 2) e.ciudad = "Enter your city.";
+    if (values.estado.trim().length < 2) e.estado = "Enter your state.";
     if (values.pais.trim().length < 2) e.pais = "Enter your country.";
     if (!isPhoneValid(values.telefono)) e.telefono = "Enter a valid phone number.";
     if (values.codigoPostal.trim().length < 3) e.codigoPostal = "Enter your postal code.";
@@ -109,12 +112,20 @@ export function RegisterForm() {
         <FieldError>{errors.direccion}</FieldError>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-3">
+      <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <Label htmlFor="ciudad" required>City</Label>
           <Input id="ciudad" value={values.ciudad} onChange={set("ciudad")} placeholder="Madrid" autoComplete="address-level2" aria-invalid={!!errors.ciudad} />
           <FieldError>{errors.ciudad}</FieldError>
         </div>
+        <div>
+          <Label htmlFor="estado" required>State</Label>
+          <Input id="estado" value={values.estado} onChange={set("estado")} placeholder="Madrid" autoComplete="address-level1" aria-invalid={!!errors.estado} />
+          <FieldError>{errors.estado}</FieldError>
+        </div>
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <Label htmlFor="codigoPostal" required>Postal code</Label>
           <Input id="codigoPostal" value={values.codigoPostal} onChange={set("codigoPostal")} placeholder="28013" autoComplete="postal-code" aria-invalid={!!errors.codigoPostal} />

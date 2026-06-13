@@ -24,6 +24,7 @@ const fields: { key: string; label: string }[] = [
   { key: "direccion", label: "Address" },
   { key: "codigoPostal", label: "Postal code" },
   { key: "ciudad", label: "City" },
+  { key: "estado", label: "State" },
   { key: "pais", label: "Country" },
 ];
 

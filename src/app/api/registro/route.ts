@@ -19,6 +19,7 @@ export async function POST(req: Request) {
   const apellidos = clean(body.apellidos, 120);
   const direccion = clean(body.direccion, 200);
   const ciudad = clean(body.ciudad, 80);
+  const estado = clean(body.estado, 80);
   const pais = clean(body.pais, 80);
   const telefono = clean(body.telefono, 30);
   const codigoPostal = clean(body.codigoPostal, 16);
@@ -30,6 +31,7 @@ export async function POST(req: Request) {
   if (apellidos.length < 2) errors.apellidos = "Enter your last name.";
   if (direccion.length < 3) errors.direccion = "Enter your address.";
   if (ciudad.length < 2) errors.ciudad = "Enter your city.";
+  if (estado.length < 2) errors.estado = "Enter your state.";
   if (pais.length < 2) errors.pais = "Enter your country.";
   if (!isPhoneValid(telefono)) errors.telefono = "Enter a valid phone number.";
   if (codigoPostal.length < 3) errors.codigoPostal = "Enter your postal code.";
@@ -50,6 +52,7 @@ export async function POST(req: Request) {
       apellidos,
       direccion,
       ciudad,
+      estado,
       pais,
       telefono,
       codigoPostal,
