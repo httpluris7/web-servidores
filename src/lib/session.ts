@@ -21,9 +21,21 @@ const COOKIE_NAME = "vh_session";
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 días
 
 function secret(): string {
-  // En producción debe definirse AUTH_SECRET (ver .env). El fallback solo evita
-  // que reviente en desarrollo si alguien olvida configurarlo.
-  return process.env.AUTH_SECRET || "dev-insecure-secret-cambia-esto";
+  const configured = process.env.AUTH_SECRET;
+  // En producción exigimos un secreto fuerte. Si falta (o es demasiado corto),
+  // fallamos en cerrado: preferimos un 500 ruidoso a firmar sesiones con un
+  // secreto público —lo que permitiría falsificar cookies y suplantar al admin—.
+  if (process.env.NODE_ENV === "production") {
+    if (!configured || configured.length < 16) {
+      throw new Error(
+        "AUTH_SECRET no está definido (o es demasiado corto) en producción. " +
+          "Se rechaza arrancar con un secreto de sesión inseguro."
+      );
+    }
+    return configured;
+  }
+  // El fallback solo evita que reviente en desarrollo si alguien lo olvida.
+  return configured || "dev-insecure-secret-cambia-esto";
 }
 
 function sign(data: string): string {

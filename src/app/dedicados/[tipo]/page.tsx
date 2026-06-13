@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { dedicatedTypes, getDedicatedType } from "@/data/products";
 import { dedicatedFaq } from "@/data/faq";
 import { site } from "@/data/site";
+import { jsonLdScript } from "@/lib/utils";
 import { PageHero } from "@/components/ui/PageHero";
 import { PlanGrid } from "@/components/product/PlanGrid";
 import { FaqSection } from "@/components/ui/FaqSection";
@@ -54,7 +55,7 @@ export default async function DedicatedTypePage({ params }: { params: Promise<Pa
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(productJsonLd) }}
       />
       <PageHero
         index="/ Dedicated"

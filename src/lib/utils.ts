@@ -14,6 +14,22 @@ export function eur(value: number, decimals = 0): string {
 }
 
 /**
+ * Serializa un objeto para incrustarlo como JSON-LD dentro de un <script>.
+ * Escapa los caracteres que permitirían romper la etiqueta (`</script>`) o
+ * inyectar HTML, además de los separadores de línea U+2028/U+2029 (válidos en
+ * JSON pero ilegales en JS). Hoy los datos son estáticos, pero esto evita un
+ * XSS si en el futuro entra contenido dinámico en el structured data.
+ */
+export function jsonLdScript(data: unknown): string {
+  return JSON.stringify(data)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
+
+/**
  * Devuelve `next` si es una ruta interna segura (empieza por "/" pero no por
  * "//", que sería protocol-relative hacia otro host). En caso contrario, null.
  * Evita open-redirects al usar `?next=` para volver tras registro/login.

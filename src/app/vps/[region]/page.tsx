@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { regions, getRegion, vps } from "@/data/products";
 import { vpsFaq } from "@/data/faq";
 import { site } from "@/data/site";
-import { eur } from "@/lib/utils";
+import { eur, jsonLdScript } from "@/lib/utils";
 import { PageHero } from "@/components/ui/PageHero";
 import { PlanGrid } from "@/components/product/PlanGrid";
 import { FaqSection } from "@/components/ui/FaqSection";
@@ -55,7 +55,7 @@ export default async function RegionPage({ params }: { params: Promise<Params> }
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(productJsonLd) }}
       />
       <PageHero
         index="/ VPS"

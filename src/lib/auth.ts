@@ -62,6 +62,19 @@ export async function getUserAuthVersion(id: string): Promise<string | null> {
   return user ? authVersionFromHash(user.passwordHash) : null;
 }
 
+/**
+ * Quema el mismo tiempo de cómputo que una verificación real, sin comparar
+ * contra ningún usuario. Se usa en login cuando el email no existe: así el
+ * coste de scrypt es equivalente exista o no la cuenta, y el tiempo de
+ * respuesta deja de revelar qué emails están registrados (enumeración).
+ */
+let dummyHash: string | null = null;
+export function burnPasswordTime(password: string): void {
+  if (!dummyHash) dummyHash = hashPassword("timing-equalizer-not-a-real-password");
+  // El resultado se descarta a propósito; solo nos interesa el coste constante.
+  verifyPassword(password, dummyHash);
+}
+
 /** Verifica una contraseña contra el hash almacenado (comparación timing-safe). */
 export function verifyPassword(password: string, stored: string): boolean {
   const [scheme, saltHex, hashHex] = stored.split("$");

@@ -3,11 +3,21 @@ import { clean } from "@/lib/leads";
 import { emailRe, isPasswordValid, isPhoneValid } from "@/lib/password";
 import { createUser } from "@/lib/auth";
 import { createSession } from "@/lib/session";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  // Anti-abuso: como máximo 5 altas por IP cada 10 minutos.
+  const limit = rateLimit(`registro:${clientIp(req)}`, { limit: 5, windowMs: 10 * 60_000 });
+  if (!limit.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many attempts. Please try again in a few minutes." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await req.json();
