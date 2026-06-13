@@ -4,6 +4,7 @@ import { site } from "@/data/site";
 import { PageHero } from "@/components/ui/PageHero";
 import { LoginForm } from "@/components/forms/LoginForm";
 import { getSession } from "@/lib/session";
+import { safeInternalPath } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Log in",
@@ -12,8 +13,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function AccederPage() {
-  if (await getSession()) redirect("/cuenta");
+export default async function AccederPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const next = safeInternalPath((await searchParams).next);
+
+  if (await getSession()) redirect(next ?? "/cuenta");
 
   return (
     <>
@@ -29,7 +36,7 @@ export default async function AccederPage() {
       />
 
       <section className="container-edge max-w-md py-16 md:py-20">
-        <LoginForm />
+        <LoginForm next={next ?? undefined} />
       </section>
     </>
   );

@@ -8,6 +8,7 @@ import { eur } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { MobileMenu } from "./MobileMenu";
 import { AccountButton } from "./AccountButton";
+import { CartButton } from "@/components/cart/CartButton";
 
 const navLinks = [
   { href: "/red", label: "Network" },
@@ -165,6 +166,7 @@ export function Header() {
           >
             Deploy server
           </Link>
+          <CartButton />
           <AccountButton />
           <MobileMenu />
         </div>

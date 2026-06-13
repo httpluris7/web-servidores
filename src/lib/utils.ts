@@ -13,6 +13,17 @@ export function eur(value: number, decimals = 0): string {
   }).format(value);
 }
 
+/**
+ * Devuelve `next` si es una ruta interna segura (empieza por "/" pero no por
+ * "//", que sería protocol-relative hacia otro host). En caso contrario, null.
+ * Evita open-redirects al usar `?next=` para volver tras registro/login.
+ */
+export function safeInternalPath(next: unknown): string | null {
+  if (typeof next !== "string") return null;
+  if (!next.startsWith("/") || next.startsWith("//")) return null;
+  return next;
+}
+
 /** Formatea una fecha ISO al estilo es-ES (dd/mm/aaaa). Devuelve "—" si no es válida. */
 export function fmtDate(iso: string | null | undefined, withTime = false): string {
   if (!iso) return "—";

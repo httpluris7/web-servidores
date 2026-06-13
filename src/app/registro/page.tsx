@@ -4,6 +4,7 @@ import { site } from "@/data/site";
 import { PageHero } from "@/components/ui/PageHero";
 import { RegisterForm } from "@/components/forms/RegisterForm";
 import { getSession } from "@/lib/session";
+import { safeInternalPath } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Create account",
@@ -12,9 +13,15 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function RegistroPage() {
-  // Si ya hay sesión, no tiene sentido registrarse de nuevo.
-  if (await getSession()) redirect("/cuenta");
+export default async function RegistroPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const next = safeInternalPath((await searchParams).next);
+
+  // Si ya hay sesión, no tiene sentido registrarse de nuevo: vamos a `next` o cuenta.
+  if (await getSession()) redirect(next ?? "/cuenta");
 
   return (
     <>
@@ -30,7 +37,7 @@ export default async function RegistroPage() {
       />
 
       <section className="container-edge max-w-2xl py-16 md:py-20">
-        <RegisterForm />
+        <RegisterForm next={next ?? undefined} />
       </section>
     </>
   );

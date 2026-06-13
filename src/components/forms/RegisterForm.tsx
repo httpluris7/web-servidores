@@ -33,7 +33,7 @@ const empty: Values = {
   password: "",
 };
 
-export function RegisterForm() {
+export function RegisterForm({ next }: { next?: string }) {
   const router = useRouter();
   const [values, setValues] = useState<Values>(empty);
   const [terms, setTerms] = useState(false);
@@ -82,8 +82,9 @@ export function RegisterForm() {
         setStatus("idle");
         return;
       }
-      // Registro correcto: ya hay sesión iniciada → al área de cuenta.
-      router.push("/cuenta");
+      // Registro correcto: ya hay sesión iniciada → volvemos a `next` (p. ej. el
+      // carrito para completar el pedido) o, por defecto, al área de cuenta.
+      router.push(next || "/cuenta");
       router.refresh();
     } catch {
       setFormError("Connection error. Check your network and try again.");
@@ -207,7 +208,13 @@ export function RegisterForm() {
 
       <p className="text-sm text-[var(--color-fg-muted)]">
         Already have an account?{" "}
-        <a href="/acceder" className="text-[var(--color-accent)] underline">Log in</a>.
+        <a
+          href={next ? `/acceder?next=${encodeURIComponent(next)}` : "/acceder"}
+          className="text-[var(--color-accent)] underline"
+        >
+          Log in
+        </a>
+        .
       </p>
     </form>
   );

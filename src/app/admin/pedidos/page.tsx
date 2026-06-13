@@ -38,10 +38,19 @@ export default async function PedidosPage() {
                       <p className="font-medium">{str(p.name) || "—"}</p>
                       <p className="text-xs text-[var(--color-fg-muted)]">{str(p.email)}</p>
                     </td>
-                    <td className="px-4 py-3">{str(p.planName) || str(p.planId) || "—"}</td>
+                    <td className="px-4 py-3">
+                      {str(p.planName) || str(p.planId) || "—"}
+                      {typeof p.qty === "number" && p.qty > 1 && (
+                        <span className="font-mono text-xs text-[var(--color-fg-muted)]"> ×{p.qty}</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-[var(--color-fg-muted)]">{str(p.region) || "—"}</td>
                     <td className="px-4 py-3 text-right font-mono">
-                      {typeof p.price === "number" ? `${eur(p.price)}/mo` : "—"}
+                      {typeof p.lineTotal === "number"
+                        ? `${eur(p.lineTotal)}/mo`
+                        : typeof p.price === "number"
+                          ? `${eur(p.price)}/mo`
+                          : "—"}
                     </td>
                     <td className="px-4 py-3 font-mono text-xs text-[var(--color-fg-muted)]">
                       {fmtDate(str(p.receivedAt) || null, true)}

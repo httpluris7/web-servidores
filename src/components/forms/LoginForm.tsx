@@ -7,7 +7,7 @@ import { emailRe } from "@/lib/password";
 
 type Errors = Partial<Record<"email" | "password", string>>;
 
-export function LoginForm() {
+export function LoginForm({ next }: { next?: string }) {
   const router = useRouter();
   const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
@@ -41,7 +41,7 @@ export function LoginForm() {
         setStatus("idle");
         return;
       }
-      router.push("/cuenta");
+      router.push(next || "/cuenta");
       router.refresh();
     } catch {
       setFormError("Connection error. Check your network and try again.");
@@ -93,7 +93,13 @@ export function LoginForm() {
 
       <p className="text-sm text-[var(--color-fg-muted)]">
         Don&apos;t have an account?{" "}
-        <a href="/registro" className="text-[var(--color-accent)] underline">Sign up</a>.
+        <a
+          href={next ? `/registro?next=${encodeURIComponent(next)}` : "/registro"}
+          className="text-[var(--color-accent)] underline"
+        >
+          Sign up
+        </a>
+        .
       </p>
     </form>
   );

@@ -6,6 +6,7 @@ import { site } from "@/data/site";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CookieBanner } from "@/components/layout/CookieBanner";
+import { CartProvider } from "@/lib/cart";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -81,10 +82,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
-        <Header />
-        <main id="contenido">{children}</main>
-        <Footer />
-        <CookieBanner />
+        <CartProvider>
+          <Header />
+          <main id="contenido">{children}</main>
+          <Footer />
+          <CookieBanner />
+        </CartProvider>
       </body>
     </html>
   );

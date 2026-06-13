@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Plan } from "@/data/products";
 import { eur } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
 const specRows: { key: keyof Plan; label: string }[] = [
   { key: "cpu", label: "CPU" },
@@ -42,16 +43,16 @@ export function PlanCard({ plan }: { plan: Plan }) {
         ))}
       </dl>
 
+      <AddToCartButton
+        planId={plan.id}
+        variant={plan.popular ? "primary" : "outline"}
+        className="mt-6 w-full"
+      />
       <Link
         href={plan.orderUrl}
-        className={cn(
-          "mt-6 inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-3 text-sm font-medium transition-all",
-          plan.popular
-            ? "bg-[var(--color-accent)] text-black hover:bg-[var(--color-accent-dim)]"
-            : "border border-[var(--color-line-strong)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
-        )}
+        className="mt-3 block text-center text-xs text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-accent)]"
       >
-        Order →
+        or order this plan now →
       </Link>
     </div>
   );
