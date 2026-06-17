@@ -1,7 +1,10 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 /** Botón que abre el diálogo de impresión del navegador (Imprimir → Guardar como PDF). */
 export function PrintButton() {
+  const t = useTranslations("admin");
   return (
     <button
       type="button"
@@ -12,7 +15,7 @@ export function PrintButton() {
         <path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M6 14h12v7H6z" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      Print / Save PDF
+      {t("printButton.printSavePdf")}
     </button>
   );
 }

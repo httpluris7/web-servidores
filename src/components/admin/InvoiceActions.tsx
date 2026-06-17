@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import type { InvoiceStatus } from "@/lib/facturas";
 
 type Props = { id: string; estado: InvoiceStatus };
 
 /** Acciones por factura: cobrar / reabrir / anular / eliminar (panel admin). */
 export function InvoiceActions({ id, estado }: Props) {
+  const t = useTranslations("admin");
   const router = useRouter();
   const [busy, setBusy] = useState(false);
 
@@ -26,7 +28,7 @@ export function InvoiceActions({ id, estado }: Props) {
   }
 
   async function remove() {
-    if (!confirm("Permanently delete this invoice?")) return;
+    if (!confirm(t("invoiceActions.confirmDelete"))) return;
     setBusy(true);
     try {
       await fetch(`/api/admin/facturas/${id}`, { method: "DELETE" });
@@ -48,7 +50,7 @@ export function InvoiceActions({ id, estado }: Props) {
           disabled={busy}
           className={btn + " hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"}
         >
-          Mark paid
+          {t("invoiceActions.markPaid")}
         </button>
       )}
       {estado !== "pendiente" && (
@@ -58,7 +60,7 @@ export function InvoiceActions({ id, estado }: Props) {
           disabled={busy}
           className={btn + " hover:border-[var(--color-fg)] hover:text-[var(--color-fg)]"}
         >
-          Reopen
+          {t("invoiceActions.reopen")}
         </button>
       )}
       {estado !== "cancelada" && (
@@ -68,17 +70,17 @@ export function InvoiceActions({ id, estado }: Props) {
           disabled={busy}
           className={btn + " hover:border-[var(--color-fg)] hover:text-[var(--color-fg)]"}
         >
-          Cancel
+          {t("invoiceActions.cancel")}
         </button>
       )}
       <button
         type="button"
         onClick={remove}
         disabled={busy}
-        aria-label="Delete invoice"
+        aria-label={t("invoiceActions.deleteAria")}
         className={btn + " hover:border-[var(--color-danger)] hover:text-[var(--color-danger)]"}
       >
-        Delete
+        {t("invoiceActions.delete")}
       </button>
     </div>
   );

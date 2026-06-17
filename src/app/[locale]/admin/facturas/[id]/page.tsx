@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { site } from "@/data/site";
 import { getInvoiceById } from "@/lib/facturas";
 import { eur, fmtDate } from "@/lib/utils";
@@ -7,18 +8,21 @@ import { PrintButton } from "@/components/admin/PrintButton";
 
 export const dynamic = "force-dynamic";
 
-const estadoLabel: Record<string, string> = {
-  pendiente: "Pending payment",
-  pagada: "Paid",
-  cancelada: "Cancelled",
+const estadoLabelKey: Record<string, string> = {
+  pendiente: "statusPendiente",
+  pagada: "statusPagada",
+  cancelada: "statusCancelada",
 };
 
 export default async function FacturaImprimiblePage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ locale: string; id: string }>;
 }) {
-  const { id } = await params;
+  const { locale, id } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("admin");
+
   const f = await getInvoiceById(id);
   if (!f) notFound();
 
@@ -32,7 +36,7 @@ export default async function FacturaImprimiblePage({
           href="/admin/facturas"
           className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]"
         >
-          ← Invoices
+          {t("facturaPrint.backToInvoices")}
         </Link>
         <PrintButton />
       </div>
@@ -54,7 +58,7 @@ export default async function FacturaImprimiblePage({
             </div>
           </div>
           <div className="text-right">
-            <h1 className="text-2xl font-bold tracking-tight">INVOICE</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t("facturaPrint.invoice")}</h1>
             <p className="mt-1 font-mono text-sm text-[#55607a]">{f.numero}</p>
             <p
               className={
@@ -66,7 +70,7 @@ export default async function FacturaImprimiblePage({
                     : "border-[#e0a100]/40 bg-[#fff7e0] text-[#9a7400]")
               }
             >
-              {estadoLabel[f.estado]}
+              {t(`facturaPrint.${estadoLabelKey[f.estado] ?? "statusPendiente"}`)}
             </p>
           </div>
         </header>
@@ -75,19 +79,19 @@ export default async function FacturaImprimiblePage({
         <section className="grid gap-6 py-6 sm:grid-cols-2">
           <div>
             <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-[#8a93a6]">
-              Bill to
+              {t("facturaPrint.billTo")}
             </p>
             <p className="mt-2 text-sm font-medium">{f.clienteNombre}</p>
             <p className="text-sm text-[#55607a]">{f.clienteEmail}</p>
           </div>
           <div className="grid grid-cols-2 gap-y-2 text-sm sm:text-right">
-            <span className="text-[#8a93a6]">Issue date</span>
+            <span className="text-[#8a93a6]">{t("facturaPrint.issueDate")}</span>
             <span className="font-medium">{fmtDate(f.emitidaAt)}</span>
-            <span className="text-[#8a93a6]">Due date</span>
+            <span className="text-[#8a93a6]">{t("facturaPrint.dueDate")}</span>
             <span className="font-medium">{fmtDate(f.vencimientoAt)}</span>
             {f.pagadaAt && (
               <>
-                <span className="text-[#8a93a6]">Payment date</span>
+                <span className="text-[#8a93a6]">{t("facturaPrint.paymentDate")}</span>
                 <span className="font-medium">{fmtDate(f.pagadaAt)}</span>
               </>
             )}
@@ -98,10 +102,10 @@ export default async function FacturaImprimiblePage({
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-y border-[#e5e8ee] text-left text-[0.65rem] uppercase tracking-wider text-[#8a93a6]">
-              <th className="py-2.5 pr-3 font-semibold">Description</th>
-              <th className="py-2.5 px-3 text-right font-semibold">Net</th>
-              <th className="py-2.5 px-3 text-right font-semibold">VAT</th>
-              <th className="py-2.5 pl-3 text-right font-semibold">Total</th>
+              <th className="py-2.5 pr-3 font-semibold">{t("facturaPrint.colDescription")}</th>
+              <th className="py-2.5 px-3 text-right font-semibold">{t("facturaPrint.colNet")}</th>
+              <th className="py-2.5 px-3 text-right font-semibold">{t("facturaPrint.colVat")}</th>
+              <th className="py-2.5 pl-3 text-right font-semibold">{t("facturaPrint.colTotal")}</th>
             </tr>
           </thead>
           <tbody>
@@ -118,15 +122,15 @@ export default async function FacturaImprimiblePage({
         <div className="mt-6 flex justify-end">
           <dl className="w-full max-w-xs space-y-2 text-sm">
             <div className="flex justify-between">
-              <dt className="text-[#55607a]">Taxable base</dt>
+              <dt className="text-[#55607a]">{t("facturaPrint.taxableBase")}</dt>
               <dd className="font-mono">{eur(f.base, 2)}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-[#55607a]">VAT ({f.ivaPct}%)</dt>
+              <dt className="text-[#55607a]">{t("facturaPrint.vatPct", { pct: f.ivaPct })}</dt>
               <dd className="font-mono">{eur(ivaImporte, 2)}</dd>
             </div>
             <div className="flex justify-between border-t border-[#e5e8ee] pt-2 text-base font-bold">
-              <dt>Total</dt>
+              <dt>{t("facturaPrint.total")}</dt>
               <dd className="font-mono">{eur(f.total, 2)}</dd>
             </div>
           </dl>
@@ -135,7 +139,7 @@ export default async function FacturaImprimiblePage({
         {/* Notas */}
         {f.notas && (
           <div className="mt-8 border-t border-[#e5e8ee] pt-4">
-            <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-[#8a93a6]">Notes</p>
+            <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-[#8a93a6]">{t("facturaPrint.notes")}</p>
             <p className="mt-1.5 whitespace-pre-wrap text-sm text-[#55607a]">{f.notas}</p>
           </div>
         )}
@@ -146,7 +150,7 @@ export default async function FacturaImprimiblePage({
             {site.legal.companyName} · {site.legal.taxId} · {site.legal.jurisdiction}
           </p>
           <p className="mt-0.5">
-            Thank you for trusting {site.brand}. Invoice generated electronically; valid without a signature.
+            {t("facturaPrint.footerThanks", { brand: site.brand })}
           </p>
         </footer>
       </article>

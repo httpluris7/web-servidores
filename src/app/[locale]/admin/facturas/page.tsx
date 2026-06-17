@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { listUsers } from "@/lib/auth";
 import { listInvoices, invoiceStats } from "@/lib/facturas";
 import { eur, fmtDate } from "@/lib/utils";
@@ -8,7 +9,15 @@ import { InvoiceForm } from "@/components/admin/InvoiceForm";
 
 export const dynamic = "force-dynamic";
 
-export default async function FacturasPage() {
+export default async function FacturasPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("admin");
+
   const [usuarios, facturas] = await Promise.all([listUsers(), listInvoices()]);
   const stats = invoiceStats(facturas);
 
@@ -24,7 +33,7 @@ export default async function FacturasPage() {
       <section>
         <details className="group rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)]">
           <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4">
-            <span className="font-medium">New invoice</span>
+            <span className="font-medium">{t("facturas.newInvoice")}</span>
             <span className="font-mono text-xs text-[var(--color-fg-muted)] transition-transform group-open:rotate-180">
               ▾
             </span>
@@ -38,31 +47,33 @@ export default async function FacturasPage() {
       <section>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold">
-            Invoices{" "}
+            {t("facturas.heading")}{" "}
             <span className="font-mono text-sm text-[var(--color-fg-muted)]">({stats.total})</span>
           </h2>
           <p className="font-mono text-xs text-[var(--color-fg-muted)]">
-            Invoiced <span className="text-[var(--color-fg)]">{eur(stats.facturado, 2)}</span> ·
-            collected <span className="text-[var(--color-accent)]">{eur(stats.cobrado, 2)}</span> ·
-            outstanding <span className="text-amber-300">{eur(stats.pendiente, 2)}</span>
+            {t.rich("facturas.invoicedCollectedOutstanding", {
+              invoiced: () => <span className="text-[var(--color-fg)]">{eur(stats.facturado, 2)}</span>,
+              collected: () => <span className="text-[var(--color-accent)]">{eur(stats.cobrado, 2)}</span>,
+              outstanding: () => <span className="text-amber-300">{eur(stats.pendiente, 2)}</span>,
+            })}
           </p>
         </div>
 
         {facturas.length === 0 ? (
           <p className="text-sm text-[var(--color-fg-muted)]">
-            You haven&apos;t issued any invoices yet. Create the first one above.
+            {t("facturas.noInvoices")}
           </p>
         ) : (
           <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--color-line)]">
             <table className="w-full min-w-[760px] border-collapse text-sm">
               <thead>
                 <tr className="border-b border-[var(--color-line)] text-left">
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">No.</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Customer</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Description</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Issued</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Status</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem] text-right">Total</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">{t("facturas.colNumber")}</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">{t("facturas.colCustomer")}</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">{t("facturas.colDescription")}</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">{t("facturas.colIssued")}</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">{t("facturas.colStatus")}</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem] text-right">{t("facturas.colTotal")}</th>
                   <th className="px-4 py-3" />
                 </tr>
               </thead>
@@ -107,7 +118,7 @@ export default async function FacturasPage() {
                     <td className="px-4 py-3 text-right">
                       <span className="font-mono">{eur(f.total, 2)}</span>
                       <p className="text-[0.65rem] text-[var(--color-fg-dim)]">
-                        net {eur(f.base, 2)} · VAT {f.ivaPct}%
+                        {t("facturas.netVat", { net: eur(f.base, 2), vat: f.ivaPct })}
                       </p>
                     </td>
                     <td className="px-4 py-3">
@@ -116,7 +127,7 @@ export default async function FacturasPage() {
                           href={`/admin/facturas/${f.id}`}
                           className="rounded-[var(--radius-sm)] border border-[var(--color-line-strong)] px-2.5 py-1 text-xs transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
                         >
-                          PDF
+                          {t("facturas.pdf")}
                         </Link>
                         <InvoiceActions id={f.id} estado={f.estado} />
                       </div>

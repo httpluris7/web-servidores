@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { listUsers } from "@/lib/auth";
 import { listInvoices, invoiceStats } from "@/lib/facturas";
 import { readLeads } from "@/lib/leads";
@@ -17,7 +18,15 @@ function Stat({ label, value, hint }: { label: string; value: string; hint?: str
   );
 }
 
-export default async function AdminDashboard() {
+export default async function AdminDashboard({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("admin");
+
   const [clientes, facturas, pedidos, contactos] = await Promise.all([
     listUsers(),
     listInvoices(),
@@ -29,14 +38,14 @@ export default async function AdminDashboard() {
   return (
     <div className="grid gap-10">
       <section>
-        <h2 className="mono-label mb-4">Summary</h2>
+        <h2 className="mono-label mb-4">{t("dashboard.summary")}</h2>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-          <Stat label="Customers" value={String(clientes.length)} hint="registered accounts" />
-          <Stat label="Invoices" value={String(stats.total)} hint="issued" />
-          <Stat label="Orders" value={String(pedidos.length)} hint="requests received" />
-          <Stat label="Invoiced" value={eur(stats.facturado, 2)} hint="VAT included" />
-          <Stat label="Outstanding" value={eur(stats.pendiente, 2)} hint="unpaid invoices" />
-          <Stat label="Collected" value={eur(stats.cobrado, 2)} hint="paid invoices" />
+          <Stat label={t("dashboard.customers")} value={String(clientes.length)} hint={t("dashboard.registeredAccounts")} />
+          <Stat label={t("dashboard.invoices")} value={String(stats.total)} hint={t("dashboard.issued")} />
+          <Stat label={t("dashboard.orders")} value={String(pedidos.length)} hint={t("dashboard.requestsReceived")} />
+          <Stat label={t("dashboard.invoiced")} value={eur(stats.facturado, 2)} hint={t("dashboard.vatIncluded")} />
+          <Stat label={t("dashboard.outstanding")} value={eur(stats.pendiente, 2)} hint={t("dashboard.unpaidInvoices")} />
+          <Stat label={t("dashboard.collected")} value={eur(stats.cobrado, 2)} hint={t("dashboard.paidInvoices")} />
         </div>
       </section>
 
@@ -44,13 +53,13 @@ export default async function AdminDashboard() {
         {/* Últimas facturas */}
         <section>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="mono-label">Latest invoices</h2>
+            <h2 className="mono-label">{t("dashboard.latestInvoices")}</h2>
             <Link href="/admin/facturas" className="text-xs text-[var(--color-accent)] hover:underline">
-              View all →
+              {t("dashboard.viewAll")}
             </Link>
           </div>
           {facturas.length === 0 ? (
-            <p className="text-sm text-[var(--color-fg-muted)]">No invoices yet.</p>
+            <p className="text-sm text-[var(--color-fg-muted)]">{t("dashboard.noInvoices")}</p>
           ) : (
             <ul className="divide-y divide-[var(--color-line)] rounded-[var(--radius-lg)] border border-[var(--color-line)]">
               {facturas.slice(0, 5).map((f) => (
@@ -75,13 +84,13 @@ export default async function AdminDashboard() {
         {/* Últimos clientes */}
         <section>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="mono-label">Latest customers</h2>
+            <h2 className="mono-label">{t("dashboard.latestCustomers")}</h2>
             <Link href="/admin/clientes" className="text-xs text-[var(--color-accent)] hover:underline">
-              View all →
+              {t("dashboard.viewAll")}
             </Link>
           </div>
           {clientes.length === 0 ? (
-            <p className="text-sm text-[var(--color-fg-muted)]">No customers yet.</p>
+            <p className="text-sm text-[var(--color-fg-muted)]">{t("dashboard.noCustomers")}</p>
           ) : (
             <ul className="divide-y divide-[var(--color-line)] rounded-[var(--radius-lg)] border border-[var(--color-line)]">
               {clientes.slice(0, 5).map((c) => (
@@ -104,10 +113,11 @@ export default async function AdminDashboard() {
 
       {contactos.length > 0 && (
         <p className="text-sm text-[var(--color-fg-muted)]">
-          You have <span className="text-[var(--color-fg)]">{contactos.length}</span> contact
-          message(s).{" "}
+          {t.rich("dashboard.contactMessages", {
+            count: () => <span className="text-[var(--color-fg)]">{contactos.length}</span>,
+          })}
           <Link href="/admin/pedidos" className="text-[var(--color-accent)] hover:underline">
-            Review →
+            {t("dashboard.review")}
           </Link>
         </p>
       )}

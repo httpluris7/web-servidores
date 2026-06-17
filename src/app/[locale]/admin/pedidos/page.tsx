@@ -1,3 +1,4 @@
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { readLeads } from "@/lib/leads";
 import { eur, fmtDate } from "@/lib/utils";
 
@@ -7,7 +8,15 @@ function str(v: unknown): string {
   return typeof v === "string" ? v : v == null ? "" : String(v);
 }
 
-export default async function PedidosPage() {
+export default async function PedidosPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("admin");
+
   const [pedidos, contactos] = await Promise.all([readLeads("pedido"), readLeads("contacto")]);
 
   return (
@@ -15,20 +24,20 @@ export default async function PedidosPage() {
       {/* Pedidos */}
       <section>
         <h2 className="mb-4 text-lg font-semibold">
-          Orders <span className="font-mono text-sm text-[var(--color-fg-muted)]">({pedidos.length})</span>
+          {t("pedidos.orders")} <span className="font-mono text-sm text-[var(--color-fg-muted)]">({pedidos.length})</span>
         </h2>
         {pedidos.length === 0 ? (
-          <p className="text-sm text-[var(--color-fg-muted)]">No orders registered.</p>
+          <p className="text-sm text-[var(--color-fg-muted)]">{t("pedidos.noOrders")}</p>
         ) : (
           <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--color-line)]">
             <table className="w-full min-w-[680px] border-collapse text-sm">
               <thead>
                 <tr className="border-b border-[var(--color-line)] text-left">
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Customer</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Plan</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Region</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem] text-right">Price</th>
-                  <th className="px-4 py-3 mono-label text-[0.6rem]">Received</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">{t("pedidos.colCustomer")}</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">{t("pedidos.colPlan")}</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">{t("pedidos.colRegion")}</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem] text-right">{t("pedidos.colPrice")}</th>
+                  <th className="px-4 py-3 mono-label text-[0.6rem]">{t("pedidos.colReceived")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -47,9 +56,9 @@ export default async function PedidosPage() {
                     <td className="px-4 py-3 text-[var(--color-fg-muted)]">{str(p.region) || "—"}</td>
                     <td className="px-4 py-3 text-right font-mono">
                       {typeof p.lineTotal === "number"
-                        ? `${eur(p.lineTotal)}/mo`
+                        ? t("pedidos.perMonth", { price: eur(p.lineTotal) })
                         : typeof p.price === "number"
-                          ? `${eur(p.price)}/mo`
+                          ? t("pedidos.perMonth", { price: eur(p.price) })
                           : "—"}
                     </td>
                     <td className="px-4 py-3 font-mono text-xs text-[var(--color-fg-muted)]">
@@ -66,11 +75,11 @@ export default async function PedidosPage() {
       {/* Contactos */}
       <section>
         <h2 className="mb-4 text-lg font-semibold">
-          Contact messages{" "}
+          {t("pedidos.contactMessages")}{" "}
           <span className="font-mono text-sm text-[var(--color-fg-muted)]">({contactos.length})</span>
         </h2>
         {contactos.length === 0 ? (
-          <p className="text-sm text-[var(--color-fg-muted)]">No contact messages.</p>
+          <p className="text-sm text-[var(--color-fg-muted)]">{t("pedidos.noContactMessages")}</p>
         ) : (
           <ul className="grid gap-3">
             {contactos.map((c, i) => (

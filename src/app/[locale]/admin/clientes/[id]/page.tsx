@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { getPublicUserById } from "@/lib/auth";
 import { listInvoicesByUser, invoiceStats } from "@/lib/facturas";
 import { readLeads } from "@/lib/leads";
@@ -11,22 +12,24 @@ import { ResetPasswordForm } from "@/components/admin/ResetPasswordForm";
 
 export const dynamic = "force-dynamic";
 
-const fields: { key: string; label: string }[] = [
-  { key: "email", label: "Email" },
-  { key: "telefono", label: "Phone" },
-  { key: "direccion", label: "Address" },
-  { key: "codigoPostal", label: "Postal code" },
-  { key: "ciudad", label: "City" },
-  { key: "estado", label: "State" },
-  { key: "pais", label: "Country" },
+const fields: { key: string; labelKey: string }[] = [
+  { key: "email", labelKey: "fieldEmail" },
+  { key: "telefono", labelKey: "fieldPhone" },
+  { key: "direccion", labelKey: "fieldAddress" },
+  { key: "codigoPostal", labelKey: "fieldPostalCode" },
+  { key: "ciudad", labelKey: "fieldCity" },
+  { key: "estado", labelKey: "fieldState" },
+  { key: "pais", labelKey: "fieldCountry" },
 ];
 
 export default async function ClienteDetallePage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ locale: string; id: string }>;
 }) {
-  const { id } = await params;
+  const { locale, id } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("admin");
   const cliente = await getPublicUserById(id);
   if (!cliente) notFound();
 
@@ -45,23 +48,23 @@ export default async function ClienteDetallePage({
     <div className="grid gap-10">
       <div>
         <Link href="/admin/clientes" className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">
-          ← Customers
+          {t("clienteDetalle.backToCustomers")}
         </Link>
         <h2 className="mt-2 text-2xl font-semibold tracking-tight">
           {cliente.nombre} {cliente.apellidos}
         </h2>
         <p className="mt-1 font-mono text-xs text-[var(--color-fg-muted)]">
-          Customer since {fmtDate(cliente.createdAt)} · ID {cliente.id}
+          {t("clienteDetalle.customerSince", { date: fmtDate(cliente.createdAt), id: cliente.id })}
         </p>
       </div>
 
       {/* Datos del cliente */}
       <section>
-        <h3 className="mono-label mb-4">Account details</h3>
+        <h3 className="mono-label mb-4">{t("clienteDetalle.accountDetails")}</h3>
         <dl className="grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-2">
           {fields.map((f) => (
             <div key={f.key} className="bg-[var(--color-bg-raised)] px-5 py-4">
-              <dt className="mono-label text-[0.6rem]">{f.label}</dt>
+              <dt className="mono-label text-[0.6rem]">{t(`clienteDetalle.${f.labelKey}`)}</dt>
               <dd className="mt-1 text-sm break-words">{record[f.key] || "—"}</dd>
             </div>
           ))}
@@ -70,9 +73,9 @@ export default async function ClienteDetallePage({
 
       {/* Restablecer contraseña del cliente */}
       <section>
-        <h3 className="mono-label mb-1">Reset password</h3>
+        <h3 className="mono-label mb-1">{t("clienteDetalle.resetPassword")}</h3>
         <p className="mb-4 text-sm text-[var(--color-fg-muted)]">
-          Assign a new password to this customer. You don&apos;t need the previous one; enter it twice to confirm.
+          {t("clienteDetalle.resetPasswordDescription")}
         </p>
         <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-5 md:p-6">
           <ResetPasswordForm userId={cliente.id} />
@@ -81,24 +84,24 @@ export default async function ClienteDetallePage({
 
       {/* Resumen de facturación */}
       <section>
-        <h3 className="mono-label mb-4">Billing</h3>
+        <h3 className="mono-label mb-4">{t("clienteDetalle.billing")}</h3>
         <div className="mb-4 grid grid-cols-3 gap-3">
           <div className="rounded-[var(--radius-md)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] px-4 py-3">
-            <p className="mono-label text-[0.6rem]">Invoiced</p>
+            <p className="mono-label text-[0.6rem]">{t("clienteDetalle.invoiced")}</p>
             <p className="mt-1 font-mono text-lg">{eur(stats.facturado, 2)}</p>
           </div>
           <div className="rounded-[var(--radius-md)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] px-4 py-3">
-            <p className="mono-label text-[0.6rem]">Collected</p>
+            <p className="mono-label text-[0.6rem]">{t("clienteDetalle.collected")}</p>
             <p className="mt-1 font-mono text-lg text-[var(--color-accent)]">{eur(stats.cobrado, 2)}</p>
           </div>
           <div className="rounded-[var(--radius-md)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] px-4 py-3">
-            <p className="mono-label text-[0.6rem]">Outstanding</p>
+            <p className="mono-label text-[0.6rem]">{t("clienteDetalle.outstanding")}</p>
             <p className="mt-1 font-mono text-lg">{eur(stats.pendiente, 2)}</p>
           </div>
         </div>
 
         {facturas.length === 0 ? (
-          <p className="text-sm text-[var(--color-fg-muted)]">This customer has no invoices.</p>
+          <p className="text-sm text-[var(--color-fg-muted)]">{t("clienteDetalle.noInvoices")}</p>
         ) : (
           <ul className="divide-y divide-[var(--color-line)] rounded-[var(--radius-lg)] border border-[var(--color-line)]">
             {facturas.map((f) => (
@@ -114,7 +117,7 @@ export default async function ClienteDetallePage({
                     · {f.concepto}
                   </p>
                   <p className="text-xs text-[var(--color-fg-muted)]">
-                    Issued {fmtDate(f.emitidaAt)} · due {fmtDate(f.vencimientoAt)}
+                    {t("clienteDetalle.issuedDue", { issued: fmtDate(f.emitidaAt), due: fmtDate(f.vencimientoAt) })}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -131,7 +134,7 @@ export default async function ClienteDetallePage({
       {/* Pedidos del cliente */}
       {pedidosCliente.length > 0 && (
         <section>
-          <h3 className="mono-label mb-4">Orders ({pedidosCliente.length})</h3>
+          <h3 className="mono-label mb-4">{t("clienteDetalle.orders", { count: pedidosCliente.length })}</h3>
           <ul className="divide-y divide-[var(--color-line)] rounded-[var(--radius-lg)] border border-[var(--color-line)]">
             {pedidosCliente.map((p, i) => (
               <li key={i} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
@@ -150,7 +153,7 @@ export default async function ClienteDetallePage({
 
       {/* Emitir factura para este cliente */}
       <section>
-        <h3 className="mono-label mb-4">Issue invoice to this customer</h3>
+        <h3 className="mono-label mb-4">{t("clienteDetalle.issueInvoice")}</h3>
         <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-5 md:p-6">
           <InvoiceForm
             clientes={[]}

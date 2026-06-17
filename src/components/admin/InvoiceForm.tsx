@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { Label, Input, Textarea, Select, FieldError } from "@/components/forms/Field";
 import { eur } from "@/lib/utils";
 
@@ -23,6 +24,7 @@ type Errors = Record<string, string>;
 
 /** Formulario de creación de facturas (panel admin). */
 export function InvoiceForm({ clientes, preset }: Props) {
+  const t = useTranslations("admin");
   const router = useRouter();
   const [userId, setUserId] = useState(preset?.id ?? "");
   const [clienteNombre, setClienteNombre] = useState(
@@ -87,14 +89,14 @@ export function InvoiceForm({ clientes, preset }: Props) {
         return;
       }
 
-      setDone(data.factura?.numero ?? "Invoice created");
+      setDone(data.factura?.numero ?? t("invoiceForm.invoiceCreated"));
       // Limpia el concepto/importe pero conserva el cliente para emitir varias.
       setConcepto("");
       setBase("");
       setNotas("");
       router.refresh();
     } catch {
-      setGeneralError("Could not connect. Try again.");
+      setGeneralError(t("invoiceForm.connectionError"));
     } finally {
       setBusy(false);
     }
@@ -104,9 +106,9 @@ export function InvoiceForm({ clientes, preset }: Props) {
     <form onSubmit={onSubmit} className="grid gap-5">
       {!preset && (
         <div>
-          <Label htmlFor="cliente">Registered customer</Label>
+          <Label htmlFor="cliente">{t("invoiceForm.registeredCustomer")}</Label>
           <Select id="cliente" value={userId} onChange={(e) => onPickCliente(e.target.value)}>
-            <option value="">— Manual (no account) —</option>
+            <option value="">{t("invoiceForm.manualOption")}</option>
             {clientes.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.nombre} {c.apellidos} · {c.email}
@@ -119,7 +121,7 @@ export function InvoiceForm({ clientes, preset }: Props) {
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <Label htmlFor="clienteNombre" required>
-            Customer name
+            {t("invoiceForm.customerName")}
           </Label>
           <Input
             id="clienteNombre"
@@ -131,7 +133,7 @@ export function InvoiceForm({ clientes, preset }: Props) {
         </div>
         <div>
           <Label htmlFor="clienteEmail" required>
-            Customer email
+            {t("invoiceForm.customerEmail")}
           </Label>
           <Input
             id="clienteEmail"
@@ -146,13 +148,13 @@ export function InvoiceForm({ clientes, preset }: Props) {
 
       <div>
         <Label htmlFor="concepto" required>
-          Description
+          {t("invoiceForm.description")}
         </Label>
         <Input
           id="concepto"
           value={concepto}
           onChange={(e) => setConcepto(e.target.value)}
-          placeholder="VPS Pro · France · June 2026"
+          placeholder={t("invoiceForm.descriptionPlaceholder")}
         />
         <FieldError>{errors.concepto}</FieldError>
       </div>
@@ -160,7 +162,7 @@ export function InvoiceForm({ clientes, preset }: Props) {
       <div className="grid gap-5 sm:grid-cols-3">
         <div>
           <Label htmlFor="base" required>
-            Taxable base (€)
+            {t("invoiceForm.taxableBase")}
           </Label>
           <Input
             id="base"
@@ -169,12 +171,12 @@ export function InvoiceForm({ clientes, preset }: Props) {
             step="0.01"
             value={base}
             onChange={(e) => setBase(e.target.value)}
-            placeholder="8.00"
+            placeholder={t("invoiceForm.basePlaceholder")}
           />
           <FieldError>{errors.base}</FieldError>
         </div>
         <div>
-          <Label htmlFor="ivaPct">VAT (%)</Label>
+          <Label htmlFor="ivaPct">{t("invoiceForm.vat")}</Label>
           <Input
             id="ivaPct"
             type="number"
@@ -187,7 +189,7 @@ export function InvoiceForm({ clientes, preset }: Props) {
           <FieldError>{errors.ivaPct}</FieldError>
         </div>
         <div>
-          <Label htmlFor="vencimientoDias">Due (days)</Label>
+          <Label htmlFor="vencimientoDias">{t("invoiceForm.dueDays")}</Label>
           <Input
             id="vencimientoDias"
             type="number"
@@ -201,7 +203,7 @@ export function InvoiceForm({ clientes, preset }: Props) {
       </div>
 
       <div>
-        <Label htmlFor="notas">Notes (optional)</Label>
+        <Label htmlFor="notas">{t("invoiceForm.notes")}</Label>
         <Textarea
           id="notas"
           value={notas}
@@ -212,7 +214,7 @@ export function InvoiceForm({ clientes, preset }: Props) {
 
       <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[var(--color-line)] pt-5">
         <p className="text-sm text-[var(--color-fg-muted)]">
-          Total with VAT:{" "}
+          {t("invoiceForm.totalWithVat")}
           <span className="font-mono text-base text-[var(--color-fg)]">{eur(total, 2)}</span>
         </p>
         <button
@@ -220,13 +222,13 @@ export function InvoiceForm({ clientes, preset }: Props) {
           disabled={busy}
           className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-5 py-2.5 text-sm font-medium text-black transition-all hover:bg-[var(--color-accent-dim)] disabled:opacity-60"
         >
-          {busy ? "Issuing…" : "Issue invoice"}
+          {busy ? t("invoiceForm.issuing") : t("invoiceForm.issueInvoice")}
         </button>
       </div>
 
       {generalError && <p className="text-sm text-[var(--color-danger)]">{generalError}</p>}
       {done && (
-        <p className="text-sm text-[var(--color-accent)]">Invoice {done} issued successfully.</p>
+        <p className="text-sm text-[var(--color-accent)]">{t("invoiceForm.issuedSuccessfully", { numero: done })}</p>
       )}
     </form>
   );

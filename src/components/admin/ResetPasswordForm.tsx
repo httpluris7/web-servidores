@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { Label, Input, FieldError } from "@/components/forms/Field";
 import { PasswordRulesList } from "@/components/forms/PasswordRulesList";
 import { failedPasswordRules } from "@/lib/password";
@@ -13,6 +14,7 @@ const empty: Record<FieldKey, string> = { password: "", passwordConfirm: "" };
 
 /** Restablecimiento administrativo de la contraseña de un cliente. */
 export function ResetPasswordForm({ userId }: { userId: string }) {
+  const t = useTranslations("admin");
   const router = useRouter();
   const [values, setValues] = useState<Record<FieldKey, string>>(empty);
   const [errors, setErrors] = useState<Errors>({});
@@ -27,8 +29,8 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
 
   function validate(): boolean {
     const e: Errors = {};
-    if (failedPasswordRules(values.password).length > 0) e.password = "The password does not meet the requirements.";
-    if (values.passwordConfirm !== values.password) e.passwordConfirm = "The passwords do not match.";
+    if (failedPasswordRules(values.password).length > 0) e.password = t("resetPasswordForm.errorRequirements");
+    if (values.passwordConfirm !== values.password) e.passwordConfirm = t("resetPasswordForm.errorMismatch");
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -49,7 +51,7 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         if (data?.errors) setErrors(data.errors as Errors);
-        setFormError(data?.error ?? "Could not reset the password.");
+        setFormError(data?.error ?? t("resetPasswordForm.errorCouldNotReset"));
         setStatus("idle");
         return;
       }
@@ -59,7 +61,7 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
       setDone(true);
       router.refresh();
     } catch {
-      setFormError("Connection error. Try again.");
+      setFormError(t("resetPasswordForm.errorConnection"));
       setStatus("idle");
     }
   }
@@ -67,7 +69,7 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
   return (
     <form onSubmit={onSubmit} noValidate className="max-w-md space-y-5">
       <div>
-        <Label htmlFor="password" required>New password</Label>
+        <Label htmlFor="password" required>{t("resetPasswordForm.newPassword")}</Label>
         <Input
           id="password"
           type="password"
@@ -82,7 +84,7 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
       </div>
 
       <div>
-        <Label htmlFor="passwordConfirm" required>Repeat new password</Label>
+        <Label htmlFor="passwordConfirm" required>{t("resetPasswordForm.repeatNewPassword")}</Label>
         <Input
           id="passwordConfirm"
           type="password"
@@ -100,13 +102,13 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
         disabled={status === "sending"}
         className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60 sm:w-auto"
       >
-        {status === "sending" ? "Saving…" : "Reset password →"}
+        {status === "sending" ? t("resetPasswordForm.saving") : t("resetPasswordForm.submit")}
       </button>
 
       {formError && <p role="alert" className="text-sm text-[var(--color-danger)]">{formError}</p>}
       {done && (
         <p role="status" className="text-sm text-[var(--color-accent)]">
-          Customer password reset successfully.
+          {t("resetPasswordForm.success")}
         </p>
       )}
     </form>

@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { listUsers } from "@/lib/auth";
 import { listInvoices } from "@/lib/facturas";
 import { eur, fmtDate } from "@/lib/utils";
@@ -6,10 +7,16 @@ import { eur, fmtDate } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export default async function ClientesPage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ q?: string }>;
 }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("admin");
+
   const { q = "" } = await searchParams;
   const query = q.trim().toLowerCase();
 
@@ -34,38 +41,38 @@ export default async function ClientesPage({
     <div className="grid gap-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 className="text-lg font-semibold">
-          Customers <span className="font-mono text-sm text-[var(--color-fg-muted)]">({clientes.length})</span>
+          {t("clientes.heading")} <span className="font-mono text-sm text-[var(--color-fg-muted)]">({clientes.length})</span>
         </h2>
         <form method="get" className="flex items-center gap-2">
           <input
             type="search"
             name="q"
             defaultValue={q}
-            placeholder="Search by name, email, city…"
+            placeholder={t("clientes.searchPlaceholder")}
             className="w-64 max-w-full rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-2 text-sm placeholder:text-[var(--color-fg-dim)] focus:border-[var(--color-accent)] focus:outline-none"
           />
           <button
             type="submit"
             className="rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-3 py-2 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
           >
-            Search
+            {t("clientes.search")}
           </button>
         </form>
       </div>
 
       {clientes.length === 0 ? (
         <p className="text-sm text-[var(--color-fg-muted)]">
-          {query ? "No customer matches the search." : "No registered customers yet."}
+          {query ? t("clientes.noMatch") : t("clientes.noCustomers")}
         </p>
       ) : (
         <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--color-line)]">
           <table className="w-full min-w-[640px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-[var(--color-line)] text-left">
-                <th className="px-4 py-3 mono-label text-[0.6rem]">Customer</th>
-                <th className="px-4 py-3 mono-label text-[0.6rem]">Location</th>
-                <th className="px-4 py-3 mono-label text-[0.6rem]">Joined</th>
-                <th className="px-4 py-3 mono-label text-[0.6rem] text-right">Invoiced</th>
+                <th className="px-4 py-3 mono-label text-[0.6rem]">{t("clientes.colCustomer")}</th>
+                <th className="px-4 py-3 mono-label text-[0.6rem]">{t("clientes.colLocation")}</th>
+                <th className="px-4 py-3 mono-label text-[0.6rem]">{t("clientes.colJoined")}</th>
+                <th className="px-4 py-3 mono-label text-[0.6rem] text-right">{t("clientes.colInvoiced")}</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
@@ -98,7 +105,7 @@ export default async function ClientesPage({
                         href={`/admin/clientes/${c.id}`}
                         className="text-xs text-[var(--color-accent)] hover:underline"
                       >
-                        View profile →
+                        {t("clientes.viewProfile")}
                       </Link>
                     </td>
                   </tr>
