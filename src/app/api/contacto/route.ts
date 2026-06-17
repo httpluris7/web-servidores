@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { saveLead, clean, emailRe } from "@/lib/leads";
+import { sendContactMail } from "@/lib/mail";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -36,6 +37,14 @@ export async function POST(req: Request) {
       { ok: false, error: "The message could not be saved. Please try again." },
       { status: 500 }
     );
+  }
+
+  // Aviso por correo al buzón correspondiente al tema. Best-effort: el lead ya
+  // quedó persistido en disco, así que un fallo de envío no rompe el formulario.
+  try {
+    await sendContactMail({ name, email, message, topic });
+  } catch (err) {
+    console.error("contacto: fallo al enviar el aviso por correo", err);
   }
 
   return NextResponse.json({ ok: true });
