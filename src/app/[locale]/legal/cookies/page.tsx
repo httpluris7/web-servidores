@@ -1,27 +1,42 @@
 import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LegalLayout } from "@/components/legal/LegalLayout";
 
-export const metadata: Metadata = {
-  title: "Cookie Policy",
-  description: "Which cookies ViaHost uses and how to manage them.",
-  alternates: { canonical: "/legal/cookies" },
-  robots: { index: true, follow: true },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "legal" });
+  return {
+    title: t("cookies.metaTitle"),
+    description: t("cookies.metaDescription"),
+    robots: { index: true, follow: true },
+  };
+}
 
-export default function CookiesPage() {
+const sectionKeys = ["what", "used", "consent", "managing", "changes"] as const;
+
+export default async function CookiesPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("legal");
+
   return (
     <LegalLayout
-      index="/ Cookies"
-      title="Cookie Policy"
-      intro="Information about the cookies and similar technologies used by this website and how you can manage them."
-      updated="TODO: date"
-      sections={[
-        { heading: "What cookies are", todo: "Definition and general explanation of cookies and their purpose." },
-        { heading: "Cookies we use", todo: "Table for each cookie: name, type (technical, analytics, etc.), purpose, duration and provider. The site currently does NOT load analytics; fill in when added." },
-        { heading: "Legal basis and consent", todo: "How consent is obtained for non-essential cookies (banner) and how to withdraw it." },
-        { heading: "Managing cookies", todo: "Instructions for configuring or deleting cookies in the main browsers." },
-        { heading: "Changes to the policy", todo: "How future updates to this policy will be communicated." },
-      ]}
+      index={t("cookies.index")}
+      title={t("cookies.title")}
+      intro={t("cookies.intro")}
+      updated={t("cookies.updated")}
+      sections={sectionKeys.map((key) => ({
+        heading: t(`cookies.sections.${key}.heading`),
+        todo: t(`cookies.sections.${key}.todo`),
+      }))}
     />
   );
 }

@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { site } from "@/data/site";
 import { ddosFeatures } from "@/data/content";
@@ -10,6 +11,7 @@ const ATTACK = Array.from({ length: 7 });
 const CLEAN = Array.from({ length: 4 });
 
 export function DDoSSection() {
+  const t = useTranslations("home");
   const ref = useRef<HTMLDivElement>(null);
   // Sin `once`: la animación sólo corre mientras la sección es visible.
   const inView = useInView(ref, { margin: "-10%" });
@@ -32,21 +34,23 @@ export function DDoSSection() {
       <div className="container-edge relative py-16 md:py-32">
         <div className="flex items-center gap-3">
           <span className="font-mono text-sm text-[var(--color-accent)]">/09</span>
-          <span className="mono-label">Always-on DDoS Protection</span>
+          <span className="mono-label">{t("ddos.kicker")}</span>
         </div>
         <h2 className="mt-6 max-w-3xl text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
-          The attack arrives. To your server, <span className="text-accent">nothing</span>.
+          {t.rich("ddos.title", {
+            accent: (chunks) => <span className="text-accent">{chunks}</span>,
+          })}
         </h2>
 
         {/* Diagrama de flujo */}
         <div className="mt-14 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[#070b12]">
-          <svg viewBox="0 0 100 40" className="h-auto w-full" role="img" aria-label="DDoS mitigation diagram: attack traffic is filtered at the shield and only clean traffic reaches the server.">
+          <svg viewBox="0 0 100 40" className="h-auto w-full" role="img" aria-label={t("ddos.diagramLabel")}>
             {/* Origen del ataque */}
-            <text x="6" y="6" fontSize="2.4" className="fill-[#ff6b6b] font-mono">attack traffic</text>
+            <text x="6" y="6" fontSize="2.4" className="fill-[#ff6b6b] font-mono">{t("ddos.attackTraffic")}</text>
             {/* Escudo */}
-            <text x="44" y="6" fontSize="2.4" className="fill-[var(--color-fg-muted)] font-mono">shield</text>
+            <text x="44" y="6" fontSize="2.4" className="fill-[var(--color-fg-muted)] font-mono">{t("ddos.shield")}</text>
             {/* Servidor */}
-            <text x="80" y="6" fontSize="2.4" className="fill-[var(--color-accent)] font-mono">your server</text>
+            <text x="80" y="6" fontSize="2.4" className="fill-[var(--color-accent)] font-mono">{t("ddos.yourServer")}</text>
 
             {/* Línea base */}
             <line x1="4" y1="20" x2="96" y2="20" stroke="var(--color-line)" strokeWidth="0.2" />
@@ -115,15 +119,15 @@ export function DDoSSection() {
         </div>
 
         <p className="mt-6 font-mono text-sm text-[var(--color-fg-muted)]">
-          ↳ Your server, untouched.
+          {t("ddos.footnote")}
         </p>
 
         {/* Métricas */}
         <dl className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-3">
           {[
-            { v: `${site.ddos.mitigationTbps} Tbps`, l: "Mitigation capacity" },
-            { v: site.ddos.absorbedAttacks, l: "Attacks absorbed" },
-            { v: `${site.ddos.filteredToServer}`, l: "Attack packets to server" },
+            { v: `${site.ddos.mitigationTbps} Tbps`, l: t("ddos.stats.mitigation") },
+            { v: site.ddos.absorbedAttacks, l: t("ddos.stats.absorbed") },
+            { v: `${site.ddos.filteredToServer}`, l: t("ddos.stats.filtered") },
           ].map((s) => (
             <div key={s.l} className="bg-[#070b12] px-6 py-5">
               <dt className="font-mono text-3xl font-semibold text-[var(--color-accent)]">{s.v}</dt>
@@ -134,13 +138,13 @@ export function DDoSSection() {
 
         {/* Features de seguridad */}
         <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {ddosFeatures.map((f) => (
+          {ddosFeatures.map((f, i) => (
             <li
-              key={f}
+              key={i}
               className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-line)] px-4 py-3 text-sm text-[var(--color-fg-muted)]"
             >
               <span className="text-[var(--color-accent)]">✓</span>
-              {f}
+              {t(`ddos.features.${i}`)}
             </li>
           ))}
         </ul>
@@ -150,7 +154,7 @@ export function DDoSSection() {
             href="/proteccion-ddos"
             className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-accent)] px-5 py-3 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
           >
-            How mitigation works →
+            {t("ddos.cta")}
           </Link>
         </div>
       </div>

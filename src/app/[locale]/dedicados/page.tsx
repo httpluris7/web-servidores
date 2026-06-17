@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { dedicatedTypes } from "@/data/products";
 import { dedicatedFaq } from "@/data/faq";
 import { eur } from "@/lib/utils";
@@ -9,32 +10,48 @@ import { CtaBand } from "@/components/ui/CtaBand";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
-export const metadata: Metadata = {
-  title: "Dedicated Servers — Bare metal AMD EPYC",
-  description:
-    "Bare metal AMD EPYC and Ryzen dedicated servers with 1 and 10 Gbps uplinks, NVMe Gen4 and high-capacity storage. No overselling, DDoS included.",
-  alternates: { canonical: "/dedicados" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "products" });
+  return {
+    title: t("dedicated.meta.title"),
+    description: t("dedicated.meta.description"),
+  };
+}
 
-export default function DedicatedPage() {
+export default async function DedicatedPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("products");
+
   return (
     <>
       <PageHero
         index="/01"
-        kicker="Dedicated Servers"
+        kicker={t("dedicated.kicker")}
         title={
           <>
-            Bare metal <span className="text-accent">with no overselling</span>.
+            {t("dedicated.titleA")}
+            <span className="text-accent">{t("dedicated.titleB")}</span>
+            {t("dedicated.titleSuffix")}
           </>
         }
-        description="Exclusively dedicated AMD EPYC and Ryzen hardware. Guaranteed uplinks, NVMe Gen4 and IPMI/KVM management. What you order is what you get."
+        description={t("dedicated.description")}
       />
 
       <section className="container-edge py-14 md:py-24">
         <SectionHeader
           index="/02"
-          kicker="Locations"
-          title="Two locations, one goal: real performance."
+          kicker={t("dedicated.locationsKicker")}
+          title={t("dedicated.locationsTitle")}
         />
         <div className="mt-12 grid gap-5 sm:grid-cols-2">
           {dedicatedTypes.map((d, i) => {
@@ -45,18 +62,26 @@ export default function DedicatedPage() {
                   href={`/dedicados/${d.slug}`}
                   className="group flex h-full flex-col rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-6 transition-all hover:border-[var(--color-accent)]"
                 >
-                  <span className="font-mono text-xs text-[var(--color-accent)]">{d.highlight}</span>
-                  <h3 className="mt-4 text-2xl font-semibold tracking-tight">{d.title}</h3>
-                  <p className="mt-2 text-sm text-[var(--color-fg-muted)]">{d.tagline}</p>
+                  <span className="font-mono text-xs text-[var(--color-accent)]">
+                    {t(`dedicated.types.${d.slug}.highlight`)}
+                  </span>
+                  <h3 className="mt-4 text-2xl font-semibold tracking-tight">
+                    {t(`dedicated.types.${d.slug}.title`)}
+                  </h3>
+                  <p className="mt-2 text-sm text-[var(--color-fg-muted)]">
+                    {t(`dedicated.types.${d.slug}.tagline`)}
+                  </p>
                   <div className="mt-auto pt-8">
-                    <span className="mono-label block text-[0.65rem]">From</span>
+                    <span className="mono-label block text-[0.65rem]">{t("dedicated.from")}</span>
                     <span className="font-mono text-3xl font-semibold">
                       {eur(from)}
-                      <span className="text-base text-[var(--color-fg-muted)]">/mo</span>
+                      <span className="text-base text-[var(--color-fg-muted)]">
+                        {t("dedicated.perMonth")}
+                      </span>
                     </span>
                   </div>
                   <span className="mt-4 font-mono text-xs text-[var(--color-fg-dim)] transition-colors group-hover:text-[var(--color-accent)]">
-                    View configurations →
+                    {t("dedicated.viewConfigurations")}
                   </span>
                 </Link>
               </Reveal>
@@ -65,8 +90,8 @@ export default function DedicatedPage() {
         </div>
       </section>
 
-      <FaqSection items={dedicatedFaq} index="/03" />
-      <CtaBand title="Need a custom configuration?" />
+      <FaqSection items={dedicatedFaq} tKey="dedicatedFaq" index="/03" />
+      <CtaBand title={t("dedicated.ctaTitle")} />
     </>
   );
 }

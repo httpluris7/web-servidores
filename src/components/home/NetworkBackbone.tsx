@@ -1,16 +1,17 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { site } from "@/data/site";
 import { Reveal } from "@/components/ui/Reveal";
 import { EuropeMap } from "./EuropeMap";
 
-const miniStats = [
-  { value: `${site.network.peers}+`, label: "Peers" },
-  { value: `${site.network.capacityTbps} Tbps`, label: "Capacity" },
-  { value: site.network.rankingNote, label: "IXP ranking" },
-  { value: `${site.network.portMaxGbps} Gbps`, label: "Max port" },
-];
-
-export function NetworkBackbone() {
+export async function NetworkBackbone() {
+  const t = await getTranslations("home");
+  const miniStats = [
+    { value: `${site.network.peers}+`, label: t("networkBackbone.stats.peers") },
+    { value: `${site.network.capacityTbps} Tbps`, label: t("networkBackbone.stats.capacity") },
+    { value: site.network.rankingNote, label: t("networkBackbone.stats.ranking") },
+    { value: `${site.network.portMaxGbps} Gbps`, label: t("networkBackbone.stats.maxPort") },
+  ];
   return (
     <section className="border-y border-[var(--color-line)] bg-[var(--color-bg-raised)]">
       <div className="container-edge grid gap-12 py-16 md:py-24 md:grid-cols-2 md:items-center md:py-32">
@@ -20,11 +21,10 @@ export function NetworkBackbone() {
             {site.network.asn}
           </span>
           <h2 className="mt-6 text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
-            Our own network, not rented.
+            {t("networkBackbone.title")}
           </h2>
           <p className="mt-5 max-w-md text-base text-[var(--color-fg-muted)] md:text-lg">
-            We operate our own autonomous system with direct peering at the leading European IXPs.
-            Fewer hops, lower latency and routes we control end to end.
+            {t("networkBackbone.description")}
           </p>
 
           <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)]">
@@ -40,7 +40,7 @@ export function NetworkBackbone() {
             href="/red"
             className="mt-8 inline-block font-mono text-sm text-[var(--color-accent)] hover:opacity-80"
           >
-            View network and backbone →
+            {t("networkBackbone.viewNetwork")}
           </Link>
         </Reveal>
 

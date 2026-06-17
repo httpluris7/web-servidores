@@ -1,0 +1,110 @@
+{
+  "legal": {
+    "privacy": {
+      "metaTitle": "Privacy Policy",
+      "metaDescription": "How ViaHost processes personal data in accordance with the GDPR for EEA customers and applicable data protection law.",
+      "index": "/ Privacy",
+      "title": "Privacy Policy",
+      "intro": "How we collect, process and protect your personal data. ViaHost Infrastructure LLC acts as the controller; the GDPR (EU 2016/679) applies to customers in the European Economic Area.",
+      "updated": "TODO: date",
+      "sections": {
+        "controller": {
+          "heading": "Data controller",
+          "todo": "Identity and contact details of the controller: LLC legal name, EIN/registration, registered address, and EU representative / DPO if applicable (GDPR art. 27 for companies outside the EU)."
+        },
+        "dataCollected": {
+          "heading": "Data we collect",
+          "todo": "Data categories: account, billing, technical logs, cookies. Detail each purpose."
+        },
+        "purpose": {
+          "heading": "Purpose and legal basis",
+          "todo": "Processing purposes and legal basis (performance of a contract, consent, legitimate interest)."
+        },
+        "retention": {
+          "heading": "Data retention",
+          "todo": "Retention periods by category and applied criteria."
+        },
+        "recipients": {
+          "heading": "Recipients and processors",
+          "todo": "Third parties with access (payment providers, infrastructure) and international transfers, if any."
+        },
+        "rights": {
+          "heading": "Your rights",
+          "todo": "Access, rectification, erasure, objection, portability and restriction; how to exercise them and lodge a complaint with the competent supervisory authority (EEA customers, with their data protection authority)."
+        },
+        "security": {
+          "heading": "Security",
+          "todo": "Technical and organizational measures applied to protect the data."
+        }
+      }
+    },
+    "terms": {
+      "metaTitle": "Terms and Conditions",
+      "metaDescription": "Terms of use and ordering for ViaHost services.",
+      "index": "/ Terms",
+      "title": "Terms and Conditions",
+      "intro": "Terms governing the use and ordering of the hosting, VPS, dedicated server and DDoS mitigation services.",
+      "updated": "TODO: date",
+      "sections": {
+        "purpose": {
+          "heading": "Purpose and acceptance",
+          "todo": "Description of the services and acceptance of the terms upon ordering."
+        },
+        "ordering": {
+          "heading": "Ordering and payment",
+          "todo": "Sign-up process, payment methods, renewal, taxes and refund policy."
+        },
+        "acceptableUse": {
+          "heading": "Acceptable use",
+          "todo": "Prohibited conduct (abuse, unlawful content, spam) and consequences of non-compliance."
+        },
+        "sla": {
+          "heading": "Service levels (SLA)",
+          "todo": "Availability commitment, exclusions and compensation for non-compliance."
+        },
+        "liability": {
+          "heading": "Liability",
+          "todo": "Limitation of liability and applicable exclusions."
+        },
+        "termination": {
+          "heading": "Suspension and termination",
+          "todo": "Grounds and procedure for suspension or termination of the service by either party."
+        },
+        "law": {
+          "heading": "Governing law and jurisdiction",
+          "todo": "Applicable law and competent jurisdiction for dispute resolution."
+        }
+      }
+    },
+    "cookies": {
+      "metaTitle": "Cookie Policy",
+      "metaDescription": "Which cookies ViaHost uses and how to manage them.",
+      "index": "/ Cookies",
+      "title": "Cookie Policy",
+      "intro": "Information about the cookies and similar technologies used by this website and how you can manage them.",
+      "updated": "TODO: date",
+      "sections": {
+        "what": {
+          "heading": "What cookies are",
+          "todo": "Definition and general explanation of cookies and their purpose."
+        },
+        "used": {
+          "heading": "Cookies we use",
+          "todo": "Table for each cookie: name, type (technical, analytics, etc.), purpose, duration and provider. The site currently does NOT load analytics; fill in when added."
+        },
+        "consent": {
+          "heading": "Legal basis and consent",
+          "todo": "How consent is obtained for non-essential cookies (banner) and how to withdraw it."
+        },
+        "managing": {
+          "heading": "Managing cookies",
+          "todo": "Instructions for configuring or deleting cookies in the main browsers."
+        },
+        "changes": {
+          "heading": "Changes to the policy",
+          "todo": "How future updates to this policy will be communicated."
+        }
+      }
+    }
+  }
+}

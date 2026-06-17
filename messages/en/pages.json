@@ -1,0 +1,277 @@
+{
+  "pages": {
+    "contacto": {
+      "metaTitle": "Contact",
+      "metaDescription": "Talk to the {brand} team: sales, technical support or abuse reports. Average response under 10 minutes on incidents.",
+      "kicker": "Contact",
+      "titlePrefix": "Let's talk. ",
+      "titleAccent": "Really",
+      "titleSuffix": ".",
+      "description": "Real people on the other side, 24/7. Reach us through the form or directly via the channel that fits best.",
+      "directChannels": "Direct channels",
+      "channels": {
+        "sales": { "label": "Sales", "note": "Quotes and custom configurations" },
+        "support": { "label": "Support", "note": "Customers with active service" },
+        "abuse": { "label": "Abuse", "note": "Misuse reports" }
+      },
+      "serviceStatus": "Service status",
+      "serviceStatusNote": "Check incidents and maintenance in real time.",
+      "viewStatus": "View status →"
+    },
+    "soporte": {
+      "metaTitle": "Support",
+      "metaDescription": "{brand} help center: quick guides, frequently asked questions, service status and 24/7 contact with engineering.",
+      "kicker": "Support center",
+      "titlePrefix": "Help ",
+      "titleAccent": "when",
+      "titleSuffix": " you need it.",
+      "description": "On-call engineering 24/7 with an average response under 10 minutes on incidents. Start here.",
+      "quickLinks": {
+        "status": { "title": "Service status", "desc": "Incidents and maintenance in real time." },
+        "request": { "title": "Open a request", "desc": "Sales, technical support or abuse." },
+        "deploy": { "title": "Deploy a server", "desc": "Pick a plan and deploy in 60 s." }
+      },
+      "docsKicker": "Documentation",
+      "docsTitle": "Browse by category.",
+      "categories": {
+        "gettingStarted": {
+          "title": "Getting started",
+          "items": ["SSH access", "Reinstall the system", "Keys and users"]
+        },
+        "networkDns": {
+          "title": "Network and DNS",
+          "items": ["IPs and rDNS", "Point your domain", "Reverse proxy"]
+        },
+        "security": {
+          "title": "Security",
+          "items": ["DDoS protection", "Firewall rules", "Best practices"]
+        },
+        "billing": {
+          "title": "Billing",
+          "items": ["Payment methods", "Change plan", "Cancel service"]
+        }
+      },
+      "faqKicker": "Frequently asked questions",
+      "faqTitle": "The most common questions.",
+      "faqHelpPrefix": "Can't find what you're looking for? ",
+      "faqHelpWrite": "Write to us",
+      "faqHelpMiddle": " or check the ",
+      "faqHelpStatus": "service status",
+      "faqHelpSuffix": "."
+    },
+    "estado": {
+      "metaTitle": "System status",
+      "metaDescription": "Real-time status of {brand} services and regions: provisioning, network, DDoS mitigation and more.",
+      "kicker": "System status",
+      "titleAllOkPrefix": "All systems ",
+      "titleAllOkAccent": "operational",
+      "titleAllOkSuffix": ".",
+      "titleLiveAccent": "Live",
+      "titleLiveSuffix": " service status.",
+      "description": "Real-time availability of services and regions. Subscribe to updates from the dashboard.",
+      "operational": "Operational",
+      "servicesKicker": "Services",
+      "servicesTitle": "Platform.",
+      "regionsKicker": "Regions",
+      "regionsTitle": "European coverage.",
+      "historyKicker": "History",
+      "historyTitle": "Recent incidents.",
+      "incidentResolved": "● resolved",
+      "incidentMonitoring": "● monitoring",
+      "demoData": "Demo data · pending connection to real monitoring."
+    },
+    "red": {
+      "metaTitle": "Network and backbone",
+      "metaDescription": "Autonomous system {asn} with {peers}+ peers and {capacity} Tbps of capacity. Direct peering at Europe's leading IXPs.",
+      "kickerSuffix": " · our own backbone",
+      "titlePrefix": "A network we ",
+      "titleAccent": "control",
+      "titleSuffix": ", end to end.",
+      "description": "We operate our own autonomous system with direct peering at key European exchange points. Shorter routes, lower latency and total predictability.",
+      "stats": {
+        "asn": "Autonomous system",
+        "peers": "Peers",
+        "capacity": "Network capacity",
+        "port": "Maximum port"
+      },
+      "coverageKicker": "Coverage",
+      "coverageTitle": "Distributed presence across Europe.",
+      "coverageDescription": "Each point is a region with local compute and mitigation. The lines represent the interconnection of our backbone.",
+      "commitmentsKicker": "Commitments",
+      "commitmentsTitle": "What we guarantee.",
+      "commitments": {
+        "noOverselling": {
+          "t": "No port overselling",
+          "d": "The bandwidth you order is real capacity, not a shared theoretical maximum."
+        },
+        "optimizedRoutes": {
+          "t": "Optimized routes",
+          "d": "Direct peering instead of transit whenever a route exists. Fewer hops, lower latency."
+        },
+        "edgeMitigation": {
+          "t": "Edge mitigation",
+          "d": "Attack traffic is filtered before it enters the network, not on your server."
+        }
+      },
+      "ctaTitle": "Deploy on our network"
+    },
+    "casosDeUso": {
+      "metaTitle": "Use cases",
+      "metaDescription": "Web applications, databases, enterprise workloads and SaaS platforms on ViaHost infrastructure: same network, same protection, different scale.",
+      "kicker": "Use cases",
+      "titlePrefix": "One foundation. ",
+      "titleAccent": "Many",
+      "titleSuffix": " workloads.",
+      "description": "No matter what you deploy: underneath there is always NVMe Gen4, 10 Gbps networking and DDoS mitigation. Pick where to start.",
+      "viewProduct": "View recommended product →",
+      "items": [
+        {
+          "title": "Web applications",
+          "bullets": [
+            "Deploy in 60 s on NVMe Gen4",
+            "Scale up without migrating hosts",
+            "DDoS included for traffic spikes"
+          ]
+        },
+        {
+          "title": "Databases",
+          "bullets": [
+            "Sustained IOPS on NVMe Gen4",
+            "ECC RAM on bare metal",
+            "Low-latency private network"
+          ]
+        },
+        {
+          "title": "Enterprise",
+          "bullets": [
+            "Dedicated dual EPYC bare metal",
+            "10 Gbps with guaranteed port",
+            "SLA and priority support"
+          ]
+        },
+        {
+          "title": "SaaS and platforms",
+          "bullets": [
+            "Multi-region for low latency",
+            "Provisioning API for autoscaling",
+            "Predictable per-server billing"
+          ]
+        }
+      ]
+    },
+    "proteccionDdos": {
+      "metaTitle": "DDoS Protection",
+      "metaDescription": "Always-on DDoS mitigation of up to {mitigation} Tbps included in all plans. L3/L4 and L7 filtering at the network edge, with no cost per attack.",
+      "kicker": "DDoS Protection",
+      "titlePrefix": "The attack hits. To your server, ",
+      "titleAccent": "zero",
+      "titleSuffix": ".",
+      "description": "Always-on mitigation of up to {mitigation} Tbps, included with every VPS and every dedicated server. No cost per attack, no reconfiguration on your end.",
+      "metrics": {
+        "capacity": "Mitigation capacity",
+        "absorbed": "Attacks absorbed",
+        "toServer": "Attack packets to your server"
+      },
+      "howKicker": "How it works",
+      "howTitle": "Three steps, zero intervention.",
+      "steps": [
+        {
+          "t": "Edge detection",
+          "d": "Traffic is analyzed as it enters the network. Attack signatures are identified in under 2 seconds."
+        },
+        {
+          "t": "Adaptive filtering",
+          "d": "L3/L4 and L7 rules that adjust to the attack signature, with no reroute or downtime windows."
+        },
+        {
+          "t": "Clean traffic",
+          "d": "Only legitimate traffic reaches your server. You do nothing; we charge nothing extra."
+        }
+      ],
+      "capabilitiesKicker": "Capabilities",
+      "capabilitiesTitle": "Multi-layer defense.",
+      "features": [
+        "Edge detection < 2 s",
+        "L3/L4 and L7 filtering",
+        "Adaptive per-signature rules",
+        "Always-on, no reroute",
+        "No per-attack charge",
+        "Incident reporting in the panel"
+      ],
+      "ctaTitle": "Deploy protected from day one",
+      "ctaSubtitle": "DDoS included · no cost per attack · nothing to configure"
+    },
+    "desplegar": {
+      "metaTitle": "Deploy server",
+      "metaDescription": "Choose your VPS or dedicated server plan and deploy it in 60 seconds.",
+      "kicker": "Deploy server",
+      "titlePrefix": "Choose your plan and ",
+      "titleAccent": "deploy it",
+      "titleSuffix": ".",
+      "description": "Select a plan to go to checkout. Same network, same NVMe Gen4 and the same DDoS protection on all of them.",
+      "vpsKicker": "Cloud VPS"
+    },
+    "sobreNosotros": {
+      "metaTitle": "About us",
+      "metaDescription": "{brand} is a European hosting provider with its own network ({asn}), focused on instant provisioning, hardware with no overselling and DDoS mitigation included.",
+      "kicker": "About us",
+      "titlePrefix": "European infrastructure, ",
+      "titleAccent": "no fine print",
+      "titleSuffix": ".",
+      "description": "{brand} was born to make deploying a server as fast as it should be: seconds, not days. Our own network, real hardware and a single promise kept every time.",
+      "principlesKicker": "How we work",
+      "principlesTitle": "Four principles, no exceptions.",
+      "principles": [
+        {
+          "t": "No overselling",
+          "d": "What you order physically exists and is reserved for you. No theoretical maximums, no noisy neighbors."
+        },
+        {
+          "t": "Automation first",
+          "d": "From provisioning to mitigation, the system acts on its own. Human support is reserved for what matters."
+        },
+        {
+          "t": "Our own network",
+          "d": "We operate our autonomous system {asn} and direct peering; we don't resell anyone else's network."
+        },
+        {
+          "t": "Honest pricing",
+          "d": "Monthly billing, no setup fees and no lock-in. DDoS protection is included, not an add-on."
+        }
+      ],
+      "companyDetails": "Company details",
+      "legalName": "Legal name",
+      "incorporation": "Incorporation",
+      "taxId": "EIN / Tax ID",
+      "autonomousSystem": "Autonomous system",
+      "registeredAddress": "Registered address",
+      "provisionalData": "Provisional data pending client confirmation.",
+      "ctaTitle": "Join those already deploying with us"
+    },
+    "contactForm": {
+      "errorName": "Enter your name.",
+      "errorEmail": "Enter a valid email.",
+      "errorMessage": "Tell us a bit more (min. 10 characters).",
+      "errorSend": "Could not send the message. Try again.",
+      "errorConnection": "Connection error. Check your network and try again.",
+      "sentBadge": "● message received",
+      "sentThanks": "Thanks, {name}.",
+      "sentBodyPrefix": "We have logged your message. We will reply to ",
+      "sentBodySuffix": " as soon as possible.",
+      "sendAnother": "Send another message",
+      "subject": "Subject",
+      "topicSales": "Sales and quotes",
+      "topicSupport": "Technical support",
+      "topicAbuse": "Abuse report",
+      "topicOther": "Other",
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "message": "Message",
+      "messagePlaceholder": "How can we help you?",
+      "sending": "Sending…",
+      "send": "Send message →",
+      "orEmail": "or email "
+    }
+  }
+}

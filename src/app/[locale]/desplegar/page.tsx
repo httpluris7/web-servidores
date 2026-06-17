@@ -1,16 +1,24 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { vps, dedicatedTypes } from "@/data/products";
 import { eur } from "@/lib/utils";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
-export const metadata: Metadata = {
-  title: "Deploy server",
-  description: "Choose your VPS or dedicated server plan and deploy it in 60 seconds.",
-  alternates: { canonical: "/desplegar" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "pages" });
+  return {
+    title: t("desplegar.metaTitle"),
+    description: t("desplegar.metaDescription"),
+  };
+}
 
 function PlanRow({
   id,
@@ -42,23 +50,33 @@ function PlanRow({
   );
 }
 
-export default function DeployPage() {
+export default async function DeployPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("pages");
+
   return (
     <>
       <PageHero
         index="/ Deploy"
-        kicker="Deploy server"
+        kicker={t("desplegar.kicker")}
         title={
           <>
-            Choose your plan and <span className="text-accent">deploy it</span>.
+            {t("desplegar.titlePrefix")}
+            <span className="text-accent">{t("desplegar.titleAccent")}</span>
+            {t("desplegar.titleSuffix")}
           </>
         }
-        description="Select a plan to go to checkout. Same network, same NVMe Gen4 and the same DDoS protection on all of them."
+        description={t("desplegar.description")}
       />
 
       <section className="container-edge py-16 md:py-20">
         {/* VPS */}
-        <SectionHeader index="/01" kicker="Cloud VPS" title={vps.title} description={vps.tagline} />
+        <SectionHeader index="/01" kicker={t("desplegar.vpsKicker")} title={vps.title} description={vps.tagline} />
         <div className="mt-8 grid gap-3 sm:grid-cols-2">
           {vps.plans.map((p, i) => (
             <Reveal key={p.id} delay={i % 2}>

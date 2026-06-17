@@ -59,5 +59,13 @@
     "text": "We use cookies to improve your experience. See our <link>cookie policy</link>.",
     "reject": "Reject",
     "accept": "Accept"
+  },
+  "notFound": {
+    "error404": "Error 404",
+    "title": "host not found",
+    "body": "The path you are looking for does not resolve to any resource. The link may have changed or the server may have never existed.",
+    "terminalComment": "404 · no route to resource",
+    "backHome": "Back to home",
+    "viewProducts": "View products"
   }
 }

@@ -1,0 +1,185 @@
+{
+  "products": {
+    "planCard": {
+      "mostPopular": "Le plus populaire",
+      "perMonth": "/mois",
+      "specCpu": "CPU",
+      "specRam": "RAM",
+      "specStorage": "Stockage",
+      "specNetwork": "Réseau",
+      "orderNow": "ou commandez ce plan maintenant →"
+    },
+    "faq": {
+      "kicker": "Questions fréquentes",
+      "title": "Ce que vous demandez le plus souvent."
+    },
+    "vpsFaq": {
+      "0": {
+        "q": "Combien de temps faut-il pour que le VPS soit prêt ?",
+        "a": "Le provisionnement est automatique : dès la confirmation du paiement, votre serveur est en ligne et accessible en SSH en moins de 60 secondes."
+      },
+      "1": {
+        "q": "La protection DDoS coûte-t-elle un supplément ?",
+        "a": "Non. La mitigation est toujours active en bordure de réseau et incluse dans chaque plan, sans limite par attaque ni frais surprise."
+      },
+      "2": {
+        "q": "Puis-je changer de plan plus tard ?",
+        "a": "Oui. Vous pouvez faire évoluer votre plan depuis le panneau sans migrer d'hôte. Le changement s'applique à chaud et vous ne payez que la différence au prorata."
+      },
+      "3": {
+        "q": "Quels systèmes d'exploitation puis-je installer ?",
+        "a": "Des images d'Ubuntu, Debian, AlmaLinux, Rocky et Windows Server, ainsi que des modèles avec Docker préinstallé. Vous pouvez aussi téléverser votre propre ISO."
+      },
+      "4": {
+        "q": "Le trafic est-il vraiment illimité ?",
+        "a": "Le trafic n'est pas facturé au volume. L'uplink de 10 Gbps est partagé de manière équitable ; aucun overselling de port ni bridage selon l'usage."
+      },
+      "5": {
+        "q": "Y a-t-il une durée d'engagement minimale ?",
+        "a": "Non. La facturation est mensuelle et vous pouvez résilier quand vous voulez depuis le panneau. Sans frais d'installation ni pénalité de résiliation anticipée."
+      }
+    },
+    "dedicatedFaq": {
+      "0": {
+        "q": "La bande passante est-elle garantie ou partagée ?",
+        "a": "L'uplink indiqué sur chaque plan est dédié et garanti au niveau du port. Pas d'overselling : la capacité que vous commandez est celle disponible pour vous à tout moment."
+      },
+      "1": {
+        "q": "Combien de temps prend la livraison d'un serveur dédié ?",
+        "a": "Les modèles en stock sont livrés automatiquement en quelques minutes. Les configurations sur mesure peuvent prendre jusqu'à 24 heures ; cela vous est indiqué lors de la commande."
+      },
+      "2": {
+        "q": "L'accès IPMI/KVM est-il inclus ?",
+        "a": "Oui. Chaque serveur dédié inclut une gestion à distance hors bande (IPMI/KVM) pour réinstaller, accéder à la console et lancer des diagnostics sans dépendre du support."
+      },
+      "3": {
+        "q": "Puis-je demander une configuration sur mesure ?",
+        "a": "Oui. Disques personnalisés, RAM, cartes réseau 25/100 Gbps ou RAID : contactez l'équipe commerciale et nous établirons un devis."
+      },
+      "4": {
+        "q": "Quels RAID et disques prenez-vous en charge ?",
+        "a": "RAID logiciel et matériel sur NVMe Gen4 et HDD haute capacité. Les configurations de stockage prennent en charge un cache NVMe pour accélérer les lectures."
+      },
+      "5": {
+        "q": "La protection DDoS s'applique-t-elle aussi au bare metal ?",
+        "a": "Oui. La même mitigation pouvant atteindre 25 Tbps protège indifféremment les VPS et les serveurs dédiés, sans coût supplémentaire et sans reconfiguration de votre part."
+      }
+    },
+    "vps": {
+      "meta": {
+        "title": "Cloud VPS — NVMe Gen4 et 10 Gbps",
+        "description": "VPS NVMe Gen4 avec réseau 10 Gbps et protection DDoS incluse, dans des régions stratégiques d'Europe. À partir de {price}/mois. Provisionnement en 60 secondes."
+      },
+      "tagline": "Machines virtuelles NVMe avec un réseau 10 Gbps et protection DDoS incluse.",
+      "kicker": "Cloud VPS",
+      "title": "Machines virtuelles <accent>NVMe</accent>, prêtes en 60 s.",
+      "plansKicker": "Plans",
+      "plansTitle": "Choisissez votre taille.",
+      "plansDescription": "Le même NVMe Gen4, le même réseau 10 Gbps et la même protection DDoS sur tous les plans.",
+      "locationsKicker": "Emplacements",
+      "locationsTitle": "Déployez au plus près de vos utilisateurs.",
+      "locationsDescription": "Des régions européennes avec peering direct. La même expérience, une latence plus faible.",
+      "from": "à partir de",
+      "regions": {
+        "francia": {
+          "name": "France",
+          "city": "Paris",
+          "latencyNote": "< 5 ms vers l'Europe de l'Ouest"
+        }
+      }
+    },
+    "vpsRegion": {
+      "meta": {
+        "title": "VPS à {name} ({city})",
+        "description": "VPS NVMe Gen4 à {city}, {name}. {latencyNote}. À partir de {price}/mois avec réseau 10 Gbps et DDoS incluse."
+      },
+      "titleA": "VPS à ",
+      "titleSuffix": ".",
+      "description": "{latencyNote}. NVMe Gen4, réseau 10 Gbps et protection DDoS incluse. Provisionnement en 60 secondes.",
+      "fromBadge": "à partir de {price}/mois",
+      "online": "● en ligne",
+      "plansKicker": "Plans · {name}",
+      "plansTitle": "Plans disponibles dans cette région.",
+      "plansDescription": "Tarification mensuelle sans engagement. Le plan est déployé automatiquement à cet emplacement.",
+      "ctaTitle": "Déployez votre VPS à {city}"
+    },
+    "dedicated": {
+      "meta": {
+        "title": "Serveurs Dédiés — Bare metal AMD EPYC",
+        "description": "Serveurs dédiés bare metal AMD EPYC et Ryzen avec uplinks de 1 et 10 Gbps, NVMe Gen4 et stockage haute capacité. Sans overselling, DDoS incluse."
+      },
+      "kicker": "Serveurs Dédiés",
+      "titleA": "Bare metal ",
+      "titleB": "sans overselling",
+      "titleSuffix": ".",
+      "description": "Du matériel AMD EPYC et Ryzen en exclusivité. Uplinks garantis, NVMe Gen4 et gestion IPMI/KVM. Ce que vous commandez est ce que vous obtenez.",
+      "locationsKicker": "Emplacements",
+      "locationsTitle": "Deux emplacements, un objectif : des performances réelles.",
+      "from": "À partir de",
+      "perMonth": "/mois",
+      "viewConfigurations": "Voir les configurations →",
+      "ctaTitle": "Besoin d'une configuration sur mesure ?",
+      "types": {
+        "francia": {
+          "title": "Serveurs Dédiés France",
+          "tagline": "Bare metal AMD EPYC et Ryzen dans notre datacenter de Paris. Uplinks garantis et NVMe Gen4, sans overselling.",
+          "highlight": "🇫🇷 Paris · bare metal"
+        },
+        "holanda": {
+          "title": "Serveurs Dédiés Netherlands",
+          "tagline": "Bare metal AMD EPYC et Ryzen à Amsterdam avec peering direct à l'AMS-IX. Uplinks garantis et NVMe Gen4, sans overselling.",
+          "highlight": "🇳🇱 Amsterdam · bare metal"
+        }
+      }
+    },
+    "dedicatedType": {
+      "plansKicker": "Configurations",
+      "plansTitle": "Configurations disponibles.",
+      "plansDescription": "Livraison automatisée pour les modèles en stock. Toutes incluent IPMI/KVM et la protection DDoS.",
+      "ctaTitle": "Commandez votre {title}"
+    },
+    "order": {
+      "meta": {
+        "title": "Commander {name}",
+        "description": "Déployez {name} ({lineTitle}) en 60 secondes. {cpu}, {ram}."
+      },
+      "kicker": "Commander · {lineTitle}",
+      "titleA": "Déployez votre ",
+      "titleSuffix": ".",
+      "description": "Vérifiez la configuration, complétez vos informations et confirmez. Le provisionnement commence dès la confirmation du paiement.",
+      "preferDifferent": "Vous préférez une autre configuration ?",
+      "viewAllPlans": "Voir tous les plans"
+    },
+    "orderForm": {
+      "orderRegistered": "commande enregistrée",
+      "allSet": "C’est fait, {name}.",
+      "registeredPrefix": "Nous avons enregistré votre demande pour ",
+      "inRegion": " à {region}",
+      "registeredSuffix": ". La dernière étape est le paiement sécurisé dans le panneau.",
+      "goToPayment": "Aller au paiement sécurisé",
+      "provisioningNote": "provisionnement en 60 s après confirmation du paiement",
+      "nameLabel": "Nom ou entreprise",
+      "namePlaceholder": "Votre nom",
+      "emailLabel": "E-mail",
+      "regionLabel": "Région de déploiement",
+      "termsAccept": "J’accepte les <terms>conditions</terms> et la <privacy>politique de confidentialité</privacy>.",
+      "submitIdle": "Confirmer et déployer",
+      "submitSending": "Traitement…",
+      "noCommit": "sans engagement · annulez à tout moment · support 24/7",
+      "errName": "Saisissez votre nom ou entreprise.",
+      "errEmail": "Saisissez un e-mail valide.",
+      "errTerms": "Vous devez accepter les conditions pour continuer.",
+      "errRegister": "Impossible d’enregistrer la commande. Réessayez.",
+      "errConnection": "Erreur de connexion. Vérifiez votre réseau et réessayez.",
+      "summary": "Récapitulatif",
+      "popular": "Populaire",
+      "specCpu": "CPU",
+      "specRam": "RAM",
+      "specStorage": "Stockage",
+      "specNetwork": "Réseau",
+      "region": "Région",
+      "monthlyTotal": "Total mensuel",
+      "vatNote": "TVA non incluse"
+    }
+  }
+}

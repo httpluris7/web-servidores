@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useInView, useReducedMotion } from "framer-motion";
 import { terminalLines } from "@/data/content";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -10,6 +11,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
  * en viewport. Con reduced-motion muestra todo el log de inmediato.
  */
 export function ProvisionTerminal() {
+  const t = useTranslations("home");
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const reduce = useReducedMotion();
@@ -39,9 +41,9 @@ export function ProvisionTerminal() {
     <section className="container-edge py-16 md:py-32">
       <SectionHeader
         index="/03"
-        kicker="Automated provisioning"
-        title="This happens when you hit “Deploy”."
-        description="No tickets, no queues, no human intervention. The system allocates, installs and connects your server while you read this sentence."
+        kicker={t("provisionTerminal.kicker")}
+        title={t("provisionTerminal.title")}
+        description={t("provisionTerminal.description")}
       />
 
       <div ref={ref} className="mt-12 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[#070b12]">
@@ -51,7 +53,7 @@ export function ProvisionTerminal() {
           <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
           <span className="h-3 w-3 rounded-full bg-[#28c840]" />
           <span className="ml-3 font-mono text-xs text-[var(--color-fg-dim)]">
-            viahost@deploy — provision
+            {t("provisionTerminal.terminalTitle")}
           </span>
         </div>
 
@@ -67,10 +69,10 @@ export function ProvisionTerminal() {
                 style={{ opacity: shown ? 1 : 0 }}
               >
                 <span className="text-[var(--color-accent)]">$</span>
-                <span className="text-[var(--color-fg-muted)]">{l.cmd}</span>
+                <span className="text-[var(--color-fg-muted)]">{t(`provisionTerminal.lines.${i}.cmd`)}</span>
                 <span className="flex-1 border-b border-dotted border-[var(--color-line)]" />
                 <span className={isLast ? "font-semibold text-[var(--color-accent)]" : "text-[var(--color-accent)]"}>
-                  {l.ok}
+                  {t(`provisionTerminal.lines.${i}.ok`)}
                 </span>
               </div>
             );
@@ -82,8 +84,9 @@ export function ProvisionTerminal() {
       </div>
 
       <p className="mt-6 max-w-xl font-mono text-sm text-[var(--color-fg-muted)]">
-        ↳ This is what happens{" "}
-        <span className="text-[var(--color-accent)]">54 seconds</span> after you pay.
+        {t.rich("provisionTerminal.footnote", {
+          accent: (chunks) => <span className="text-[var(--color-accent)]">{chunks}</span>,
+        })}
       </p>
     </section>
   );

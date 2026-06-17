@@ -1,0 +1,218 @@
+{
+  "home": {
+    "hero": {
+      "kicker": "{asn} · notre propre réseau en Europe · provisionnement en 60s",
+      "titleLine1": "Votre serveur,",
+      "titleIn": "en",
+      "title60s": "60 secondes",
+      "description": "VPS, bare metal et mitigation DDoS sur notre propre réseau. NVMe Gen4, uplinks 10 Gbps et présence dans des régions européennes stratégiques. Sans attente, sans surprise.",
+      "deploy": "Déployez en 60 secondes →",
+      "viewPricing": "Voir les tarifs",
+      "scroll": "Scroll"
+    },
+    "credibilityStats": {
+      "0": {
+        "label": "Peers réseau",
+        "context": "Interconnexion directe auprès des principaux IXP européens pour une latence minimale."
+      },
+      "1": {
+        "label": "Par serveur",
+        "context": "Uplink garanti sans survente, du plus petit VPS au bare metal."
+      },
+      "2": {
+        "label": "Mitigation DDoS",
+        "context": "Capacité de filtrage toujours active en périphérie, incluse dans chaque offre."
+      }
+    },
+    "liveMetrics": {
+      "0": { "label": "Trafic réseau" },
+      "1": { "label": "Paquets mitigés" },
+      "2": { "label": "Serveurs en ligne" },
+      "3": { "label": "Uptime 90 j" }
+    },
+    "provisionTerminal": {
+      "kicker": "Provisionnement automatisé",
+      "title": "Voici ce qui se passe quand vous cliquez sur « Déployer ».",
+      "description": "Sans tickets, sans files d'attente, sans intervention humaine. Le système alloue, installe et connecte votre serveur pendant que vous lisez cette phrase.",
+      "terminalTitle": "viahost@deploy — provision",
+      "lines": {
+        "0": { "cmd": "allocating slot", "ok": "ok" },
+        "1": { "cmd": "imaging ubuntu-24.04", "ok": "ok" },
+        "2": { "cmd": "attaching uplink 10G", "ok": "ok" },
+        "3": { "cmd": "applying ddos shield", "ok": "ok" },
+        "4": { "cmd": "server online", "ok": "54s" }
+      },
+      "footnote": "↳ Voici ce qui se passe <accent>54 secondes</accent> après votre paiement."
+    },
+    "hardwareCounters": {
+      "kicker": "Matériel sans compromis",
+      "title": "Chaque chiffre, mesuré. Aucun, gonflé.",
+      "0": {
+        "label": "CPU boost",
+        "copy": "AMD EPYC et Ryzen dernière génération. Des performances single-thread qui ne flanchent jamais."
+      },
+      "1": {
+        "label": "NVMe Gen4",
+        "copy": "Un stockage qui alimente le CPU sans goulot d'étranglement. Zéro disque lent."
+      },
+      "2": {
+        "label": "Réseau par serveur",
+        "copy": "Uplink dédié et symétrique. La bande passante n'est pas une option, c'est la base."
+      }
+    },
+    "productsGrid": {
+      "kicker": "Produits",
+      "title": "Choisissez votre point de départ.",
+      "description": "Du calcul sur le même réseau et la même protection. Commencez petit et montez en charge sans migrer.",
+      "from": "À partir de",
+      "perMonth": "/mois",
+      "viewAll": "Voir tous les produits →",
+      "0": {
+        "title": "Cloud VPS",
+        "tagline": "Des machines NVMe prêtes en 60s.",
+        "specs": {
+          "0": "2–16 vCore AMD EPYC",
+          "1": "NVMe Gen4 sur chaque offre",
+          "2": "10 Gbps + DDoS inclus"
+        }
+      },
+      "1": {
+        "title": "Serveurs Dédiés France",
+        "tagline": "Bare metal AMD à Paris.",
+        "specs": {
+          "0": "EPYC jusqu'à 192 threads",
+          "1": "Uplinks 1 et 10 Gbps",
+          "2": "IPMI/KVM out-of-band"
+        }
+      },
+      "2": {
+        "title": "Serveurs Dédiés Pays-Bas",
+        "tagline": "Bare metal AMD à Amsterdam.",
+        "specs": {
+          "0": "EPYC jusqu'à 192 threads",
+          "1": "Peering direct à AMS-IX",
+          "2": "Jusqu'à 360 TB de stockage"
+        }
+      }
+    },
+    "europeMap": {
+      "label": "Réseau européen ViaHost"
+    },
+    "networkBackbone": {
+      "title": "Notre propre réseau, pas loué.",
+      "description": "Nous exploitons notre propre système autonome avec un peering direct auprès des principaux IXP européens. Moins de sauts, moins de latence et des routes que nous maîtrisons de bout en bout.",
+      "stats": {
+        "peers": "Peers",
+        "capacity": "Capacité",
+        "ranking": "Classement IXP",
+        "maxPort": "Port max."
+      },
+      "viewNetwork": "Voir le réseau et le backbone →"
+    },
+    "whyUs": {
+      "kicker": "Pourquoi ViaHost",
+      "title": "Les données décident. Le reste n'est que bruit.",
+      "description": "Pas d'iconographie de stock ni de promesses creuses : chaque argument est un chiffre que vous pouvez vérifier.",
+      "0": {
+        "label": "Déploiement réel",
+        "body": "Du paiement à un serveur actif en moins d'une minute. Sans files d'attente, sans validation manuelle."
+      },
+      "1": {
+        "label": "Mitigation DDoS",
+        "body": "Filtrage toujours actif en périphérie du réseau. Vous ne payez pas de supplément pour rester protégé."
+      },
+      "2": {
+        "label": "NVMe partout",
+        "body": "Chaque offre, jusqu'à la plus petite, démarre sur du NVMe Gen4. Zéro disque mécanique en calcul."
+      },
+      "3": {
+        "label": "Réseau par serveur",
+        "body": "Uplinks 10 Gbps sans survente. La bande passante que vous voyez est celle que vous obtenez."
+      },
+      "4": {
+        "label": "Régions UE",
+        "body": "Présence répartie à travers l'Europe avec un peering direct auprès des principaux IXP."
+      },
+      "5": {
+        "label": "Support humain",
+        "body": "Des ingénieurs d'astreinte 24h/24. Temps de réponse moyen sous 10 minutes en cas d'incident."
+      }
+    },
+    "useCases": {
+      "kicker": "Cas d'usage",
+      "title": "Conçu pour des charges réelles.",
+      "description": "D'une API lancée aujourd'hui à une plateforme SaaS multirégion. Le même réseau en dessous.",
+      "viewProduct": "Voir le produit →",
+      "0": {
+        "title": "Applications web",
+        "bullets": {
+          "0": "Déployez en 60 s sur NVMe Gen4",
+          "1": "Montez en charge sans migrer d'hôte",
+          "2": "DDoS inclus pour les pics de trafic"
+        }
+      },
+      "1": {
+        "title": "Bases de données",
+        "bullets": {
+          "0": "IOPS soutenues sur NVMe Gen4",
+          "1": "RAM ECC sur bare metal",
+          "2": "Réseau privé à faible latence"
+        }
+      },
+      "2": {
+        "title": "Entreprise",
+        "bullets": {
+          "0": "Bare metal dual EPYC dédié",
+          "1": "10 Gbps avec port garanti",
+          "2": "SLA et support prioritaire"
+        }
+      },
+      "3": {
+        "title": "SaaS et plateformes",
+        "bullets": {
+          "0": "Multirégion pour une faible latence",
+          "1": "API de provisionnement pour l'autoscaling",
+          "2": "Facturation prévisible par serveur"
+        }
+      }
+    },
+    "ddos": {
+      "kicker": "Protection DDoS toujours active",
+      "title": "L'attaque arrive. À votre serveur, <accent>rien</accent>.",
+      "diagramLabel": "Schéma de mitigation DDoS : le trafic d'attaque est filtré au bouclier et seul le trafic propre atteint le serveur.",
+      "attackTraffic": "trafic d'attaque",
+      "shield": "bouclier",
+      "yourServer": "votre serveur",
+      "footnote": "↳ Votre serveur, intact.",
+      "stats": {
+        "mitigation": "Capacité de mitigation",
+        "absorbed": "Attaques absorbées",
+        "filtered": "Paquets d'attaque au serveur"
+      },
+      "features": {
+        "0": "Détection en périphérie < 2 s",
+        "1": "Filtrage L3/L4 et L7",
+        "2": "Règles adaptatives par signature",
+        "3": "Toujours actif, sans reroutage",
+        "4": "Aucun frais par attaque",
+        "5": "Rapport d'incidents dans le panneau"
+      },
+      "cta": "Comment fonctionne la mitigation →"
+    },
+    "trust": {
+      "kicker": "/10 — Confiance",
+      "partnersLabel": "Matériel et réseau haut de gamme",
+      "0": { "label": "Serveurs actifs" },
+      "1": { "label": "SLA d'uptime" },
+      "2": { "label": "Régions UE" },
+      "3": { "label": "Support" }
+    },
+    "finalCta": {
+      "kicker": "/11 — Commencez maintenant",
+      "titleLine1": "Votre place vous",
+      "titleWaiting": "attend.",
+      "deploy": "Déployez en 60 secondes →",
+      "note": "provisionnement en 60s · sans configuration · annulez à tout moment"
+    }
+  }
+}

@@ -1,23 +1,36 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { site } from "@/data/site";
 import { PageHero } from "@/components/ui/PageHero";
 import { RegisterForm } from "@/components/forms/RegisterForm";
 import { getSession } from "@/lib/session";
 import { safeInternalPath } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "Create account",
-  description: `Create your ${site.brand} account to manage your services.`,
-  alternates: { canonical: "/registro" },
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "auth" });
+  return {
+    title: t("register.metaTitle"),
+    description: t("register.metaDescription", { brand: site.brand }),
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function RegistroPage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ next?: string }>;
 }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("auth");
   const next = safeInternalPath((await searchParams).next);
 
   // Si ya hay sesión, no tiene sentido registrarse de nuevo: vamos a `next` o cuenta.
@@ -27,13 +40,13 @@ export default async function RegistroPage({
     <>
       <PageHero
         index="/01"
-        kicker="Sign up"
+        kicker={t("register.kicker")}
         title={
           <>
-            Create your <span className="text-accent">account</span>.
+            {t("register.titleCreate")} <span className="text-accent">{t("register.titleAccount")}</span>.
           </>
         }
-        description="Sign up to manage your VPS, dedicated servers and billing from a single dashboard."
+        description={t("register.description")}
       />
 
       <section className="container-edge max-w-2xl py-16 md:py-20">

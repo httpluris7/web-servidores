@@ -1,17 +1,19 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import type { Plan } from "@/data/products";
 import { eur } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { Link } from "@/i18n/navigation";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
-const specRows: { key: keyof Plan; label: string }[] = [
-  { key: "cpu", label: "CPU" },
-  { key: "ram", label: "RAM" },
-  { key: "storage", label: "Storage" },
-  { key: "bandwidth", label: "Network" },
+const specRows: { key: keyof Plan; labelKey: string }[] = [
+  { key: "cpu", labelKey: "planCard.specCpu" },
+  { key: "ram", labelKey: "planCard.specRam" },
+  { key: "storage", labelKey: "planCard.specStorage" },
+  { key: "bandwidth", labelKey: "planCard.specNetwork" },
 ];
 
-export function PlanCard({ plan }: { plan: Plan }) {
+export async function PlanCard({ plan }: { plan: Plan }) {
+  const t = await getTranslations("products");
   return (
     <div
       className={cn(
@@ -23,7 +25,7 @@ export function PlanCard({ plan }: { plan: Plan }) {
     >
       {plan.popular && (
         <span className="absolute -top-2.5 left-6 rounded bg-[var(--color-accent)] px-2 py-0.5 font-mono text-[0.65rem] font-medium uppercase tracking-wider text-black">
-          Most popular
+          {t("planCard.mostPopular")}
         </span>
       )}
 
@@ -31,13 +33,13 @@ export function PlanCard({ plan }: { plan: Plan }) {
 
       <div className="mt-4 flex items-baseline gap-1">
         <span className="font-mono text-4xl font-semibold tracking-tight">{eur(plan.price)}</span>
-        <span className="text-sm text-[var(--color-fg-muted)]">/mo</span>
+        <span className="text-sm text-[var(--color-fg-muted)]">{t("planCard.perMonth")}</span>
       </div>
 
       <dl className="mt-6 space-y-2.5 border-t border-[var(--color-line)] pt-6 text-sm">
         {specRows.map((row) => (
           <div key={row.key} className="flex items-start justify-between gap-4">
-            <dt className="mono-label text-[0.65rem]">{row.label}</dt>
+            <dt className="mono-label text-[0.65rem]">{t(row.labelKey)}</dt>
             <dd className="text-right text-[var(--color-fg)]">{plan[row.key] as string}</dd>
           </div>
         ))}
@@ -52,7 +54,7 @@ export function PlanCard({ plan }: { plan: Plan }) {
         href={plan.orderUrl}
         className="mt-3 block text-center text-xs text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-accent)]"
       >
-        or order this plan now →
+        {t("planCard.orderNow")}
       </Link>
     </div>
   );

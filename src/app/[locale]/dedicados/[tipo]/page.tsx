@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { dedicatedTypes, getDedicatedType } from "@/data/products";
 import { dedicatedFaq } from "@/data/faq";
 import { site } from "@/data/site";
@@ -9,9 +10,9 @@ import { PlanGrid } from "@/components/product/PlanGrid";
 import { FaqSection } from "@/components/ui/FaqSection";
 import { CtaBand } from "@/components/ui/CtaBand";
 
-type Params = { tipo: string };
+type Params = { locale: string; tipo: string };
 
-export function generateStaticParams(): Params[] {
+export function generateStaticParams(): { tipo: string }[] {
   return dedicatedTypes.map((d) => ({ tipo: d.slug }));
 }
 
@@ -20,20 +21,26 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const { tipo } = await params;
+  const { locale, tipo } = await params;
   const line = getDedicatedType(tipo);
   if (!line) return {};
+  const t = await getTranslations({ locale, namespace: "products" });
   return {
-    title: line.title,
-    description: line.tagline,
-    alternates: { canonical: `/dedicados/${line.slug}` },
+    title: t(`dedicated.types.${tipo}.title`),
+    description: t(`dedicated.types.${tipo}.tagline`),
   };
 }
 
 export default async function DedicatedTypePage({ params }: { params: Promise<Params> }) {
-  const { tipo } = await params;
+  const { locale, tipo } = await params;
+  setRequestLocale(locale);
   const line = getDedicatedType(tipo);
   if (!line) notFound();
+
+  const t = await getTranslations("products");
+  const title = t(`dedicated.types.${tipo}.title`);
+  const tagline = t(`dedicated.types.${tipo}.tagline`);
+  const highlight = t(`dedicated.types.${tipo}.highlight`);
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -59,21 +66,21 @@ export default async function DedicatedTypePage({ params }: { params: Promise<Pa
       />
       <PageHero
         index="/ Dedicated"
-        kicker={line.highlight}
-        title={line.title}
-        description={line.tagline}
+        kicker={highlight}
+        title={title}
+        description={tagline}
       />
 
       <PlanGrid
         index="/01"
-        kicker="Configurations"
-        title="Available configurations."
-        description="Automated delivery for in-stock models. All include IPMI/KVM and DDoS protection."
+        kicker={t("dedicatedType.plansKicker")}
+        title={t("dedicatedType.plansTitle")}
+        description={t("dedicatedType.plansDescription")}
         plans={line.plans}
       />
 
-      <FaqSection items={dedicatedFaq} index="/02" />
-      <CtaBand title={`Order your ${line.title}`} />
+      <FaqSection items={dedicatedFaq} tKey="dedicatedFaq" index="/02" />
+      <CtaBand title={t("dedicatedType.ctaTitle", { title })} />
     </>
   );
 }

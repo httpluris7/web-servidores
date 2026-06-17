@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { motion, useReducedMotion } from "framer-motion";
 import { regions } from "@/data/products";
 import { viewportOnce } from "@/lib/motion";
@@ -9,6 +10,7 @@ import { viewportOnce } from "@/lib/motion";
  * Silueta abstracta + nodos con pulso CSS + backbone que se dibuja una vez.
  */
 export function EuropeMap() {
+  const t = useTranslations("home");
   const reduce = useReducedMotion();
 
   // Punto medio del backbone: centro de masa de los nodos activos.
@@ -19,7 +21,7 @@ export function EuropeMap() {
 
   return (
     <div className="relative aspect-square w-full">
-      <svg viewBox="0 0 100 100" className="h-full w-full" role="img" aria-label="ViaHost European network">
+      <svg viewBox="0 0 100 100" className="h-full w-full" role="img" aria-label={t("europeMap.label")}>
         <defs>
           <radialGradient id="landGrad" cx="50%" cy="40%" r="70%">
             <stop offset="0%" stopColor="#0e1828" />

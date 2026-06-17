@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { site } from "@/data/site";
 import { PageHero } from "@/components/ui/PageHero";
 import { LogoutButton } from "@/components/forms/LogoutButton";
@@ -7,28 +8,44 @@ import { ChangePasswordForm } from "@/components/forms/ChangePasswordForm";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
 
-export const metadata: Metadata = {
-  title: "My account",
-  description: `${site.brand} account dashboard.`,
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "auth" });
+  return {
+    title: t("account.metaTitle"),
+    description: t("account.metaDescription", { brand: site.brand }),
+    robots: { index: false, follow: false },
+  };
+}
 
 // Lee la cookie de sesión: nunca debe cachearse de forma estática.
 export const dynamic = "force-dynamic";
 
-const fields: { key: string; label: string }[] = [
-  { key: "nombre", label: "Name" },
-  { key: "apellidos", label: "Last name" },
-  { key: "email", label: "Email" },
-  { key: "telefono", label: "Phone" },
-  { key: "direccion", label: "Address" },
-  { key: "codigoPostal", label: "Postal code" },
-  { key: "ciudad", label: "City" },
-  { key: "estado", label: "State" },
-  { key: "pais", label: "Country" },
-];
+const fieldKeys = [
+  "nombre",
+  "apellidos",
+  "email",
+  "telefono",
+  "direccion",
+  "codigoPostal",
+  "ciudad",
+  "estado",
+  "pais",
+] as const;
 
-export default async function CuentaPage() {
+export default async function CuentaPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("auth");
+
   const session = await getSession();
   if (!session) redirect("/acceder");
 
@@ -39,31 +56,31 @@ export default async function CuentaPage() {
     <>
       <PageHero
         index="/01"
-        kicker="My account"
+        kicker={t("account.kicker")}
         title={
           <>
-            Hello, <span className="text-accent">{user.nombre}</span>.
+            {t("account.greeting")}, <span className="text-accent">{user.nombre}</span>.
           </>
         }
-        description="Your account details. Soon you'll be able to manage your services and billing here."
+        description={t("account.description")}
       />
 
       <section className="container-edge max-w-2xl py-16 md:py-20">
         <dl className="grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-2">
-          {fields.map((f) => (
-            <div key={f.key} className="bg-[var(--color-bg-raised)] px-5 py-4">
-              <dt className="mono-label text-[0.6rem]">{f.label}</dt>
+          {fieldKeys.map((key) => (
+            <div key={key} className="bg-[var(--color-bg-raised)] px-5 py-4">
+              <dt className="mono-label text-[0.6rem]">{t(`account.fields.${key}`)}</dt>
               <dd className="mt-1 text-sm text-[var(--color-fg)] break-words">
-                {(user as unknown as Record<string, string>)[f.key] || "—"}
+                {(user as unknown as Record<string, string>)[key] || "—"}
               </dd>
             </div>
           ))}
         </dl>
 
         <section className="mt-12 border-t border-[var(--color-line)] pt-10">
-          <h2 className="mono-label mb-1">Security</h2>
+          <h2 className="mono-label mb-1">{t("account.securityHeading")}</h2>
           <p className="mb-6 text-sm text-[var(--color-fg-muted)]">
-            Change your password. You&apos;ll need to enter your current one and repeat the new one.
+            {t("account.securityIntro")}
           </p>
           <ChangePasswordForm />
         </section>

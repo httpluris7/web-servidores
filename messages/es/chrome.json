@@ -59,5 +59,13 @@
     "text": "Usamos cookies para mejorar tu experiencia. Consulta nuestra <link>política de cookies</link>.",
     "reject": "Rechazar",
     "accept": "Aceptar"
+  },
+  "notFound": {
+    "error404": "Error 404",
+    "title": "host no encontrado",
+    "body": "La ruta que buscas no corresponde a ningún recurso. Puede que el enlace haya cambiado o que el servidor nunca existiera.",
+    "terminalComment": "404 · sin ruta al recurso",
+    "backHome": "Volver al inicio",
+    "viewProducts": "Ver productos"
   }
 }

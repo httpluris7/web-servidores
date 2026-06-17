@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import type { Plan, Region } from "@/data/products";
 import { billingHandoffUrl, site } from "@/data/site";
 import { eur } from "@/lib/utils";
@@ -9,11 +11,11 @@ import { Label, Input, Select, FieldError } from "./Field";
 type Errors = Partial<Record<"name" | "email" | "terms", string>>;
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const specRows: { key: keyof Plan; label: string }[] = [
-  { key: "cpu", label: "CPU" },
-  { key: "ram", label: "RAM" },
-  { key: "storage", label: "Storage" },
-  { key: "bandwidth", label: "Network" },
+const specRows: { key: keyof Plan; tKey: string }[] = [
+  { key: "cpu", tKey: "specCpu" },
+  { key: "ram", tKey: "specRam" },
+  { key: "storage", tKey: "specStorage" },
+  { key: "bandwidth", tKey: "specNetwork" },
 ];
 
 export function OrderForm({
@@ -25,6 +27,7 @@ export function OrderForm({
   lineTitle: string;
   regions?: Region[];
 }) {
+  const t = useTranslations("products");
   const [values, setValues] = useState({ name: "", email: "", region: regions?.[0]?.slug ?? "" });
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
@@ -33,9 +36,9 @@ export function OrderForm({
 
   function validate(): boolean {
     const e: Errors = {};
-    if (values.name.trim().length < 2) e.name = "Enter your name or company.";
-    if (!emailRe.test(values.email)) e.email = "Enter a valid email.";
-    if (!terms) e.terms = "You must accept the terms to continue.";
+    if (values.name.trim().length < 2) e.name = t("orderForm.errName");
+    if (!emailRe.test(values.email)) e.email = t("orderForm.errEmail");
+    if (!terms) e.terms = t("orderForm.errTerms");
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -55,13 +58,13 @@ export function OrderForm({
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         if (data?.errors) setErrors(data.errors as Errors);
-        setFormError(data?.error ?? "Could not register the order. Try again.");
+        setFormError(data?.error ?? t("orderForm.errRegister"));
         setStatus("idle");
         return;
       }
       setStatus("done");
     } catch {
-      setFormError("Connection error. Check your network and try again.");
+      setFormError(t("orderForm.errConnection"));
       setStatus("idle");
     }
   }
@@ -74,11 +77,15 @@ export function OrderForm({
       <div>
         {status === "done" ? (
           <div className="rounded-[var(--radius-lg)] border border-[var(--color-accent)] bg-[var(--color-bg-raised)] p-8 glow-accent">
-            <div className="font-mono text-sm text-[var(--color-accent)]">● order registered</div>
-            <h2 className="mt-3 text-2xl font-semibold">All set, {values.name.split(" ")[0]}.</h2>
+            <div className="font-mono text-sm text-[var(--color-accent)]">● {t("orderForm.orderRegistered")}</div>
+            <h2 className="mt-3 text-2xl font-semibold">
+              {t("orderForm.allSet", { name: values.name.split(" ")[0] ?? values.name })}
+            </h2>
             <p className="mt-2 text-sm text-[var(--color-fg-muted)]">
-              We have registered your request for <strong className="text-[var(--color-fg)]">{plan.name}</strong>
-              {regionName ? ` in ${regionName}` : ""}. The last step is secure payment in the panel.
+              {t("orderForm.registeredPrefix")}
+              <strong className="text-[var(--color-fg)]">{plan.name}</strong>
+              {regionName ? t("orderForm.inRegion", { region: regionName }) : ""}
+              {t("orderForm.registeredSuffix")}
             </p>
             <a
               href={billingHandoffUrl(plan.id)}
@@ -86,11 +93,10 @@ export function OrderForm({
               rel="noopener noreferrer"
               className="mt-6 inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
             >
-              Go to secure payment →
+              {t("orderForm.goToPayment")} →
             </a>
             <p className="mt-4 font-mono text-xs text-[var(--color-fg-dim)]">
-              {/* TODO (API): este botón lleva al panel de facturación externo (site.billingUrl). */}
-              provisioning in 60 s after payment is confirmed
+              {t("orderForm.provisioningNote")}
             </p>
           </div>
         ) : (
@@ -98,20 +104,20 @@ export function OrderForm({
             <div className="grid gap-5 sm:grid-cols-2">
               <div>
                 <Label htmlFor="name" required>
-                  Name or company
+                  {t("orderForm.nameLabel")}
                 </Label>
                 <Input
                   id="name"
                   value={values.name}
                   onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
-                  placeholder="Your name"
+                  placeholder={t("orderForm.namePlaceholder")}
                   aria-invalid={!!errors.name}
                 />
                 <FieldError>{errors.name}</FieldError>
               </div>
               <div>
                 <Label htmlFor="email" required>
-                  Email
+                  {t("orderForm.emailLabel")}
                 </Label>
                 <Input
                   id="email"
@@ -127,7 +133,7 @@ export function OrderForm({
 
             {regions && regions.length > 0 && (
               <div>
-                <Label htmlFor="region">Deployment region</Label>
+                <Label htmlFor="region">{t("orderForm.regionLabel")}</Label>
                 <Select
                   id="region"
                   value={values.region}
@@ -152,15 +158,18 @@ export function OrderForm({
                   aria-invalid={!!errors.terms}
                 />
                 <span>
-                  I accept the{" "}
-                  <a href="/legal/terminos" className="text-[var(--color-accent)] underline">
-                    terms
-                  </a>{" "}
-                  and the{" "}
-                  <a href="/legal/privacidad" className="text-[var(--color-accent)] underline">
-                    privacy policy
-                  </a>
-                  .
+                  {t.rich("orderForm.termsAccept", {
+                    terms: (c) => (
+                      <Link href="/legal/terminos" className="text-[var(--color-accent)] underline">
+                        {c}
+                      </Link>
+                    ),
+                    privacy: (c) => (
+                      <Link href="/legal/privacidad" className="text-[var(--color-accent)] underline">
+                        {c}
+                      </Link>
+                    ),
+                  })}
                 </span>
               </label>
               <FieldError>{errors.terms}</FieldError>
@@ -171,11 +180,9 @@ export function OrderForm({
               disabled={status === "sending"}
               className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60 sm:w-auto"
             >
-              {status === "sending" ? "Processing…" : "Confirm and deploy →"}
+              {status === "sending" ? t("orderForm.submitSending") : `${t("orderForm.submitIdle")} →`}
             </button>
-            <p className="font-mono text-xs text-[var(--color-fg-dim)]">
-              no commitment · cancel anytime · 24/7 support
-            </p>
+            <p className="font-mono text-xs text-[var(--color-fg-dim)]">{t("orderForm.noCommit")}</p>
             {formError && (
               <p role="alert" className="text-sm text-[var(--color-danger)]">
                 {formError}
@@ -187,35 +194,35 @@ export function OrderForm({
 
       {/* Resumen del pedido */}
       <aside className="h-fit rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-6 lg:sticky lg:top-24">
-        <span className="mono-label text-[0.65rem]">Summary · {lineTitle}</span>
+        <span className="mono-label text-[0.65rem]">{t("orderForm.summary")} · {lineTitle}</span>
         <h3 className="mt-2 text-xl font-semibold">{plan.name}</h3>
         {plan.popular && (
           <span className="mt-2 inline-block rounded bg-[var(--color-accent)] px-2 py-0.5 font-mono text-[0.65rem] font-medium uppercase tracking-wider text-black">
-            Popular
+            {t("orderForm.popular")}
           </span>
         )}
 
         <dl className="mt-5 space-y-2.5 border-t border-[var(--color-line)] pt-5 text-sm">
           {specRows.map((row) => (
             <div key={row.key} className="flex items-start justify-between gap-4">
-              <dt className="mono-label text-[0.6rem]">{row.label}</dt>
+              <dt className="mono-label text-[0.6rem]">{t(`orderForm.${row.tKey}`)}</dt>
               <dd className="text-right text-[var(--color-fg)]">{plan[row.key] as string}</dd>
             </div>
           ))}
           {regionName && (
             <div className="flex items-start justify-between gap-4">
-              <dt className="mono-label text-[0.6rem]">Region</dt>
+              <dt className="mono-label text-[0.6rem]">{t("orderForm.region")}</dt>
               <dd className="text-right text-[var(--color-accent)]">{regionName}</dd>
             </div>
           )}
         </dl>
 
         <div className="mt-5 flex items-baseline justify-between border-t border-[var(--color-line)] pt-5">
-          <span className="text-sm text-[var(--color-fg-muted)]">Monthly total</span>
+          <span className="text-sm text-[var(--color-fg-muted)]">{t("orderForm.monthlyTotal")}</span>
           <span className="font-mono text-2xl font-semibold">{eur(plan.price)}</span>
         </div>
         <p className="mt-2 text-right font-mono text-[0.65rem] text-[var(--color-fg-dim)]">
-          VAT not included · {site.brand}
+          {t("orderForm.vatNote")} · {site.brand}
         </p>
       </aside>
     </div>

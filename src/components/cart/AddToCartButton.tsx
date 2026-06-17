@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +18,7 @@ export function AddToCartButton({
   className?: string;
   variant?: "primary" | "outline";
 }) {
+  const t = useTranslations("auth");
   const { add } = useCart();
   const [added, setAdded] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -45,7 +47,7 @@ export function AddToCartButton({
         className
       )}
     >
-      {added ? "Added ✓" : "Add to cart"}
+      {added ? t("addToCart.added") : t("addToCart.add")}
     </button>
   );
 }

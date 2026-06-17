@@ -1,0 +1,277 @@
+{
+  "pages": {
+    "contacto": {
+      "metaTitle": "Contact",
+      "metaDescription": "Parlez à l'équipe {brand} : ventes, support technique ou signalements d'abus. Réponse moyenne en moins de 10 minutes en cas d'incident.",
+      "kicker": "Contact",
+      "titlePrefix": "Parlons-en. ",
+      "titleAccent": "Vraiment",
+      "titleSuffix": ".",
+      "description": "De vraies personnes en face, 24h/24 et 7j/7. Contactez-nous via le formulaire ou directement par le canal qui vous convient le mieux.",
+      "directChannels": "Canaux directs",
+      "channels": {
+        "sales": { "label": "Ventes", "note": "Devis et configurations sur mesure" },
+        "support": { "label": "Support", "note": "Clients avec un service actif" },
+        "abuse": { "label": "Abus", "note": "Signalements d'usage abusif" }
+      },
+      "serviceStatus": "État du service",
+      "serviceStatusNote": "Consultez les incidents et maintenances en temps réel.",
+      "viewStatus": "Voir l'état →"
+    },
+    "soporte": {
+      "metaTitle": "Support",
+      "metaDescription": "Centre d'aide {brand} : guides rapides, foire aux questions, état du service et contact 24h/24 et 7j/7 avec l'ingénierie.",
+      "kicker": "Centre de support",
+      "titlePrefix": "De l'aide ",
+      "titleAccent": "quand",
+      "titleSuffix": " vous en avez besoin.",
+      "description": "Ingénierie d'astreinte 24h/24 et 7j/7 avec une réponse moyenne en moins de 10 minutes en cas d'incident. Commencez ici.",
+      "quickLinks": {
+        "status": { "title": "État du service", "desc": "Incidents et maintenances en temps réel." },
+        "request": { "title": "Ouvrir une demande", "desc": "Ventes, support technique ou abus." },
+        "deploy": { "title": "Déployer un serveur", "desc": "Choisissez un plan et déployez en 60 s." }
+      },
+      "docsKicker": "Documentation",
+      "docsTitle": "Parcourir par catégorie.",
+      "categories": {
+        "gettingStarted": {
+          "title": "Premiers pas",
+          "items": ["Accès SSH", "Réinstaller le système", "Clés et utilisateurs"]
+        },
+        "networkDns": {
+          "title": "Réseau et DNS",
+          "items": ["IP et rDNS", "Pointez votre domaine", "Proxy inverse"]
+        },
+        "security": {
+          "title": "Sécurité",
+          "items": ["Protection DDoS", "Règles de pare-feu", "Bonnes pratiques"]
+        },
+        "billing": {
+          "title": "Facturation",
+          "items": ["Moyens de paiement", "Changer de plan", "Résilier le service"]
+        }
+      },
+      "faqKicker": "Foire aux questions",
+      "faqTitle": "Les questions les plus fréquentes.",
+      "faqHelpPrefix": "Vous ne trouvez pas ce que vous cherchez ? ",
+      "faqHelpWrite": "Écrivez-nous",
+      "faqHelpMiddle": " ou consultez l'",
+      "faqHelpStatus": "état du service",
+      "faqHelpSuffix": "."
+    },
+    "estado": {
+      "metaTitle": "État du système",
+      "metaDescription": "État en temps réel des services et régions de {brand} : provisionnement, réseau, mitigation DDoS et plus encore.",
+      "kicker": "État du système",
+      "titleAllOkPrefix": "Tous les systèmes ",
+      "titleAllOkAccent": "opérationnels",
+      "titleAllOkSuffix": ".",
+      "titleLiveAccent": "En direct",
+      "titleLiveSuffix": " : état du service.",
+      "description": "Disponibilité en temps réel des services et des régions. Abonnez-vous aux mises à jour depuis le tableau de bord.",
+      "operational": "Opérationnel",
+      "servicesKicker": "Services",
+      "servicesTitle": "Plateforme.",
+      "regionsKicker": "Régions",
+      "regionsTitle": "Couverture européenne.",
+      "historyKicker": "Historique",
+      "historyTitle": "Incidents récents.",
+      "incidentResolved": "● résolu",
+      "incidentMonitoring": "● surveillance",
+      "demoData": "Données de démonstration · en attente de connexion à une supervision réelle."
+    },
+    "red": {
+      "metaTitle": "Réseau et backbone",
+      "metaDescription": "Système autonome {asn} avec plus de {peers} peers et {capacity} Tbps de capacité. Peering direct sur les principaux IXP d'Europe.",
+      "kickerSuffix": " · notre propre backbone",
+      "titlePrefix": "Un réseau que nous ",
+      "titleAccent": "contrôlons",
+      "titleSuffix": ", de bout en bout.",
+      "description": "Nous exploitons notre propre système autonome avec un peering direct sur les points d'échange clés d'Europe. Des routes plus courtes, une latence plus faible et une prévisibilité totale.",
+      "stats": {
+        "asn": "Système autonome",
+        "peers": "Peers",
+        "capacity": "Capacité réseau",
+        "port": "Port maximum"
+      },
+      "coverageKicker": "Couverture",
+      "coverageTitle": "Présence distribuée à travers l'Europe.",
+      "coverageDescription": "Chaque point est une région avec calcul et mitigation locaux. Les lignes représentent l'interconnexion de notre backbone.",
+      "commitmentsKicker": "Engagements",
+      "commitmentsTitle": "Ce que nous garantissons.",
+      "commitments": {
+        "noOverselling": {
+          "t": "Pas de surréservation de port",
+          "d": "La bande passante que vous commandez est une capacité réelle, pas un maximum théorique partagé."
+        },
+        "optimizedRoutes": {
+          "t": "Routes optimisées",
+          "d": "Peering direct plutôt que transit dès qu'une route existe. Moins de sauts, moins de latence."
+        },
+        "edgeMitigation": {
+          "t": "Mitigation en périphérie",
+          "d": "Le trafic d'attaque est filtré avant d'entrer dans le réseau, pas sur votre serveur."
+        }
+      },
+      "ctaTitle": "Déployez sur notre réseau"
+    },
+    "casosDeUso": {
+      "metaTitle": "Cas d'usage",
+      "metaDescription": "Applications web, bases de données, charges d'entreprise et plateformes SaaS sur l'infrastructure ViaHost : même réseau, même protection, autre échelle.",
+      "kicker": "Cas d'usage",
+      "titlePrefix": "Une base. ",
+      "titleAccent": "De nombreuses",
+      "titleSuffix": " charges de travail.",
+      "description": "Peu importe ce que vous déployez : en dessous il y a toujours du NVMe Gen4, un réseau 10 Gbps et la mitigation DDoS. Choisissez par où commencer.",
+      "viewProduct": "Voir le produit recommandé →",
+      "items": [
+        {
+          "title": "Applications web",
+          "bullets": [
+            "Déployez en 60 s sur NVMe Gen4",
+            "Montez en puissance sans migrer d'hôte",
+            "DDoS inclus pour les pics de trafic"
+          ]
+        },
+        {
+          "title": "Bases de données",
+          "bullets": [
+            "IOPS soutenues sur NVMe Gen4",
+            "RAM ECC sur bare metal",
+            "Réseau privé à faible latence"
+          ]
+        },
+        {
+          "title": "Entreprise",
+          "bullets": [
+            "Bare metal dédié dual EPYC",
+            "10 Gbps avec port garanti",
+            "SLA et support prioritaire"
+          ]
+        },
+        {
+          "title": "SaaS et plateformes",
+          "bullets": [
+            "Multirégion pour une faible latence",
+            "API de provisionnement pour l'autoscaling",
+            "Facturation par serveur prévisible"
+          ]
+        }
+      ]
+    },
+    "proteccionDdos": {
+      "metaTitle": "Protection DDoS",
+      "metaDescription": "Mitigation DDoS always-on jusqu'à {mitigation} Tbps incluse dans tous les plans. Filtrage L3/L4 et L7 en périphérie du réseau, sans coût par attaque.",
+      "kicker": "Protection DDoS",
+      "titlePrefix": "L'attaque frappe. Sur votre serveur, ",
+      "titleAccent": "zéro",
+      "titleSuffix": ".",
+      "description": "Mitigation always-on jusqu'à {mitigation} Tbps, incluse avec chaque VPS et chaque serveur dédié. Sans coût par attaque, sans reconfiguration de votre côté.",
+      "metrics": {
+        "capacity": "Capacité de mitigation",
+        "absorbed": "Attaques absorbées",
+        "toServer": "Paquets d'attaque vers votre serveur"
+      },
+      "howKicker": "Comment ça marche",
+      "howTitle": "Trois étapes, zéro intervention.",
+      "steps": [
+        {
+          "t": "Détection en périphérie",
+          "d": "Le trafic est analysé dès son entrée dans le réseau. Les signatures d'attaque sont identifiées en moins de 2 secondes."
+        },
+        {
+          "t": "Filtrage adaptatif",
+          "d": "Des règles L3/L4 et L7 qui s'ajustent à la signature de l'attaque, sans reroutage ni fenêtre d'indisponibilité."
+        },
+        {
+          "t": "Trafic propre",
+          "d": "Seul le trafic légitime atteint votre serveur. Vous ne faites rien ; nous ne facturons rien de plus."
+        }
+      ],
+      "capabilitiesKicker": "Capacités",
+      "capabilitiesTitle": "Défense multicouche.",
+      "features": [
+        "Détection en périphérie < 2 s",
+        "Filtrage L3/L4 et L7",
+        "Règles adaptatives par signature",
+        "Always-on, sans reroutage",
+        "Aucun frais par attaque",
+        "Rapport d'incidents dans le panneau"
+      ],
+      "ctaTitle": "Déployez protégé dès le premier jour",
+      "ctaSubtitle": "DDoS inclus · sans coût par attaque · rien à configurer"
+    },
+    "desplegar": {
+      "metaTitle": "Déployer un serveur",
+      "metaDescription": "Choisissez votre plan VPS ou serveur dédié et déployez-le en 60 secondes.",
+      "kicker": "Déployer un serveur",
+      "titlePrefix": "Choisissez votre plan et ",
+      "titleAccent": "déployez-le",
+      "titleSuffix": ".",
+      "description": "Sélectionnez un plan pour passer au paiement. Même réseau, même NVMe Gen4 et même protection DDoS sur tous.",
+      "vpsKicker": "Cloud VPS"
+    },
+    "sobreNosotros": {
+      "metaTitle": "À propos",
+      "metaDescription": "{brand} est un hébergeur européen disposant de son propre réseau ({asn}), axé sur le provisionnement instantané, du matériel sans surréservation et la mitigation DDoS incluse.",
+      "kicker": "À propos",
+      "titlePrefix": "Infrastructure européenne, ",
+      "titleAccent": "sans petits caractères",
+      "titleSuffix": ".",
+      "description": "{brand} est né pour rendre le déploiement d'un serveur aussi rapide qu'il devrait l'être : des secondes, pas des jours. Notre propre réseau, du matériel réel et une seule promesse tenue à chaque fois.",
+      "principlesKicker": "Comment nous travaillons",
+      "principlesTitle": "Quatre principes, sans exception.",
+      "principles": [
+        {
+          "t": "Pas de surréservation",
+          "d": "Ce que vous commandez existe physiquement et vous est réservé. Pas de maximums théoriques, pas de voisins bruyants."
+        },
+        {
+          "t": "L'automatisation d'abord",
+          "d": "Du provisionnement à la mitigation, le système agit de lui-même. Le support humain est réservé à l'essentiel."
+        },
+        {
+          "t": "Notre propre réseau",
+          "d": "Nous exploitons notre système autonome {asn} et un peering direct ; nous ne revendons le réseau de personne d'autre."
+        },
+        {
+          "t": "Des prix honnêtes",
+          "d": "Facturation mensuelle, sans frais d'installation et sans engagement. La protection DDoS est incluse, pas une option."
+        }
+      ],
+      "companyDetails": "Informations sur l'entreprise",
+      "legalName": "Raison sociale",
+      "incorporation": "Constitution",
+      "taxId": "EIN / N° fiscal",
+      "autonomousSystem": "Système autonome",
+      "registeredAddress": "Adresse du siège",
+      "provisionalData": "Données provisoires en attente de confirmation du client.",
+      "ctaTitle": "Rejoignez ceux qui déploient déjà avec nous"
+    },
+    "contactForm": {
+      "errorName": "Saisissez votre nom.",
+      "errorEmail": "Saisissez un email valide.",
+      "errorMessage": "Dites-nous-en un peu plus (min. 10 caractères).",
+      "errorSend": "Impossible d'envoyer le message. Réessayez.",
+      "errorConnection": "Erreur de connexion. Vérifiez votre réseau et réessayez.",
+      "sentBadge": "● message reçu",
+      "sentThanks": "Merci, {name}.",
+      "sentBodyPrefix": "Nous avons enregistré votre message. Nous répondrons à ",
+      "sentBodySuffix": " dès que possible.",
+      "sendAnother": "Envoyer un autre message",
+      "subject": "Objet",
+      "topicSales": "Ventes et devis",
+      "topicSupport": "Support technique",
+      "topicAbuse": "Signalement d'abus",
+      "topicOther": "Autre",
+      "name": "Nom",
+      "namePlaceholder": "Votre nom",
+      "email": "Email",
+      "message": "Message",
+      "messagePlaceholder": "Comment pouvons-nous vous aider ?",
+      "sending": "Envoi…",
+      "send": "Envoyer le message →",
+      "orEmail": "ou écrivez à "
+    }
+  }
+}

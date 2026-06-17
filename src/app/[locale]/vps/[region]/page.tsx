@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { regions, getRegion, vps } from "@/data/products";
 import { vpsFaq } from "@/data/faq";
 import { site } from "@/data/site";
@@ -9,9 +10,9 @@ import { PlanGrid } from "@/components/product/PlanGrid";
 import { FaqSection } from "@/components/ui/FaqSection";
 import { CtaBand } from "@/components/ui/CtaBand";
 
-type Params = { region: string };
+type Params = { locale: string; region: string };
 
-export function generateStaticParams(): Params[] {
+export function generateStaticParams(): { region: string }[] {
   return regions.map((r) => ({ region: r.slug }));
 }
 
@@ -20,20 +21,34 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const { region: slug } = await params;
+  const { locale, region: slug } = await params;
   const region = getRegion(slug);
   if (!region) return {};
+  const t = await getTranslations({ locale, namespace: "products" });
   return {
-    title: `VPS in ${region.name} (${region.city})`,
-    description: `NVMe Gen4 VPS in ${region.city}, ${region.name}. ${region.latencyNote}. From ${eur(region.priceFrom)}/mo with 10 Gbps networking and DDoS included.`,
-    alternates: { canonical: `/vps/${region.slug}` },
+    title: t("vpsRegion.meta.title", {
+      name: t(`vps.regions.${slug}.name`),
+      city: t(`vps.regions.${slug}.city`),
+    }),
+    description: t("vpsRegion.meta.description", {
+      name: t(`vps.regions.${slug}.name`),
+      city: t(`vps.regions.${slug}.city`),
+      latencyNote: t(`vps.regions.${slug}.latencyNote`),
+      price: eur(region.priceFrom),
+    }),
   };
 }
 
 export default async function RegionPage({ params }: { params: Promise<Params> }) {
-  const { region: slug } = await params;
+  const { locale, region: slug } = await params;
+  setRequestLocale(locale);
   const region = getRegion(slug);
   if (!region) notFound();
+
+  const t = await getTranslations("products");
+  const name = t(`vps.regions.${slug}.name`);
+  const city = t(`vps.regions.${slug}.city`);
+  const latencyNote = t(`vps.regions.${slug}.latencyNote`);
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -59,37 +74,39 @@ export default async function RegionPage({ params }: { params: Promise<Params> }
       />
       <PageHero
         index="/ VPS"
-        kicker={`${region.flag} ${region.name} · ${region.city}`}
+        kicker={`${region.flag} ${name} · ${city}`}
         title={
           <>
-            VPS in <span className="text-accent">{region.city}</span>.
+            {t("vpsRegion.titleA")}
+            <span className="text-accent">{city}</span>
+            {t("vpsRegion.titleSuffix")}
           </>
         }
-        description={`${region.latencyNote ?? ""}. NVMe Gen4, 10 Gbps networking and DDoS protection included. Provisioning in 60 seconds.`}
+        description={t("vpsRegion.description", { latencyNote })}
       >
         <div className="flex flex-wrap gap-3 font-mono text-xs">
           <span className="rounded border border-[var(--color-line)] px-3 py-1.5 text-[var(--color-fg-muted)]">
             {site.network.asn}
           </span>
           <span className="rounded border border-[var(--color-line)] px-3 py-1.5 text-[var(--color-fg-muted)]">
-            from {eur(region.priceFrom)}/mo
+            {t("vpsRegion.fromBadge", { price: eur(region.priceFrom) })}
           </span>
           <span className="rounded border border-[var(--color-line)] px-3 py-1.5 text-[var(--color-accent)]">
-            ● online
+            {t("vpsRegion.online")}
           </span>
         </div>
       </PageHero>
 
       <PlanGrid
         index="/01"
-        kicker={`Plans · ${region.name}`}
-        title="Plans available in this region."
-        description="Monthly pricing with no lock-in. The plan is deployed automatically in this location."
+        kicker={t("vpsRegion.plansKicker", { name })}
+        title={t("vpsRegion.plansTitle")}
+        description={t("vpsRegion.plansDescription")}
         plans={vps.plans}
       />
 
-      <FaqSection items={vpsFaq} index="/02" />
-      <CtaBand title={`Deploy your VPS in ${region.city}`} />
+      <FaqSection items={vpsFaq} tKey="vpsFaq" index="/02" />
+      <CtaBand title={t("vpsRegion.ctaTitle", { city })} />
     </>
   );
 }

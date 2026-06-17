@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { site } from "@/data/site";
 import { regions } from "@/data/products";
 import { PageHero } from "@/components/ui/PageHero";
@@ -7,33 +8,60 @@ import { CtaBand } from "@/components/ui/CtaBand";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
-export const metadata: Metadata = {
-  title: "Network and backbone",
-  description: `Autonomous system ${site.network.asn} with ${site.network.peers}+ peers and ${site.network.capacityTbps} Tbps of capacity. Direct peering at Europe's leading IXPs.`,
-  alternates: { canonical: "/red" },
-};
-
-const bigStats = [
-  { v: site.network.asn, l: "Autonomous system" },
-  { v: `${site.network.peers}+`, l: "Peers" },
-  { v: `${site.network.capacityTbps} Tbps`, l: "Network capacity" },
-  { v: `${site.network.portMaxGbps} Gbps`, l: "Maximum port" },
-];
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "pages" });
+  return {
+    title: t("red.metaTitle"),
+    description: t("red.metaDescription", {
+      asn: site.network.asn,
+      peers: site.network.peers,
+      capacity: site.network.capacityTbps,
+    }),
+  };
+}
 
 const peeringPoints = ["DE-CIX Frankfurt", "AMS-IX Amsterdam", "LINX London", "ESPANIX Madrid"];
 
-export default function NetworkPage() {
+export default async function NetworkPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("pages");
+
+  const bigStats = [
+    { v: site.network.asn, l: t("red.stats.asn") },
+    { v: `${site.network.peers}+`, l: t("red.stats.peers") },
+    { v: `${site.network.capacityTbps} Tbps`, l: t("red.stats.capacity") },
+    { v: `${site.network.portMaxGbps} Gbps`, l: t("red.stats.port") },
+  ];
+
+  const commitments = [
+    { key: "noOverselling" },
+    { key: "optimizedRoutes" },
+    { key: "edgeMitigation" },
+  ] as const;
+
   return (
     <>
       <PageHero
         index="/01"
-        kicker={`${site.network.asn} · our own backbone`}
+        kicker={`${site.network.asn}${t("red.kickerSuffix")}`}
         title={
           <>
-            A network we <span className="text-accent">control</span>, end to end.
+            {t("red.titlePrefix")}
+            <span className="text-accent">{t("red.titleAccent")}</span>
+            {t("red.titleSuffix")}
           </>
         }
-        description="We operate our own autonomous system with direct peering at key European exchange points. Shorter routes, lower latency and total predictability."
+        description={t("red.description")}
       />
 
       {/* Stats grandes */}
@@ -55,9 +83,9 @@ export default function NetworkPage() {
         <Reveal>
           <SectionHeader
             index="/02"
-            kicker="Coverage"
-            title="Distributed presence across Europe."
-            description="Each point is a region with local compute and mitigation. The lines represent the interconnection of our backbone."
+            kicker={t("red.coverageKicker")}
+            title={t("red.coverageTitle")}
+            description={t("red.coverageDescription")}
           />
           <ul className="mt-8 space-y-3">
             {peeringPoints.map((p) => (
@@ -86,32 +114,19 @@ export default function NetworkPage() {
       {/* Compromisos de red */}
       <section className="border-t border-[var(--color-line)] bg-[var(--color-bg-raised)]">
         <div className="container-edge py-14 md:py-24">
-          <SectionHeader index="/03" kicker="Commitments" title="What we guarantee." />
+          <SectionHeader index="/03" kicker={t("red.commitmentsKicker")} title={t("red.commitmentsTitle")} />
           <div className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)] md:grid-cols-3">
-            {[
-              {
-                t: "No port overselling",
-                d: "The bandwidth you order is real capacity, not a shared theoretical maximum.",
-              },
-              {
-                t: "Optimized routes",
-                d: "Direct peering instead of transit whenever a route exists. Fewer hops, lower latency.",
-              },
-              {
-                t: "Edge mitigation",
-                d: "Attack traffic is filtered before it enters the network, not on your server.",
-              },
-            ].map((c) => (
-              <div key={c.t} className="bg-[var(--color-bg-raised)] p-7">
-                <h3 className="text-lg font-semibold">{c.t}</h3>
-                <p className="mt-2 text-sm text-[var(--color-fg-muted)]">{c.d}</p>
+            {commitments.map((c) => (
+              <div key={c.key} className="bg-[var(--color-bg-raised)] p-7">
+                <h3 className="text-lg font-semibold">{t(`red.commitments.${c.key}.t`)}</h3>
+                <p className="mt-2 text-sm text-[var(--color-fg-muted)]">{t(`red.commitments.${c.key}.d`)}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <CtaBand title="Deploy on our network" />
+      <CtaBand title={t("red.ctaTitle")} />
     </>
   );
 }

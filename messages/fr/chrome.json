@@ -59,5 +59,13 @@
     "text": "Nous utilisons des cookies pour améliorer votre expérience. Consultez notre <link>politique de cookies</link>.",
     "reject": "Refuser",
     "accept": "Accepter"
+  },
+  "notFound": {
+    "error404": "Erreur 404",
+    "title": "hôte introuvable",
+    "body": "Le chemin que vous cherchez ne correspond à aucune ressource. Le lien a peut-être changé ou le serveur n’a jamais existé.",
+    "terminalComment": "404 · aucune route vers la ressource",
+    "backHome": "Retour à l’accueil",
+    "viewProducts": "Voir les produits"
   }
 }

@@ -1,0 +1,110 @@
+{
+  "legal": {
+    "privacy": {
+      "metaTitle": "Política de privacidad",
+      "metaDescription": "Cómo ViaHost trata los datos personales conforme al RGPD para clientes del EEE y la normativa de protección de datos aplicable.",
+      "index": "/ Privacidad",
+      "title": "Política de privacidad",
+      "intro": "Cómo recopilamos, tratamos y protegemos tus datos personales. ViaHost Infrastructure LLC actúa como responsable del tratamiento; el RGPD (UE 2016/679) se aplica a los clientes del Espacio Económico Europeo.",
+      "updated": "PENDIENTE: fecha",
+      "sections": {
+        "controller": {
+          "heading": "Responsable del tratamiento",
+          "todo": "Identidad y datos de contacto del responsable: denominación legal de la LLC, EIN/registro, domicilio social y representante en la UE / DPD si procede (art. 27 del RGPD para empresas fuera de la UE)."
+        },
+        "dataCollected": {
+          "heading": "Datos que recopilamos",
+          "todo": "Categorías de datos: cuenta, facturación, registros técnicos, cookies. Detallar cada finalidad."
+        },
+        "purpose": {
+          "heading": "Finalidad y base jurídica",
+          "todo": "Finalidades del tratamiento y base jurídica (ejecución de un contrato, consentimiento, interés legítimo)."
+        },
+        "retention": {
+          "heading": "Conservación de los datos",
+          "todo": "Plazos de conservación por categoría y criterios aplicados."
+        },
+        "recipients": {
+          "heading": "Destinatarios y encargados",
+          "todo": "Terceros con acceso (proveedores de pago, infraestructura) y transferencias internacionales, si las hubiera."
+        },
+        "rights": {
+          "heading": "Tus derechos",
+          "todo": "Acceso, rectificación, supresión, oposición, portabilidad y limitación; cómo ejercerlos y presentar una reclamación ante la autoridad de control competente (clientes del EEE, ante su autoridad de protección de datos)."
+        },
+        "security": {
+          "heading": "Seguridad",
+          "todo": "Medidas técnicas y organizativas aplicadas para proteger los datos."
+        }
+      }
+    },
+    "terms": {
+      "metaTitle": "Términos y condiciones",
+      "metaDescription": "Condiciones de uso y contratación de los servicios de ViaHost.",
+      "index": "/ Términos",
+      "title": "Términos y condiciones",
+      "intro": "Condiciones que rigen el uso y la contratación de los servicios de hosting, VPS, servidor dedicado y mitigación de DDoS.",
+      "updated": "PENDIENTE: fecha",
+      "sections": {
+        "purpose": {
+          "heading": "Objeto y aceptación",
+          "todo": "Descripción de los servicios y aceptación de las condiciones al realizar el pedido."
+        },
+        "ordering": {
+          "heading": "Contratación y pago",
+          "todo": "Proceso de alta, métodos de pago, renovación, impuestos y política de reembolsos."
+        },
+        "acceptableUse": {
+          "heading": "Uso aceptable",
+          "todo": "Conductas prohibidas (abuso, contenido ilícito, spam) y consecuencias del incumplimiento."
+        },
+        "sla": {
+          "heading": "Niveles de servicio (SLA)",
+          "todo": "Compromiso de disponibilidad, exclusiones y compensación por incumplimiento."
+        },
+        "liability": {
+          "heading": "Responsabilidad",
+          "todo": "Limitación de responsabilidad y exclusiones aplicables."
+        },
+        "termination": {
+          "heading": "Suspensión y resolución",
+          "todo": "Motivos y procedimiento para la suspensión o resolución del servicio por cualquiera de las partes."
+        },
+        "law": {
+          "heading": "Legislación aplicable y jurisdicción",
+          "todo": "Legislación aplicable y jurisdicción competente para la resolución de conflictos."
+        }
+      }
+    },
+    "cookies": {
+      "metaTitle": "Política de cookies",
+      "metaDescription": "Qué cookies utiliza ViaHost y cómo gestionarlas.",
+      "index": "/ Cookies",
+      "title": "Política de cookies",
+      "intro": "Información sobre las cookies y tecnologías similares que utiliza este sitio web y cómo puedes gestionarlas.",
+      "updated": "PENDIENTE: fecha",
+      "sections": {
+        "what": {
+          "heading": "Qué son las cookies",
+          "todo": "Definición y explicación general de las cookies y su finalidad."
+        },
+        "used": {
+          "heading": "Cookies que utilizamos",
+          "todo": "Tabla para cada cookie: nombre, tipo (técnica, analítica, etc.), finalidad, duración y proveedor. Actualmente el sitio NO carga analítica; rellenar cuando se añada."
+        },
+        "consent": {
+          "heading": "Base jurídica y consentimiento",
+          "todo": "Cómo se obtiene el consentimiento para las cookies no esenciales (banner) y cómo retirarlo."
+        },
+        "managing": {
+          "heading": "Gestión de cookies",
+          "todo": "Instrucciones para configurar o eliminar cookies en los principales navegadores."
+        },
+        "changes": {
+          "heading": "Cambios en la política",
+          "todo": "Cómo se comunicarán las futuras actualizaciones de esta política."
+        }
+      }
+    }
+  }
+}

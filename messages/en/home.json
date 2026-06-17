@@ -1,0 +1,218 @@
+{
+  "home": {
+    "hero": {
+      "kicker": "{asn} · our own network in Europe · 60s provisioning",
+      "titleLine1": "Your server,",
+      "titleIn": "in",
+      "title60s": "60 seconds",
+      "description": "VPS, bare metal and DDoS mitigation over our own network. NVMe Gen4, 10 Gbps uplinks and presence in strategic European regions. No waiting, no surprises.",
+      "deploy": "Deploy in 60 seconds →",
+      "viewPricing": "View pricing",
+      "scroll": "Scroll"
+    },
+    "credibilityStats": {
+      "0": {
+        "label": "Network peers",
+        "context": "Direct interconnection at the leading European IXPs for minimal latency."
+      },
+      "1": {
+        "label": "Per server",
+        "context": "Guaranteed uplink with no overselling, from the smallest VPS to bare metal."
+      },
+      "2": {
+        "label": "DDoS Mitigation",
+        "context": "Always-on filtering capacity at the edge, included in every plan."
+      }
+    },
+    "liveMetrics": {
+      "0": { "label": "Network traffic" },
+      "1": { "label": "Packets mitigated" },
+      "2": { "label": "Servers online" },
+      "3": { "label": "Uptime 90 d" }
+    },
+    "provisionTerminal": {
+      "kicker": "Automated provisioning",
+      "title": "This happens when you hit “Deploy”.",
+      "description": "No tickets, no queues, no human intervention. The system allocates, installs and connects your server while you read this sentence.",
+      "terminalTitle": "viahost@deploy — provision",
+      "lines": {
+        "0": { "cmd": "allocating slot", "ok": "ok" },
+        "1": { "cmd": "imaging ubuntu-24.04", "ok": "ok" },
+        "2": { "cmd": "attaching uplink 10G", "ok": "ok" },
+        "3": { "cmd": "applying ddos shield", "ok": "ok" },
+        "4": { "cmd": "server online", "ok": "54s" }
+      },
+      "footnote": "↳ This is what happens <accent>54 seconds</accent> after you pay."
+    },
+    "hardwareCounters": {
+      "kicker": "No-compromise hardware",
+      "title": "Every figure, measured. None, inflated.",
+      "0": {
+        "label": "CPU boost",
+        "copy": "Latest-generation AMD EPYC and Ryzen. Single-thread performance that never falls short."
+      },
+      "1": {
+        "label": "NVMe Gen4",
+        "copy": "Storage that feeds the CPU with no bottlenecks. Zero slow disks."
+      },
+      "2": {
+        "label": "Network per server",
+        "copy": "Dedicated, symmetric uplink. Bandwidth isn't an add-on, it's the baseline."
+      }
+    },
+    "productsGrid": {
+      "kicker": "Products",
+      "title": "Choose your starting point.",
+      "description": "Compute on the same network and the same protection. Start small and scale without migrating.",
+      "from": "From",
+      "perMonth": "/mo",
+      "viewAll": "View all products →",
+      "0": {
+        "title": "Cloud VPS",
+        "tagline": "NVMe machines ready in 60s.",
+        "specs": {
+          "0": "2–16 vCore AMD EPYC",
+          "1": "NVMe Gen4 on every plan",
+          "2": "10 Gbps + DDoS included"
+        }
+      },
+      "1": {
+        "title": "Dedicated Servers France",
+        "tagline": "AMD bare metal in Paris.",
+        "specs": {
+          "0": "EPYC up to 192 threads",
+          "1": "1 and 10 Gbps uplinks",
+          "2": "Out-of-band IPMI/KVM"
+        }
+      },
+      "2": {
+        "title": "Dedicated Servers Netherlands",
+        "tagline": "AMD bare metal in Amsterdam.",
+        "specs": {
+          "0": "EPYC up to 192 threads",
+          "1": "Direct peering at AMS-IX",
+          "2": "Up to 360 TB of storage"
+        }
+      }
+    },
+    "europeMap": {
+      "label": "ViaHost European network"
+    },
+    "networkBackbone": {
+      "title": "Our own network, not rented.",
+      "description": "We operate our own autonomous system with direct peering at the leading European IXPs. Fewer hops, lower latency and routes we control end to end.",
+      "stats": {
+        "peers": "Peers",
+        "capacity": "Capacity",
+        "ranking": "IXP ranking",
+        "maxPort": "Max port"
+      },
+      "viewNetwork": "View network and backbone →"
+    },
+    "whyUs": {
+      "kicker": "Why ViaHost",
+      "title": "The data rules. Everything else is noise.",
+      "description": "No stock iconography or empty promises: every reason is a figure you can verify.",
+      "0": {
+        "label": "Real deploy",
+        "body": "From payment to a live server in under a minute. No queues, no manual approval."
+      },
+      "1": {
+        "label": "DDoS Mitigation",
+        "body": "Always-on filtering at the network edge. You don't pay extra to stay protected."
+      },
+      "2": {
+        "label": "NVMe everywhere",
+        "body": "Every plan, down to the smallest, boots on NVMe Gen4. Zero spinning disks in compute."
+      },
+      "3": {
+        "label": "Network per server",
+        "body": "10 Gbps uplinks with no overselling. The bandwidth you see is the bandwidth you get."
+      },
+      "4": {
+        "label": "EU regions",
+        "body": "Distributed presence across Europe with direct peering at the major IXPs."
+      },
+      "5": {
+        "label": "Human support",
+        "body": "Engineering on call around the clock. Average response under 10 minutes on incidents."
+      }
+    },
+    "useCases": {
+      "kicker": "Use cases",
+      "title": "Built for real workloads.",
+      "description": "From an API launching today to a multi-region SaaS platform. The same network underneath.",
+      "viewProduct": "View product →",
+      "0": {
+        "title": "Web applications",
+        "bullets": {
+          "0": "Deploy in 60 s on NVMe Gen4",
+          "1": "Scale up without migrating hosts",
+          "2": "DDoS included for traffic spikes"
+        }
+      },
+      "1": {
+        "title": "Databases",
+        "bullets": {
+          "0": "Sustained IOPS on NVMe Gen4",
+          "1": "ECC RAM on bare metal",
+          "2": "Low-latency private network"
+        }
+      },
+      "2": {
+        "title": "Enterprise",
+        "bullets": {
+          "0": "Dedicated dual EPYC bare metal",
+          "1": "10 Gbps with guaranteed port",
+          "2": "SLA and priority support"
+        }
+      },
+      "3": {
+        "title": "SaaS and platforms",
+        "bullets": {
+          "0": "Multi-region for low latency",
+          "1": "Provisioning API for autoscaling",
+          "2": "Predictable per-server billing"
+        }
+      }
+    },
+    "ddos": {
+      "kicker": "Always-on DDoS Protection",
+      "title": "The attack arrives. To your server, <accent>nothing</accent>.",
+      "diagramLabel": "DDoS mitigation diagram: attack traffic is filtered at the shield and only clean traffic reaches the server.",
+      "attackTraffic": "attack traffic",
+      "shield": "shield",
+      "yourServer": "your server",
+      "footnote": "↳ Your server, untouched.",
+      "stats": {
+        "mitigation": "Mitigation capacity",
+        "absorbed": "Attacks absorbed",
+        "filtered": "Attack packets to server"
+      },
+      "features": {
+        "0": "Edge detection < 2 s",
+        "1": "L3/L4 and L7 filtering",
+        "2": "Adaptive per-signature rules",
+        "3": "Always-on, no reroute",
+        "4": "No per-attack charge",
+        "5": "Incident reporting in the panel"
+      },
+      "cta": "How mitigation works →"
+    },
+    "trust": {
+      "kicker": "/10 — Trust",
+      "partnersLabel": "Top-tier hardware and network",
+      "0": { "label": "Active servers" },
+      "1": { "label": "Uptime SLA" },
+      "2": { "label": "EU regions" },
+      "3": { "label": "Support" }
+    },
+    "finalCta": {
+      "kicker": "/11 — Get started now",
+      "titleLine1": "Your slot is",
+      "titleWaiting": "waiting.",
+      "deploy": "Deploy in 60 seconds →",
+      "note": "provisioning in 60s · no setup · cancel anytime"
+    }
+  }
+}

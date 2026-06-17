@@ -9,8 +9,15 @@ import { UseCases } from "@/components/home/UseCases";
 import { DDoSSection } from "@/components/home/DDoSSection";
 import { TrustSection } from "@/components/home/TrustSection";
 import { FinalCTA } from "@/components/home/FinalCTA";
+import { setRequestLocale } from "next-intl/server";
 
-export default function HomePage() {
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   return (
     <>
       <Hero />

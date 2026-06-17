@@ -1,33 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useReducedMotion } from "framer-motion";
 
 const items = [
-  {
-    to: 5.7,
-    decimals: 1,
-    suffix: " GHz",
-    label: "CPU boost",
-    copy: "Latest-generation AMD EPYC and Ryzen. Single-thread performance that never falls short.",
-  },
-  {
-    to: 14,
-    decimals: 0,
-    suffix: " GB/s",
-    label: "NVMe Gen4",
-    copy: "Storage that feeds the CPU with no bottlenecks. Zero slow disks.",
-  },
-  {
-    to: 10,
-    decimals: 0,
-    suffix: " Gbps",
-    label: "Network per server",
-    copy: "Dedicated, symmetric uplink. Bandwidth isn't an add-on, it's the baseline.",
-  },
+  { to: 5.7, decimals: 1, suffix: " GHz" },
+  { to: 14, decimals: 0, suffix: " GB/s" },
+  { to: 10, decimals: 0, suffix: " Gbps" },
 ];
 
 export function HardwareCounters() {
+  const t = useTranslations("home");
   const root = useRef<HTMLDivElement>(null);
   const pinned = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
@@ -93,15 +77,15 @@ export function HardwareCounters() {
       <div className="container-edge relative w-full py-14 md:py-20">
         <div className="flex items-center gap-3">
           <span className="font-mono text-sm text-[var(--color-accent)]">/04</span>
-          <span className="mono-label">No-compromise hardware</span>
+          <span className="mono-label">{t("hardwareCounters.kicker")}</span>
         </div>
         <h2 className="mt-6 max-w-3xl text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
-          Every figure, measured. None, inflated.
+          {t("hardwareCounters.title")}
         </h2>
 
         <div className="mt-14 grid gap-px bg-[var(--color-line)] md:grid-cols-3">
           {items.map((it, i) => (
-            <div key={it.label} className="bg-[var(--color-bg-base)] p-6 md:p-8">
+            <div key={i} className="bg-[var(--color-bg-base)] p-6 md:p-8">
               <div className="flex items-baseline font-mono text-5xl font-semibold tracking-tight md:text-6xl">
                 <span className="tabular-nums">
                   {(values[i] ?? 0).toLocaleString("en-US", {
@@ -111,8 +95,8 @@ export function HardwareCounters() {
                 </span>
                 <span className="text-[var(--color-accent)]">{it.suffix}</span>
               </div>
-              <p className="mono-label mt-3">{it.label}</p>
-              <p className="mt-2 text-sm text-[var(--color-fg-muted)]">{it.copy}</p>
+              <p className="mono-label mt-3">{t(`hardwareCounters.${i}.label`)}</p>
+              <p className="mt-2 text-sm text-[var(--color-fg-muted)]">{t(`hardwareCounters.${i}.copy`)}</p>
             </div>
           ))}
         </div>

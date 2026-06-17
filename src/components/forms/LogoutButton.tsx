@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 
 export function LogoutButton() {
+  const t = useTranslations("auth");
   const router = useRouter();
   const [busy, setBusy] = useState(false);
 
@@ -25,7 +27,7 @@ export function LogoutButton() {
       disabled={busy}
       className="inline-flex items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-5 py-2.5 text-sm font-medium text-[var(--color-fg)] transition-colors hover:border-[var(--color-danger)] hover:text-[var(--color-danger)] disabled:opacity-60"
     >
-      {busy ? "Logging out…" : "Log out"}
+      {busy ? t("logout.loggingOut") : t("logout.label")}
     </button>
   );
 }

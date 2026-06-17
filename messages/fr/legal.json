@@ -1,0 +1,110 @@
+{
+  "legal": {
+    "privacy": {
+      "metaTitle": "Politique de confidentialité",
+      "metaDescription": "Comment ViaHost traite les données personnelles conformément au RGPD pour les clients de l'EEE et à la législation applicable en matière de protection des données.",
+      "index": "/ Confidentialité",
+      "title": "Politique de confidentialité",
+      "intro": "Comment nous collectons, traitons et protégeons vos données personnelles. ViaHost Infrastructure LLC agit en tant que responsable du traitement ; le RGPD (UE 2016/679) s'applique aux clients de l'Espace économique européen.",
+      "updated": "À FAIRE : date",
+      "sections": {
+        "controller": {
+          "heading": "Responsable du traitement",
+          "todo": "Identité et coordonnées du responsable du traitement : dénomination légale de la LLC, EIN/immatriculation, adresse du siège et représentant dans l'UE / DPO le cas échéant (art. 27 du RGPD pour les sociétés hors UE)."
+        },
+        "dataCollected": {
+          "heading": "Données que nous collectons",
+          "todo": "Catégories de données : compte, facturation, journaux techniques, cookies. Détailler chaque finalité."
+        },
+        "purpose": {
+          "heading": "Finalité et base juridique",
+          "todo": "Finalités du traitement et base juridique (exécution d'un contrat, consentement, intérêt légitime)."
+        },
+        "retention": {
+          "heading": "Conservation des données",
+          "todo": "Durées de conservation par catégorie et critères appliqués."
+        },
+        "recipients": {
+          "heading": "Destinataires et sous-traitants",
+          "todo": "Tiers ayant accès (prestataires de paiement, infrastructure) et transferts internationaux, le cas échéant."
+        },
+        "rights": {
+          "heading": "Vos droits",
+          "todo": "Accès, rectification, effacement, opposition, portabilité et limitation ; comment les exercer et déposer une réclamation auprès de l'autorité de contrôle compétente (clients de l'EEE, auprès de leur autorité de protection des données)."
+        },
+        "security": {
+          "heading": "Sécurité",
+          "todo": "Mesures techniques et organisationnelles appliquées pour protéger les données."
+        }
+      }
+    },
+    "terms": {
+      "metaTitle": "Conditions générales",
+      "metaDescription": "Conditions d'utilisation et de commande des services ViaHost.",
+      "index": "/ Conditions",
+      "title": "Conditions générales",
+      "intro": "Conditions régissant l'utilisation et la commande des services d'hébergement, VPS, serveur dédié et mitigation DDoS.",
+      "updated": "À FAIRE : date",
+      "sections": {
+        "purpose": {
+          "heading": "Objet et acceptation",
+          "todo": "Description des services et acceptation des conditions lors de la commande."
+        },
+        "ordering": {
+          "heading": "Commande et paiement",
+          "todo": "Processus d'inscription, moyens de paiement, renouvellement, taxes et politique de remboursement."
+        },
+        "acceptableUse": {
+          "heading": "Utilisation acceptable",
+          "todo": "Comportements interdits (abus, contenu illicite, spam) et conséquences du non-respect."
+        },
+        "sla": {
+          "heading": "Niveaux de service (SLA)",
+          "todo": "Engagement de disponibilité, exclusions et compensation en cas de non-respect."
+        },
+        "liability": {
+          "heading": "Responsabilité",
+          "todo": "Limitation de responsabilité et exclusions applicables."
+        },
+        "termination": {
+          "heading": "Suspension et résiliation",
+          "todo": "Motifs et procédure de suspension ou de résiliation du service par l'une ou l'autre des parties."
+        },
+        "law": {
+          "heading": "Droit applicable et juridiction",
+          "todo": "Droit applicable et juridiction compétente pour la résolution des litiges."
+        }
+      }
+    },
+    "cookies": {
+      "metaTitle": "Politique relative aux cookies",
+      "metaDescription": "Quels cookies ViaHost utilise et comment les gérer.",
+      "index": "/ Cookies",
+      "title": "Politique relative aux cookies",
+      "intro": "Informations sur les cookies et technologies similaires utilisés par ce site web et sur la manière de les gérer.",
+      "updated": "À FAIRE : date",
+      "sections": {
+        "what": {
+          "heading": "Qu'est-ce qu'un cookie",
+          "todo": "Définition et explication générale des cookies et de leur finalité."
+        },
+        "used": {
+          "heading": "Cookies que nous utilisons",
+          "todo": "Tableau pour chaque cookie : nom, type (technique, analytique, etc.), finalité, durée et fournisseur. Le site ne charge actuellement PAS d'analytique ; à compléter lorsqu'elle sera ajoutée."
+        },
+        "consent": {
+          "heading": "Base juridique et consentement",
+          "todo": "Comment le consentement est obtenu pour les cookies non essentiels (bannière) et comment le retirer."
+        },
+        "managing": {
+          "heading": "Gestion des cookies",
+          "todo": "Instructions pour configurer ou supprimer les cookies dans les principaux navigateurs."
+        },
+        "changes": {
+          "heading": "Modifications de la politique",
+          "todo": "Comment les futures mises à jour de cette politique seront communiquées."
+        }
+      }
+    }
+  }
+}

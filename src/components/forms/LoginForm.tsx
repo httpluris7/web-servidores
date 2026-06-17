@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter, Link } from "@/i18n/navigation";
 import { Label, Input, FieldError } from "./Field";
 import { emailRe } from "@/lib/password";
 
 type Errors = Partial<Record<"email" | "password", string>>;
 
 export function LoginForm({ next }: { next?: string }) {
+  const t = useTranslations("auth");
   const router = useRouter();
   const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
@@ -16,8 +18,8 @@ export function LoginForm({ next }: { next?: string }) {
 
   function validate(): boolean {
     const e: Errors = {};
-    if (!emailRe.test(values.email)) e.email = "Enter a valid email.";
-    if (!values.password) e.password = "Enter your password.";
+    if (!emailRe.test(values.email)) e.email = t("loginForm.errorEmail");
+    if (!values.password) e.password = t("loginForm.errorPassword");
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -37,14 +39,14 @@ export function LoginForm({ next }: { next?: string }) {
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         if (data?.errors) setErrors(data.errors as Errors);
-        setFormError(data?.error ?? "Could not log in.");
+        setFormError(data?.error ?? t("loginForm.errorGeneric"));
         setStatus("idle");
         return;
       }
       router.push(next || "/cuenta");
       router.refresh();
     } catch {
-      setFormError("Connection error. Check your network and try again.");
+      setFormError(t("loginForm.errorConnection"));
       setStatus("idle");
     }
   }
@@ -52,13 +54,13 @@ export function LoginForm({ next }: { next?: string }) {
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-5">
       <div>
-        <Label htmlFor="email" required>Email</Label>
+        <Label htmlFor="email" required>{t("loginForm.emailLabel")}</Label>
         <Input
           id="email"
           type="email"
           value={values.email}
           onChange={(e) => setValues((v) => ({ ...v, email: e.target.value }))}
-          placeholder="tu@email.com"
+          placeholder={t("loginForm.emailPlaceholder")}
           autoComplete="email"
           aria-invalid={!!errors.email}
         />
@@ -66,13 +68,13 @@ export function LoginForm({ next }: { next?: string }) {
       </div>
 
       <div>
-        <Label htmlFor="password" required>Password</Label>
+        <Label htmlFor="password" required>{t("loginForm.passwordLabel")}</Label>
         <Input
           id="password"
           type="password"
           value={values.password}
           onChange={(e) => setValues((v) => ({ ...v, password: e.target.value }))}
-          placeholder="••••••••"
+          placeholder={t("loginForm.passwordPlaceholder")}
           autoComplete="current-password"
           aria-invalid={!!errors.password}
         />
@@ -84,7 +86,7 @@ export function LoginForm({ next }: { next?: string }) {
         disabled={status === "sending"}
         className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60 sm:w-auto"
       >
-        {status === "sending" ? "Logging in…" : "Log in →"}
+        {status === "sending" ? t("loginForm.submitting") : t("loginForm.submit")}
       </button>
 
       {formError && (
@@ -92,13 +94,13 @@ export function LoginForm({ next }: { next?: string }) {
       )}
 
       <p className="text-sm text-[var(--color-fg-muted)]">
-        Don&apos;t have an account?{" "}
-        <a
+        {t("loginForm.noAccount")}{" "}
+        <Link
           href={next ? `/registro?next=${encodeURIComponent(next)}` : "/registro"}
           className="text-[var(--color-accent)] underline"
         >
-          Sign up
-        </a>
+          {t("loginForm.signUp")}
+        </Link>
         .
       </p>
     </form>

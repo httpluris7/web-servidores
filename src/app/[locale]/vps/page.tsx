@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { vps, regions } from "@/data/products";
 import { vpsFaq } from "@/data/faq";
 import { site } from "@/data/site";
@@ -11,32 +12,46 @@ import { CtaBand } from "@/components/ui/CtaBand";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
-export const metadata: Metadata = {
-  title: "Cloud VPS — NVMe Gen4 and 10 Gbps",
-  description:
-    "NVMe Gen4 VPS with 10 Gbps networking and DDoS protection included, in strategic European regions. From " +
-    eur(Math.min(...vps.plans.map((p) => p.price))) +
-    "/mo. Provisioning in 60 seconds.",
-  alternates: { canonical: "/vps" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "products" });
+  return {
+    title: t("vps.meta.title"),
+    description: t("vps.meta.description", {
+      price: eur(Math.min(...vps.plans.map((p) => p.price))),
+    }),
+  };
+}
 
-const productJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Product",
-  name: `${site.brand} Cloud VPS`,
-  description: vps.tagline,
-  brand: { "@type": "Brand", name: site.brand },
-  offers: vps.plans.map((p) => ({
-    "@type": "Offer",
-    name: p.name,
-    price: p.price,
-    priceCurrency: "EUR",
-    url: p.orderUrl,
-    availability: "https://schema.org/InStock",
-  })),
-};
+export default async function VpsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("products");
 
-export default function VpsPage() {
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: `${site.brand} Cloud VPS`,
+    description: t("vps.tagline"),
+    brand: { "@type": "Brand", name: site.brand },
+    offers: vps.plans.map((p) => ({
+      "@type": "Offer",
+      name: p.name,
+      price: p.price,
+      priceCurrency: "EUR",
+      url: p.orderUrl,
+      availability: "https://schema.org/InStock",
+    })),
+  };
+
   return (
     <>
       <script
@@ -45,20 +60,18 @@ export default function VpsPage() {
       />
       <PageHero
         index="/01"
-        kicker="Cloud VPS"
-        title={
-          <>
-            <span className="text-accent">NVMe</span> virtual machines, ready in 60 s.
-          </>
-        }
-        description={vps.tagline}
+        kicker={t("vps.kicker")}
+        title={t.rich("vps.title", {
+          accent: (chunks) => <span className="text-accent">{chunks}</span>,
+        })}
+        description={t("vps.tagline")}
       />
 
       <PlanGrid
         index="/02"
-        kicker="Plans"
-        title="Choose your size."
-        description="Same NVMe Gen4, same 10 Gbps network and the same DDoS protection across all plans."
+        kicker={t("vps.plansKicker")}
+        title={t("vps.plansTitle")}
+        description={t("vps.plansDescription")}
         plans={vps.plans}
       />
 
@@ -67,9 +80,9 @@ export default function VpsPage() {
         <div className="container-edge py-14 md:py-24">
           <SectionHeader
             index="/03"
-            kicker="Locations"
-            title="Deploy close to your users."
-            description="European regions with direct peering. Same experience, lower latency."
+            kicker={t("vps.locationsKicker")}
+            title={t("vps.locationsTitle")}
+            description={t("vps.locationsDescription")}
           />
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {regions.map((r, i) => (
@@ -81,14 +94,14 @@ export default function VpsPage() {
                   <div>
                     <span className="flex items-center gap-2 text-lg font-medium">
                       <span aria-hidden="true">{r.flag}</span>
-                      {r.name}
+                      {t(`vps.regions.${r.slug}.name`)}
                     </span>
                     <span className="mt-1 block font-mono text-xs text-[var(--color-fg-muted)]">
-                      {r.city} · {r.latencyNote}
+                      {t(`vps.regions.${r.slug}.city`)} · {t(`vps.regions.${r.slug}.latencyNote`)}
                     </span>
                   </div>
                   <span className="text-right">
-                    <span className="mono-label block text-[0.6rem]">from</span>
+                    <span className="mono-label block text-[0.6rem]">{t("vps.from")}</span>
                     <span className="font-mono text-lg">{eur(r.priceFrom)}</span>
                   </span>
                 </Link>
@@ -98,7 +111,7 @@ export default function VpsPage() {
         </div>
       </section>
 
-      <FaqSection items={vpsFaq} index="/04" />
+      <FaqSection items={vpsFaq} tKey="vpsFaq" index="/04" />
       <CtaBand />
     </>
   );
