@@ -1,41 +1,33 @@
 import Link from "next/link";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 
-export default function NotFound() {
+/**
+ * 404 global (fuera del segmento [locale]). Solo se alcanza para rutas que no
+ * encajan en ningún idioma; el 404 localizado y con chrome vive en
+ * `app/[locale]/not-found.tsx`. Como el layout raíz es passthrough, aquí
+ * aportamos nuestro propio <html>/<body>.
+ */
+export default function GlobalNotFound() {
   return (
-    <section className="relative flex min-h-[80vh] items-center overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 grid-lines opacity-40" aria-hidden="true" />
-      <div className="container-edge relative">
-        <span className="mono-label">Error 404</span>
-        <h1 className="mt-6 font-mono text-5xl font-semibold tracking-tight text-[var(--color-accent)] sm:text-6xl md:text-7xl">
-          host not found
-        </h1>
-        <p className="mt-6 max-w-md text-lg text-[var(--color-fg-muted)]">
-          The path you are looking for does not resolve to any resource. The link may have changed
-          or the server may have never existed.
-        </p>
-
-        <div className="mt-8 max-w-md rounded-[var(--radius-md)] border border-[var(--color-line)] bg-[#070b12] p-4 font-mono text-sm">
-          <span className="text-[var(--color-accent)]">$</span>{" "}
-          <span className="text-[var(--color-fg-muted)]">curl https://viahost.top/&lt;path&gt;</span>
-          <br />
-          <span className="text-[var(--color-danger)]">↳ 404 · no route to resource</span>
-        </div>
-
-        <div className="mt-10 flex flex-wrap gap-3">
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+      <body className="grid min-h-screen place-items-center bg-[var(--color-bg-base)] antialiased">
+        <main className="px-6 text-center">
+          <p className="font-mono text-sm text-[var(--color-accent)]">404</p>
+          <h1 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--color-fg)]">
+            Page not found
+          </h1>
+          <p className="mt-2 text-sm text-[var(--color-fg-muted)]">
+            The page you are looking for does not exist.
+          </p>
           <Link
             href="/"
-            className="inline-flex items-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-5 py-3 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
+            className="mt-6 inline-flex rounded-[var(--radius-md)] bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-black"
           >
-            Back to home →
+            Back to home
           </Link>
-          <Link
-            href="/vps"
-            className="inline-flex items-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-5 py-3 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
-          >
-            View products
-          </Link>
-        </div>
-      </div>
-    </section>
+        </main>
+      </body>
+    </html>
   );
 }

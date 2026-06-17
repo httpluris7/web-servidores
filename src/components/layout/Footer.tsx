@@ -1,42 +1,46 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { site } from "@/data/site";
 import { regions, dedicatedTypes } from "@/data/products";
 
-const columns = [
-  {
-    title: "Products",
-    links: [
-      { href: "/vps", label: "Cloud VPS" },
-      ...dedicatedTypes.map((d) => ({ href: `/dedicados/${d.slug}`, label: d.title })),
-      { href: "/proteccion-ddos", label: "DDoS Protection" },
-    ],
-  },
-  {
-    title: "Locations",
-    links: regions.map((r) => ({ href: `/vps/${r.slug}`, label: `${r.flag} ${r.name}` })),
-  },
-  {
-    title: "Resources",
-    links: [
-      { href: "/estado", label: "Service status" },
-      { href: "/soporte", label: "Support center" },
-      { href: "/red", label: "Backbone and peering" },
-      { href: "/casos-de-uso", label: "Use cases" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { href: "/sobre-nosotros", label: "About us" },
-      { href: "/contacto", label: "Contact" },
-      { href: "/legal/privacidad", label: "Privacy" },
-      { href: "/legal/terminos", label: "Terms" },
-      { href: "/legal/cookies", label: "Cookies" },
-    ],
-  },
-];
-
 export function Footer() {
+  const t = useTranslations("footer");
+  const tMeta = useTranslations("meta");
+
+  const columns = [
+    {
+      title: t("products"),
+      links: [
+        { href: "/vps", label: t("cloudVps") },
+        ...dedicatedTypes.map((d) => ({ href: `/dedicados/${d.slug}`, label: d.title })),
+        { href: "/proteccion-ddos", label: t("ddosProtection") },
+      ],
+    },
+    {
+      title: t("locations"),
+      links: regions.map((r) => ({ href: `/vps/${r.slug}`, label: `${r.flag} ${r.name}` })),
+    },
+    {
+      title: t("resources"),
+      links: [
+        { href: "/estado", label: t("serviceStatus") },
+        { href: "/soporte", label: t("supportCenter") },
+        { href: "/red", label: t("backbonePeering") },
+        { href: "/casos-de-uso", label: t("useCases") },
+      ],
+    },
+    {
+      title: t("company"),
+      links: [
+        { href: "/sobre-nosotros", label: t("aboutUs") },
+        { href: "/contacto", label: t("contact") },
+        { href: "/legal/privacidad", label: t("privacy") },
+        { href: "/legal/terminos", label: t("terms") },
+        { href: "/legal/cookies", label: t("cookies") },
+      ],
+    },
+  ];
+
   return (
     <footer className="border-t border-[var(--color-line)] bg-[var(--color-bg-base)]">
       <div className="container-edge py-16">
@@ -47,7 +51,7 @@ export function Footer() {
               <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-accent)]" />
               <span className="text-lg font-semibold">{site.brand}</span>
             </Link>
-            <p className="mt-4 max-w-xs text-sm text-[var(--color-fg-muted)]">{site.tagline}</p>
+            <p className="mt-4 max-w-xs text-sm text-[var(--color-fg-muted)]">{tMeta("tagline")}</p>
             <p className="mt-4 font-mono text-xs text-[var(--color-fg-dim)]">
               {site.network.asn} · {site.domain}
             </p>
@@ -59,23 +63,12 @@ export function Footer() {
               <ul className="space-y-2.5">
                 {col.links.map((l) => (
                   <li key={l.href + l.label}>
-                    {"external" in l && l.external ? (
-                      <a
-                        href={l.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-fg)]"
-                      >
-                        {l.label} ↗
-                      </a>
-                    ) : (
-                      <Link
-                        href={l.href}
-                        className="text-sm text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-fg)]"
-                      >
-                        {l.label}
-                      </Link>
-                    )}
+                    <Link
+                      href={l.href}
+                      className="text-sm text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-fg)]"
+                    >
+                      {l.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -85,7 +78,7 @@ export function Footer() {
 
         {/* Métodos de pago */}
         <div className="mt-12 flex flex-wrap items-center gap-2 border-t border-[var(--color-line)] pt-8">
-          <span className="mono-label mr-2">Payment</span>
+          <span className="mono-label mr-2">{t("payment")}</span>
           {site.paymentMethods.map((m) => (
             <span
               key={m}

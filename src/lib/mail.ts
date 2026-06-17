@@ -35,8 +35,7 @@ function headerSafe(value: string): string {
 /** Codifica una cabecera en RFC 2047 si contiene caracteres no ASCII. */
 function encodeHeader(value: string): string {
   const safe = headerSafe(value);
-  // eslint-disable-next-line no-control-regex
-  if (/^[\x00-\x7F]*$/.test(safe)) return safe;
+  if (/^[\x20-\x7E]*$/.test(safe)) return safe;
   return `=?UTF-8?B?${Buffer.from(safe, "utf8").toString("base64")}?=`;
 }
 

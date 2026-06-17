@@ -1,46 +1,47 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, useRouter } from "@/i18n/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { site, deployUrl } from "@/data/site";
 import { regions, dedicatedTypes } from "@/data/products";
 import { eur } from "@/lib/utils";
 
-type Group = { label: string; items: { href: string; label: string; note?: string }[] };
-
-const groups: Group[] = [
-  {
-    label: "VPS by region",
-    items: regions.map((r) => ({
-      href: `/vps/${r.slug}`,
-      label: r.name,
-      note: `from ${eur(r.priceFrom)}`,
-    })),
-  },
-  {
-    label: "Dedicated",
-    items: dedicatedTypes.map((d) => ({ href: `/dedicados/${d.slug}`, label: d.title, note: d.highlight })),
-  },
-];
-
 const directLinks = [
-  { href: "/red", label: "Network" },
-  { href: "/proteccion-ddos", label: "DDoS Protection" },
-  { href: "/casos-de-uso", label: "Use cases" },
-  { href: "/soporte", label: "Support" },
-  { href: "/contacto", label: "Contact" },
-  { href: "/sobre-nosotros", label: "About us" },
-];
+  { href: "/red", key: "network" },
+  { href: "/proteccion-ddos", key: "ddosProtection" },
+  { href: "/casos-de-uso", key: "useCases" },
+  { href: "/soporte", key: "support" },
+  { href: "/contacto", key: "contact" },
+  { href: "/sobre-nosotros", key: "aboutUs" },
+] as const;
 
 type Me = { id: string; nombre: string; email: string } | null;
 
 export function MobileMenu() {
+  const t = useTranslations("nav");
+  const tc = useTranslations("common");
+  const ta = useTranslations("account");
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [section, setSection] = useState<string | null>(null);
   const [me, setMe] = useState<Me>(null);
+
+  const groups = [
+    {
+      label: t("vpsByRegion"),
+      items: regions.map((r) => ({
+        href: `/vps/${r.slug}`,
+        label: r.name,
+        note: `${tc("from")} ${eur(r.priceFrom)}`,
+      })),
+    },
+    {
+      label: t("dedicated"),
+      items: dedicatedTypes.map((d) => ({ href: `/dedicados/${d.slug}`, label: d.title, note: d.highlight })),
+    },
+  ];
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -82,7 +83,7 @@ export function MobileMenu() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Open menu"
+        aria-label={t("openMenu")}
         className="inline-flex h-10 w-10 items-center justify-center rounded border border-[var(--color-line)] lg:hidden"
       >
         <span className="flex flex-col gap-1">
@@ -109,7 +110,7 @@ export function MobileMenu() {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                aria-label="Close menu"
+                aria-label={t("closeMenu")}
                 className="inline-flex h-10 w-10 items-center justify-center rounded border border-[var(--color-line)] text-xl"
               >
                 ✕
@@ -129,7 +130,7 @@ export function MobileMenu() {
                     onClick={() => setOpen(false)}
                     className="flex items-center justify-between py-2.5 text-[var(--color-fg-muted)]"
                   >
-                    My profile
+                    {ta("myProfile")}
                     <span aria-hidden="true">→</span>
                   </Link>
                   <button
@@ -137,7 +138,7 @@ export function MobileMenu() {
                     onClick={logout}
                     className="w-full py-2.5 text-left text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-danger)]"
                   >
-                    Log out
+                    {ta("logout")}
                   </button>
                 </div>
               ) : (
@@ -147,14 +148,14 @@ export function MobileMenu() {
                     onClick={() => setOpen(false)}
                     className="flex items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] py-3 text-sm font-medium transition-colors hover:border-[var(--color-accent)]"
                   >
-                    Log in
+                    {ta("login")}
                   </Link>
                   <Link
                     href="/registro"
                     onClick={() => setOpen(false)}
                     className="flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] py-3 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
                   >
-                    Create account
+                    {ta("createAccount")}
                   </Link>
                 </div>
               )}
@@ -209,7 +210,7 @@ export function MobileMenu() {
                   onClick={() => setOpen(false)}
                   className="block border-b border-[var(--color-line)] py-4 text-lg"
                 >
-                  {l.label}
+                  {t(l.key)}
                 </Link>
               ))}
 
@@ -218,7 +219,7 @@ export function MobileMenu() {
                 onClick={() => setOpen(false)}
                 className="mt-6 flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-5 py-3.5 font-medium text-black"
               >
-                Deploy server →
+                {tc("deployServer")} →
               </Link>
             </nav>
           </motion.div>

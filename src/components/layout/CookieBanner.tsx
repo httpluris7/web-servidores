@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 /**
  * Banner de cookies — hueco preparado, INACTIVO por defecto.
@@ -13,6 +14,7 @@ const enabled = true; // Activo. Al integrar analítica, inicialízala en decide
 const STORAGE_KEY = "viahost.cookie-consent";
 
 export function CookieBanner() {
+  const t = useTranslations("cookie");
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -39,15 +41,17 @@ export function CookieBanner() {
   return (
     <div
       role="dialog"
-      aria-label="Cookie notice"
+      aria-label={t("notice")}
       className="fixed inset-x-4 bottom-4 z-[70] mx-auto max-w-2xl rounded-[var(--radius-lg)] border border-[var(--color-line-strong)] bg-[var(--color-bg-overlay)] p-5 shadow-2xl shadow-black/50 md:flex md:items-center md:gap-6"
     >
       <p className="text-sm text-[var(--color-fg-muted)]">
-        We use cookies to improve your experience. See our{" "}
-        <Link href="/legal/cookies" className="text-[var(--color-accent)] underline">
-          cookie policy
-        </Link>
-        .
+        {t.rich("text", {
+          link: (chunks) => (
+            <Link href="/legal/cookies" className="text-[var(--color-accent)] underline">
+              {chunks}
+            </Link>
+          ),
+        })}
       </p>
       <div className="mt-4 flex gap-3 md:mt-0 md:shrink-0">
         <button
@@ -55,14 +59,14 @@ export function CookieBanner() {
           onClick={() => decide("rejected")}
           className="rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-4 py-2 text-sm transition-colors hover:border-[var(--color-accent)]"
         >
-          Reject
+          {t("reject")}
         </button>
         <button
           type="button"
           onClick={() => decide("accepted")}
           className="rounded-[var(--radius-md)] bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-black"
         >
-          Accept
+          {t("accept")}
         </button>
       </div>
     </div>

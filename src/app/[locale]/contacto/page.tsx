@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Link } from "@/i18n/navigation";
 import { site } from "@/data/site";
 import { PageHero } from "@/components/ui/PageHero";
 import { ContactForm } from "@/components/forms/ContactForm";
@@ -58,9 +59,9 @@ export default function ContactPage() {
             <p className="mt-2 text-sm text-[var(--color-fg-muted)]">
               Check incidents and maintenance in real time.
             </p>
-            <a href="/estado" className="mt-2 inline-block font-mono text-sm text-[var(--color-accent)] hover:underline">
+            <Link href="/estado" className="mt-2 inline-block font-mono text-sm text-[var(--color-accent)] hover:underline">
               View status →
-            </a>
+            </Link>
           </div>
         </aside>
       </section>

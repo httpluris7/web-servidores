@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "tagline": "European infrastructure deployed in 60 seconds.",
+    "description": "VPS hosting, dedicated servers and DDoS mitigation on our own network across Europe. 60-second provisioning, NVMe Gen4 and 10 Gbps uplinks."
+  },
+  "common": {
+    "skipToContent": "Skip to content",
+    "deployServer": "Deploy server",
+    "viewAll": "View all",
+    "from": "from",
+    "changeLanguage": "Change language"
+  },
+  "nav": {
+    "products": "Products",
+    "network": "Network",
+    "ddosProtection": "DDoS Protection",
+    "useCases": "Use cases",
+    "support": "Support",
+    "contact": "Contact",
+    "aboutUs": "About us",
+    "vpsByRegion": "VPS by region",
+    "dedicated": "Dedicated",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "footer": {
+    "products": "Products",
+    "locations": "Locations",
+    "resources": "Resources",
+    "company": "Company",
+    "cloudVps": "Cloud VPS",
+    "ddosProtection": "DDoS Protection",
+    "serviceStatus": "Service status",
+    "supportCenter": "Support center",
+    "backbonePeering": "Backbone and peering",
+    "useCases": "Use cases",
+    "aboutUs": "About us",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "cookies": "Cookies",
+    "payment": "Payment"
+  },
+  "account": {
+    "myAccount": "My account",
+    "createOrLogin": "Create account or log in",
+    "myProfile": "My profile",
+    "adminPanel": "Admin panel",
+    "logout": "Log out",
+    "createAccount": "Create account",
+    "login": "Log in"
+  },
+  "cart": {
+    "cart": "Cart",
+    "items": "{count, plural, one {Cart, # item} other {Cart, # items}}"
+  },
+  "cookie": {
+    "notice": "Cookie notice",
+    "text": "We use cookies to improve your experience. See our <link>cookie policy</link>.",
+    "reject": "Reject",
+    "accept": "Accept"
+  }
+}

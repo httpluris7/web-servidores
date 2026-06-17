@@ -1,23 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { site, deployUrl } from "@/data/site";
 import { regions, dedicatedTypes } from "@/data/products";
 import { eur } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { MobileMenu } from "./MobileMenu";
 import { AccountButton } from "./AccountButton";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { CartButton } from "@/components/cart/CartButton";
 
 const navLinks = [
-  { href: "/red", label: "Network" },
-  { href: "/proteccion-ddos", label: "DDoS Protection" },
-  { href: "/casos-de-uso", label: "Use cases" },
-  { href: "/soporte", label: "Support", external: false },
-];
+  { href: "/red", key: "network" },
+  { href: "/proteccion-ddos", key: "ddosProtection" },
+  { href: "/casos-de-uso", key: "useCases" },
+  { href: "/soporte", key: "support" },
+] as const;
 
 export function Header() {
+  const t = useTranslations("nav");
+  const tc = useTranslations("common");
   const [scrolled, setScrolled] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
 
@@ -59,7 +63,7 @@ export function Header() {
               onClick={() => setMegaOpen((v) => !v)}
               className="flex items-center gap-1.5 rounded px-3 py-2 text-sm text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-fg)]"
             >
-              Products
+              {t("products")}
               <span
                 className="text-xs transition-transform duration-200"
                 style={{ transform: megaOpen ? "rotate(180deg)" : "none" }}
@@ -75,12 +79,12 @@ export function Header() {
                   {/* Columna VPS */}
                   <div className="rounded-[var(--radius-md)] p-3">
                     <div className="mb-3 flex items-center justify-between">
-                      <span className="mono-label">VPS by region</span>
+                      <span className="mono-label">{t("vpsByRegion")}</span>
                       <Link
                         href="/vps"
                         className="text-xs text-[var(--color-accent)] hover:underline"
                       >
-                        View all →
+                        {tc("viewAll")} →
                       </Link>
                     </div>
                     <ul className="space-y-0.5">
@@ -95,7 +99,7 @@ export function Header() {
                               {r.name}
                             </span>
                             <span className="font-mono text-xs text-[var(--color-fg-muted)]">
-                              from {eur(r.priceFrom)}
+                              {tc("from")} {eur(r.priceFrom)}
                             </span>
                           </Link>
                         </li>
@@ -106,12 +110,12 @@ export function Header() {
                   {/* Columna Dedicados */}
                   <div className="rounded-[var(--radius-md)] bg-white/[0.02] p-3">
                     <div className="mb-3 flex items-center justify-between">
-                      <span className="mono-label">Dedicated</span>
+                      <span className="mono-label">{t("dedicated")}</span>
                       <Link
                         href="/dedicados"
                         className="text-xs text-[var(--color-accent)] hover:underline"
                       >
-                        View all →
+                        {tc("viewAll")} →
                       </Link>
                     </div>
                     <ul className="space-y-0.5">
@@ -135,37 +139,26 @@ export function Header() {
             )}
           </div>
 
-          {navLinks.map((l) =>
-            l.external ? (
-              <a
-                key={l.href}
-                href={l.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded px-3 py-2 text-sm text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-fg)]"
-              >
-                {l.label}
-              </a>
-            ) : (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="rounded px-3 py-2 text-sm text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-fg)]"
-              >
-                {l.label}
-              </Link>
-            )
-          )}
+          {navLinks.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="rounded px-3 py-2 text-sm text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-fg)]"
+            >
+              {t(l.key)}
+            </Link>
+          ))}
         </nav>
 
-        {/* CTA + cuenta + móvil */}
+        {/* CTA + idioma + cuenta + móvil */}
         <div className="flex items-center gap-3">
           <Link
             href={deployUrl()}
             className="hidden rounded-[var(--radius-md)] bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-black transition-all hover:bg-[var(--color-accent-dim)] hover:shadow-[0_0_30px_-6px_var(--color-accent-glow)] sm:inline-flex"
           >
-            Deploy server
+            {tc("deployServer")}
           </Link>
+          <LanguageSwitcher />
           <CartButton />
           <AccountButton />
           <MobileMenu />

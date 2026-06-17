@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "tagline": "Infraestructura europea desplegada en 60 segundos.",
+    "description": "Hosting VPS, servidores dedicados y mitigación DDoS sobre nuestra propia red en toda Europa. Aprovisionamiento en 60 segundos, NVMe Gen4 y enlaces de 10 Gbps."
+  },
+  "common": {
+    "skipToContent": "Saltar al contenido",
+    "deployServer": "Desplegar servidor",
+    "viewAll": "Ver todo",
+    "from": "desde",
+    "changeLanguage": "Cambiar idioma"
+  },
+  "nav": {
+    "products": "Productos",
+    "network": "Red",
+    "ddosProtection": "Protección DDoS",
+    "useCases": "Casos de uso",
+    "support": "Soporte",
+    "contact": "Contacto",
+    "aboutUs": "Sobre nosotros",
+    "vpsByRegion": "VPS por región",
+    "dedicated": "Dedicados",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
+  },
+  "footer": {
+    "products": "Productos",
+    "locations": "Ubicaciones",
+    "resources": "Recursos",
+    "company": "Empresa",
+    "cloudVps": "Cloud VPS",
+    "ddosProtection": "Protección DDoS",
+    "serviceStatus": "Estado del servicio",
+    "supportCenter": "Centro de soporte",
+    "backbonePeering": "Backbone y peering",
+    "useCases": "Casos de uso",
+    "aboutUs": "Sobre nosotros",
+    "contact": "Contacto",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "cookies": "Cookies",
+    "payment": "Pago"
+  },
+  "account": {
+    "myAccount": "Mi cuenta",
+    "createOrLogin": "Crear cuenta o iniciar sesión",
+    "myProfile": "Mi perfil",
+    "adminPanel": "Panel de administración",
+    "logout": "Cerrar sesión",
+    "createAccount": "Crear cuenta",
+    "login": "Iniciar sesión"
+  },
+  "cart": {
+    "cart": "Carrito",
+    "items": "{count, plural, one {Carrito, # artículo} other {Carrito, # artículos}}"
+  },
+  "cookie": {
+    "notice": "Aviso de cookies",
+    "text": "Usamos cookies para mejorar tu experiencia. Consulta nuestra <link>política de cookies</link>.",
+    "reject": "Rechazar",
+    "accept": "Aceptar"
+  }
+}

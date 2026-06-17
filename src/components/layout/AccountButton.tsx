@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 
 type Me = { id: string; nombre: string; email: string; isAdmin?: boolean } | null;
 
@@ -17,6 +17,7 @@ function PersonIcon() {
 }
 
 export function AccountButton() {
+  const t = useTranslations("account");
   const router = useRouter();
   const pathname = usePathname();
   const [me, setMe] = useState<Me>(null);
@@ -78,7 +79,7 @@ export function AccountButton() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="menu"
-        aria-label={me ? "My account" : "Create account or log in"}
+        aria-label={me ? t("myAccount") : t("createOrLogin")}
         className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-line-strong)] text-[var(--color-fg-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-fg)]"
       >
         <PersonIcon />
@@ -102,7 +103,7 @@ export function AccountButton() {
                 <p className="truncate font-mono text-xs text-[var(--color-fg-muted)]">{me.email}</p>
               </div>
               <Link href="/cuenta" role="menuitem" onClick={() => setOpen(false)} className={itemClass}>
-                My profile
+                {t("myProfile")}
               </Link>
               {me.isAdmin && (
                 <Link
@@ -111,7 +112,7 @@ export function AccountButton() {
                   onClick={() => setOpen(false)}
                   className={itemClass + " text-[var(--color-accent)]"}
                 >
-                  Admin panel
+                  {t("adminPanel")}
                 </Link>
               )}
               <button
@@ -120,7 +121,7 @@ export function AccountButton() {
                 onClick={logout}
                 className={itemClass + " w-full text-left text-[var(--color-fg-muted)] hover:text-[var(--color-danger)]"}
               >
-                Log out
+                {t("logout")}
               </button>
             </>
           ) : (
@@ -131,10 +132,10 @@ export function AccountButton() {
                 onClick={() => setOpen(false)}
                 className={itemClass + " font-medium text-[var(--color-accent)]"}
               >
-                Create account
+                {t("createAccount")}
               </Link>
               <Link href="/acceder" role="menuitem" onClick={() => setOpen(false)} className={itemClass}>
-                Log in
+                {t("login")}
               </Link>
             </>
           )}

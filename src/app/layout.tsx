@@ -1,95 +1,14 @@
-import type { Metadata, Viewport } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
 import "./globals.css";
-import { site } from "@/data/site";
-import { jsonLdScript } from "@/lib/utils";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { CookieBanner } from "@/components/layout/CookieBanner";
-import { CartProvider } from "@/lib/cart";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
-  title: {
-    default: `${site.brand} — ${site.tagline}`,
-    template: `%s · ${site.brand}`,
-  },
-  description: site.description,
-  applicationName: site.brand,
-  keywords: [
-    "hosting",
-    "VPS",
-    "dedicated servers",
-    "bare metal",
-    "DDoS protection",
-    "Europe",
-    "NVMe",
-    site.brand,
-  ],
-  authors: [{ name: site.brand }],
-  alternates: { canonical: "/" },
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: site.url,
-    siteName: site.brand,
-    title: `${site.brand} — ${site.tagline}`,
-    description: site.description,
-    images: [{ url: "/og.svg", width: 1200, height: 630, alt: site.brand }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${site.brand} — ${site.tagline}`,
-    description: site.description,
-    images: ["/og.svg"],
-  },
-  robots: { index: true, follow: true },
-  icons: { icon: "/favicon.svg" },
-};
-
-export const viewport: Viewport = {
-  themeColor: "#05070d",
-  colorScheme: "dark",
-};
-
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: site.brand,
-  legalName: site.legal.companyName,
-  url: site.url,
-  description: site.description,
-  email: site.contact.support,
-  sameAs: [site.social.x, site.social.github, site.social.linkedin],
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: site.legal.address,
-    addressCountry: site.legal.addressCountry,
-  },
-};
-
+/**
+ * Layout raíz mínimo (passthrough).
+ *
+ * El `<html lang>` real, el <body>, los proveedores y el header/footer viven en
+ * `app/[locale]/layout.tsx`, para poder fijar el idioma del documento por ruta
+ * (en / es / fr). Aquí solo cargamos los estilos globales y dejamos pasar los
+ * hijos. La única página que se renderiza fuera de [locale] es el 404 global
+ * (`app/not-found.tsx`), que aporta su propio <html>/<body>.
+ */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
-      <body className="min-h-screen antialiased">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: jsonLdScript(organizationJsonLd) }}
-        />
-        <a
-          href="#contenido"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded focus:bg-[var(--color-accent)] focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-black"
-        >
-          Skip to content
-        </a>
-        <CartProvider>
-          <Header />
-          <main id="contenido">{children}</main>
-          <Footer />
-          <CookieBanner />
-        </CartProvider>
-      </body>
-    </html>
-  );
+  return children;
 }

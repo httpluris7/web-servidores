@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "tagline": "Infrastructure européenne déployée en 60 secondes.",
+    "description": "Hébergement VPS, serveurs dédiés et mitigation DDoS sur notre propre réseau à travers l'Europe. Provisionnement en 60 secondes, NVMe Gen4 et liens à 10 Gbps."
+  },
+  "common": {
+    "skipToContent": "Aller au contenu",
+    "deployServer": "Déployer un serveur",
+    "viewAll": "Voir tout",
+    "from": "à partir de",
+    "changeLanguage": "Changer de langue"
+  },
+  "nav": {
+    "products": "Produits",
+    "network": "Réseau",
+    "ddosProtection": "Protection DDoS",
+    "useCases": "Cas d'usage",
+    "support": "Support",
+    "contact": "Contact",
+    "aboutUs": "À propos",
+    "vpsByRegion": "VPS par région",
+    "dedicated": "Dédiés",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
+  },
+  "footer": {
+    "products": "Produits",
+    "locations": "Emplacements",
+    "resources": "Ressources",
+    "company": "Entreprise",
+    "cloudVps": "Cloud VPS",
+    "ddosProtection": "Protection DDoS",
+    "serviceStatus": "État du service",
+    "supportCenter": "Centre d'assistance",
+    "backbonePeering": "Backbone et peering",
+    "useCases": "Cas d'usage",
+    "aboutUs": "À propos",
+    "contact": "Contact",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "cookies": "Cookies",
+    "payment": "Paiement"
+  },
+  "account": {
+    "myAccount": "Mon compte",
+    "createOrLogin": "Créer un compte ou se connecter",
+    "myProfile": "Mon profil",
+    "adminPanel": "Panneau d'administration",
+    "logout": "Se déconnecter",
+    "createAccount": "Créer un compte",
+    "login": "Se connecter"
+  },
+  "cart": {
+    "cart": "Panier",
+    "items": "{count, plural, one {Panier, # article} other {Panier, # articles}}"
+  },
+  "cookie": {
+    "notice": "Avis sur les cookies",
+    "text": "Nous utilisons des cookies pour améliorer votre expérience. Consultez notre <link>politique de cookies</link>.",
+    "reject": "Refuser",
+    "accept": "Accepter"
+  }
+}

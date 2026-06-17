@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { useCart } from "@/lib/cart";
 
 /** Icono de carrito (outline). */
@@ -16,13 +17,14 @@ function CartIcon() {
 
 /** Botón del header: enlaza al carrito y muestra un badge con la cantidad. */
 export function CartButton() {
+  const t = useTranslations("cart");
   const { count, ready } = useCart();
   const show = ready && count > 0;
 
   return (
     <Link
       href="/carrito"
-      aria-label={show ? `Cart, ${count} item${count === 1 ? "" : "s"}` : "Cart"}
+      aria-label={show ? t("items", { count }) : t("cart")}
       className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-line-strong)] text-[var(--color-fg-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-fg)]"
     >
       <CartIcon />
