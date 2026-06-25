@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { saveLead, clean, emailRe } from "@/lib/leads";
 import { sendContactMail } from "@/lib/mail";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -8,6 +9,16 @@ export const dynamic = "force-dynamic";
 const TOPICS = new Set(["ventas", "soporte", "abuse", "otro"]);
 
 export async function POST(req: Request) {
+  // Anti-abuso: cada POST dispara un correo y escribe en disco. Como máximo
+  // 5 mensajes por IP cada 10 minutos para evitar mail-bombing / spam de leads.
+  const limit = rateLimit(`contacto:${clientIp(req)}`, { limit: 5, windowMs: 10 * 60_000 });
+  if (!limit.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many attempts. Please try again in a few minutes." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await req.json();

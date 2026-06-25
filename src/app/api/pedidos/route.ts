@@ -1,11 +1,21 @@
 import { NextResponse } from "next/server";
 import { saveLead, clean, emailRe } from "@/lib/leads";
 import { getPlanById } from "@/data/products";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  // Anti-abuso: cada POST persiste un lead en disco. Tope por IP.
+  const limit = rateLimit(`pedidos:${clientIp(req)}`, { limit: 10, windowMs: 10 * 60_000 });
+  if (!limit.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many attempts. Please try again in a few minutes." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await req.json();

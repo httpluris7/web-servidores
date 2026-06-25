@@ -43,13 +43,21 @@ export function rateLimit(
 }
 
 /**
- * IP del cliente a partir de las cabeceras del proxy inverso. Toma la primera
- * IP de `x-forwarded-for`; si no hay, cae a `x-real-ip` y, en último término, a
- * "unknown" (las claves de login combinan IP+email, así que aun sin IP fiable
- * el límite por email sigue protegiendo frente a fuerza bruta dirigida).
+ * IP del cliente a partir de las cabeceras del proxy inverso.
+ *
+ * Detrás de nuestro nginx, que fija `X-Real-IP = $remote_addr` (la IP TCP real
+ * del cliente, NO falsificable). La usamos como fuente principal. NO se usa la
+ * primera IP de `X-Forwarded-For`: esa la pone el propio cliente y es spoofable
+ * (rotándola se evadía el rate-limit de login). Como respaldo se toma la
+ * ÚLTIMA IP de XFF (la añade el proxy más cercano), no la primera.
  */
 export function clientIp(req: Request): string {
+  const real = req.headers.get("x-real-ip")?.trim();
+  if (real) return real;
   const xff = req.headers.get("x-forwarded-for");
-  if (xff) return xff.split(",")[0]!.trim();
-  return req.headers.get("x-real-ip")?.trim() || "unknown";
+  if (xff) {
+    const parts = xff.split(",");
+    return parts[parts.length - 1]!.trim();
+  }
+  return "unknown";
 }

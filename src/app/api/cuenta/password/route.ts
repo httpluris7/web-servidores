@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isPasswordValid } from "@/lib/password";
 import { findUserByEmail, updateUserPassword, verifyPassword } from "@/lib/auth";
 import { createSession, getSession } from "@/lib/session";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,6 +16,15 @@ export async function POST(req: Request) {
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ ok: false, error: "Not authenticated." }, { status: 401 });
+  }
+
+  // Anti fuerza-bruta de la contraseña ACTUAL: máx. 5 intentos por usuario / 10 min.
+  const limit = rateLimit(`password-change:${session.uid}`, { limit: 5, windowMs: 10 * 60_000 });
+  if (!limit.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many attempts. Please try again in a few minutes." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
   }
 
   let body: Record<string, unknown>;
