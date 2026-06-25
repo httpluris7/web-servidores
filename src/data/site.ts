@@ -41,10 +41,10 @@ export const site = {
 
   // Datos legales del footer. Entidad: Limited Liability Company (LLC).
   legal: {
-    companyName: "ViaHost Infrastructure LLC", // TODO: razón social real de la LLC
-    jurisdiction: "Delaware, USA", // TODO: estado/país de constitución de la LLC
+    companyName: "ViaHost Networks LLC", // razón social real de la LLC
+    jurisdiction: "Wyoming, USA", // estado de constitución de la LLC
     taxId: "EIN 00-0000000", // TODO: EIN real (registro fiscal de la LLC)
-    address: "16192 Coastal Highway, Lewes, DE 19958, USA", // TODO: dirección registrada real
+    address: "7345 W Sand Lake Rd, Ste 210, Orlando, FL 32819, USA", // dirección de oficina
     addressCountry: "US", // código ISO del país de la sede legal
     trustpilotUrl: "", // TODO: URL de Trustpilot si existe (vacío = no se muestra el badge)
   },
