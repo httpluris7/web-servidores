@@ -97,7 +97,7 @@
       "colVat": "TVA",
       "colTotal": "Total",
       "taxableBase": "Base imposable",
-      "vatPct": "TVA ({pct}%)",
+      "vatPct": "Taxe ({pct}%)",
       "total": "Total",
       "notes": "Notes",
       "footerThanks": "Merci de votre confiance envers {brand}. Facture générée électroniquement ; valable sans signature.",
@@ -106,7 +106,8 @@
       "statusCancelada": "Annulée",
       "colQty": "Qté",
       "colUnitPrice": "Prix unit.",
-      "colAmount": "Montant"
+      "colAmount": "Montant",
+      "taxFree": "Prix hors taxes."
     },
     "pedidos": {
       "orders": "Commandes",
@@ -139,10 +140,10 @@
       "descriptionPlaceholder": "VPS Pro · France · juin 2026",
       "taxableBase": "Base imposable (€)",
       "basePlaceholder": "8.00",
-      "vat": "TVA (%)",
+      "vat": "Taxe (%)",
       "dueDays": "Échéance (jours)",
       "notes": "Notes (facultatif)",
-      "totalWithVat": "Total TTC : ",
+      "totalWithVat": "Total : ",
       "issuing": "Émission…",
       "issueInvoice": "Émettre la facture",
       "issuedSuccessfully": "Facture {numero} émise avec succès.",

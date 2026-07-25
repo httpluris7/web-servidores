@@ -56,7 +56,7 @@ export function InvoiceForm({ clientes, productos, preset }: Props) {
   );
   const [clienteEmail, setClienteEmail] = useState(preset?.email ?? "");
   const [lineas, setLineas] = useState<LineaState[]>([emptyLinea()]);
-  const [ivaPct, setIvaPct] = useState("21");
+  const [ivaPct, setIvaPct] = useState("0");
   const [vencimientoDias, setVencimientoDias] = useState("30");
   const [notas, setNotas] = useState("");
 

@@ -31,7 +31,7 @@ export async function POST(req: Request) {
   const clienteEmail = clean(body.clienteEmail, 200);
   const notas = clean(body.notas, 2000);
   const userId = clean(body.userId, 80) || null;
-  const ivaPct = body.ivaPct === undefined || body.ivaPct === "" ? 21 : Number(body.ivaPct);
+  const ivaPct = body.ivaPct === undefined || body.ivaPct === "" ? 0 : Number(body.ivaPct);
   const vencimientoDias =
     body.vencimientoDias === undefined || body.vencimientoDias === ""
       ? 30

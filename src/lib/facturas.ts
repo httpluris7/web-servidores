@@ -160,7 +160,7 @@ export async function getInvoiceById(id: string): Promise<Invoice | null> {
 export async function createInvoice(input: NewInvoiceInput): Promise<Invoice> {
   const list = await readAll();
   const now = new Date();
-  const ivaPct = input.ivaPct ?? 21;
+  const ivaPct = input.ivaPct ?? 0; // por defecto sin impuestos (LLC US)
 
   const lineas: InvoiceLine[] = input.lineas.map((l) => {
     const cantidad = Math.max(1, Math.round(Number(l.cantidad) || 1));

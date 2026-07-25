@@ -97,7 +97,7 @@
       "colVat": "VAT",
       "colTotal": "Total",
       "taxableBase": "Taxable base",
-      "vatPct": "VAT ({pct}%)",
+      "vatPct": "Tax ({pct}%)",
       "total": "Total",
       "notes": "Notes",
       "footerThanks": "Thank you for trusting {brand}. Invoice generated electronically; valid without a signature.",
@@ -106,7 +106,8 @@
       "statusCancelada": "Cancelled",
       "colQty": "Qty",
       "colUnitPrice": "Unit price",
-      "colAmount": "Amount"
+      "colAmount": "Amount",
+      "taxFree": "Prices exclude tax."
     },
     "pedidos": {
       "orders": "Orders",
@@ -139,10 +140,10 @@
       "descriptionPlaceholder": "VPS Pro · France · June 2026",
       "taxableBase": "Taxable base (€)",
       "basePlaceholder": "8.00",
-      "vat": "VAT (%)",
+      "vat": "Tax (%)",
       "dueDays": "Due (days)",
       "notes": "Notes (optional)",
-      "totalWithVat": "Total with VAT: ",
+      "totalWithVat": "Total: ",
       "issuing": "Issuing…",
       "issueInvoice": "Issue invoice",
       "issuedSuccessfully": "Invoice {numero} issued successfully.",

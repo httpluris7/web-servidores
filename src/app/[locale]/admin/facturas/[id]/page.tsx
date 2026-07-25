@@ -130,18 +130,27 @@ export default async function FacturaImprimiblePage({
         {/* Totales */}
         <div className="mt-6 flex justify-end">
           <dl className="w-full max-w-xs space-y-2 text-sm">
-            <div className="flex justify-between">
-              <dt className="text-[#55607a]">{t("facturaPrint.taxableBase")}</dt>
-              <dd className="font-mono">{eur(f.base, 2)}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt className="text-[#55607a]">{t("facturaPrint.vatPct", { pct: f.ivaPct })}</dt>
-              <dd className="font-mono">{eur(ivaImporte, 2)}</dd>
-            </div>
+            {f.ivaPct > 0 && (
+              <>
+                <div className="flex justify-between">
+                  <dt className="text-[#55607a]">{t("facturaPrint.taxableBase")}</dt>
+                  <dd className="font-mono">{eur(f.base, 2)}</dd>
+                </div>
+                <div className="flex justify-between">
+                  <dt className="text-[#55607a]">{t("facturaPrint.vatPct", { pct: f.ivaPct })}</dt>
+                  <dd className="font-mono">{eur(ivaImporte, 2)}</dd>
+                </div>
+              </>
+            )}
             <div className="flex justify-between border-t border-[#e5e8ee] pt-2 text-base font-bold">
               <dt>{t("facturaPrint.total")}</dt>
               <dd className="font-mono">{eur(f.total, 2)}</dd>
             </div>
+            {f.ivaPct === 0 && (
+              <p className="pt-1 text-right text-[0.7rem] text-[#8a93a6]">
+                {t("facturaPrint.taxFree")}
+              </p>
+            )}
           </dl>
         </div>
 

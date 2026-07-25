@@ -97,7 +97,7 @@
       "colVat": "IVA",
       "colTotal": "Total",
       "taxableBase": "Base imponible",
-      "vatPct": "IVA ({pct}%)",
+      "vatPct": "Impuestos ({pct}%)",
       "total": "Total",
       "notes": "Notas",
       "footerThanks": "Gracias por confiar en {brand}. Factura generada electrónicamente; válida sin firma.",
@@ -106,7 +106,8 @@
       "statusCancelada": "Cancelada",
       "colQty": "Cant.",
       "colUnitPrice": "Precio",
-      "colAmount": "Importe"
+      "colAmount": "Importe",
+      "taxFree": "Precios sin impuestos."
     },
     "pedidos": {
       "orders": "Pedidos",
@@ -139,10 +140,10 @@
       "descriptionPlaceholder": "VPS Pro · Francia · junio 2026",
       "taxableBase": "Base imponible (€)",
       "basePlaceholder": "8.00",
-      "vat": "IVA (%)",
+      "vat": "Impuestos (%)",
       "dueDays": "Vencimiento (días)",
       "notes": "Notas (opcional)",
-      "totalWithVat": "Total con IVA: ",
+      "totalWithVat": "Total: ",
       "issuing": "Emitiendo…",
       "issueInvoice": "Emitir factura",
       "issuedSuccessfully": "Factura {numero} emitida correctamente.",
