@@ -29,6 +29,9 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // pdfkit carga sus fuentes .afm desde node_modules en runtime; marcándolo como
+  // externo evitamos que el bundler lo empaquete y rompa esas rutas de datos.
+  serverExternalPackages: ["pdfkit"],
   images: {
     formats: ["image/avif", "image/webp"],
   },

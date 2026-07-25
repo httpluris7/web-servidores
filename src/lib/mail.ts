@@ -27,9 +27,32 @@ const TOPIC_TO_MAILBOX: Record<string, string> = {
 
 const FALLBACK_MAILBOX = "administrador@viahost.top";
 
+/** Buzón que recibe las respuestas a las facturas enviadas a clientes. */
+const BILLING_REPLY_TO = "soporte@viahost.top";
+
 /** Elimina CR/LF de un valor que va en una cabecera (evita header injection). */
 function headerSafe(value: string): string {
   return value.replace(/[\r\n]+/g, " ").trim();
+}
+
+/** Canaliza un mensaje ya montado hacia el `sendmail` local. */
+function pipeSendmail(to: string, message: string): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    // -i: no tratar una línea con solo "." como fin de entrada.
+    // -f: fija el remitente del sobre (SPF).
+    const child = spawn(SENDMAIL, ["-i", "-f", FROM, to], { stdio: ["pipe", "ignore", "pipe"] });
+    let stderr = "";
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk.toString();
+    });
+    child.on("error", reject);
+    child.on("close", (code) => {
+      if (code === 0) resolve();
+      else reject(new Error(`sendmail exited with code ${code}: ${stderr.trim()}`));
+    });
+    child.stdin.write(message);
+    child.stdin.end();
+  });
 }
 
 /** Codifica una cabecera en RFC 2047 si contiene caracteres no ASCII. */
@@ -81,21 +104,71 @@ export async function sendContactMail(lead: ContactLead): Promise<void> {
   ].join("\n");
 
   const message = `${headers}\r\n\r\n${body}\n`;
+  await pipeSendmail(to, message);
+}
 
-  await new Promise<void>((resolve, reject) => {
-    // -i: no tratar una línea con solo "." como fin de entrada.
-    // -f: fija el remitente del sobre (SPF).
-    const child = spawn(SENDMAIL, ["-i", "-f", FROM, to], { stdio: ["pipe", "ignore", "pipe"] });
-    let stderr = "";
-    child.stderr.on("data", (chunk) => {
-      stderr += chunk.toString();
-    });
-    child.on("error", reject);
-    child.on("close", (code) => {
-      if (code === 0) resolve();
-      else reject(new Error(`sendmail exited with code ${code}: ${stderr.trim()}`));
-    });
-    child.stdin.write(message);
-    child.stdin.end();
-  });
+export type InvoiceMail = {
+  to: string;
+  clientName: string;
+  numero: string;
+  amountLabel: string; // p. ej. "EUR 94.38"
+  dueDate: string; // ya formateada
+  status: string; // en inglés
+  pdf: Buffer;
+};
+
+/**
+ * Envía al cliente su factura con el PDF adjunto (en inglés). Best-effort: si
+ * falla, lanza para que quien llama lo registre; la factura ya quedó creada.
+ */
+export async function sendInvoiceMail(m: InvoiceMail): Promise<void> {
+  const to = headerSafe(m.to);
+  const numero = headerSafe(m.numero);
+  const subject = encodeHeader(`Invoice ${numero} — ViaHost Networks, LLC`);
+  const boundary = `=_vh_${numero.replace(/[^A-Za-z0-9]/g, "")}_boundary_`;
+
+  const bodyText = [
+    `Dear ${m.clientName},`,
+    "",
+    `Please find attached invoice ${numero} from ViaHost Networks, LLC.`,
+    "",
+    `Amount:    ${m.amountLabel}`,
+    `Due date:  ${m.dueDate}`,
+    `Status:    ${m.status}`,
+    "",
+    "Thank you for your business.",
+    "",
+    "—",
+    "ViaHost Networks, LLC",
+    BILLING_REPLY_TO,
+  ].join("\r\n");
+
+  // PDF en base64, en líneas de 76 caracteres (RFC 2045).
+  const b64 = m.pdf.toString("base64").replace(/(.{76})/g, "$1\r\n");
+
+  const message = [
+    `From: ViaHost Billing <${FROM}>`,
+    `To: ${to}`,
+    `Reply-To: ${BILLING_REPLY_TO}`,
+    `Subject: ${subject}`,
+    "MIME-Version: 1.0",
+    `Content-Type: multipart/mixed; boundary="${boundary}"`,
+    "",
+    `--${boundary}`,
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: 8bit",
+    "",
+    bodyText,
+    "",
+    `--${boundary}`,
+    `Content-Type: application/pdf; name="${numero}.pdf"`,
+    "Content-Transfer-Encoding: base64",
+    `Content-Disposition: attachment; filename="${numero}.pdf"`,
+    "",
+    b64,
+    `--${boundary}--`,
+    "",
+  ].join("\r\n");
+
+  await pipeSendmail(to, message);
 }

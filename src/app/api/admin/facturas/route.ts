@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { clean, emailRe } from "@/lib/leads";
 import { getAdminSession } from "@/lib/admin";
 import { createInvoice, listInvoices } from "@/lib/facturas";
+import { sendInvoiceMail } from "@/lib/mail";
+import { generateInvoicePdf, invoiceMoney, invoiceDateEn, invoiceStatusEn } from "@/lib/invoice-pdf";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -85,7 +87,27 @@ export async function POST(req: Request) {
       vencimientoDias,
       notas,
     });
-    return NextResponse.json({ ok: true, factura });
+
+    // Envía la factura al cliente con el PDF adjunto. Best-effort: si el correo
+    // falla, la factura ya está creada; devolvemos emailSent=false para avisar.
+    let emailSent = false;
+    try {
+      const pdf = await generateInvoicePdf(factura);
+      await sendInvoiceMail({
+        to: factura.clienteEmail,
+        clientName: factura.clienteNombre,
+        numero: factura.numero,
+        amountLabel: invoiceMoney(factura.total),
+        dueDate: invoiceDateEn(factura.vencimientoAt),
+        status: invoiceStatusEn(factura.estado),
+        pdf,
+      });
+      emailSent = true;
+    } catch (err) {
+      console.error(`No se pudo enviar la factura ${factura.numero} por email:`, err);
+    }
+
+    return NextResponse.json({ ok: true, factura, emailSent });
   } catch {
     return NextResponse.json(
       { ok: false, error: "The invoice could not be created. Please try again." },

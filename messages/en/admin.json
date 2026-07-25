@@ -158,7 +158,9 @@
       "quantity": "Quantity",
       "unitPrice": "Unit price (€)",
       "subtotal": "Subtotal:",
-      "removeLine": "Remove line"
+      "removeLine": "Remove line",
+      "emailSent": "Emailed to the customer with the PDF attached.",
+      "emailNotSent": "The invoice was created, but it could not be emailed to the customer."
     },
     "printButton": {
       "printSavePdf": "Print / Save PDF"

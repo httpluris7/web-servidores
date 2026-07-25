@@ -64,6 +64,7 @@ export function InvoiceForm({ clientes, productos, preset }: Props) {
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<string | null>(null);
+  const [emailOk, setEmailOk] = useState<boolean | null>(null);
 
   // Si elige un cliente del desplegable, autocompletamos nombre y email.
   function onPickCliente(id: string) {
@@ -117,6 +118,7 @@ export function InvoiceForm({ clientes, productos, preset }: Props) {
     setErrors({});
     setGeneralError(null);
     setDone(null);
+    setEmailOk(null);
 
     try {
       const res = await fetch("/api/admin/facturas", {
@@ -147,6 +149,7 @@ export function InvoiceForm({ clientes, productos, preset }: Props) {
       }
 
       setDone(data.factura?.numero ?? t("invoiceForm.invoiceCreated"));
+      setEmailOk(data.emailSent === true);
       // Limpia las líneas y notas pero conserva el cliente para emitir varias.
       setLineas([emptyLinea()]);
       setNotas("");
@@ -367,7 +370,17 @@ export function InvoiceForm({ clientes, productos, preset }: Props) {
 
       {generalError && <p className="text-sm text-[var(--color-danger)]">{generalError}</p>}
       {done && (
-        <p className="text-sm text-[var(--color-accent)]">{t("invoiceForm.issuedSuccessfully", { numero: done })}</p>
+        <div className="text-sm">
+          <p className="text-[var(--color-accent)]">
+            {t("invoiceForm.issuedSuccessfully", { numero: done })}
+          </p>
+          {emailOk === true && (
+            <p className="text-[var(--color-fg-muted)]">{t("invoiceForm.emailSent")}</p>
+          )}
+          {emailOk === false && (
+            <p className="text-amber-400">{t("invoiceForm.emailNotSent")}</p>
+          )}
+        </div>
       )}
     </form>
   );

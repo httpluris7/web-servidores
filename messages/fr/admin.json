@@ -158,7 +158,9 @@
       "quantity": "Quantité",
       "unitPrice": "Prix unit. (€)",
       "subtotal": "Sous-total :",
-      "removeLine": "Supprimer la ligne"
+      "removeLine": "Supprimer la ligne",
+      "emailSent": "Envoyée au client par email avec le PDF joint.",
+      "emailNotSent": "La facture a été créée, mais n'a pas pu être envoyée au client par email."
     },
     "printButton": {
       "printSavePdf": "Imprimer / Enregistrer en PDF"
