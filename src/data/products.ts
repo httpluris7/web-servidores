@@ -221,3 +221,21 @@ export const allPlans: LocatedPlan[] = [
 export function getPlanById(id: string): LocatedPlan | undefined {
   return allPlans.find((p) => p.plan.id === id);
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Catálogo para el selector de líneas de factura (panel admin)              */
+/* -------------------------------------------------------------------------- */
+
+/** Producto del catálogo ofrecido en el desplegable al crear una factura. */
+export type InvoiceProduct = {
+  id: string; // id del plan (referencia para la línea de factura)
+  label: string; // "VPS Pro · Cloud VPS"
+  price: number; // €/mes (precio unitario sugerido)
+};
+
+/** Todos los planes (VPS + dedicados) como opciones para el selector de factura. */
+export const invoiceCatalog: InvoiceProduct[] = allPlans.map(({ plan, lineTitle }) => ({
+  id: plan.id,
+  label: `${plan.name} · ${lineTitle}`,
+  price: plan.price,
+}));

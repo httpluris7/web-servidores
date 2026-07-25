@@ -103,7 +103,10 @@
       "footerThanks": "Merci de votre confiance envers {brand}. Facture générée électroniquement ; valable sans signature.",
       "statusPendiente": "En attente de paiement",
       "statusPagada": "Payée",
-      "statusCancelada": "Annulée"
+      "statusCancelada": "Annulée",
+      "colQty": "Qté",
+      "colUnitPrice": "Prix unit.",
+      "colAmount": "Montant"
     },
     "pedidos": {
       "orders": "Commandes",
@@ -142,7 +145,19 @@
       "totalWithVat": "Total TTC : ",
       "issuing": "Émission…",
       "issueInvoice": "Émettre la facture",
-      "issuedSuccessfully": "Facture {numero} émise avec succès."
+      "issuedSuccessfully": "Facture {numero} émise avec succès.",
+      "lineItems": "Lignes de la facture",
+      "addLine": "+ Ajouter une ligne",
+      "product": "Produit (catalogue)",
+      "productCustom": "— Personnalisé —",
+      "concept": "Désignation",
+      "conceptPlaceholder": "VPS Pro · France",
+      "lineDescription": "Description (facultatif)",
+      "lineDescriptionPlaceholder": "Détail du produit ou période facturée",
+      "quantity": "Quantité",
+      "unitPrice": "Prix unit. (€)",
+      "subtotal": "Sous-total :",
+      "removeLine": "Supprimer la ligne"
     },
     "printButton": {
       "printSavePdf": "Imprimer / Enregistrer en PDF"

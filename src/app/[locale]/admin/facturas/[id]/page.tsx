@@ -103,18 +103,27 @@ export default async function FacturaImprimiblePage({
           <thead>
             <tr className="border-y border-[#e5e8ee] text-left text-[0.65rem] uppercase tracking-wider text-[#8a93a6]">
               <th className="py-2.5 pr-3 font-semibold">{t("facturaPrint.colDescription")}</th>
-              <th className="py-2.5 px-3 text-right font-semibold">{t("facturaPrint.colNet")}</th>
-              <th className="py-2.5 px-3 text-right font-semibold">{t("facturaPrint.colVat")}</th>
-              <th className="py-2.5 pl-3 text-right font-semibold">{t("facturaPrint.colTotal")}</th>
+              <th className="py-2.5 px-3 text-right font-semibold">{t("facturaPrint.colQty")}</th>
+              <th className="py-2.5 px-3 text-right font-semibold">{t("facturaPrint.colUnitPrice")}</th>
+              <th className="py-2.5 pl-3 text-right font-semibold">{t("facturaPrint.colAmount")}</th>
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b border-[#eef1f6]">
-              <td className="py-3 pr-3 align-top">{f.concepto}</td>
-              <td className="py-3 px-3 text-right align-top font-mono">{eur(f.base, 2)}</td>
-              <td className="py-3 px-3 text-right align-top font-mono">{f.ivaPct}%</td>
-              <td className="py-3 pl-3 text-right align-top font-mono">{eur(f.base, 2)}</td>
-            </tr>
+            {f.lineas.map((l, i) => (
+              <tr key={i} className="border-b border-[#eef1f6]">
+                <td className="py-3 pr-3 align-top">
+                  <span className="font-medium text-[#0b0f17]">{l.concepto}</span>
+                  {l.descripcion && (
+                    <span className="mt-0.5 block whitespace-pre-wrap text-xs text-[#8a93a6]">
+                      {l.descripcion}
+                    </span>
+                  )}
+                </td>
+                <td className="py-3 px-3 text-right align-top font-mono">{l.cantidad}</td>
+                <td className="py-3 px-3 text-right align-top font-mono">{eur(l.precioUnitario, 2)}</td>
+                <td className="py-3 pl-3 text-right align-top font-mono">{eur(l.subtotal, 2)}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
 

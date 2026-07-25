@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { listUsers } from "@/lib/auth";
-import { listInvoices, invoiceStats } from "@/lib/facturas";
+import { listInvoices, invoiceStats, invoiceConcepto } from "@/lib/facturas";
 import { readLeads } from "@/lib/leads";
 import { eur, fmtDate } from "@/lib/utils";
 import { StatusBadge } from "@/components/admin/StatusBadge";
@@ -69,7 +69,7 @@ export default async function AdminDashboard({
                       <span className="font-mono text-xs text-[var(--color-fg-muted)]">{f.numero}</span>{" "}
                       · {f.clienteNombre}
                     </p>
-                    <p className="truncate text-xs text-[var(--color-fg-muted)]">{f.concepto}</p>
+                    <p className="truncate text-xs text-[var(--color-fg-muted)]">{invoiceConcepto(f)}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-3">
                     <StatusBadge estado={f.estado} />

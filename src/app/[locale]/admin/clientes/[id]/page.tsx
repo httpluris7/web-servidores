@@ -2,12 +2,13 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getPublicUserById } from "@/lib/auth";
-import { listInvoicesByUser, invoiceStats } from "@/lib/facturas";
+import { listInvoicesByUser, invoiceStats, invoiceConcepto } from "@/lib/facturas";
 import { readLeads } from "@/lib/leads";
 import { eur, fmtDate } from "@/lib/utils";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { InvoiceActions } from "@/components/admin/InvoiceActions";
 import { InvoiceForm } from "@/components/admin/InvoiceForm";
+import { invoiceCatalog } from "@/data/products";
 import { ResetPasswordForm } from "@/components/admin/ResetPasswordForm";
 
 export const dynamic = "force-dynamic";
@@ -114,7 +115,7 @@ export default async function ClienteDetallePage({
                     >
                       {f.numero}
                     </Link>{" "}
-                    · {f.concepto}
+                    · {invoiceConcepto(f)}
                   </p>
                   <p className="text-xs text-[var(--color-fg-muted)]">
                     {t("clienteDetalle.issuedDue", { issued: fmtDate(f.emitidaAt), due: fmtDate(f.vencimientoAt) })}
@@ -157,6 +158,7 @@ export default async function ClienteDetallePage({
         <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-5 md:p-6">
           <InvoiceForm
             clientes={[]}
+            productos={invoiceCatalog}
             preset={{
               id: cliente.id,
               nombre: cliente.nombre,

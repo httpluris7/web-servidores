@@ -1,11 +1,12 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { listUsers } from "@/lib/auth";
-import { listInvoices, invoiceStats } from "@/lib/facturas";
+import { listInvoices, invoiceStats, invoiceConcepto } from "@/lib/facturas";
 import { eur, fmtDate } from "@/lib/utils";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { InvoiceActions } from "@/components/admin/InvoiceActions";
 import { InvoiceForm } from "@/components/admin/InvoiceForm";
+import { invoiceCatalog } from "@/data/products";
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +40,7 @@ export default async function FacturasPage({
             </span>
           </summary>
           <div className="border-t border-[var(--color-line)] p-5 md:p-6">
-            <InvoiceForm clientes={clientes} />
+            <InvoiceForm clientes={clientes} productos={invoiceCatalog} />
           </div>
         </details>
       </section>
@@ -105,8 +106,8 @@ export default async function FacturasPage({
                       <p className="text-xs text-[var(--color-fg-muted)]">{f.clienteEmail}</p>
                     </td>
                     <td className="px-4 py-3 max-w-[220px]">
-                      <p className="truncate text-[var(--color-fg-muted)]" title={f.concepto}>
-                        {f.concepto}
+                      <p className="truncate text-[var(--color-fg-muted)]" title={invoiceConcepto(f)}>
+                        {invoiceConcepto(f)}
                       </p>
                     </td>
                     <td className="px-4 py-3 font-mono text-xs text-[var(--color-fg-muted)]">

@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 const base =
   "w-full rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-4 py-3 text-sm text-[var(--color-fg)] placeholder:text-[var(--color-fg-dim)] transition-colors focus:border-[var(--color-accent)] focus:outline-none";
 
-type LabelProps = { htmlFor: string; children: React.ReactNode; required?: boolean };
+type LabelProps = { htmlFor?: string; children: React.ReactNode; required?: boolean };
 
 export function Label({ htmlFor, children, required }: LabelProps) {
   return (

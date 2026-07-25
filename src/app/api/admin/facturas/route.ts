@@ -29,21 +29,44 @@ export async function POST(req: Request) {
 
   const clienteNombre = clean(body.clienteNombre, 160);
   const clienteEmail = clean(body.clienteEmail, 200);
-  const concepto = clean(body.concepto, 500);
   const notas = clean(body.notas, 2000);
   const userId = clean(body.userId, 80) || null;
-  const base = Number(body.base);
   const ivaPct = body.ivaPct === undefined || body.ivaPct === "" ? 21 : Number(body.ivaPct);
   const vencimientoDias =
     body.vencimientoDias === undefined || body.vencimientoDias === ""
       ? 30
       : Number(body.vencimientoDias);
 
+  // Líneas de producto: normalizamos cada una a su forma tipada.
+  const rawLineas = Array.isArray(body.lineas) ? body.lineas : [];
+  const lineas = rawLineas.slice(0, 50).map((l) => {
+    const line = (l ?? {}) as Record<string, unknown>;
+    return {
+      concepto: clean(line.concepto, 200),
+      descripcion: clean(line.descripcion, 500),
+      cantidad: Number(line.cantidad),
+      precioUnitario: Number(line.precioUnitario),
+      productId: clean(line.productId, 80) || null,
+    };
+  });
+
   const errors: Record<string, string> = {};
   if (clienteNombre.length < 2) errors.clienteNombre = "Enter the customer's name.";
   if (!emailRe.test(clienteEmail)) errors.clienteEmail = "Invalid customer email.";
-  if (concepto.length < 3) errors.concepto = "Describe the invoice concept.";
-  if (!Number.isFinite(base) || base <= 0) errors.base = "Invalid amount (base).";
+  if (lineas.length === 0) {
+    errors.lineas = "Add at least one line item.";
+  } else if (
+    lineas.some(
+      (l) =>
+        l.concepto.length < 2 ||
+        !Number.isFinite(l.cantidad) ||
+        l.cantidad <= 0 ||
+        !Number.isFinite(l.precioUnitario) ||
+        l.precioUnitario < 0
+    )
+  ) {
+    errors.lineas = "Each line needs a concept, a quantity and a valid price.";
+  }
   if (!Number.isFinite(ivaPct) || ivaPct < 0 || ivaPct > 100) errors.ivaPct = "Invalid VAT.";
   if (!Number.isFinite(vencimientoDias) || vencimientoDias < 0)
     errors.vencimientoDias = "Invalid due date.";
@@ -57,8 +80,7 @@ export async function POST(req: Request) {
       userId,
       clienteNombre,
       clienteEmail,
-      concepto,
-      base,
+      lineas,
       ivaPct,
       vencimientoDias,
       notas,

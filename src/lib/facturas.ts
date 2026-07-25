@@ -15,15 +15,25 @@ const FILE = path.join(DATA_DIR, "facturas.jsonl");
 
 export type InvoiceStatus = "pendiente" | "pagada" | "cancelada";
 
+/** Línea de factura: un producto/servicio con cantidad y precio unitario. */
+export type InvoiceLine = {
+  concepto: string; // nombre del producto o servicio
+  descripcion: string; // descripción libre (puede ir vacía)
+  cantidad: number; // unidades (>= 1)
+  precioUnitario: number; // € por unidad
+  subtotal: number; // cantidad × precioUnitario (calculado al crear)
+  productId: string | null; // id del catálogo si procede, o null si es manual
+};
+
 export type Invoice = {
   id: string;
   numero: string; // F-2026-0001 (secuencial por año de emisión)
   userId: string | null; // usuario registrado vinculado (o null si es manual)
   clienteEmail: string;
   clienteNombre: string;
-  concepto: string;
-  base: number; // base imponible en €
-  ivaPct: number; // % de IVA aplicado
+  lineas: InvoiceLine[]; // una o más líneas de producto
+  base: number; // base imponible en € (suma de subtotales, calculado)
+  ivaPct: number; // % de IVA global aplicado
   total: number; // base + IVA (calculado al crear)
   estado: InvoiceStatus;
   emitidaAt: string; // ISO
@@ -32,12 +42,19 @@ export type Invoice = {
   notas: string;
 };
 
+export type NewInvoiceLineInput = {
+  concepto: string;
+  descripcion?: string;
+  cantidad: number;
+  precioUnitario: number;
+  productId?: string | null;
+};
+
 export type NewInvoiceInput = {
   userId?: string | null;
   clienteEmail: string;
   clienteNombre: string;
-  concepto: string;
-  base: number;
+  lineas: NewInvoiceLineInput[];
   ivaPct?: number; // por defecto 21
   vencimientoDias?: number; // días desde la emisión (por defecto 30)
   notas?: string;
@@ -56,12 +73,31 @@ async function readAll(): Promise<Invoice[]> {
   for (const line of content.split("\n")) {
     if (!line.trim()) continue;
     try {
-      out.push(JSON.parse(line) as Invoice);
+      out.push(normalize(JSON.parse(line)));
     } catch {
       // Línea corrupta: la ignoramos en lugar de romper todo el listado.
     }
   }
   return out;
+}
+
+/**
+ * Normaliza un registro leído de disco. Las facturas antiguas guardaban un
+ * único `concepto` + `base`; las convertimos en una sola línea para que el
+ * resto del código trabaje siempre con `lineas`.
+ */
+function normalize(raw: Record<string, unknown>): Invoice {
+  if (Array.isArray(raw.lineas)) return raw as unknown as Invoice;
+  const precioUnitario = round2(Number(raw.base) || 0);
+  const linea: InvoiceLine = {
+    concepto: typeof raw.concepto === "string" ? raw.concepto : "",
+    descripcion: "",
+    cantidad: 1,
+    precioUnitario,
+    subtotal: precioUnitario,
+    productId: null,
+  };
+  return { ...(raw as unknown as Invoice), lineas: [linea] };
 }
 
 async function writeAll(list: Invoice[]): Promise<void> {
@@ -88,6 +124,13 @@ function round2(n: number): number {
 }
 
 /* --------------------------------- Lectura -------------------------------- */
+
+/** Resumen legible de las líneas de una factura (para listados). */
+export function invoiceConcepto(inv: Invoice): string {
+  const first = inv.lineas[0]?.concepto ?? "";
+  const extra = inv.lineas.length - 1;
+  return extra > 0 ? `${first} +${extra}` : first;
+}
 
 /** Todas las facturas, de la más reciente a la más antigua. */
 export async function listInvoices(): Promise<Invoice[]> {
@@ -118,7 +161,21 @@ export async function createInvoice(input: NewInvoiceInput): Promise<Invoice> {
   const list = await readAll();
   const now = new Date();
   const ivaPct = input.ivaPct ?? 21;
-  const base = round2(input.base);
+
+  const lineas: InvoiceLine[] = input.lineas.map((l) => {
+    const cantidad = Math.max(1, Math.round(Number(l.cantidad) || 1));
+    const precioUnitario = round2(Number(l.precioUnitario) || 0);
+    return {
+      concepto: l.concepto.trim(),
+      descripcion: (l.descripcion ?? "").trim(),
+      cantidad,
+      precioUnitario,
+      subtotal: round2(cantidad * precioUnitario),
+      productId: l.productId ?? null,
+    };
+  });
+
+  const base = round2(lineas.reduce((acc, l) => acc + l.subtotal, 0));
   const total = round2(base * (1 + ivaPct / 100));
 
   const vencimiento = new Date(now);
@@ -130,7 +187,7 @@ export async function createInvoice(input: NewInvoiceInput): Promise<Invoice> {
     userId: input.userId ?? null,
     clienteEmail: input.clienteEmail.trim().toLowerCase(),
     clienteNombre: input.clienteNombre.trim(),
-    concepto: input.concepto.trim(),
+    lineas,
     base,
     ivaPct,
     total,

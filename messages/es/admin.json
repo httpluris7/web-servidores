@@ -103,7 +103,10 @@
       "footerThanks": "Gracias por confiar en {brand}. Factura generada electrónicamente; válida sin firma.",
       "statusPendiente": "Pendiente de pago",
       "statusPagada": "Pagada",
-      "statusCancelada": "Cancelada"
+      "statusCancelada": "Cancelada",
+      "colQty": "Cant.",
+      "colUnitPrice": "Precio",
+      "colAmount": "Importe"
     },
     "pedidos": {
       "orders": "Pedidos",
@@ -142,7 +145,19 @@
       "totalWithVat": "Total con IVA: ",
       "issuing": "Emitiendo…",
       "issueInvoice": "Emitir factura",
-      "issuedSuccessfully": "Factura {numero} emitida correctamente."
+      "issuedSuccessfully": "Factura {numero} emitida correctamente.",
+      "lineItems": "Líneas de la factura",
+      "addLine": "+ Añadir línea",
+      "product": "Producto (catálogo)",
+      "productCustom": "— Personalizado —",
+      "concept": "Concepto",
+      "conceptPlaceholder": "VPS Pro · Francia",
+      "lineDescription": "Descripción (opcional)",
+      "lineDescriptionPlaceholder": "Detalle del producto o periodo facturado",
+      "quantity": "Cantidad",
+      "unitPrice": "Precio unit. (€)",
+      "subtotal": "Subtotal:",
+      "removeLine": "Eliminar línea"
     },
     "printButton": {
       "printSavePdf": "Imprimir / Guardar PDF"
