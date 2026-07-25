@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { emailRe } from "@/lib/leads";
 
 /**
  * Envío de avisos por correo a través del Postfix local (sin dependencias
@@ -40,7 +41,11 @@ function pipeSendmail(to: string, message: string): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     // -i: no tratar una línea con solo "." como fin de entrada.
     // -f: fija el remitente del sobre (SPF).
-    const child = spawn(SENDMAIL, ["-i", "-f", FROM, to], { stdio: ["pipe", "ignore", "pipe"] });
+    // --: fin de opciones; evita que un destinatario que empiece por "-" se
+    //     interprete como flag de sendmail (argv flag smuggling).
+    const child = spawn(SENDMAIL, ["-i", "-f", FROM, "--", to], {
+      stdio: ["pipe", "ignore", "pipe"],
+    });
     let stderr = "";
     child.stderr.on("data", (chunk) => {
       stderr += chunk.toString();
@@ -123,6 +128,11 @@ export type InvoiceMail = {
  */
 export async function sendInvoiceMail(m: InvoiceMail): Promise<void> {
   const to = headerSafe(m.to);
+  // Validación defensiva del destinatario (además del `--` en pipeSendmail):
+  // rechaza direcciones no válidas o que empiecen por "-".
+  if (!emailRe.test(to) || to.startsWith("-")) {
+    throw new Error("Invalid recipient address.");
+  }
   const numero = headerSafe(m.numero);
   const subject = encodeHeader(`Invoice ${numero} — ViaHost Networks, LLC`);
   const boundary = `=_vh_${numero.replace(/[^A-Za-z0-9]/g, "")}_boundary_`;
