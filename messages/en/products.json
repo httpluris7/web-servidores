@@ -179,7 +179,7 @@
       "specNetwork": "Network",
       "region": "Region",
       "monthlyTotal": "Monthly total",
-      "vatNote": "VAT not included"
+      "vatNote": "Prices exclude tax"
     }
   }
 }

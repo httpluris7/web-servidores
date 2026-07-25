@@ -179,7 +179,7 @@
       "specNetwork": "Réseau",
       "region": "Région",
       "monthlyTotal": "Total mensuel",
-      "vatNote": "TVA non incluse"
+      "vatNote": "Prix hors taxes"
     }
   }
 }
