@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { randomBytes } from "node:crypto";
 import { emailRe } from "@/lib/leads";
 
 /**
@@ -67,6 +68,21 @@ function encodeHeader(value: string): string {
   return `=?UTF-8?B?${Buffer.from(safe, "utf8").toString("base64")}?=`;
 }
 
+/**
+ * Display-name seguro para cabeceras de dirección (`Nombre <email>`).
+ *
+ * Sin entrecomillar, un nombre con `<`, `>` o `,` puede inyectar direcciones
+ * adicionales en la cabecera (p. ej. `x <a@b.c>, y`). Si es ASCII imprimible lo
+ * devolvemos como quoted-string escapando `\` y `"` (RFC 5322); si lleva
+ * caracteres no ASCII, el encoded-word RFC 2047 ya es seguro por construcción
+ * (base64 no contiene esos separadores) y no debe entrecomillarse.
+ */
+function addressDisplayName(value: string): string {
+  const safe = headerSafe(value);
+  if (!/^[\x20-\x7E]*$/.test(safe)) return encodeHeader(safe);
+  return `"${safe.replace(/([\\"])/g, "\\$1")}"`;
+}
+
 export type ContactLead = {
   name: string;
   email: string;
@@ -84,10 +100,15 @@ export async function sendContactMail(lead: ContactLead): Promise<void> {
   const replyTo = headerSafe(lead.email);
   const subject = encodeHeader(`[Contacto web · ${lead.topic}] ${lead.name}`);
 
+  // El Reply-To solo se emite si la dirección es limpia: `emailRe` admite
+  // caracteres como `<`/`>` que romperían la cabecera. Si no lo es, se omite
+  // (el aviso se entrega igual; solo se pierde la respuesta directa).
+  const replyToSafe = emailRe.test(replyTo) && !/[<>,;"]/.test(replyTo);
+
   const headers = [
     `From: Formulario web viahost <${FROM}>`,
     `To: ${to}`,
-    `Reply-To: ${encodeHeader(lead.name)} <${replyTo}>`,
+    ...(replyToSafe ? [`Reply-To: ${addressDisplayName(lead.name)} <${replyTo}>`] : []),
     `Subject: ${subject}`,
     "MIME-Version: 1.0",
     "Content-Type: text/plain; charset=UTF-8",
@@ -142,14 +163,19 @@ export async function sendInvoiceMail(m: InvoiceMail): Promise<void> {
       ? `Proforma ${numero} — ViaHost Networks, LLC`
       : `Invoice ${numero} (PAID) — ViaHost Networks, LLC`
   );
-  const boundary = `=_vh_${numero.replace(/[^A-Za-z0-9]/g, "")}_boundary_`;
+  // Boundary ALEATORIO: si se derivara del nº de factura sería predecible
+  // (FACT-AAAA-NNN), y un texto del propio mensaje que lo reprodujese podría
+  // forjar/terminar partes MIME. Aleatorio = incolisionable e inadivinable.
+  const boundary = `=_vh_${randomBytes(12).toString("hex")}_boundary_`;
+  // El nombre va en el cuerpo: sin CR/LF no puede inyectar líneas ni delimitadores.
+  const clientName = headerSafe(m.clientName);
 
   const intro = m.isProforma
     ? `Please find attached proforma ${numero} from ViaHost Networks, LLC. It is not a final invoice; once your payment is confirmed we will issue the final invoice.`
     : `Please find attached your paid invoice ${numero} from ViaHost Networks, LLC. Thank you for your payment.`;
 
   const bodyText = [
-    `Dear ${m.clientName},`,
+    `Dear ${clientName},`,
     "",
     intro,
     "",
