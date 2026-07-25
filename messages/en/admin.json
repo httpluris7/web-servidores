@@ -72,7 +72,7 @@
       "issueInvoice": "Issue invoice to this customer"
     },
     "facturas": {
-      "newInvoice": "New invoice",
+      "newInvoice": "New proforma",
       "heading": "Invoices",
       "invoicedCollectedOutstanding": "Invoiced <invoiced></invoiced> · collected <collected></collected> · outstanding <outstanding></outstanding>",
       "noInvoices": "You haven't issued any invoices yet. Create the first one above.",
@@ -107,7 +107,10 @@
       "colQty": "Qty",
       "colUnitPrice": "Unit price",
       "colAmount": "Amount",
-      "taxFree": "Prices exclude tax."
+      "taxFree": "Prices exclude tax.",
+      "proforma": "PROFORMA",
+      "paymentMethod": "Payment method",
+      "proformaNote": "Proforma document, not a final invoice. A final invoice will be issued once payment is confirmed."
     },
     "pedidos": {
       "orders": "Orders",
@@ -144,9 +147,9 @@
       "dueDays": "Due (days)",
       "notes": "Notes (optional)",
       "totalWithVat": "Total: ",
-      "issuing": "Issuing…",
-      "issueInvoice": "Issue invoice",
-      "issuedSuccessfully": "Invoice {numero} issued successfully.",
+      "issuing": "Creating…",
+      "issueInvoice": "Create proforma",
+      "issuedSuccessfully": "Proforma {numero} created.",
       "lineItems": "Invoice line items",
       "addLine": "+ Add line",
       "product": "Product (catalog)",
@@ -159,8 +162,11 @@
       "unitPrice": "Unit price (€)",
       "subtotal": "Subtotal:",
       "removeLine": "Remove line",
-      "emailSent": "Emailed to the customer with the PDF attached.",
-      "emailNotSent": "The invoice was created, but it could not be emailed to the customer."
+      "emailSent": "Proforma emailed to the customer with the PDF attached.",
+      "emailNotSent": "The proforma was created, but it could not be emailed to the customer.",
+      "paymentMethod": "Payment method",
+      "paymentMethodNone": "— Not specified —",
+      "paymentTransfer": "Bank transfer"
     },
     "printButton": {
       "printSavePdf": "Print / Save PDF"

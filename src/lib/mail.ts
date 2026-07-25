@@ -119,12 +119,14 @@ export type InvoiceMail = {
   amountLabel: string; // p. ej. "EUR 94.38"
   dueDate: string; // ya formateada
   status: string; // en inglés
+  isProforma: boolean; // proforma (sin pagar) vs factura final (pagada)
   pdf: Buffer;
 };
 
 /**
- * Envía al cliente su factura con el PDF adjunto (en inglés). Best-effort: si
- * falla, lanza para que quien llama lo registre; la factura ya quedó creada.
+ * Envía al cliente su proforma o su factura final con el PDF adjunto (en
+ * inglés). Best-effort: si falla, lanza para que quien llama lo registre; la
+ * factura ya quedó creada.
  */
 export async function sendInvoiceMail(m: InvoiceMail): Promise<void> {
   const to = headerSafe(m.to);
@@ -134,14 +136,24 @@ export async function sendInvoiceMail(m: InvoiceMail): Promise<void> {
     throw new Error("Invalid recipient address.");
   }
   const numero = headerSafe(m.numero);
-  const subject = encodeHeader(`Invoice ${numero} — ViaHost Networks, LLC`);
+  const doc = m.isProforma ? "Proforma" : "Invoice";
+  const subject = encodeHeader(
+    m.isProforma
+      ? `Proforma ${numero} — ViaHost Networks, LLC`
+      : `Invoice ${numero} (PAID) — ViaHost Networks, LLC`
+  );
   const boundary = `=_vh_${numero.replace(/[^A-Za-z0-9]/g, "")}_boundary_`;
+
+  const intro = m.isProforma
+    ? `Please find attached proforma ${numero} from ViaHost Networks, LLC. It is not a final invoice; once your payment is confirmed we will issue the final invoice.`
+    : `Please find attached your paid invoice ${numero} from ViaHost Networks, LLC. Thank you for your payment.`;
 
   const bodyText = [
     `Dear ${m.clientName},`,
     "",
-    `Please find attached invoice ${numero} from ViaHost Networks, LLC.`,
+    intro,
     "",
+    `${doc}:   ${numero}`,
     `Amount:    ${m.amountLabel}`,
     `Due date:  ${m.dueDate}`,
     `Status:    ${m.status}`,

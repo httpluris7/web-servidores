@@ -72,7 +72,7 @@
       "issueInvoice": "Émettre une facture à ce client"
     },
     "facturas": {
-      "newInvoice": "Nouvelle facture",
+      "newInvoice": "Nouvelle proforma",
       "heading": "Factures",
       "invoicedCollectedOutstanding": "Facturé <invoiced></invoiced> · encaissé <collected></collected> · en attente <outstanding></outstanding>",
       "noInvoices": "Vous n'avez encore émis aucune facture. Créez la première ci-dessus.",
@@ -107,7 +107,10 @@
       "colQty": "Qté",
       "colUnitPrice": "Prix unit.",
       "colAmount": "Montant",
-      "taxFree": "Prix hors taxes."
+      "taxFree": "Prix hors taxes.",
+      "proforma": "PROFORMA",
+      "paymentMethod": "Mode de paiement",
+      "proformaNote": "Document proforma, pas une facture définitive. La facture finale sera émise dès confirmation du paiement."
     },
     "pedidos": {
       "orders": "Commandes",
@@ -144,9 +147,9 @@
       "dueDays": "Échéance (jours)",
       "notes": "Notes (facultatif)",
       "totalWithVat": "Total : ",
-      "issuing": "Émission…",
-      "issueInvoice": "Émettre la facture",
-      "issuedSuccessfully": "Facture {numero} émise avec succès.",
+      "issuing": "Création…",
+      "issueInvoice": "Créer la proforma",
+      "issuedSuccessfully": "Proforma {numero} créée.",
       "lineItems": "Lignes de la facture",
       "addLine": "+ Ajouter une ligne",
       "product": "Produit (catalogue)",
@@ -159,8 +162,11 @@
       "unitPrice": "Prix unit. (€)",
       "subtotal": "Sous-total :",
       "removeLine": "Supprimer la ligne",
-      "emailSent": "Envoyée au client par email avec le PDF joint.",
-      "emailNotSent": "La facture a été créée, mais n'a pas pu être envoyée au client par email."
+      "emailSent": "Proforma envoyée au client par email avec le PDF joint.",
+      "emailNotSent": "La proforma a été créée, mais n'a pas pu être envoyée au client par email.",
+      "paymentMethod": "Mode de paiement",
+      "paymentMethodNone": "— Non spécifié —",
+      "paymentTransfer": "Virement bancaire"
     },
     "printButton": {
       "printSavePdf": "Imprimer / Enregistrer en PDF"

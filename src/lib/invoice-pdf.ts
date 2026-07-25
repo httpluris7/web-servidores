@@ -1,6 +1,14 @@
 import PDFDocument from "pdfkit";
 import { site } from "@/data/site";
-import type { Invoice, InvoiceStatus } from "@/lib/facturas";
+import {
+  esProforma,
+  PAYMENT_METHOD_LABEL,
+  type Invoice,
+  type InvoiceStatus,
+  type PaymentMethod,
+} from "@/lib/facturas";
+
+export const paymentMethodEn = (m: PaymentMethod | null) => (m ? PAYMENT_METHOD_LABEL[m] : null);
 
 /**
  * Genera el PDF de una factura (en inglés, para una cartera internacional).
@@ -45,9 +53,12 @@ export function generateInvoicePdf(inv: Invoice): Promise<Buffer> {
     const faint = "#8a93a6";
     const line = "#e5e8ee";
 
-    // --- Cabecera: marca (izq) + INVOICE (der) ---
+    const proforma = esProforma(inv);
+    const paid = inv.estado === "pagada";
+
+    // --- Cabecera: marca (izq) + PROFORMA / INVOICE (der) ---
     doc.fillColor(ink).font("Helvetica-Bold").fontSize(20).text(site.brand, left, 50);
-    doc.font("Helvetica-Bold").fontSize(18).fillColor(ink).text("INVOICE", left, 50, {
+    doc.font("Helvetica-Bold").fontSize(18).fillColor(ink).text(proforma ? "PROFORMA" : "INVOICE", left, 50, {
       width,
       align: "right",
     });
@@ -55,8 +66,19 @@ export function generateInvoicePdf(inv: Invoice): Promise<Buffer> {
       .font("Helvetica")
       .fontSize(10)
       .fillColor(muted)
-      .text(inv.numero, left, 74, { width, align: "right" })
-      .text(invoiceStatusEn(inv.estado), left, 88, { width, align: "right" });
+      .text(inv.numero, left, 74, { width, align: "right" });
+    // Sello de estado: "PAID" en verde para la factura final.
+    if (paid) {
+      doc.font("Helvetica-Bold").fontSize(12).fillColor("#00875f").text("PAID", left, 88, {
+        width,
+        align: "right",
+      });
+    } else {
+      doc.font("Helvetica").fontSize(10).fillColor(muted).text(invoiceStatusEn(inv.estado), left, 88, {
+        width,
+        align: "right",
+      });
+    }
 
     // --- Emisor ---
     doc.font("Helvetica-Bold").fontSize(9).fillColor(ink).text(site.legal.companyName, left, 80);
@@ -81,6 +103,8 @@ export function generateInvoicePdf(inv: Invoice): Promise<Buffer> {
     dateRow("Issue date", invoiceDateEn(inv.emitidaAt));
     dateRow("Due date", invoiceDateEn(inv.vencimientoAt));
     if (inv.pagadaAt) dateRow("Payment date", invoiceDateEn(inv.pagadaAt));
+    const methodLabel = paymentMethodEn(inv.metodoPago);
+    if (methodLabel) dateRow("Payment method", methodLabel);
 
     // --- Tabla de líneas ---
     let ty = Math.max(doc.y, dy) + 22;
@@ -164,6 +188,21 @@ export function generateInvoicePdf(inv: Invoice): Promise<Buffer> {
         .fontSize(9)
         .fillColor(muted)
         .text(inv.notas, left, doc.y + 2, { width });
+    }
+
+    // --- Nota de proforma ---
+    if (proforma) {
+      ty += 12;
+      doc
+        .font("Helvetica-Oblique")
+        .fontSize(8)
+        .fillColor(faint)
+        .text(
+          "This is a proforma document, not a final invoice. A final invoice will be issued once payment is confirmed.",
+          left,
+          ty,
+          { width }
+        );
     }
 
     // --- Pie legal ---

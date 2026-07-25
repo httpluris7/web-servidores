@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { site } from "@/data/site";
-import { getInvoiceById } from "@/lib/facturas";
+import { getInvoiceById, esProforma, PAYMENT_METHOD_LABEL } from "@/lib/facturas";
 import { eur, fmtDate } from "@/lib/utils";
 import { PrintButton } from "@/components/admin/PrintButton";
 
@@ -27,6 +27,8 @@ export default async function FacturaImprimiblePage({
   if (!f) notFound();
 
   const ivaImporte = Math.round((f.total - f.base + Number.EPSILON) * 100) / 100;
+  const proforma = esProforma(f);
+  const paid = f.estado === "pagada";
 
   return (
     <div className="grid gap-6">
@@ -58,8 +60,15 @@ export default async function FacturaImprimiblePage({
             </div>
           </div>
           <div className="text-right">
-            <h1 className="text-2xl font-bold tracking-tight">{t("facturaPrint.invoice")}</h1>
+            <h1 className="text-2xl font-bold tracking-tight">
+              {proforma ? t("facturaPrint.proforma") : t("facturaPrint.invoice")}
+            </h1>
             <p className="mt-1 font-mono text-sm text-[#55607a]">{f.numero}</p>
+            {paid && (
+              <p className="mt-2 inline-block rounded border-2 border-[#00875f] px-3 py-0.5 text-sm font-extrabold uppercase tracking-widest text-[#00875f]">
+                PAID
+              </p>
+            )}
             <p
               className={
                 "mt-3 inline-block rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide " +
@@ -93,6 +102,12 @@ export default async function FacturaImprimiblePage({
               <>
                 <span className="text-[#8a93a6]">{t("facturaPrint.paymentDate")}</span>
                 <span className="font-medium">{fmtDate(f.pagadaAt)}</span>
+              </>
+            )}
+            {f.metodoPago && (
+              <>
+                <span className="text-[#8a93a6]">{t("facturaPrint.paymentMethod")}</span>
+                <span className="font-medium">{PAYMENT_METHOD_LABEL[f.metodoPago]}</span>
               </>
             )}
           </div>
@@ -160,6 +175,13 @@ export default async function FacturaImprimiblePage({
             <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-[#8a93a6]">{t("facturaPrint.notes")}</p>
             <p className="mt-1.5 whitespace-pre-wrap text-sm text-[#55607a]">{f.notas}</p>
           </div>
+        )}
+
+        {/* Nota de proforma */}
+        {proforma && (
+          <p className="mt-6 rounded-[var(--radius-sm)] bg-[#f3f5f9] px-4 py-3 text-xs italic text-[#8a93a6]">
+            {t("facturaPrint.proformaNote")}
+          </p>
         )}
 
         {/* Pie legal */}

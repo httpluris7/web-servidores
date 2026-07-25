@@ -58,6 +58,7 @@ export function InvoiceForm({ clientes, productos, preset }: Props) {
   const [lineas, setLineas] = useState<LineaState[]>([emptyLinea()]);
   const [ivaPct, setIvaPct] = useState("0");
   const [vencimientoDias, setVencimientoDias] = useState("30");
+  const [metodoPago, setMetodoPago] = useState("");
   const [notas, setNotas] = useState("");
 
   const [errors, setErrors] = useState<Errors>({});
@@ -137,6 +138,7 @@ export function InvoiceForm({ clientes, productos, preset }: Props) {
           })),
           ivaPct,
           vencimientoDias,
+          metodoPago: metodoPago || null,
           notas,
         }),
       });
@@ -314,6 +316,21 @@ export function InvoiceForm({ clientes, productos, preset }: Props) {
           </div>
         ))}
         <FieldError>{errors.lineas}</FieldError>
+      </div>
+
+      <div>
+        <Label htmlFor="metodoPago">{t("invoiceForm.paymentMethod")}</Label>
+        <Select
+          id="metodoPago"
+          value={metodoPago}
+          onChange={(e) => setMetodoPago(e.target.value)}
+        >
+          <option value="">{t("invoiceForm.paymentMethodNone")}</option>
+          <option value="stripe">Stripe</option>
+          <option value="paypal">PayPal</option>
+          <option value="revolut">Revolut Pay</option>
+          <option value="transferencia">{t("invoiceForm.paymentTransfer")}</option>
+        </Select>
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">

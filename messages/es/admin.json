@@ -72,7 +72,7 @@
       "issueInvoice": "Emitir factura a este cliente"
     },
     "facturas": {
-      "newInvoice": "Nueva factura",
+      "newInvoice": "Nueva proforma",
       "heading": "Facturas",
       "invoicedCollectedOutstanding": "Facturado <invoiced></invoiced> · cobrado <collected></collected> · pendiente <outstanding></outstanding>",
       "noInvoices": "Aún no has emitido ninguna factura. Crea la primera arriba.",
@@ -107,7 +107,10 @@
       "colQty": "Cant.",
       "colUnitPrice": "Precio",
       "colAmount": "Importe",
-      "taxFree": "Precios sin impuestos."
+      "taxFree": "Precios sin impuestos.",
+      "proforma": "PROFORMA",
+      "paymentMethod": "Método de pago",
+      "proformaNote": "Documento proforma; no es una factura final. La factura definitiva se emitirá al confirmarse el pago."
     },
     "pedidos": {
       "orders": "Pedidos",
@@ -144,9 +147,9 @@
       "dueDays": "Vencimiento (días)",
       "notes": "Notas (opcional)",
       "totalWithVat": "Total: ",
-      "issuing": "Emitiendo…",
-      "issueInvoice": "Emitir factura",
-      "issuedSuccessfully": "Factura {numero} emitida correctamente.",
+      "issuing": "Creando…",
+      "issueInvoice": "Crear proforma",
+      "issuedSuccessfully": "Proforma {numero} creada.",
       "lineItems": "Líneas de la factura",
       "addLine": "+ Añadir línea",
       "product": "Producto (catálogo)",
@@ -159,8 +162,11 @@
       "unitPrice": "Precio unit. (€)",
       "subtotal": "Subtotal:",
       "removeLine": "Eliminar línea",
-      "emailSent": "Enviada al cliente por email con el PDF adjunto.",
-      "emailNotSent": "La factura se creó, pero no se pudo enviar por email al cliente."
+      "emailSent": "Proforma enviada al cliente por email con el PDF adjunto.",
+      "emailNotSent": "La proforma se creó, pero no se pudo enviar por email al cliente.",
+      "paymentMethod": "Método de pago",
+      "paymentMethodNone": "— Sin especificar —",
+      "paymentTransfer": "Transferencia bancaria"
     },
     "printButton": {
       "printSavePdf": "Imprimir / Guardar PDF"

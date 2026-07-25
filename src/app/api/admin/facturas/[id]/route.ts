@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/admin";
 import { deleteInvoice, setInvoiceStatus, type InvoiceStatus } from "@/lib/facturas";
+import { emailInvoiceDocument } from "@/lib/invoice-notify";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,11 +28,25 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     return NextResponse.json({ ok: false, error: "Invalid status." }, { status: 422 });
   }
 
-  const factura = await setInvoiceStatus(id, estado);
-  if (!factura) {
+  const result = await setInvoiceStatus(id, estado);
+  if (!result) {
     return NextResponse.json({ ok: false, error: "Invoice not found." }, { status: 404 });
   }
-  return NextResponse.json({ ok: true, factura });
+
+  // Al confirmarse el pago por primera vez, emite y envía la FACTURA FINAL
+  // (ya con número fiscal y sello PAID). Best-effort.
+  let emailSent: boolean | undefined;
+  if (result.justPaid) {
+    emailSent = false;
+    try {
+      await emailInvoiceDocument(result.invoice);
+      emailSent = true;
+    } catch (err) {
+      console.error(`No se pudo enviar la factura ${result.invoice.numero} por email:`, err);
+    }
+  }
+
+  return NextResponse.json({ ok: true, factura: result.invoice, emailSent });
 }
 
 /** Elimina una factura (solo admin). */

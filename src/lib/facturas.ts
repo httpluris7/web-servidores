@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { randomUUID, randomBytes } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -15,6 +15,18 @@ const FILE = path.join(DATA_DIR, "facturas.jsonl");
 
 export type InvoiceStatus = "pendiente" | "pagada" | "cancelada";
 
+/** Métodos de pago ofrecidos. */
+export type PaymentMethod = "stripe" | "paypal" | "revolut" | "transferencia";
+export const PAYMENT_METHODS: PaymentMethod[] = ["stripe", "paypal", "revolut", "transferencia"];
+
+/** Etiqueta legible (en inglés) de cada método de pago. */
+export const PAYMENT_METHOD_LABEL: Record<PaymentMethod, string> = {
+  stripe: "Stripe",
+  paypal: "PayPal",
+  revolut: "Revolut Pay",
+  transferencia: "Bank transfer",
+};
+
 /** Línea de factura: un producto/servicio con cantidad y precio unitario. */
 export type InvoiceLine = {
   concepto: string; // nombre del producto o servicio
@@ -27,7 +39,13 @@ export type InvoiceLine = {
 
 export type Invoice = {
   id: string;
-  numero: string; // F-2026-0001 (secuencial por año de emisión)
+  // Número mostrado: mientras NO está pagada es el de la proforma (aleatorio,
+  // PRO-AAAA-XXXXXX); al pagarse pasa a ser el número fiscal de la serie.
+  numero: string;
+  // Número fiscal de la serie (FACT-AAAA-NNN). Se asigna SOLO al confirmar el
+  // pago y ya no cambia (continuidad de serie, sin huecos). null = proforma.
+  numeroFactura: string | null;
+  metodoPago: PaymentMethod | null; // método de cobro (informativo)
   userId: string | null; // usuario registrado vinculado (o null si es manual)
   clienteEmail: string;
   clienteNombre: string;
@@ -55,10 +73,16 @@ export type NewInvoiceInput = {
   clienteEmail: string;
   clienteNombre: string;
   lineas: NewInvoiceLineInput[];
-  ivaPct?: number; // por defecto 21
+  ivaPct?: number; // por defecto 0 (sin impuestos)
   vencimientoDias?: number; // días desde la emisión (por defecto 30)
   notas?: string;
+  metodoPago?: PaymentMethod | null;
 };
+
+/** ¿Es una factura final (pagada) o todavía una proforma? */
+export function esProforma(inv: Invoice): boolean {
+  return inv.estado !== "pagada";
+}
 
 /* ------------------------------- Persistencia ----------------------------- */
 
@@ -87,17 +111,32 @@ async function readAll(): Promise<Invoice[]> {
  * resto del código trabaje siempre con `lineas`.
  */
 function normalize(raw: Record<string, unknown>): Invoice {
-  if (Array.isArray(raw.lineas)) return raw as unknown as Invoice;
-  const precioUnitario = round2(Number(raw.base) || 0);
-  const linea: InvoiceLine = {
-    concepto: typeof raw.concepto === "string" ? raw.concepto : "",
-    descripcion: "",
-    cantidad: 1,
-    precioUnitario,
-    subtotal: precioUnitario,
-    productId: null,
-  };
-  return { ...(raw as unknown as Invoice), lineas: [linea] };
+  let inv = raw as unknown as Invoice;
+  // Compat: facturas antiguas con un único concepto -> una sola línea.
+  if (!Array.isArray(raw.lineas)) {
+    const precioUnitario = round2(Number(raw.base) || 0);
+    inv = {
+      ...inv,
+      lineas: [
+        {
+          concepto: typeof raw.concepto === "string" ? raw.concepto : "",
+          descripcion: "",
+          cantidad: 1,
+          precioUnitario,
+          subtotal: precioUnitario,
+          productId: null,
+        },
+      ],
+    };
+  }
+  // Compat: campos de proforma/serie y método de pago (facturas previas al cambio).
+  if (raw.numeroFactura === undefined) {
+    inv = { ...inv, numeroFactura: raw.estado === "pagada" ? inv.numero : null };
+  }
+  if (raw.metodoPago === undefined) {
+    inv = { ...inv, metodoPago: null };
+  }
+  return inv;
 }
 
 async function writeAll(list: Invoice[]): Promise<void> {
@@ -106,16 +145,29 @@ async function writeAll(list: Invoice[]): Promise<void> {
   await writeFile(FILE, body ? body + "\n" : "", "utf8");
 }
 
-/** Calcula el siguiente número de factura para el año dado (F-AAAA-NNNN). */
-function nextNumero(list: Invoice[], year: number): string {
-  const prefix = `F-${year}-`;
-  const max = list
-    .filter((i) => i.numero.startsWith(prefix))
-    .reduce((acc, i) => {
-      const n = Number.parseInt(i.numero.slice(prefix.length), 10);
-      return Number.isFinite(n) && n > acc ? n : acc;
-    }, 0);
-  return `${prefix}${String(max + 1).padStart(4, "0")}`;
+/**
+ * Siguiente número de la serie FISCAL para el año dado (FACT-AAAA-NNN). Se
+ * deriva de los `numeroFactura` ya asignados, de modo que la serie no tiene
+ * huecos: solo consumen número las facturas que llegan a pagarse.
+ */
+function nextFacturaNumero(list: Invoice[], year: number): string {
+  const prefix = `FACT-${year}-`;
+  const max = list.reduce((acc, i) => {
+    if (!i.numeroFactura || !i.numeroFactura.startsWith(prefix)) return acc;
+    const n = Number.parseInt(i.numeroFactura.slice(prefix.length), 10);
+    return Number.isFinite(n) && n > acc ? n : acc;
+  }, 0);
+  return `${prefix}${String(max + 1).padStart(3, "0")}`;
+}
+
+/** Genera un número de proforma aleatorio y único (PRO-AAAA-XXXXXX). */
+function newProformaNumero(list: Invoice[], year: number): string {
+  const used = new Set(list.map((i) => i.numero));
+  let numero: string;
+  do {
+    numero = `PRO-${year}-${randomBytes(3).toString("hex").toUpperCase()}`;
+  } while (used.has(numero));
+  return numero;
 }
 
 /** Redondea a 2 decimales evitando errores de coma flotante. */
@@ -183,7 +235,10 @@ export async function createInvoice(input: NewInvoiceInput): Promise<Invoice> {
 
   const invoice: Invoice = {
     id: randomUUID(),
-    numero: nextNumero(list, now.getFullYear()),
+    // Nace como PROFORMA con número aleatorio; el número fiscal se asigna al pagar.
+    numero: newProformaNumero(list, now.getFullYear()),
+    numeroFactura: null,
+    metodoPago: input.metodoPago ?? null,
     userId: input.userId ?? null,
     clienteEmail: input.clienteEmail.trim().toLowerCase(),
     clienteNombre: input.clienteNombre.trim(),
@@ -203,22 +258,44 @@ export async function createInvoice(input: NewInvoiceInput): Promise<Invoice> {
   return invoice;
 }
 
-/** Cambia el estado de una factura (y sella `pagadaAt` al marcarla pagada). */
+export type SetStatusResult = {
+  invoice: Invoice;
+  /** true si en esta llamada pasó de no-pagada a pagada (para emitir/enviar). */
+  justPaid: boolean;
+};
+
+/**
+ * Cambia el estado de una factura. Al pasar a `pagada` por primera vez, asigna
+ * el número fiscal de la serie (FACT-AAAA-NNN) —que ya no cambia— y sella
+ * `pagadaAt`. Devuelve `justPaid` para que quien llama emita la factura final.
+ */
 export async function setInvoiceStatus(
   id: string,
   estado: InvoiceStatus
-): Promise<Invoice | null> {
+): Promise<SetStatusResult | null> {
   const list = await readAll();
   const current = list.find((i) => i.id === id);
   if (!current) return null;
+
+  const becomingPaid = estado === "pagada" && current.estado !== "pagada";
+
+  // Asigna el número fiscal solo la primera vez que se cobra; después se conserva.
+  const numeroFactura =
+    estado === "pagada"
+      ? (current.numeroFactura ?? nextFacturaNumero(list, new Date().getFullYear()))
+      : current.numeroFactura;
+
   const updated: Invoice = {
     ...current,
     estado,
-    pagadaAt: estado === "pagada" ? new Date().toISOString() : null,
+    numeroFactura,
+    // Una vez hay número fiscal, el número mostrado pasa a ser ese.
+    numero: numeroFactura ?? current.numero,
+    pagadaAt: estado === "pagada" ? (current.pagadaAt ?? new Date().toISOString()) : null,
   };
   const next = list.map((i) => (i.id === id ? updated : i));
   await writeAll(next);
-  return updated;
+  return { invoice: updated, justPaid: becomingPaid };
 }
 
 export async function deleteInvoice(id: string): Promise<boolean> {

@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { clean, emailRe } from "@/lib/leads";
 import { getAdminSession } from "@/lib/admin";
-import { createInvoice, listInvoices } from "@/lib/facturas";
-import { sendInvoiceMail } from "@/lib/mail";
-import { generateInvoicePdf, invoiceMoney, invoiceDateEn, invoiceStatusEn } from "@/lib/invoice-pdf";
+import { createInvoice, listInvoices, PAYMENT_METHODS, type PaymentMethod } from "@/lib/facturas";
+import { emailInvoiceDocument } from "@/lib/invoice-notify";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -38,6 +37,10 @@ export async function POST(req: Request) {
     body.vencimientoDias === undefined || body.vencimientoDias === ""
       ? 30
       : Number(body.vencimientoDias);
+  const metodoRaw = clean(body.metodoPago, 20);
+  const metodoPago = (PAYMENT_METHODS as string[]).includes(metodoRaw)
+    ? (metodoRaw as PaymentMethod)
+    : null;
 
   // Líneas de producto: normalizamos cada una a su forma tipada.
   const rawLineas = Array.isArray(body.lineas) ? body.lineas : [];
@@ -86,25 +89,17 @@ export async function POST(req: Request) {
       ivaPct,
       vencimientoDias,
       notas,
+      metodoPago,
     });
 
-    // Envía la factura al cliente con el PDF adjunto. Best-effort: si el correo
-    // falla, la factura ya está creada; devolvemos emailSent=false para avisar.
+    // Envía la PROFORMA al cliente con el PDF adjunto. Best-effort: si el correo
+    // falla, la proforma ya está creada; devolvemos emailSent=false para avisar.
     let emailSent = false;
     try {
-      const pdf = await generateInvoicePdf(factura);
-      await sendInvoiceMail({
-        to: factura.clienteEmail,
-        clientName: factura.clienteNombre,
-        numero: factura.numero,
-        amountLabel: invoiceMoney(factura.total),
-        dueDate: invoiceDateEn(factura.vencimientoAt),
-        status: invoiceStatusEn(factura.estado),
-        pdf,
-      });
+      await emailInvoiceDocument(factura);
       emailSent = true;
     } catch (err) {
-      console.error(`No se pudo enviar la factura ${factura.numero} por email:`, err);
+      console.error(`No se pudo enviar la proforma ${factura.numero} por email:`, err);
     }
 
     return NextResponse.json({ ok: true, factura, emailSent });
