@@ -44,14 +44,28 @@ export function toUsd(eurValue: number): number {
   return Math.ceil(Number((eurValue * EUR_USD_RATE).toFixed(4)));
 }
 
+const usdFormat = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+
 /** Formatea un importe en dólares, sin decimales (p. ej. "$10"). */
 export function usd(eurValue: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(toUsd(eurValue));
+  return usdFormat.format(toUsd(eurValue));
+}
+
+/**
+ * Total en dólares de varias líneas, sumando los importes YA redondeados.
+ *
+ * No es lo mismo que `usd(suma)`: al redondear al alza cada línea por separado,
+ * convertir el total daría un número menor que la suma de lo que ve el cliente
+ * (dos líneas de 8 € se muestran como $10 + $10, pero 16 € convertidos son $19).
+ * Sumando los redondeos, el desglose siempre cuadra con el total.
+ */
+export function usdSum(eurValues: number[]): string {
+  return usdFormat.format(eurValues.reduce((acc, v) => acc + toUsd(v), 0));
 }
 
 /** Normaliza un valor cualquiera a una divisa soportada. */

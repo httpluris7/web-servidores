@@ -1,5 +1,5 @@
 import { eur } from "@/lib/utils";
-import { usd } from "@/lib/currency";
+import { usd, usdSum } from "@/lib/currency";
 
 /**
  * Importe con doble divisa.
@@ -18,6 +18,22 @@ export function Price({ value }: { value: number }) {
     <>
       <span className="c-eur">{eur(value)}</span>
       <span className="c-usd">{usd(value)}</span>
+    </>
+  );
+}
+
+/**
+ * Total de un desglose de líneas.
+ *
+ * Recibe los importes de las líneas (no su suma) para que el total en dólares
+ * sea la suma de lo que el cliente ve en cada línea y no una segunda conversión
+ * que no cuadraría con ellas. Ver `usdSum`.
+ */
+export function PriceSum({ values }: { values: number[] }) {
+  return (
+    <>
+      <span className="c-eur">{eur(values.reduce((acc, v) => acc + v, 0))}</span>
+      <span className="c-usd">{usdSum(values)}</span>
     </>
   );
 }

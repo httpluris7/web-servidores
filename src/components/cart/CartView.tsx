@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { useCart } from "@/lib/cart";
 import { regions } from "@/data/products";
 import { site } from "@/data/site";
-import { Price } from "@/components/ui/Price";
+import { Price, PriceSum } from "@/components/ui/Price";
 
 type InitialUser = { nombre: string; email: string } | null;
 
@@ -16,7 +16,7 @@ const paymentHandoffUrl = `${site.billingUrl}${site.utm}`;
 export function CartView({ initialUser }: { initialUser: InitialUser }) {
   const t = useTranslations("auth");
   const tc = useTranslations("common");
-  const { lines, total, count, ready, setQty, setRegion, remove, clear } = useCart();
+  const { lines, count, ready, setQty, setRegion, remove, clear } = useCart();
   // El usuario inicial llega del servidor (sin parpadeo). Si el checkout
   // responde 401 (sesión caducada) lo bajamos a null para mostrar el gate.
   const [user, setUser] = useState<InitialUser>(initialUser);
@@ -216,8 +216,9 @@ export function CartView({ initialUser }: { initialUser: InitialUser }) {
 
         <div className="mt-5 flex items-baseline justify-between border-t border-[var(--color-line)] pt-5">
           <span className="text-sm text-[var(--color-fg-muted)]">{t("cartView.monthlyTotal")}</span>
+          {/* Suma de los subtotales, no el total convertido: así el desglose cuadra. */}
           <span className="font-mono text-2xl font-semibold">
-            <Price value={total} />
+            <PriceSum values={lines.map((l) => l.subtotal)} />
           </span>
         </div>
         <p className="mt-2 text-right font-mono text-[0.65rem] text-[var(--color-fg-dim)]">
