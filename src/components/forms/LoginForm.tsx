@@ -93,6 +93,12 @@ export function LoginForm({ next }: { next?: string }) {
         <p role="alert" className="text-sm text-[var(--color-danger)]">{formError}</p>
       )}
 
+      <p className="text-sm">
+        <Link href="/recuperar" className="text-[var(--color-accent)] underline">
+          {t("loginForm.forgotPassword")}
+        </Link>
+      </p>
+
       <p className="text-sm text-[var(--color-fg-muted)]">
         {t("loginForm.noAccount")}{" "}
         <Link

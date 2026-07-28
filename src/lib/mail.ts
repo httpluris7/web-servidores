@@ -242,3 +242,68 @@ export async function sendInvoiceMail(m: InvoiceMail): Promise<void> {
 
   await pipeSendmail(to, message);
 }
+
+export type PasswordResetMail = {
+  to: string;
+  /** Nombre de pila, para encabezar el mensaje. */
+  name: string;
+  /** Enlace completo con el token. */
+  url: string;
+  /** Textos ya traducidos al idioma desde el que se pidió (ver el API). */
+  text: {
+    subject: string;
+    greeting: string;
+    intro: string;
+    linkLabel: string;
+    expiry: string;
+    ignore: string;
+  };
+};
+
+/**
+ * Envía el enlace para restablecer la contraseña.
+ *
+ * El mensaje va en el idioma desde el que se pidió: quien lo recibe acaba de
+ * estar en la web y espera leerlo en el mismo idioma. Los textos llegan ya
+ * traducidos desde la ruta de API, que es quien tiene acceso a los diccionarios.
+ *
+ * El enlace se pone también en texto plano, sin acortar ni envolver, para que
+ * funcione en clientes que no crean enlaces automáticamente y para que el
+ * usuario pueda ver a dónde va antes de pulsarlo.
+ */
+export async function sendPasswordResetMail(m: PasswordResetMail): Promise<void> {
+  const to = headerSafe(m.to);
+  if (!emailRe.test(to) || to.startsWith("-")) {
+    throw new Error("Invalid recipient address.");
+  }
+
+  const headers = [
+    `From: ViaHost <${FROM}>`,
+    `To: ${to}`,
+    `Reply-To: ${BILLING_REPLY_TO}`,
+    `Subject: ${encodeHeader(m.text.subject)}`,
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: 8bit",
+    // Los clientes no deben responder ni archivar esto como correo comercial.
+    "Auto-Submitted: auto-generated",
+  ].join("\r\n");
+
+  const body = [
+    `${m.text.greeting} ${headerSafe(m.name)},`,
+    "",
+    m.text.intro,
+    "",
+    m.text.linkLabel,
+    m.url,
+    "",
+    m.text.expiry,
+    m.text.ignore,
+    "",
+    "—",
+    "ViaHost Networks, LLC",
+    BILLING_REPLY_TO,
+  ].join("\r\n");
+
+  await pipeSendmail(to, `${headers}\r\n\r\n${body}\n`);
+}
