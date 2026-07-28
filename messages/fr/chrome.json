@@ -24,7 +24,12 @@
       "referenceNote": "Indiquez {reference} comme référence du virement : c'est ce qui nous permet d'identifier votre commande. Le service est activé dès réception du paiement.",
       "pendingReferenceNote": "Nous vous enverrons la proforma par e-mail. Indiquez son numéro (PRO-…) comme référence du virement : c'est ce qui nous permet d'identifier votre commande."
     },
-    "goToAccount": "Accéder à mon espace client"
+    "goToAccount": "Accéder à mon espace client",
+    "invoiceStatus": {
+      "pendiente": "Paiement en attente",
+      "pagada": "Payée",
+      "cancelada": "Annulée"
+    }
   },
   "nav": {
     "products": "Produits",

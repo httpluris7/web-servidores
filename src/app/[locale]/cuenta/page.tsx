@@ -7,6 +7,8 @@ import { LogoutButton } from "@/components/forms/LogoutButton";
 import { ChangePasswordForm } from "@/components/forms/ChangePasswordForm";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
+import { listInvoicesByUser } from "@/lib/facturas";
+import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata({
   params,
@@ -52,6 +54,9 @@ export default async function CuentaPage({
   const user = await getPublicUserById(session.uid);
   if (!user) redirect("/acceder");
 
+  const facturas = await listInvoicesByUser(user.id, user.email);
+  const pendientes = facturas.filter((f) => f.estado === "pendiente").length;
+
   return (
     <>
       <PageHero
@@ -76,6 +81,23 @@ export default async function CuentaPage({
             </div>
           ))}
         </dl>
+
+        {/* Facturas: el cliente entra aquí a ver y pagar lo que tiene emitido. */}
+        <section className="mt-12 border-t border-[var(--color-line)] pt-10">
+          <h2 className="mono-label mb-1">{t("account.invoicesHeading")}</h2>
+          <p className="mb-5 text-sm text-[var(--color-fg-muted)]">
+            {pendientes > 0
+              ? t("account.invoicesPending", { count: pendientes })
+              : t("account.invoicesIntro")}
+          </p>
+          <Link
+            href="/cuenta/facturas"
+            className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
+          >
+            {t("account.invoicesLink")}
+            {facturas.length > 0 ? ` (${facturas.length})` : ""}
+          </Link>
+        </section>
 
         <section className="mt-12 border-t border-[var(--color-line)] pt-10">
           <h2 className="mono-label mb-1">{t("account.securityHeading")}</h2>

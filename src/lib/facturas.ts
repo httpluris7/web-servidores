@@ -218,6 +218,25 @@ export async function listInvoicesByUser(
   );
 }
 
+/**
+ * Factura de un usuario concreto, o null si no existe o no es suya.
+ *
+ * La pertenencia se comprueba por id de usuario y, en su defecto, por email:
+ * las facturas creadas a mano desde el panel pueden no llevar `userId`, pero sí
+ * el correo del cliente. Es el único punto por el que el área de cliente accede
+ * a una factura, para que la comprobación no se pueda olvidar en una pantalla.
+ */
+export async function getInvoiceForUser(
+  id: string,
+  userId: string,
+  email: string
+): Promise<Invoice | null> {
+  const inv = await getInvoiceById(id);
+  if (!inv) return null;
+  const mismoEmail = inv.clienteEmail.toLowerCase() === email.trim().toLowerCase();
+  return inv.userId === userId || mismoEmail ? inv : null;
+}
+
 export async function getInvoiceById(id: string): Promise<Invoice | null> {
   const list = await readAll();
   return list.find((i) => i.id === id) ?? null;
