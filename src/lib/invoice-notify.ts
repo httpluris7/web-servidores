@@ -22,6 +22,9 @@ export async function emailInvoiceDocument(inv: Invoice): Promise<void> {
     dueDate: invoiceDateEn(inv.vencimientoAt),
     status: invoiceStatusEn(inv.estado),
     isProforma: esProforma(inv),
+    // Si hay enlace de pago con tarjeta, va en el correo junto a los datos de
+    // la transferencia: que el cliente elija cómo paga.
+    payUrl: inv.estado === "pendiente" ? (inv.pago?.url ?? null) : null,
     pdf,
   });
 }

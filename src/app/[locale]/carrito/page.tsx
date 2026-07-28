@@ -5,6 +5,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { CartView } from "@/components/cart/CartView";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
+import { stripeIsReady } from "@/lib/ajustes";
 
 export async function generateMetadata({
   params,
@@ -52,7 +53,7 @@ export default async function CarritoPage({
       />
 
       <section className="container-edge py-16 md:py-20">
-        <CartView initialUser={initialUser} />
+        <CartView initialUser={initialUser} stripeEnabled={await stripeIsReady()} />
       </section>
     </>
   );

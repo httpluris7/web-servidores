@@ -142,6 +142,7 @@ export type InvoiceMail = {
   dueDate: string; // ya formateada
   status: string; // en inglés
   isProforma: boolean; // proforma (sin pagar) vs factura final (pagada)
+  payUrl?: string | null; // enlace de pago con tarjeta, si la pasarela está activa
   pdf: Buffer;
 };
 
@@ -175,10 +176,15 @@ export async function sendInvoiceMail(m: InvoiceMail): Promise<void> {
     ? `Please find attached proforma ${numero} from ViaHost Networks, LLC. It is not a final invoice; once your payment is confirmed we will issue the final invoice.`
     : `Please find attached your paid invoice ${numero} from ViaHost Networks, LLC. Thank you for your payment.`;
 
-  // En la proforma van los datos de la transferencia: es la forma de pago activa
-  // y el número de proforma es la referencia que identifica el pedido.
+  // Si hay pasarela, el enlace de pago va primero: es el camino más corto para
+  // el cliente. La transferencia sigue disponible justo debajo.
+  const cardBlock = m.isProforma && m.payUrl ? ["", "PAY BY CARD", m.payUrl] : [];
+
+  // En la proforma van los datos de la transferencia: el número de proforma es
+  // la referencia que identifica el pedido.
   const transferBlock = m.isProforma
     ? [
+        ...cardBlock,
         "",
         "HOW TO PAY — BANK TRANSFER",
         ...bankRows({ amountLabel: m.amountLabel, reference: numero }).map(

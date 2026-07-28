@@ -10,6 +10,7 @@ import { InvoiceActions } from "@/components/admin/InvoiceActions";
 import { InvoiceForm } from "@/components/admin/InvoiceForm";
 import { invoiceCatalog } from "@/data/products";
 import { ResetPasswordForm } from "@/components/admin/ResetPasswordForm";
+import { stripeIsReady } from "@/lib/ajustes";
 
 export const dynamic = "force-dynamic";
 
@@ -34,9 +35,10 @@ export default async function ClienteDetallePage({
   const cliente = await getPublicUserById(id);
   if (!cliente) notFound();
 
-  const [facturas, pedidos] = await Promise.all([
+  const [facturas, pedidos, stripeReady] = await Promise.all([
     listInvoicesByUser(cliente.id, cliente.email),
     readLeads("pedido"),
+    stripeIsReady(),
   ]);
   const stats = invoiceStats(facturas);
   const pedidosCliente = pedidos.filter(
@@ -124,7 +126,12 @@ export default async function ClienteDetallePage({
                 <div className="flex items-center gap-3">
                   <StatusBadge estado={f.estado} />
                   <span className="font-mono text-sm">{eur(f.total, 2)}</span>
-                  <InvoiceActions id={f.id} estado={f.estado} />
+                  <InvoiceActions
+                    id={f.id}
+                    estado={f.estado}
+                    stripeReady={stripeReady}
+                    hasPayLink={!!f.pago}
+                  />
                 </div>
               </li>
             ))}

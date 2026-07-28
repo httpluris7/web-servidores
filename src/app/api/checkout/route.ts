@@ -4,6 +4,7 @@ import { saveLead, clean } from "@/lib/leads";
 import { getPlanById, regions, vps } from "@/data/products";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
+import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -37,7 +38,7 @@ export async function POST(req: Request) {
   }
 
   // 2) Cuerpo de la petición.
-  let body: { items?: unknown };
+  let body: { items?: unknown; metodo?: unknown; locale?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -93,13 +94,14 @@ export async function POST(req: Request) {
   //    ligadas al usuario autenticado, para que el panel de admin las liste.
   const orderId = randomUUID();
   const total = validated.reduce((sum, v) => sum + v.lineTotal, 0);
+  const clienteNombre = `${user.nombre} ${user.apellidos}`.trim();
 
   try {
     for (const v of validated) {
       await saveLead("pedido", {
         orderId,
         userId: user.id,
-        name: `${user.nombre} ${user.apellidos}`.trim(),
+        name: clienteNombre,
         email: user.email,
         planId: v.planId,
         planName: v.planName,
@@ -117,5 +119,41 @@ export async function POST(req: Request) {
     );
   }
 
-  return NextResponse.json({ ok: true, orderId, total });
+  // 5) Emitir la proforma del pedido y, si pidió tarjeta, abrir el cobro. El
+  //    cliente necesita el número de proforma pague como pague: es la
+  //    referencia de la transferencia y el identificador de su pedido.
+  const metodo: CheckoutMethod = body.metodo === "tarjeta" ? "tarjeta" : "transferencia";
+  const locale = typeof body.locale === "string" ? body.locale : undefined;
+
+  try {
+    const { invoice, paymentUrl } = await checkoutOrder({
+      userId: user.id,
+      clienteNombre,
+      clienteEmail: user.email,
+      lineas: validated.map((v) => ({
+        concepto: v.planName,
+        descripcion: [v.line, v.region].filter(Boolean).join(" · "),
+        cantidad: v.qty,
+        precioUnitario: v.price,
+        productId: v.planId,
+      })),
+      metodo,
+      locale,
+      cancelPath: "/carrito",
+      notas: `Order ${orderId}`,
+    });
+
+    return NextResponse.json({
+      ok: true,
+      orderId,
+      total,
+      numero: invoice.numero,
+      paymentUrl,
+    });
+  } catch (err) {
+    // El pedido ya está guardado; solo falló la facturación. No lo perdemos:
+    // se responde bien y queda registrado para emitir la proforma a mano.
+    console.error("[checkout] no se pudo emitir la proforma del pedido", orderId, err);
+    return NextResponse.json({ ok: true, orderId, total, numero: null, paymentUrl: null });
+  }
 }

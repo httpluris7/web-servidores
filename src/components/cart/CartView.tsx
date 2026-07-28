@@ -1,35 +1,53 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useCart } from "@/lib/cart";
 import { regions } from "@/data/products";
 import { site } from "@/data/site";
+import { eur } from "@/lib/utils";
 import { Price, PriceSum } from "@/components/ui/Price";
 import { BankTransfer } from "@/components/ui/BankTransfer";
 
 type InitialUser = { nombre: string; email: string } | null;
 
-export function CartView({ initialUser }: { initialUser: InitialUser }) {
+export function CartView({
+  initialUser,
+  stripeEnabled = false,
+}: {
+  initialUser: InitialUser;
+  /** ¿Hay pasarela configurada? Sin ella solo se ofrece la transferencia. */
+  stripeEnabled?: boolean;
+}) {
   const t = useTranslations("auth");
   const tc = useTranslations("common");
+  const locale = useLocale();
   const { lines, count, ready, setQty, setRegion, remove, clear } = useCart();
   // El usuario inicial llega del servidor (sin parpadeo). Si el checkout
   // responde 401 (sesión caducada) lo bajamos a null para mostrar el gate.
   const [user, setUser] = useState<InitialUser>(initialUser);
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const [formError, setFormError] = useState<string | null>(null);
+  // Datos de la proforma emitida, para enseñar su referencia en la confirmación.
+  const [proforma, setProforma] = useState<{ numero: string | null; total: number } | null>(null);
+  const [payError, setPayError] = useState<string | null>(null);
 
-  async function completeOrder() {
+  async function completeOrder(metodo: "tarjeta" | "transferencia") {
     setFormError(null);
+    setPayError(null);
     setStatus("sending");
+    // El carrito se vacía al confirmar; guardamos el total antes para poder
+    // mostrar el importe exacto de la transferencia.
+    const total = lines.reduce((sum, l) => sum + l.subtotal, 0);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           items: lines.map((l) => ({ planId: l.planId, qty: l.qty, region: l.region })),
+          metodo,
+          locale,
         }),
       });
       if (res.status === 401) {
@@ -39,13 +57,22 @@ export function CartView({ initialUser }: { initialUser: InitialUser }) {
         setFormError(t("cartView.errorSessionExpired"));
         return;
       }
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.ok) {
         setFormError(data?.error ?? t("cartView.errorGeneric"));
         setStatus("idle");
         return;
       }
+
       clear();
+      // Con enlace de pago salimos a la pasarela; si falló, la confirmación
+      // muestra la transferencia y el motivo, sin perder el pedido.
+      if (data.paymentUrl) {
+        window.location.href = data.paymentUrl as string;
+        return;
+      }
+      if (metodo === "tarjeta") setPayError(t("cartView.cardUnavailable"));
+      setProforma({ numero: (data.numero as string) ?? null, total });
       setStatus("done");
     } catch {
       setFormError(t("cartView.errorConnection"));
@@ -62,11 +89,21 @@ export function CartView({ initialUser }: { initialUser: InitialUser }) {
           {t("cartView.allSet")}{user ? `, ${user.nombre.split(" ")[0]}` : ""}.
         </h2>
         <p className="mt-2 text-sm text-[var(--color-fg-muted)]">
-          {t("cartView.orderRegisteredText")}
+          {proforma?.numero
+            ? t("cartView.orderRegisteredWithProforma", { numero: proforma.numero })
+            : t("cartView.orderRegisteredText")}
         </p>
-        {/* Pago por transferencia: la referencia (nº de proforma) llega por correo. */}
+        {payError && (
+          <p role="alert" className="mt-3 text-sm text-[var(--color-danger)]">
+            {payError}
+          </p>
+        )}
+        {/* Transferencia con la referencia ya emitida (o el aviso de que llegará). */}
         <div className="mt-6">
-          <BankTransfer />
+          <BankTransfer
+            reference={proforma?.numero ?? undefined}
+            amountLabel={proforma ? eur(proforma.total, 2) : undefined}
+          />
         </div>
         <Link
           href="/cuenta"
@@ -235,14 +272,36 @@ export function CartView({ initialUser }: { initialUser: InitialUser }) {
               <p className="mb-3 text-xs text-[var(--color-fg-muted)]">
                 {t("cartView.orderingAs")} <span className="text-[var(--color-fg)]">{user.email}</span>
               </p>
-              <button
-                type="button"
-                onClick={completeOrder}
-                disabled={status === "sending"}
-                className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60"
-              >
-                {status === "sending" ? t("cartView.processing") : t("cartView.completeOrder")}
-              </button>
+              {stripeEnabled ? (
+                <>
+                  {/* Con pasarela el cliente elige; sin ella, un solo botón. */}
+                  <button
+                    type="button"
+                    onClick={() => completeOrder("tarjeta")}
+                    disabled={status === "sending"}
+                    className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60"
+                  >
+                    {status === "sending" ? t("cartView.processing") : t("cartView.payByCard")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => completeOrder("transferencia")}
+                    disabled={status === "sending"}
+                    className="mt-3 inline-flex w-full items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-6 py-3.5 text-sm transition-colors hover:border-[var(--color-accent)] disabled:opacity-60"
+                  >
+                    {t("cartView.payByTransfer")}
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => completeOrder("transferencia")}
+                  disabled={status === "sending"}
+                  className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60"
+                >
+                  {status === "sending" ? t("cartView.processing") : t("cartView.completeOrder")}
+                </button>
+              )}
             </>
           ) : (
             <>

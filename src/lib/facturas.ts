@@ -37,6 +37,17 @@ export type InvoiceLine = {
   productId: string | null; // id del catálogo si procede, o null si es manual
 };
 
+/** Sesión de pago abierta en la pasarela para cobrar una factura. */
+export type InvoicePayment = {
+  provider: "stripe";
+  sessionId: string;
+  /** Enlace al que enviar al cliente (Stripe lo caduca a las 24 h). */
+  url: string;
+  createdAt: string; // ISO
+  /** Nº de enlaces generados para esta factura; da la clave de idempotencia. */
+  intentos: number;
+};
+
 export type Invoice = {
   id: string;
   // Número mostrado: mientras NO está pagada es el de la proforma (aleatorio,
@@ -46,6 +57,7 @@ export type Invoice = {
   // pago y ya no cambia (continuidad de serie, sin huecos). null = proforma.
   numeroFactura: string | null;
   metodoPago: PaymentMethod | null; // método de cobro (informativo)
+  pago: InvoicePayment | null; // sesión de pago viva en la pasarela, si la hay
   userId: string | null; // usuario registrado vinculado (o null si es manual)
   clienteEmail: string;
   clienteNombre: string;
@@ -135,6 +147,10 @@ function normalize(raw: Record<string, unknown>): Invoice {
   }
   if (raw.metodoPago === undefined) {
     inv = { ...inv, metodoPago: null };
+  }
+  // Compat: sesión de pago (facturas anteriores a la integración de la pasarela).
+  if (raw.pago === undefined) {
+    inv = { ...inv, pago: null };
   }
   return inv;
 }
@@ -239,6 +255,7 @@ export async function createInvoice(input: NewInvoiceInput): Promise<Invoice> {
     numero: newProformaNumero(list, now.getFullYear()),
     numeroFactura: null,
     metodoPago: input.metodoPago ?? null,
+    pago: null,
     userId: input.userId ?? null,
     clienteEmail: input.clienteEmail.trim().toLowerCase(),
     clienteNombre: input.clienteNombre.trim(),
@@ -296,6 +313,22 @@ export async function setInvoiceStatus(
   const next = list.map((i) => (i.id === id ? updated : i));
   await writeAll(next);
   return { invoice: updated, justPaid: becomingPaid };
+}
+
+/**
+ * Guarda (o sustituye) la sesión de pago de una factura. Devuelve la factura ya
+ * actualizada, o null si no existe.
+ */
+export async function setInvoicePayment(
+  id: string,
+  pago: InvoicePayment | null
+): Promise<Invoice | null> {
+  const list = await readAll();
+  const current = list.find((i) => i.id === id);
+  if (!current) return null;
+  const updated: Invoice = { ...current, pago };
+  await writeAll(list.map((i) => (i.id === id ? updated : i)));
+  return updated;
 }
 
 export async function deleteInvoice(id: string): Promise<boolean> {

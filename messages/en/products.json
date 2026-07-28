@@ -178,7 +178,10 @@
       "specNetwork": "Network",
       "region": "Region",
       "monthlyTotal": "Monthly total",
-      "vatNote": "Prices exclude tax"
+      "vatNote": "Prices exclude tax",
+      "payByCard": "Pay by card →",
+      "payByTransfer": "Pay by bank transfer",
+      "cardUnavailable": "Card payment is not available right now. You can pay by bank transfer using the details below."
     }
   }
 }

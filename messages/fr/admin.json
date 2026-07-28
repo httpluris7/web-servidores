@@ -13,7 +13,8 @@
       "overview": "Aperçu",
       "customers": "Clients",
       "invoices": "Factures",
-      "ordersAndContacts": "Commandes et contacts"
+      "ordersAndContacts": "Commandes et contacts",
+      "settings": "Configuration"
     },
     "dashboard": {
       "summary": "Résumé",
@@ -130,7 +131,15 @@
       "reopen": "Rouvrir",
       "cancel": "Annuler",
       "deleteAria": "Supprimer la facture",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "chargeCard": "Encaisser par carte",
+      "copyPayLink": "Copier le lien de paiement",
+      "payLink": "Lien de paiement",
+      "payLinkCopied": "Lien copié",
+      "sendPayLink": "L'envoyer au client par e-mail",
+      "payLinkSent": "Envoyé ✓",
+      "newPayLink": "En générer un nouveau",
+      "payError": "Le lien de paiement n'a pas pu être généré."
     },
     "invoiceForm": {
       "invoiceCreated": "Facture créée",
@@ -186,6 +195,41 @@
       "pendiente": "En attente",
       "pagada": "Payée",
       "cancelada": "Annulée"
+    },
+    "settings": {
+      "title": "Configuration",
+      "subtitle": "Passerelle de paiement et clés de l'intégration.",
+      "stripeHeading": "Stripe",
+      "stripeIntro": "Paiement par carte. Les encaissements et les factures restent en euros.",
+      "statusActive": "actif",
+      "statusInactive": "inactif",
+      "modeLabel": "Mode",
+      "modeUnknown": "inconnu",
+      "modeLiveWarning": "vous êtes en production : les paiements sont réels.",
+      "enableLabel": "Autoriser le paiement par Stripe",
+      "keysHeading": "Clés",
+      "keysIntro": "Stockées sur le serveur, hors de git et lisibles seulement par root. Elles ne sont plus jamais affichées en entier.",
+      "secretKeyLabel": "Clé secrète d'API",
+      "secretKeyHint": "Dans Stripe : Développeurs → Clés d'API → clé secrète (sk_…). Pas la clé publiable (pk_…).",
+      "webhookSecretLabel": "Secret de signature du webhook",
+      "webhookSecretHint": "Stripe vous le donne à la création de l'endpoint (whsec_…).",
+      "keepHint": "Enregistrée. Laissez vide pour la conserver ; saisissez-en une nouvelle pour la remplacer.",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "saved": "Configuration enregistrée.",
+      "test": "Tester la connexion",
+      "testing": "Test en cours…",
+      "testOk": "Connexion à Stripe réussie.",
+      "clearKeys": "Effacer les clés",
+      "errorSave": "La configuration n'a pas pu être enregistrée.",
+      "errorTest": "Stripe a rejeté la clé.",
+      "errorConnection": "Erreur de connexion.",
+      "webhookHeading": "Webhook",
+      "webhookIntro": "Déclarez cette URL dans Stripe (Développeurs → Webhooks) et collez ci-dessus le secret de signature fourni.",
+      "webhookUrlLabel": "URL de l'endpoint",
+      "webhookEventsLabel": "Événements à souscrire",
+      "copy": "Copier",
+      "copied": "Copié"
     }
   }
 }

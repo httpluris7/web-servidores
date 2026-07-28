@@ -17,6 +17,8 @@ export type PaymentEvent = {
   succeeded: boolean;
   /** Nuestro id de pedido, propagado vía metadata al crear el cobro (o null). */
   orderId: string | null;
+  /** Nuestro id de factura, propagado vía metadata al crear el cobro (o null). */
+  invoiceId: string | null;
   /** Importe pagado en la unidad mínima (céntimos), tal como lo reporta el proveedor. */
   amountCents: number | null;
   /** Divisa ISO-4217 en minúsculas (p. ej. "eur"). */

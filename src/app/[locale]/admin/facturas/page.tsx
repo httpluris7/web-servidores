@@ -7,6 +7,7 @@ import { StatusBadge } from "@/components/admin/StatusBadge";
 import { InvoiceActions } from "@/components/admin/InvoiceActions";
 import { InvoiceForm } from "@/components/admin/InvoiceForm";
 import { invoiceCatalog } from "@/data/products";
+import { stripeIsReady } from "@/lib/ajustes";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,11 @@ export default async function FacturasPage({
   setRequestLocale(locale);
   const t = await getTranslations("admin");
 
-  const [usuarios, facturas] = await Promise.all([listUsers(), listInvoices()]);
+  const [usuarios, facturas, stripeReady] = await Promise.all([
+    listUsers(),
+    listInvoices(),
+    stripeIsReady(),
+  ]);
   const stats = invoiceStats(facturas);
 
   const clientes = usuarios.map((u) => ({
@@ -130,7 +135,12 @@ export default async function FacturasPage({
                         >
                           {t("facturas.pdf")}
                         </Link>
-                        <InvoiceActions id={f.id} estado={f.estado} />
+                        <InvoiceActions
+                          id={f.id}
+                          estado={f.estado}
+                          stripeReady={stripeReady}
+                          hasPayLink={!!f.pago}
+                        />
                       </div>
                     </td>
                   </tr>

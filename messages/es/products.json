@@ -178,7 +178,10 @@
       "specNetwork": "Red",
       "region": "Región",
       "monthlyTotal": "Total mensual",
-      "vatNote": "Precios sin impuestos"
+      "vatNote": "Precios sin impuestos",
+      "payByCard": "Pagar con tarjeta →",
+      "payByTransfer": "Pagar por transferencia",
+      "cardUnavailable": "El pago con tarjeta no está disponible ahora mismo. Puedes pagar por transferencia con los datos de abajo."
     }
   }
 }

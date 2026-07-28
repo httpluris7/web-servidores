@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   const rawBody = await req.text();
 
   // 2) Verificar firma + normalizar evento (según pasarela configurada).
-  const verifier = getVerifier();
+  const verifier = await getVerifier();
   const result = await verifier.verify(rawBody, req.headers);
 
   if (!result.ok) {

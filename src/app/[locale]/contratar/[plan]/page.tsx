@@ -5,8 +5,16 @@ import { Link } from "@/i18n/navigation";
 import { allPlans, getPlanById, regions, vps } from "@/data/products";
 import { PageHero } from "@/components/ui/PageHero";
 import { OrderForm } from "@/components/forms/OrderForm";
+import { stripeIsReady } from "@/lib/ajustes";
 
 type Params = { locale: string; plan: string };
+
+/**
+ * Render dinámico: la página consulta si la pasarela está activa para decidir
+ * si ofrece pago con tarjeta, y ese ajuste se cambia en caliente desde el panel.
+ * Prerenderizarla congelaría el estado del build.
+ */
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams(): { plan: string }[] {
   return allPlans.map((p) => ({ plan: p.plan.id }));
@@ -72,6 +80,7 @@ export default async function OrderPage({ params }: { params: Promise<Params> })
           plan={located.plan}
           lineTitle={lineTitle}
           regions={isVps ? regions : undefined}
+          stripeEnabled={await stripeIsReady()}
         />
 
         <p className="mt-10 text-sm text-[var(--color-fg-muted)]">

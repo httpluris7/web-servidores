@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { saveLead, clean, emailRe } from "@/lib/leads";
-import { getPlanById } from "@/data/products";
+import { getPlanById, regions } from "@/data/products";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { getSession } from "@/lib/session";
+import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -56,5 +58,40 @@ export async function POST(req: Request) {
     );
   }
 
-  return NextResponse.json({ ok: true });
+  // Proforma del pedido (y cobro con tarjeta si lo eligió). Aquí puede no haber
+  // sesión: si la hay, la factura queda ligada al cliente; si no, va suelta y el
+  // panel la vinculará por email.
+  const metodo: CheckoutMethod = body.metodo === "tarjeta" ? "tarjeta" : "transferencia";
+  const locale = clean(body.locale, 5) || undefined;
+  const session = await getSession();
+  const regionName = regions.find((r) => r.slug === region)?.name ?? region;
+
+  try {
+    const { invoice, paymentUrl } = await checkoutOrder({
+      userId: session?.uid ?? null,
+      clienteNombre: name,
+      clienteEmail: email,
+      lineas: [
+        {
+          concepto: located!.plan.name,
+          descripcion: [located!.lineTitle, regionName].filter(Boolean).join(" · "),
+          cantidad: 1,
+          precioUnitario: located!.plan.price,
+          productId: planId,
+        },
+      ],
+      metodo,
+      locale,
+      cancelPath: `/contratar/${planId}`,
+    });
+    return NextResponse.json({
+      ok: true,
+      numero: invoice.numero,
+      paymentUrl,
+    });
+  } catch (err) {
+    // El pedido ya está guardado; la proforma se emitirá a mano si hace falta.
+    console.error("[pedidos] no se pudo emitir la proforma de", email, err);
+    return NextResponse.json({ ok: true, numero: null, paymentUrl: null });
+  }
 }

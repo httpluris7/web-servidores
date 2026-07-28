@@ -13,7 +13,8 @@
       "overview": "Resumen",
       "customers": "Clientes",
       "invoices": "Facturas",
-      "ordersAndContacts": "Pedidos y contactos"
+      "ordersAndContacts": "Pedidos y contactos",
+      "settings": "Configuración"
     },
     "dashboard": {
       "summary": "Resumen",
@@ -130,7 +131,15 @@
       "reopen": "Reabrir",
       "cancel": "Anular",
       "deleteAria": "Eliminar factura",
-      "delete": "Eliminar"
+      "delete": "Eliminar",
+      "chargeCard": "Cobrar con tarjeta",
+      "copyPayLink": "Copiar enlace de pago",
+      "payLink": "Enlace de pago",
+      "payLinkCopied": "Enlace copiado",
+      "sendPayLink": "Enviar al cliente por correo",
+      "payLinkSent": "Enviado ✓",
+      "newPayLink": "Generar uno nuevo",
+      "payError": "No se ha podido generar el enlace de pago."
     },
     "invoiceForm": {
       "invoiceCreated": "Factura creada",
@@ -186,6 +195,41 @@
       "pendiente": "Pendiente",
       "pagada": "Pagada",
       "cancelada": "Cancelada"
+    },
+    "settings": {
+      "title": "Configuración",
+      "subtitle": "Pasarela de pago y claves de la integración.",
+      "stripeHeading": "Stripe",
+      "stripeIntro": "Cobro con tarjeta. El cobro real y las facturas siguen siendo en euros.",
+      "statusActive": "activo",
+      "statusInactive": "inactivo",
+      "modeLabel": "Modo",
+      "modeUnknown": "desconocido",
+      "modeLiveWarning": "estás en producción: los cobros son reales.",
+      "enableLabel": "Permitir cobrar con Stripe",
+      "keysHeading": "Claves",
+      "keysIntro": "Se guardan en el servidor, fuera de git y solo legibles por root. Nunca se vuelven a mostrar enteras.",
+      "secretKeyLabel": "Clave secreta de API",
+      "secretKeyHint": "En Stripe: Desarrolladores → Claves de API → clave secreta (sk_…). No uses la publicable (pk_…).",
+      "webhookSecretLabel": "Secreto de firma del webhook",
+      "webhookSecretHint": "Lo da Stripe al crear el endpoint de webhook (whsec_…).",
+      "keepHint": "Guardada. Déjalo vacío para conservarla; escribe una nueva para sustituirla.",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "saved": "Ajustes guardados.",
+      "test": "Probar conexión",
+      "testing": "Probando…",
+      "testOk": "Conexión correcta con Stripe.",
+      "clearKeys": "Borrar claves",
+      "errorSave": "No se han podido guardar los ajustes.",
+      "errorTest": "Stripe ha rechazado la clave.",
+      "errorConnection": "Error de conexión.",
+      "webhookHeading": "Webhook",
+      "webhookIntro": "Da de alta esta URL en Stripe (Desarrolladores → Webhooks) y pega aquí arriba el secreto de firma que te dé.",
+      "webhookUrlLabel": "URL del endpoint",
+      "webhookEventsLabel": "Eventos a suscribir",
+      "copy": "Copiar",
+      "copied": "Copiado"
     }
   }
 }

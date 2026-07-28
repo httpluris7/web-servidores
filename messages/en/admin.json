@@ -13,7 +13,8 @@
       "overview": "Overview",
       "customers": "Customers",
       "invoices": "Invoices",
-      "ordersAndContacts": "Orders and contacts"
+      "ordersAndContacts": "Orders and contacts",
+      "settings": "Settings"
     },
     "dashboard": {
       "summary": "Summary",
@@ -130,7 +131,15 @@
       "reopen": "Reopen",
       "cancel": "Cancel",
       "deleteAria": "Delete invoice",
-      "delete": "Delete"
+      "delete": "Delete",
+      "chargeCard": "Charge by card",
+      "copyPayLink": "Copy payment link",
+      "payLink": "Payment link",
+      "payLinkCopied": "Link copied",
+      "sendPayLink": "Email it to the customer",
+      "payLinkSent": "Sent ✓",
+      "newPayLink": "Generate a new one",
+      "payError": "The payment link could not be generated."
     },
     "invoiceForm": {
       "invoiceCreated": "Invoice created",
@@ -186,6 +195,41 @@
       "pendiente": "Pending",
       "pagada": "Paid",
       "cancelada": "Cancelled"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Payment gateway and integration keys.",
+      "stripeHeading": "Stripe",
+      "stripeIntro": "Card payments. Charges and invoices remain in euros.",
+      "statusActive": "active",
+      "statusInactive": "inactive",
+      "modeLabel": "Mode",
+      "modeUnknown": "unknown",
+      "modeLiveWarning": "you are in live mode: charges are real.",
+      "enableLabel": "Allow charging with Stripe",
+      "keysHeading": "Keys",
+      "keysIntro": "Stored on the server, outside git and readable only by root. They are never shown in full again.",
+      "secretKeyLabel": "API secret key",
+      "secretKeyHint": "In Stripe: Developers → API keys → secret key (sk_…). Not the publishable one (pk_…).",
+      "webhookSecretLabel": "Webhook signing secret",
+      "webhookSecretHint": "Stripe gives it to you when you create the webhook endpoint (whsec_…).",
+      "keepHint": "Saved. Leave empty to keep it; type a new one to replace it.",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Settings saved.",
+      "test": "Test connection",
+      "testing": "Testing…",
+      "testOk": "Connected to Stripe.",
+      "clearKeys": "Clear keys",
+      "errorSave": "The settings could not be saved.",
+      "errorTest": "Stripe rejected the key.",
+      "errorConnection": "Connection error.",
+      "webhookHeading": "Webhook",
+      "webhookIntro": "Add this URL in Stripe (Developers → Webhooks) and paste the signing secret it gives you above.",
+      "webhookUrlLabel": "Endpoint URL",
+      "webhookEventsLabel": "Events to subscribe to",
+      "copy": "Copy",
+      "copied": "Copied"
     }
   }
 }

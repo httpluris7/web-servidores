@@ -1,15 +1,14 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { readSettings } from "@/lib/ajustes";
 import type { PaymentEvent, PaymentVerifier, VerifyResult } from "./types";
 
 /**
  * Selección y configuración del verificador de pasarela.
  *
- * Mientras no se defina `PAYMENTS_PROVIDER` (y su secreto), el endpoint usa el
- * verificador "nulo" que rechaza todo como `unconfigured` → el webhook queda
- * inerte y seguro por defecto. Para activar Stripe:
- *
- *   PAYMENTS_PROVIDER=stripe
- *   STRIPE_WEBHOOK_SECRET=whsec_...
+ * El secreto de firma sale de los ajustes del panel (`/admin/configuracion`,
+ * ver `lib/ajustes.ts`), con respaldo en `STRIPE_WEBHOOK_SECRET` del entorno.
+ * Mientras no haya secreto, el endpoint usa el verificador "nulo" que rechaza
+ * todo como `unconfigured` → el webhook queda inerte y seguro por defecto.
  *
  * Para otra pasarela (Redsys, PayPal…), implementa un `PaymentVerifier` nuevo
  * siguiendo el mismo contrato y enchúfalo en `getVerifier()`. El resto del flujo
@@ -65,6 +64,14 @@ function normalizeStripeEvent(raw: unknown): PaymentEvent {
   const type = typeof ev.type === "string" ? ev.type : "";
   const metadata = (obj.metadata as Record<string, unknown> | undefined) ?? {};
   const orderId = typeof metadata.orderId === "string" ? metadata.orderId : null;
+  // La factura viaja en metadata tanto de la sesión como del PaymentIntent; si
+  // faltara, `client_reference_id` de la sesión lleva el mismo id como respaldo.
+  const invoiceId =
+    typeof metadata.invoiceId === "string"
+      ? metadata.invoiceId
+      : typeof obj.client_reference_id === "string"
+        ? obj.client_reference_id
+        : null;
 
   // checkout.session.completed → amount_total; payment_intent.succeeded → amount.
   const amountRaw = obj.amount_total ?? obj.amount;
@@ -81,6 +88,7 @@ function normalizeStripeEvent(raw: unknown): PaymentEvent {
     type,
     succeeded,
     orderId,
+    invoiceId,
     amountCents,
     currency,
     raw,
@@ -127,17 +135,15 @@ function makeStripeVerifier(secret: string): PaymentVerifier {
 
 /* ------------------------------ Selector ---------------------------------- */
 
-/** Devuelve el verificador según la configuración de entorno (fail-closed). */
-export function getVerifier(): PaymentVerifier {
-  const provider = (process.env.PAYMENTS_PROVIDER || "").trim().toLowerCase();
+/** Devuelve el verificador según los ajustes guardados (fail-closed). */
+export async function getVerifier(): Promise<PaymentVerifier> {
+  const { stripe } = await readSettings();
 
-  if (provider === "stripe") {
-    const secret = process.env.STRIPE_WEBHOOK_SECRET;
-    if (!secret) {
-      // Provider declarado pero sin secreto: mejor inerte que inseguro.
-      return nullVerifier;
-    }
-    return makeStripeVerifier(secret);
+  // Sin secreto de firma no se puede verificar nada: inerte antes que inseguro.
+  // El interruptor `enabled` corta el cobro, no la recepción: si se desactiva
+  // con un pago ya en curso, aún queremos poder darlo por bueno.
+  if (stripe.webhookSecret) {
+    return makeStripeVerifier(stripe.webhookSecret);
   }
 
   // TODO(pasarela): añadir aquí "redsys" / "paypal" cuando se elija, devolviendo

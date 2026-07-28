@@ -178,7 +178,10 @@
       "specNetwork": "Réseau",
       "region": "Région",
       "monthlyTotal": "Total mensuel",
-      "vatNote": "Prix hors taxes"
+      "vatNote": "Prix hors taxes",
+      "payByCard": "Payer par carte →",
+      "payByTransfer": "Payer par virement",
+      "cardUnavailable": "Le paiement par carte n'est pas disponible pour le moment. Vous pouvez payer par virement avec les coordonnées ci-dessous."
     }
   }
 }

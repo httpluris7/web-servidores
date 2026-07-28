@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { Plan, Region } from "@/data/products";
 import { site } from "@/data/site";
+import { eur } from "@/lib/utils";
 import { Price } from "@/components/ui/Price";
 import { BankTransfer } from "@/components/ui/BankTransfer";
 import { Label, Input, Select, FieldError } from "./Field";
@@ -23,18 +24,25 @@ export function OrderForm({
   plan,
   lineTitle,
   regions,
+  stripeEnabled = false,
 }: {
   plan: Plan;
   lineTitle: string;
   regions?: Region[];
+  /** ¿Hay pasarela configurada? Sin ella solo se ofrece la transferencia. */
+  stripeEnabled?: boolean;
 }) {
   const t = useTranslations("products");
   const tc = useTranslations("common");
+  const locale = useLocale();
   const [values, setValues] = useState({ name: "", email: "", region: regions?.[0]?.slug ?? "" });
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const [formError, setFormError] = useState<string | null>(null);
+  // Proforma emitida al confirmar: su número es la referencia de la transferencia.
+  const [numero, setNumero] = useState<string | null>(null);
+  const [payError, setPayError] = useState<string | null>(null);
 
   function validate(): boolean {
     const e: Errors = {};
@@ -45,9 +53,9 @@ export function OrderForm({
     return Object.keys(e).length === 0;
   }
 
-  async function onSubmit(ev: React.FormEvent) {
-    ev.preventDefault();
+  async function submit(metodo: "tarjeta" | "transferencia") {
     setFormError(null);
+    setPayError(null);
     if (!validate()) return;
     setStatus("sending");
 
@@ -55,15 +63,23 @@ export function OrderForm({
       const res = await fetch("/api/pedidos", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ planId: plan.id, ...values }),
+        body: JSON.stringify({ planId: plan.id, ...values, metodo, locale }),
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.ok) {
         if (data?.errors) setErrors(data.errors as Errors);
         setFormError(data?.error ?? t("orderForm.errRegister"));
         setStatus("idle");
         return;
       }
+      // Con enlace de pago salimos a la pasarela; si no, se muestra la
+      // transferencia con la referencia ya emitida.
+      if (data.paymentUrl) {
+        window.location.href = data.paymentUrl as string;
+        return;
+      }
+      if (metodo === "tarjeta") setPayError(t("orderForm.cardUnavailable"));
+      setNumero((data.numero as string) ?? null);
       setStatus("done");
     } catch {
       setFormError(t("orderForm.errConnection"));
@@ -89,9 +105,17 @@ export function OrderForm({
               {regionName ? t("orderForm.inRegion", { region: regionName }) : ""}
               {t("orderForm.registeredSuffix")}
             </p>
-            {/* Pago por transferencia: la referencia (nº de proforma) llega por correo. */}
+            {payError && (
+              <p role="alert" className="mt-3 text-sm text-[var(--color-danger)]">
+                {payError}
+              </p>
+            )}
+            {/* Transferencia con la referencia ya emitida (o el aviso de que llegará). */}
             <div className="mt-6">
-              <BankTransfer />
+              <BankTransfer
+                reference={numero ?? undefined}
+                amountLabel={numero ? eur(plan.price, 2) : undefined}
+              />
             </div>
             {/* Aquí puede no haber sesión: /cuenta lleva al acceso y, tras entrar, al área de cliente. */}
             <Link
@@ -105,7 +129,14 @@ export function OrderForm({
             </p>
           </div>
         ) : (
-          <form onSubmit={onSubmit} noValidate className="space-y-5">
+          <form
+            onSubmit={(ev) => {
+              ev.preventDefault();
+              submit(stripeEnabled ? "tarjeta" : "transferencia");
+            }}
+            noValidate
+            className="space-y-5"
+          >
             <div className="grid gap-5 sm:grid-cols-2">
               <div>
                 <Label htmlFor="name" required>
@@ -180,13 +211,33 @@ export function OrderForm({
               <FieldError>{errors.terms}</FieldError>
             </div>
 
-            <button
-              type="submit"
-              disabled={status === "sending"}
-              className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60 sm:w-auto"
-            >
-              {status === "sending" ? t("orderForm.submitSending") : `${t("orderForm.submitIdle")} →`}
-            </button>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              {stripeEnabled && (
+                <button
+                  type="submit"
+                  disabled={status === "sending"}
+                  className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60 sm:w-auto"
+                >
+                  {status === "sending" ? t("orderForm.submitSending") : t("orderForm.payByCard")}
+                </button>
+              )}
+              <button
+                type={stripeEnabled ? "button" : "submit"}
+                onClick={stripeEnabled ? () => submit("transferencia") : undefined}
+                disabled={status === "sending"}
+                className={
+                  stripeEnabled
+                    ? "inline-flex w-full items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-6 py-3.5 text-sm transition-colors hover:border-[var(--color-accent)] disabled:opacity-60 sm:w-auto"
+                    : "inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60 sm:w-auto"
+                }
+              >
+                {stripeEnabled
+                  ? t("orderForm.payByTransfer")
+                  : status === "sending"
+                    ? t("orderForm.submitSending")
+                    : `${t("orderForm.submitIdle")} →`}
+              </button>
+            </div>
             <p className="font-mono text-xs text-[var(--color-fg-dim)]">{t("orderForm.noCommit")}</p>
             {formError && (
               <p role="alert" className="text-sm text-[var(--color-danger)]">
