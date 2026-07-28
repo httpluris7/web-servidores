@@ -139,6 +139,99 @@ body {
    Fuera de @layer a propósito: son reglas de comportamiento, no utilidades, y
    deben ganar a las clases de Tailwind que puedan acompañarlas.
    -------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------
+   Contenido del panel: nada debe poder ensanchar la columna.
+   ---------------------------------------------------------------------------
+   Los elementos de rejilla y de flex tienen `min-width: auto`, es decir, no
+   encogen por debajo de su contenido. Basta con una tabla con ancho mínimo o un
+   formulario ancho para que estiren la columna entera; y como el body recorta
+   el desborde horizontal, lo que sobra queda inalcanzable en el teléfono.
+
+   `:where()` no aporta especificidad, así que cualquier clase explícita —por
+   ejemplo el `md:min-w-[760px]` de las tablas— sigue mandando sobre esto.
+-------------------------------------------------------------------------- */
+.admin-content :where(section, div, ul, ol, form, details) {
+  min-width: 0;
+}
+
+/* En pantallas pequeñas las etiquetas mono de 0.6rem (9,6px) quedan por debajo
+   de lo legible; se suben a 11px sin tocar el tamaño en escritorio. */
+@media (max-width: 767px) {
+  .mono-label {
+    font-size: 0.6875rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Tablas que se convierten en tarjetas por debajo de md.
+   ---------------------------------------------------------------------------
+   Una tabla de 7 columnas no se lee en un teléfono, y el scroll horizontal
+   esconde justo las columnas de acciones. Con `.table-cards` cada fila pasa a
+   ser una tarjeta y cada celda una línea "etiqueta / valor"; la etiqueta sale
+   del atributo `data-label` de la propia celda, así que sigue habiendo un único
+   sitio con los datos y las cabeceras siguen traducidas.
+
+   Desde md la tabla vuelve a ser una tabla normal, sin tocar el diseño de
+   escritorio. Las celdas sin `data-label` (acciones) ocupan la línea entera.
+-------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .table-cards,
+  .table-cards tbody,
+  .table-cards tr,
+  .table-cards td {
+    display: block;
+    width: auto;
+  }
+
+  .table-cards thead {
+    display: none;
+  }
+
+  .table-cards tr {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .table-cards tr:last-child {
+    border-bottom: 0;
+  }
+
+  .table-cards td {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    max-width: none !important;
+    padding: 0.3rem 0 !important;
+    text-align: right;
+    /* Un correo o un identificador largo no tiene dónde partir y desbordaría
+       la tarjeta: se permite romper la palabra. */
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
+
+  .table-cards td::before {
+    content: attr(data-label);
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-fg-dim);
+    text-align: left;
+  }
+
+  /* Celda sin etiqueta (la de acciones): a lo ancho y separada del resto. */
+  .table-cards td:not([data-label]) {
+    justify-content: flex-end;
+    padding-top: 0.6rem !important;
+  }
+
+  .table-cards td:not([data-label])::before {
+    display: none;
+  }
+}
+
 .c-usd {
   display: none;
 }

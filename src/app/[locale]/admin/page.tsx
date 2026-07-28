@@ -10,8 +10,8 @@ export const dynamic = "force-dynamic";
 
 function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
-    <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] px-5 py-4">
-      <p className="mono-label text-[0.6rem]">{label}</p>
+    <div className="min-w-0 rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] px-4 py-4 sm:px-5">
+      <p className="mono-label text-[0.6rem] break-words">{label}</p>
       <p className="mt-2 font-mono text-2xl font-semibold text-[var(--color-fg)]">{value}</p>
       {hint && <p className="mt-1 text-xs text-[var(--color-fg-muted)]">{hint}</p>}
     </div>
@@ -49,9 +49,9 @@ export default async function AdminDashboard({
         </div>
       </section>
 
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid min-w-0 gap-8 lg:grid-cols-2">
         {/* Últimas facturas */}
-        <section>
+        <section className="min-w-0">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="mono-label">{t("dashboard.latestInvoices")}</h2>
             <Link href="/admin/facturas" className="text-xs text-[var(--color-accent)] hover:underline">
@@ -82,7 +82,7 @@ export default async function AdminDashboard({
         </section>
 
         {/* Últimos clientes */}
-        <section>
+        <section className="min-w-0">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="mono-label">{t("dashboard.latestCustomers")}</h2>
             <Link href="/admin/clientes" className="text-xs text-[var(--color-accent)] hover:underline">

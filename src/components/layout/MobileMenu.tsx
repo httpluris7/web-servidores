@@ -91,7 +91,7 @@ export function MobileMenu() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label={t("openMenu")}
-        className="inline-flex h-10 w-10 items-center justify-center rounded border border-[var(--color-line)] lg:hidden"
+        className="inline-flex h-11 w-11 items-center justify-center rounded border border-[var(--color-line)] lg:hidden"
       >
         <span className="flex flex-col gap-1">
           <span className="block h-px w-5 bg-[var(--color-fg)]" />
@@ -118,7 +118,7 @@ export function MobileMenu() {
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label={t("closeMenu")}
-                className="inline-flex h-10 w-10 items-center justify-center rounded border border-[var(--color-line)] text-xl"
+                className="inline-flex h-11 w-11 items-center justify-center rounded border border-[var(--color-line)] text-xl"
               >
                 ✕
               </button>

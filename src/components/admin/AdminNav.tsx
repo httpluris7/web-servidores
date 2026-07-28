@@ -18,7 +18,7 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav aria-label={t("nav.aria")} className="flex gap-1 overflow-x-auto md:flex-col md:overflow-visible">
+    <nav aria-label={t("nav.aria")} className="flex flex-wrap gap-1 md:flex-col md:flex-nowrap">
       {links.map((l) => {
         const active = l.exact ? pathname === l.href : pathname.startsWith(l.href);
         return (
@@ -27,7 +27,7 @@ export function AdminNav() {
             href={l.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "whitespace-nowrap rounded-[var(--radius-md)] px-3 py-2 text-sm transition-colors",
+              "flex min-h-11 items-center whitespace-nowrap rounded-[var(--radius-md)] px-3 text-sm transition-colors md:min-h-0 md:py-2",
               active
                 ? "bg-[var(--color-accent)]/10 font-medium text-[var(--color-accent)]"
                 : "text-[var(--color-fg-muted)] hover:bg-white/5 hover:text-[var(--color-fg)]"

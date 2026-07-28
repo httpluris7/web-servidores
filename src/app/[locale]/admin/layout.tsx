@@ -62,7 +62,9 @@ export default async function AdminLayout({
       </header>
 
       <div className="grid gap-8 md:grid-cols-[200px_1fr]">
-        <aside className="md:sticky md:top-24 md:self-start">
+        {/* min-w-0: sin esto el aside crece hasta el ancho del menú y el
+            body lo recorta, dejando secciones inalcanzables en móvil. */}
+        <aside className="min-w-0 md:sticky md:top-24 md:self-start">
           <AdminNav />
           <Link
             href="/cuenta"
@@ -71,7 +73,7 @@ export default async function AdminLayout({
             {t("layout.backToAccount")}
           </Link>
         </aside>
-        <div className="min-w-0">{children}</div>
+        <div className="admin-content min-w-0">{children}</div>
       </div>
     </div>
   );

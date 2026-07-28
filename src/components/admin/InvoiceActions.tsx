@@ -82,8 +82,10 @@ export function InvoiceActions({ id, estado, stripeReady = false, hasPayLink = f
     }
   }
 
+  // En móvil los botones necesitan alto de dedo; desde sm vuelven a ser
+  // compactos para que quepan varios en la celda de acciones.
   const btn =
-    "rounded-[var(--radius-sm)] border border-[var(--color-line-strong)] px-2.5 py-1 text-xs transition-colors disabled:opacity-50";
+    "inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-[var(--color-line-strong)] px-3 py-2 text-xs transition-colors disabled:opacity-50 md:min-h-0 md:px-2.5 md:py-1";
 
   return (
     <div className="flex flex-wrap items-center justify-end gap-1.5">

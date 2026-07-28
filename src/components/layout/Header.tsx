@@ -46,7 +46,10 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2" aria-label={`${site.brand} home`}>
           <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-accent)] shadow-[0_0_12px_var(--color-accent)]" />
-          <span className="text-lg font-semibold tracking-tight">{site.brand}</span>
+          {/* Por debajo de 360px no cabe junto a los controles; queda el punto. */}
+          <span className="hidden text-lg font-semibold tracking-tight min-[360px]:inline">
+            {site.brand}
+          </span>
         </Link>
 
         {/* Nav desktop */}
@@ -152,7 +155,7 @@ export function Header() {
         </nav>
 
         {/* CTA + idioma + divisa + cuenta + móvil */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1 min-[360px]:gap-2 sm:gap-3">
           <Link
             href={deployUrl()}
             className="hidden rounded-[var(--radius-md)] bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-black transition-all hover:bg-[var(--color-accent-dim)] hover:shadow-[0_0_30px_-6px_var(--color-accent-glow)] sm:inline-flex"

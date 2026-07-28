@@ -43,17 +43,17 @@ export default async function ClientesPage({
         <h2 className="text-lg font-semibold">
           {t("clientes.heading")} <span className="font-mono text-sm text-[var(--color-fg-muted)]">({clientes.length})</span>
         </h2>
-        <form method="get" className="flex items-center gap-2">
+        <form method="get" className="flex w-full items-center gap-2 sm:w-auto">
           <input
             type="search"
             name="q"
             defaultValue={q}
             placeholder={t("clientes.searchPlaceholder")}
-            className="w-64 max-w-full rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-2 text-sm placeholder:text-[var(--color-fg-dim)] focus:border-[var(--color-accent)] focus:outline-none"
+            className="min-w-0 flex-1 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-2.5 text-sm sm:w-64 sm:flex-none sm:py-2 placeholder:text-[var(--color-fg-dim)] focus:border-[var(--color-accent)] focus:outline-none"
           />
           <button
             type="submit"
-            className="rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-3 py-2 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+            className="shrink-0 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-3 py-2.5 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] sm:py-2"
           >
             {t("clientes.search")}
           </button>
@@ -65,8 +65,8 @@ export default async function ClientesPage({
           {query ? t("clientes.noMatch") : t("clientes.noCustomers")}
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--color-line)]">
-          <table className="w-full min-w-[640px] border-collapse text-sm">
+        <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] md:overflow-x-auto">
+          <table className="table-cards w-full border-collapse text-sm md:min-w-[640px]">
             <thead>
               <tr className="border-b border-[var(--color-line)] text-left">
                 <th className="px-4 py-3 mono-label text-[0.6rem]">{t("clientes.colCustomer")}</th>
@@ -86,20 +86,20 @@ export default async function ClientesPage({
                     key={c.id}
                     className="border-b border-[var(--color-line)] last:border-0 transition-colors hover:bg-white/[0.02]"
                   >
-                    <td className="px-4 py-3">
+                    <td data-label={t("clientes.colCustomer")} className="px-4 py-3">
                       <p className="font-medium text-[var(--color-fg)]">
                         {c.nombre} {c.apellidos}
                       </p>
                       <p className="text-xs text-[var(--color-fg-muted)]">{c.email}</p>
                     </td>
-                    <td className="px-4 py-3 text-[var(--color-fg-muted)]">
+                    <td data-label={t("clientes.colLocation")} className="px-4 py-3 text-[var(--color-fg-muted)]">
                       {c.ciudad || "—"}
                       {c.pais ? `, ${c.pais}` : ""}
                     </td>
-                    <td className="px-4 py-3 font-mono text-xs text-[var(--color-fg-muted)]">
+                    <td data-label={t("clientes.colJoined")} className="px-4 py-3 font-mono text-xs text-[var(--color-fg-muted)]">
                       {fmtDate(c.createdAt)}
                     </td>
-                    <td className="px-4 py-3 text-right font-mono">{eur(total, 2)}</td>
+                    <td data-label={t("clientes.colInvoiced")} className="px-4 py-3 text-right font-mono">{eur(total, 2)}</td>
                     <td className="px-4 py-3 text-right">
                       <Link
                         href={`/admin/clientes/${c.id}`}

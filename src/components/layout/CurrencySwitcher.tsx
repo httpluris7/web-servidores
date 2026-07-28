@@ -88,7 +88,7 @@ export function CurrencySwitcher() {
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label={t("changeCurrency")}
-        className="flex h-10 items-center gap-1.5 rounded-full border border-[var(--color-line-strong)] px-2 text-[var(--color-fg-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-fg)] sm:px-3"
+        className="flex h-11 min-w-11 items-center justify-center gap-1.5 rounded-full border border-[var(--color-line-strong)] px-2.5 sm:h-10 sm:min-w-0 text-[var(--color-fg-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-fg)] sm:px-3"
       >
         <span className="text-base leading-none" aria-hidden="true">
           <span className="c-eur">{CURRENCY_META.eur.symbol}</span>

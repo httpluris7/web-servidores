@@ -29,8 +29,8 @@ export default async function PedidosPage({
         {pedidos.length === 0 ? (
           <p className="text-sm text-[var(--color-fg-muted)]">{t("pedidos.noOrders")}</p>
         ) : (
-          <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--color-line)]">
-            <table className="w-full min-w-[680px] border-collapse text-sm">
+          <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] md:overflow-x-auto">
+            <table className="table-cards w-full border-collapse text-sm md:min-w-[680px]">
               <thead>
                 <tr className="border-b border-[var(--color-line)] text-left">
                   <th className="px-4 py-3 mono-label text-[0.6rem]">{t("pedidos.colCustomer")}</th>
@@ -43,25 +43,25 @@ export default async function PedidosPage({
               <tbody>
                 {pedidos.map((p, i) => (
                   <tr key={i} className="border-b border-[var(--color-line)] last:border-0">
-                    <td className="px-4 py-3">
+                    <td data-label={t("pedidos.colCustomer")} className="px-4 py-3">
                       <p className="font-medium">{str(p.name) || "—"}</p>
                       <p className="text-xs text-[var(--color-fg-muted)]">{str(p.email)}</p>
                     </td>
-                    <td className="px-4 py-3">
+                    <td data-label={t("pedidos.colPlan")} className="px-4 py-3">
                       {str(p.planName) || str(p.planId) || "—"}
                       {typeof p.qty === "number" && p.qty > 1 && (
                         <span className="font-mono text-xs text-[var(--color-fg-muted)]"> ×{p.qty}</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[var(--color-fg-muted)]">{str(p.region) || "—"}</td>
-                    <td className="px-4 py-3 text-right font-mono">
+                    <td data-label={t("pedidos.colRegion")} className="px-4 py-3 text-[var(--color-fg-muted)]">{str(p.region) || "—"}</td>
+                    <td data-label={t("pedidos.colPrice")} className="px-4 py-3 text-right font-mono">
                       {typeof p.lineTotal === "number"
                         ? t("pedidos.perMonth", { price: eur(p.lineTotal) })
                         : typeof p.price === "number"
                           ? t("pedidos.perMonth", { price: eur(p.price) })
                           : "—"}
                     </td>
-                    <td className="px-4 py-3 font-mono text-xs text-[var(--color-fg-muted)]">
+                    <td data-label={t("pedidos.colReceived")} className="px-4 py-3 font-mono text-xs text-[var(--color-fg-muted)]">
                       {fmtDate(str(p.receivedAt) || null, true)}
                     </td>
                   </tr>
