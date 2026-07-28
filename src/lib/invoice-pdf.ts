@@ -1,5 +1,6 @@
 import PDFDocument from "pdfkit";
 import { site } from "@/data/site";
+import { BANK_LABEL_EN, bankReferenceNoteEn, bankRows } from "@/lib/bank";
 import {
   esProforma,
   PAYMENT_METHOD_LABEL,
@@ -179,6 +180,60 @@ export function generateInvoicePdf(inv: Invoice): Promise<Buffer> {
       ty += 14;
     }
 
+    // --- Instrucciones de pago (solo si queda algo por cobrar) ---
+    if (inv.estado === "pendiente") {
+      const rows = bankRows({ amountLabel: invoiceMoney(inv.total), reference: inv.numero });
+      // Alto aproximado del recuadro, para decidir si cabe o toca página nueva.
+      const estimated = 34 + rows.length * 14 + 30;
+      const bottomLimit = doc.page.height - doc.page.margins.bottom - 44;
+      if (ty + estimated > bottomLimit) {
+        doc.addPage();
+        ty = doc.page.margins.top;
+      }
+
+      ty += 18;
+      const boxTop = ty;
+      const padX = left + 14;
+      const labelW = 92;
+      const valueX = padX + labelW + 8;
+      const valueW = right - 14 - valueX;
+
+      doc
+        .font("Helvetica-Bold")
+        .fontSize(7)
+        .fillColor(faint)
+        .text("HOW TO PAY — BANK TRANSFER", padX, boxTop + 12);
+
+      let py = doc.y + 7;
+      for (const row of rows) {
+        // La referencia va resaltada: es el único dato que liga el ingreso al pedido.
+        const strong = row.key === "reference";
+        doc.font("Helvetica").fontSize(8).fillColor(muted);
+        doc.text(BANK_LABEL_EN[row.key], padX, py + 1, { width: labelW });
+        doc
+          .font(strong ? "Helvetica-Bold" : "Helvetica")
+          .fontSize(strong ? 10 : 9)
+          .fillColor(ink)
+          .text(row.value, valueX, py, { width: valueW });
+        py = Math.max(doc.y, py + 12) + 3;
+      }
+
+      doc
+        .font("Helvetica-Oblique")
+        .fontSize(8)
+        .fillColor(muted)
+        .text(bankReferenceNoteEn(inv.numero), padX, py + 2, { width: right - 14 - padX });
+
+      const boxBottom = doc.y + 12;
+      // El marco se dibuja al final, ya conocida la altura real del contenido.
+      doc
+        .roundedRect(left, boxTop, width, boxBottom - boxTop, 4)
+        .strokeColor("#c9d3e4")
+        .lineWidth(1)
+        .stroke();
+      ty = boxBottom;
+    }
+
     // --- Notas ---
     if (inv.notas) {
       ty += 12;
@@ -188,6 +243,7 @@ export function generateInvoicePdf(inv: Invoice): Promise<Buffer> {
         .fontSize(9)
         .fillColor(muted)
         .text(inv.notas, left, doc.y + 2, { width });
+      ty = doc.y; // para que lo que siga no se pinte encima de las notas
     }
 
     // --- Nota de proforma ---

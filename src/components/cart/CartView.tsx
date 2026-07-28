@@ -7,11 +7,9 @@ import { useCart } from "@/lib/cart";
 import { regions } from "@/data/products";
 import { site } from "@/data/site";
 import { Price, PriceSum } from "@/components/ui/Price";
+import { BankTransfer } from "@/components/ui/BankTransfer";
 
 type InitialUser = { nombre: string; email: string } | null;
-
-/** Enlace de pago final al panel externo, con UTM. */
-const paymentHandoffUrl = `${site.billingUrl}${site.utm}`;
 
 export function CartView({ initialUser }: { initialUser: InitialUser }) {
   const t = useTranslations("auth");
@@ -66,14 +64,10 @@ export function CartView({ initialUser }: { initialUser: InitialUser }) {
         <p className="mt-2 text-sm text-[var(--color-fg-muted)]">
           {t("cartView.orderRegisteredText")}
         </p>
-        <a
-          href={paymentHandoffUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-6 inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
-        >
-          {t("cartView.goToPayment")}
-        </a>
+        {/* Pago por transferencia: la referencia (nº de proforma) llega por correo. */}
+        <div className="mt-6">
+          <BankTransfer />
+        </div>
         <p className="mt-6 text-sm text-[var(--color-fg-muted)]">
           <Link href="/desplegar" className="text-[var(--color-accent)] hover:underline">
             {t("cartView.continueBrowsing")}

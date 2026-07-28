@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { Plan, Region } from "@/data/products";
-import { billingHandoffUrl, site } from "@/data/site";
+import { site } from "@/data/site";
 import { Price } from "@/components/ui/Price";
+import { BankTransfer } from "@/components/ui/BankTransfer";
 import { Label, Input, Select, FieldError } from "./Field";
 
 type Errors = Partial<Record<"name" | "email" | "terms", string>>;
@@ -88,14 +89,10 @@ export function OrderForm({
               {regionName ? t("orderForm.inRegion", { region: regionName }) : ""}
               {t("orderForm.registeredSuffix")}
             </p>
-            <a
-              href={billingHandoffUrl(plan.id)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
-            >
-              {t("orderForm.goToPayment")} →
-            </a>
+            {/* Pago por transferencia: la referencia (nº de proforma) llega por correo. */}
+            <div className="mt-6">
+              <BankTransfer />
+            </div>
             <p className="mt-4 font-mono text-xs text-[var(--color-fg-dim)]">
               {t("orderForm.provisioningNote")}
             </p>

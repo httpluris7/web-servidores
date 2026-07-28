@@ -5,6 +5,7 @@ import { site } from "@/data/site";
 import { getInvoiceById, esProforma, PAYMENT_METHOD_LABEL } from "@/lib/facturas";
 import { eur, fmtDate } from "@/lib/utils";
 import { PrintButton } from "@/components/admin/PrintButton";
+import { BankTransfer } from "@/components/ui/BankTransfer";
 
 export const dynamic = "force-dynamic";
 
@@ -168,6 +169,13 @@ export default async function FacturaImprimiblePage({
             )}
           </dl>
         </div>
+
+        {/* Cómo pagar: solo mientras quede pendiente de cobro */}
+        {f.estado === "pendiente" && (
+          <div className="mt-8">
+            <BankTransfer variant="document" reference={f.numero} amountLabel={eur(f.total, 2)} />
+          </div>
+        )}
 
         {/* Notas */}
         {f.notas && (

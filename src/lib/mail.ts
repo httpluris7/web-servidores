@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { emailRe } from "@/lib/leads";
+import { BANK_LABEL_EN, bankReferenceNoteEn, bankRows } from "@/lib/bank";
 
 /**
  * Envío de avisos por correo a través del Postfix local (sin dependencias
@@ -174,6 +175,20 @@ export async function sendInvoiceMail(m: InvoiceMail): Promise<void> {
     ? `Please find attached proforma ${numero} from ViaHost Networks, LLC. It is not a final invoice; once your payment is confirmed we will issue the final invoice.`
     : `Please find attached your paid invoice ${numero} from ViaHost Networks, LLC. Thank you for your payment.`;
 
+  // En la proforma van los datos de la transferencia: es la forma de pago activa
+  // y el número de proforma es la referencia que identifica el pedido.
+  const transferBlock = m.isProforma
+    ? [
+        "",
+        "HOW TO PAY — BANK TRANSFER",
+        ...bankRows({ amountLabel: m.amountLabel, reference: numero }).map(
+          (r) => `${(BANK_LABEL_EN[r.key] + ":").padEnd(18)}${r.value}`
+        ),
+        "",
+        bankReferenceNoteEn(numero),
+      ]
+    : [];
+
   const bodyText = [
     `Dear ${clientName},`,
     "",
@@ -183,6 +198,7 @@ export async function sendInvoiceMail(m: InvoiceMail): Promise<void> {
     `Amount:    ${m.amountLabel}`,
     `Due date:  ${m.dueDate}`,
     `Status:    ${m.status}`,
+    ...transferBlock,
     "",
     "Thank you for your business.",
     "",

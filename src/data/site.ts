@@ -20,11 +20,12 @@ export const site = {
   // Páginas internas funcionales (la web no depende de dominios externos).
   supportUrl: "/soporte",
   statusUrl: "/estado",
-  // Panel de facturación externo: SOLO se usa como destino final tras confirmar
-  // el pedido (handoff al pago). El resto del sitio es autónomo.
+  // Panel de facturación externo. Sin uso hoy: el cobro se cierra por
+  // transferencia (ver `bank`) y las proformas/facturas las emite la propia web.
+  // Se conserva por si en el futuro se enlaza un panel tipo WHMCS.
   billingUrl: "https://panel.viahost.top", // TODO: URL real del panel WHMCS/billing del cliente
 
-  // UTM aplicado a todos los CTAs salientes hacia el panel.
+  // UTM aplicado a los CTAs salientes hacia el panel.
   utm: "?utm_source=web&utm_medium=site&utm_campaign=deploy",
 
   contact: {
@@ -49,8 +50,19 @@ export const site = {
     trustpilotUrl: "", // TODO: URL de Trustpilot si existe (vacío = no se muestra el badge)
   },
 
+  // Cuenta bancaria para el cobro por transferencia. Es el método de pago ACTIVO:
+  // se imprime en cada proforma y el cliente debe indicar el número de proforma
+  // como concepto para que podamos identificar su pedido (ver `lib/bank.ts`).
+  bank: {
+    beneficiary: "ViaHost Networks, LLC",
+    iban: "BE88905914752241",
+    bic: "TRWIBEB1XXX",
+    bankName: "Wise",
+    bankAddress: "Rue du Trône 100, 3rd floor, Brussels, 1050, Belgium",
+  },
+
   // Métodos de pago mostrados en el footer (texto estilizado, sin logos con licencia).
-  paymentMethods: ["Visa", "Mastercard", "PayPal", "SEPA", "Bizum", "Crypto"], // TODO: confirmar
+  paymentMethods: ["Bank transfer", "SEPA", "Visa", "Mastercard", "PayPal", "Crypto"], // TODO: confirmar
 
   // Red / backbone.
   network: {
@@ -75,14 +87,9 @@ export type Site = typeof site;
  * Ruta interna para iniciar un despliegue/contratación.
  * - `deployUrl()` → selector de producto `/desplegar`.
  * - `deployUrl("/order/<id>")` → checkout interno del plan `/contratar/<id>`.
- * El pago real se delega al panel externo (`site.billingUrl`) desde el checkout.
+ * Tras confirmar el pedido, el pago se cierra por transferencia con la proforma.
  */
 export function deployUrl(path = ""): string {
   if (!path) return "/desplegar";
   return path.replace("/order/", "/contratar/");
-}
-
-/** Handoff final al panel de facturación externo con UTM (tras confirmar pedido). */
-export function billingHandoffUrl(planId: string): string {
-  return `${site.billingUrl}/order/${planId}${site.utm}`;
 }

@@ -10,7 +10,20 @@
     "from": "from",
     "changeLanguage": "Change language",
     "changeCurrency": "Change currency",
-    "currencyNote": "Indicative conversion — billed in EUR."
+    "currencyNote": "Indicative conversion — billed in EUR.",
+    "bankTransfer": {
+      "title": "Payment by bank transfer",
+      "labels": {
+        "beneficiary": "Beneficiary",
+        "iban": "IBAN",
+        "bic": "SWIFT / BIC",
+        "bank": "Bank",
+        "amount": "Amount",
+        "reference": "Payment reference"
+      },
+      "referenceNote": "Quote {reference} as the payment reference: it is what lets us match the transfer to your order. Your service is activated once the payment arrives.",
+      "pendingReferenceNote": "We will email you the proforma. Quote its number (PRO-…) as the payment reference: it is what lets us match the transfer to your order."
+    }
   },
   "nav": {
     "products": "Products",

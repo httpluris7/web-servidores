@@ -58,7 +58,8 @@ export function InvoiceForm({ clientes, productos, preset }: Props) {
   const [lineas, setLineas] = useState<LineaState[]>([emptyLinea()]);
   const [ivaPct, setIvaPct] = useState("0");
   const [vencimientoDias, setVencimientoDias] = useState("30");
-  const [metodoPago, setMetodoPago] = useState("");
+  // Por defecto transferencia: es el método de cobro activo.
+  const [metodoPago, setMetodoPago] = useState("transferencia");
   const [notas, setNotas] = useState("");
 
   const [errors, setErrors] = useState<Errors>({});
@@ -325,11 +326,11 @@ export function InvoiceForm({ clientes, productos, preset }: Props) {
           value={metodoPago}
           onChange={(e) => setMetodoPago(e.target.value)}
         >
+          <option value="transferencia">{t("invoiceForm.paymentTransfer")}</option>
           <option value="">{t("invoiceForm.paymentMethodNone")}</option>
           <option value="stripe">Stripe</option>
           <option value="paypal">PayPal</option>
           <option value="revolut">Revolut Pay</option>
-          <option value="transferencia">{t("invoiceForm.paymentTransfer")}</option>
         </Select>
       </div>
 
