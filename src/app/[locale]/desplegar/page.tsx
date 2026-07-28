@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { vps, dedicatedTypes } from "@/data/products";
-import { eur } from "@/lib/utils";
+import { Price } from "@/components/ui/Price";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -41,7 +41,9 @@ function PlanRow({
         <span className="mt-0.5 block font-mono text-xs text-[var(--color-fg-muted)]">{spec}</span>
       </div>
       <div className="flex items-center gap-3 text-right">
-        <span className="font-mono text-lg">{eur(price)}</span>
+        <span className="font-mono text-lg">
+          <Price value={price} />
+        </span>
         <span className="font-mono text-[var(--color-fg-dim)] transition-colors group-hover:text-[var(--color-accent)]">
           →
         </span>

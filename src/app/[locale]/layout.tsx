@@ -7,6 +7,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing, type Locale } from "@/i18n/routing";
 import { site } from "@/data/site";
 import { jsonLdScript } from "@/lib/utils";
+import { CURRENCY_INIT_SCRIPT } from "@/lib/currency";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CookieBanner } from "@/components/layout/CookieBanner";
@@ -100,6 +101,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   return (
     <html lang={locale} className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="min-h-screen antialiased">
+        {/* Fija la divisa elegida antes del primer pintado (sin parpadeo de precios). */}
+        <script dangerouslySetInnerHTML={{ __html: CURRENCY_INIT_SCRIPT }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdScript(organizationJsonLd) }}

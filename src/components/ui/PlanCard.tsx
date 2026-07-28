@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import type { Plan } from "@/data/products";
-import { eur } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { Price } from "@/components/ui/Price";
 import { Link } from "@/i18n/navigation";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
@@ -32,7 +32,9 @@ export async function PlanCard({ plan }: { plan: Plan }) {
       <h3 className="text-xl font-semibold tracking-tight">{plan.name}</h3>
 
       <div className="mt-4 flex items-baseline gap-1">
-        <span className="font-mono text-4xl font-semibold tracking-tight">{eur(plan.price)}</span>
+        <span className="font-mono text-4xl font-semibold tracking-tight">
+          <Price value={plan.price} />
+        </span>
         <span className="text-sm text-[var(--color-fg-muted)]">{t("planCard.perMonth")}</span>
       </div>
 

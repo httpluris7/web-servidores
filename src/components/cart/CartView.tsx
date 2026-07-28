@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { useCart } from "@/lib/cart";
 import { regions } from "@/data/products";
 import { site } from "@/data/site";
-import { eur } from "@/lib/utils";
+import { Price } from "@/components/ui/Price";
 
 type InitialUser = { nombre: string; email: string } | null;
 
@@ -15,6 +15,7 @@ const paymentHandoffUrl = `${site.billingUrl}${site.utm}`;
 
 export function CartView({ initialUser }: { initialUser: InitialUser }) {
   const t = useTranslations("auth");
+  const tc = useTranslations("common");
   const { lines, total, count, ready, setQty, setRegion, remove, clear } = useCart();
   // El usuario inicial llega del servidor (sin parpadeo). Si el checkout
   // responde 401 (sesión caducada) lo bajamos a null para mostrar el gate.
@@ -124,7 +125,9 @@ export function CartView({ initialUser }: { initialUser: InitialUser }) {
                 </p>
               </div>
               <div className="text-right">
-                <p className="font-mono text-lg font-semibold">{eur(l.subtotal)}</p>
+                <p className="font-mono text-lg font-semibold">
+                  <Price value={l.subtotal} />
+                </p>
                 <p className="font-mono text-[0.65rem] text-[var(--color-fg-dim)]">/mo</p>
               </div>
             </div>
@@ -204,17 +207,25 @@ export function CartView({ initialUser }: { initialUser: InitialUser }) {
                 {l.plan.name}
                 {l.qty > 1 && <span className="font-mono text-[var(--color-fg-dim)]"> ×{l.qty}</span>}
               </dt>
-              <dd className="text-right font-mono text-[var(--color-fg)]">{eur(l.subtotal)}</dd>
+              <dd className="text-right font-mono text-[var(--color-fg)]">
+                <Price value={l.subtotal} />
+              </dd>
             </div>
           ))}
         </dl>
 
         <div className="mt-5 flex items-baseline justify-between border-t border-[var(--color-line)] pt-5">
           <span className="text-sm text-[var(--color-fg-muted)]">{t("cartView.monthlyTotal")}</span>
-          <span className="font-mono text-2xl font-semibold">{eur(total)}</span>
+          <span className="font-mono text-2xl font-semibold">
+            <Price value={total} />
+          </span>
         </div>
         <p className="mt-2 text-right font-mono text-[0.65rem] text-[var(--color-fg-dim)]">
           {t("cartView.vatNotice", { brand: site.brand })}
+        </p>
+        {/* El cobro es siempre en euros; el dólar es solo una vista de referencia. */}
+        <p className="c-usd mt-1 text-right font-mono text-[0.65rem] text-[var(--color-fg-dim)]">
+          {tc("currencyNote")}
         </p>
 
         <div className="mt-6 border-t border-[var(--color-line)] pt-6">

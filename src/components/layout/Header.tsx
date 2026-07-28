@@ -5,11 +5,12 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { site, deployUrl } from "@/data/site";
 import { regions, dedicatedTypes } from "@/data/products";
-import { eur } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { Price } from "@/components/ui/Price";
 import { MobileMenu } from "./MobileMenu";
 import { AccountButton } from "./AccountButton";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { CurrencySwitcher } from "./CurrencySwitcher";
 import { CartButton } from "@/components/cart/CartButton";
 
 const navLinks = [
@@ -99,7 +100,7 @@ export function Header() {
                               {r.name}
                             </span>
                             <span className="font-mono text-xs text-[var(--color-fg-muted)]">
-                              {tc("from")} {eur(r.priceFrom)}
+                              {tc("from")} <Price value={r.priceFrom} />
                             </span>
                           </Link>
                         </li>
@@ -150,8 +151,8 @@ export function Header() {
           ))}
         </nav>
 
-        {/* CTA + idioma + cuenta + móvil */}
-        <div className="flex items-center gap-3">
+        {/* CTA + idioma + divisa + cuenta + móvil */}
+        <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href={deployUrl()}
             className="hidden rounded-[var(--radius-md)] bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-black transition-all hover:bg-[var(--color-accent-dim)] hover:shadow-[0_0_30px_-6px_var(--color-accent-glow)] sm:inline-flex"
@@ -159,6 +160,7 @@ export function Header() {
             {tc("deployServer")}
           </Link>
           <LanguageSwitcher />
+          <CurrencySwitcher />
           <CartButton />
           <AccountButton />
           <MobileMenu />

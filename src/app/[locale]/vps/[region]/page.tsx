@@ -5,6 +5,7 @@ import { regions, getRegion, vps } from "@/data/products";
 import { vpsFaq } from "@/data/faq";
 import { site } from "@/data/site";
 import { eur, jsonLdScript } from "@/lib/utils";
+import { Price } from "@/components/ui/Price";
 import { PageHero } from "@/components/ui/PageHero";
 import { PlanGrid } from "@/components/product/PlanGrid";
 import { FaqSection } from "@/components/ui/FaqSection";
@@ -89,7 +90,10 @@ export default async function RegionPage({ params }: { params: Promise<Params> }
             {site.network.asn}
           </span>
           <span className="rounded border border-[var(--color-line)] px-3 py-1.5 text-[var(--color-fg-muted)]">
-            {t("vpsRegion.fromBadge", { price: eur(region.priceFrom) })}
+            {/* El importe va como etiqueta rica para poder pintarlo en las dos divisas. */}
+            {t.rich("vpsRegion.fromBadge", {
+              price: () => <Price value={region.priceFrom} />,
+            })}
           </span>
           <span className="rounded border border-[var(--color-line)] px-3 py-1.5 text-[var(--color-accent)]">
             {t("vpsRegion.online")}

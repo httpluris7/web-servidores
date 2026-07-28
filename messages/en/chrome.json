@@ -8,7 +8,9 @@
     "deployServer": "Deploy server",
     "viewAll": "View all",
     "from": "from",
-    "changeLanguage": "Change language"
+    "changeLanguage": "Change language",
+    "changeCurrency": "Change currency",
+    "currencyNote": "Indicative conversion — billed in EUR."
   },
   "nav": {
     "products": "Products",

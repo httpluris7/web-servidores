@@ -59,13 +59,13 @@ export function LanguageSwitcher() {
         aria-haspopup="menu"
         aria-label={t("changeLanguage")}
         disabled={isPending}
-        className="flex h-10 items-center gap-1.5 rounded-full border border-[var(--color-line-strong)] px-3 text-[var(--color-fg-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-fg)] disabled:opacity-60"
+        className="flex h-10 items-center gap-1.5 rounded-full border border-[var(--color-line-strong)] px-2 text-[var(--color-fg-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-fg)] disabled:opacity-60 sm:px-3"
       >
         <span className="text-base leading-none" aria-hidden="true">
           {current.flag}
         </span>
         <span className="hidden text-xs font-medium uppercase sm:inline">{locale}</span>
-        <span className="text-[0.6rem]" aria-hidden="true">
+        <span className="hidden text-[0.6rem] sm:inline" aria-hidden="true">
           ▾
         </span>
       </button>

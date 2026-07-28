@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { dedicatedTypes } from "@/data/products";
 import { dedicatedFaq } from "@/data/faq";
-import { eur } from "@/lib/utils";
+import { Price } from "@/components/ui/Price";
 import { PageHero } from "@/components/ui/PageHero";
 import { FaqSection } from "@/components/ui/FaqSection";
 import { CtaBand } from "@/components/ui/CtaBand";
@@ -74,7 +74,7 @@ export default async function DedicatedPage({
                   <div className="mt-auto pt-8">
                     <span className="mono-label block text-[0.65rem]">{t("dedicated.from")}</span>
                     <span className="font-mono text-3xl font-semibold">
-                      {eur(from)}
+                      <Price value={from} />
                       <span className="text-base text-[var(--color-fg-muted)]">
                         {t("dedicated.perMonth")}
                       </span>

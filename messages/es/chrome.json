@@ -8,7 +8,9 @@
     "deployServer": "Desplegar servidor",
     "viewAll": "Ver todo",
     "from": "desde",
-    "changeLanguage": "Cambiar idioma"
+    "changeLanguage": "Cambiar idioma",
+    "changeCurrency": "Cambiar divisa",
+    "currencyNote": "Conversión orientativa — el cobro se realiza en EUR."
   },
   "nav": {
     "products": "Productos",

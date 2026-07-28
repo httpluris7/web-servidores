@@ -127,6 +127,34 @@ body {
 }
 
 /* --------------------------------------------------------------------------
+   Divisa de visualización (EUR / USD)
+
+   Cada importe se renderiza en las dos divisas y aquí ocultamos la que no toca
+   según el atributo `data-currency` del <html> (lo fija un script inline antes
+   del primer pintado, ver `lib/currency.ts`). Ventajas: las páginas siguen
+   siendo estáticas, no hay parpadeo ni mismatch de hidratación y el cambio de
+   divisa es instantáneo. `display: none` además saca el importe oculto del
+   árbol de accesibilidad, así que solo se lee un precio.
+
+   Fuera de @layer a propósito: son reglas de comportamiento, no utilidades, y
+   deben ganar a las clases de Tailwind que puedan acompañarlas.
+   -------------------------------------------------------------------------- */
+.c-usd {
+  display: none;
+}
+
+html[data-currency="usd"] .c-eur {
+  display: none;
+}
+
+/* `revert` (y no `inline`) para que cada elemento recupere su display natural:
+   un <span> vuelve a inline y un <p> a block. Por eso `c-usd` no debe
+   combinarse con utilidades de display (flex, grid…): ganaría este `revert`. */
+html[data-currency="usd"] .c-usd {
+  display: revert;
+}
+
+/* --------------------------------------------------------------------------
    Marquees (CSS puro, sólo transform)
    -------------------------------------------------------------------------- */
 @keyframes marquee {

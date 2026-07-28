@@ -6,7 +6,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { site, deployUrl } from "@/data/site";
 import { regions, dedicatedTypes } from "@/data/products";
-import { eur } from "@/lib/utils";
+import { Price } from "@/components/ui/Price";
 
 const directLinks = [
   { href: "/red", key: "network" },
@@ -28,13 +28,20 @@ export function MobileMenu() {
   const [section, setSection] = useState<string | null>(null);
   const [me, setMe] = useState<Me>(null);
 
-  const groups = [
+  const groups: {
+    label: string;
+    items: { href: string; label: string; note: React.ReactNode }[];
+  }[] = [
     {
       label: t("vpsByRegion"),
       items: regions.map((r) => ({
         href: `/vps/${r.slug}`,
         label: r.name,
-        note: `${tc("from")} ${eur(r.priceFrom)}`,
+        note: (
+          <>
+            {tc("from")} <Price value={r.priceFrom} />
+          </>
+        ),
       })),
     },
     {

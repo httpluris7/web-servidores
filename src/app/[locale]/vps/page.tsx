@@ -5,6 +5,7 @@ import { vps, regions } from "@/data/products";
 import { vpsFaq } from "@/data/faq";
 import { site } from "@/data/site";
 import { eur, jsonLdScript } from "@/lib/utils";
+import { Price } from "@/components/ui/Price";
 import { PageHero } from "@/components/ui/PageHero";
 import { PlanGrid } from "@/components/product/PlanGrid";
 import { FaqSection } from "@/components/ui/FaqSection";
@@ -102,7 +103,9 @@ export default async function VpsPage({
                   </div>
                   <span className="text-right">
                     <span className="mono-label block text-[0.6rem]">{t("vps.from")}</span>
-                    <span className="font-mono text-lg">{eur(r.priceFrom)}</span>
+                    <span className="font-mono text-lg">
+                      <Price value={r.priceFrom} />
+                    </span>
                   </span>
                 </Link>
               </Reveal>

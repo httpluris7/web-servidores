@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { vps, dedicatedTypes } from "@/data/products";
-import { eur } from "@/lib/utils";
+import { Price } from "@/components/ui/Price";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 
@@ -63,7 +63,7 @@ export async function ProductsGrid() {
               <div className="mt-auto pt-8">
                 <span className="mono-label block text-[0.65rem]">{t("productsGrid.from")}</span>
                 <span className="font-mono text-3xl font-semibold tracking-tight">
-                  {eur(c.priceFrom)}
+                  <Price value={c.priceFrom} />
                   <span className="text-base text-[var(--color-fg-muted)]">{t("productsGrid.perMonth")}</span>
                 </span>
               </div>

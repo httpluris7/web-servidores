@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { Plan, Region } from "@/data/products";
 import { billingHandoffUrl, site } from "@/data/site";
-import { eur } from "@/lib/utils";
+import { Price } from "@/components/ui/Price";
 import { Label, Input, Select, FieldError } from "./Field";
 
 type Errors = Partial<Record<"name" | "email" | "terms", string>>;
@@ -28,6 +28,7 @@ export function OrderForm({
   regions?: Region[];
 }) {
   const t = useTranslations("products");
+  const tc = useTranslations("common");
   const [values, setValues] = useState({ name: "", email: "", region: regions?.[0]?.slug ?? "" });
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
@@ -219,10 +220,16 @@ export function OrderForm({
 
         <div className="mt-5 flex items-baseline justify-between border-t border-[var(--color-line)] pt-5">
           <span className="text-sm text-[var(--color-fg-muted)]">{t("orderForm.monthlyTotal")}</span>
-          <span className="font-mono text-2xl font-semibold">{eur(plan.price)}</span>
+          <span className="font-mono text-2xl font-semibold">
+            <Price value={plan.price} />
+          </span>
         </div>
         <p className="mt-2 text-right font-mono text-[0.65rem] text-[var(--color-fg-dim)]">
           {t("orderForm.vatNote")} · {site.brand}
+        </p>
+        {/* El cobro es siempre en euros; el dólar es solo una vista de referencia. */}
+        <p className="c-usd mt-1 text-right font-mono text-[0.65rem] text-[var(--color-fg-dim)]">
+          {tc("currencyNote")}
         </p>
       </aside>
     </div>

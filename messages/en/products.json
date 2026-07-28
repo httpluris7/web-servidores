@@ -96,7 +96,7 @@
       "titleA": "VPS in ",
       "titleSuffix": ".",
       "description": "{latencyNote}. NVMe Gen4, 10 Gbps networking and DDoS protection included. Provisioning in 60 seconds.",
-      "fromBadge": "from {price}/mo",
+      "fromBadge": "from <price></price>/mo",
       "online": "● online",
       "plansKicker": "Plans · {name}",
       "plansTitle": "Plans available in this region.",
