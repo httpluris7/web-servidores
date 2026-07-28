@@ -23,7 +23,8 @@
       },
       "referenceNote": "Indica {reference} como concepto de la transferencia: es lo que nos permite identificar tu pedido. El servicio se activa al recibir el pago.",
       "pendingReferenceNote": "Te enviaremos la proforma por correo. Indica su número (PRO-…) como concepto de la transferencia: es lo que nos permite identificar tu pedido."
-    }
+    },
+    "goToAccount": "Ir a mi área de cliente"
   },
   "nav": {
     "products": "Productos",

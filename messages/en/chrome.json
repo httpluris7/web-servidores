@@ -23,7 +23,8 @@
       },
       "referenceNote": "Quote {reference} as the payment reference: it is what lets us match the transfer to your order. Your service is activated once the payment arrives.",
       "pendingReferenceNote": "We will email you the proforma. Quote its number (PRO-…) as the payment reference: it is what lets us match the transfer to your order."
-    }
+    },
+    "goToAccount": "Go to my client area"
   },
   "nav": {
     "products": "Products",

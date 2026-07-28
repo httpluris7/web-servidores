@@ -93,6 +93,13 @@ export function OrderForm({
             <div className="mt-6">
               <BankTransfer />
             </div>
+            {/* Aquí puede no haber sesión: /cuenta lleva al acceso y, tras entrar, al área de cliente. */}
+            <Link
+              href="/cuenta"
+              className="mt-6 inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
+            >
+              {tc("goToAccount")} →
+            </Link>
             <p className="mt-4 font-mono text-xs text-[var(--color-fg-dim)]">
               {t("orderForm.provisioningNote")}
             </p>

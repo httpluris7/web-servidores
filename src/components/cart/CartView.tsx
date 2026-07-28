@@ -68,6 +68,12 @@ export function CartView({ initialUser }: { initialUser: InitialUser }) {
         <div className="mt-6">
           <BankTransfer />
         </div>
+        <Link
+          href="/cuenta"
+          className="mt-6 inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
+        >
+          {tc("goToAccount")} →
+        </Link>
         <p className="mt-6 text-sm text-[var(--color-fg-muted)]">
           <Link href="/desplegar" className="text-[var(--color-accent)] hover:underline">
             {t("cartView.continueBrowsing")}
