@@ -20,10 +20,10 @@ export const site = {
   // Páginas internas funcionales (la web no depende de dominios externos).
   supportUrl: "/soporte",
   statusUrl: "/estado",
-  // Panel de facturación externo. Sin uso hoy: el cobro se cierra por
-  // transferencia (ver `bank`) y las proformas/facturas las emite la propia web.
-  // Se conserva por si en el futuro se enlaza un panel tipo WHMCS.
-  billingUrl: "https://panel.viahost.top", // TODO: URL real del panel WHMCS/billing del cliente
+  // Subdominio del panel. Hoy no es una aplicación aparte: nginx lo redirige al
+  // área de cliente de esta misma web (`/cuenta`), y el cobro se cierra por
+  // transferencia (ver `bank`), así que ninguna pantalla necesita enlazarlo.
+  billingUrl: "https://panel.viahost.top",
 
   // UTM aplicado a los CTAs salientes hacia el panel.
   utm: "?utm_source=web&utm_medium=site&utm_campaign=deploy",
