@@ -239,7 +239,10 @@
       "providerTokenLabel": "Token de API",
       "providerTokenHint": "Créalo en el proveedor, en Cuenta → tokens de API.",
       "providerWarning": "Este token puede apagar, reinstalar y borrar servidores. No sale nunca del servidor y no se vuelve a mostrar una vez guardado.",
-      "providerClearToken": "Borrar token"
+      "providerClearToken": "Borrar token",
+      "providerTokenExpires": "Este token caduca el",
+      "providerTokenExpired": "Este token caducó el",
+      "providerTokenExpiryHint": "Ese es un token de sesión, no de API: solo dura 15 minutos. Crea uno en Cuenta → tokens de API y pega ese en su lugar."
     },
     "servidores": {
       "title": "Servidores",

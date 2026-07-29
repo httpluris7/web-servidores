@@ -3,6 +3,7 @@ import {
   maskSecret,
   readSettings,
   stripeMode,
+  tokenExpiresAt,
   WEBHOOK_EVENTS,
   WEBHOOK_URL,
 } from "@/lib/ajustes";
@@ -35,6 +36,9 @@ export default async function ConfiguracionPage({
     apiUrl: provider.apiUrl,
     hasToken: !!provider.token,
     tokenMask: maskSecret(provider.token),
+    tokenExpiresAt: provider.token
+      ? (tokenExpiresAt(provider.token)?.toISOString() ?? null)
+      : null,
   };
 
   return (

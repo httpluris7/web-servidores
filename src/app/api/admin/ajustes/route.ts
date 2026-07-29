@@ -4,6 +4,7 @@ import {
   maskSecret,
   readSettings,
   stripeMode,
+  tokenExpiresAt,
   updateProviderSettings,
   updateStripeSettings,
   WEBHOOK_EVENTS,
@@ -37,6 +38,9 @@ function publicView(settings: Settings) {
       apiUrl: provider.apiUrl,
       hasToken: !!provider.token,
       tokenMask: maskSecret(provider.token),
+      // Un token con caducidad es casi siempre el de sesión (15 min) en lugar
+      // del de API: la pantalla lo avisa en vez de dejarlo fallar solo.
+      tokenExpiresAt: provider.token ? (tokenExpiresAt(provider.token)?.toISOString() ?? null) : null,
     },
     webhookUrl: WEBHOOK_URL,
     webhookEvents: WEBHOOK_EVENTS,

@@ -9,6 +9,8 @@ export type ProviderPublicSettings = {
   apiUrl: string;
   hasToken: boolean;
   tokenMask: string;
+  /** ISO de caducidad si el token la lleva dentro; null si no caduca. */
+  tokenExpiresAt: string | null;
 };
 
 type Account = { id: number | null; email: string | null; status: string | null };
@@ -80,6 +82,8 @@ export function ProviderSettingsForm({ initial }: { initial: ProviderPublicSetti
 
   const busy = status !== "idle";
   const active = settings.enabled && settings.hasToken;
+  const expiry = settings.tokenExpiresAt ? new Date(settings.tokenExpiresAt) : null;
+  const expired = !!expiry && expiry.getTime() < Date.now();
 
   return (
     <section className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-6">
@@ -145,6 +149,16 @@ export function ProviderSettingsForm({ initial }: { initial: ProviderPublicSetti
           </p>
         </div>
       </div>
+
+      {/* Un token con caducidad es el de sesión, no el de API: avisar siempre. */}
+      {expiry && (
+        <p className="mt-5 rounded-[var(--radius-md)] border border-[var(--color-danger)]/40 bg-[var(--color-danger)]/5 px-4 py-3 text-xs text-[var(--color-fg)]">
+          <strong className="text-[var(--color-danger)]">
+            {expired ? t("settings.providerTokenExpired") : t("settings.providerTokenExpires")}
+          </strong>{" "}
+          {expiry.toLocaleString()} — {t("settings.providerTokenExpiryHint")}
+        </p>
+      )}
 
       <p className="mt-5 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-4 py-3 text-xs text-[var(--color-fg-muted)]">
         {t("settings.providerWarning")}

@@ -188,11 +188,19 @@ export async function updateProviderSettings(patch: {
  * Versión mostrable de un secreto: prefijo reconocible + últimos 4 caracteres.
  * Con menos de 12 caracteres no se enseña nada más que puntos: no merece la
  * pena filtrar parte de un secreto corto por comodidad visual.
+ *
+ * El prefijo se busca SOLO en los 8 primeros caracteres. Antes se cortaba por
+ * el último "_" del valor entero, lo que funciona con `sk_live_…` pero deja al
+ * descubierto casi todo un JWT —los tokens del proveedor lo son y llevan "_"
+ * cerca del final—. El corte va acotado para que ningún formato de secreto
+ * futuro pueda ensanchar la parte visible.
  */
 export function maskSecret(value: string): string {
   if (!value) return "";
   if (value.length < 12) return "•".repeat(8);
-  const head = value.slice(0, value.lastIndexOf("_") + 1 || 3);
+  const start = value.slice(0, 8);
+  const cut = start.lastIndexOf("_");
+  const head = cut >= 0 ? start.slice(0, cut + 1) : value.slice(0, 3);
   return `${head}${"•".repeat(6)}${value.slice(-4)}`;
 }
 
@@ -222,6 +230,33 @@ export const WEBHOOK_EVENTS = ["checkout.session.completed", "payment_intent.suc
 export async function stripeIsReady(): Promise<boolean> {
   const { stripe } = await readSettings();
   return stripe.enabled && !!stripe.secretKey;
+}
+
+/**
+ * Fecha de caducidad de un token del proveedor, o null si no caduca (o no se
+ * puede saber).
+ *
+ * La API del proveedor entrega dos cosas muy distintas con la misma pinta: el
+ * token de `/auth/login`, que es de sesión y **dura 15 minutos**, y el de
+ * `/account/tokens`, que es el de verdad. Confundirlos deja la integración
+ * funcionando un rato y luego "el token es rechazado" sin motivo aparente. Como
+ * ambos son JWT, la fecha viene en el propio token: la leemos para avisar en el
+ * panel ANTES de que caduque.
+ *
+ * Solo se decodifica el cuerpo para leer `exp`; no se valida la firma, que no
+ * es cosa nuestra: quien la comprueba es el proveedor.
+ */
+export function tokenExpiresAt(token: string): Date | null {
+  const [, body] = token.split(".");
+  if (!body || token.split(".").length !== 3) return null; // no es un JWT
+  try {
+    const payload = JSON.parse(Buffer.from(body, "base64url").toString("utf8")) as {
+      exp?: number;
+    };
+    return typeof payload.exp === "number" ? new Date(payload.exp * 1000) : null;
+  } catch {
+    return null;
+  }
 }
 
 /** ¿Se puede consultar el proveedor de servidores? (activo y con token) */

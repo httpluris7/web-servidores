@@ -239,7 +239,10 @@
       "providerTokenLabel": "API token",
       "providerTokenHint": "Create it at the provider under Account → API tokens.",
       "providerWarning": "This token can power off, reinstall and delete servers. It never leaves the server and is never shown again once saved.",
-      "providerClearToken": "Delete token"
+      "providerClearToken": "Delete token",
+      "providerTokenExpires": "This token expires on",
+      "providerTokenExpired": "This token expired on",
+      "providerTokenExpiryHint": "That is a login token, not an API token: it only lasts 15 minutes. Create one under Account → API tokens and paste that one instead."
     },
     "servidores": {
       "title": "Servers",

@@ -239,7 +239,10 @@
       "providerTokenLabel": "Jeton d'API",
       "providerTokenHint": "Créez-le chez le fournisseur, dans Compte → jetons d'API.",
       "providerWarning": "Ce jeton peut éteindre, réinstaller et supprimer des serveurs. Il ne quitte jamais le serveur et n'est plus affiché une fois enregistré.",
-      "providerClearToken": "Supprimer le jeton"
+      "providerClearToken": "Supprimer le jeton",
+      "providerTokenExpires": "Ce jeton expire le",
+      "providerTokenExpired": "Ce jeton a expiré le",
+      "providerTokenExpiryHint": "Il s'agit d'un jeton de session, pas d'un jeton d'API : il ne dure que 15 minutes. Créez-en un dans Compte → jetons d'API et collez celui-là."
     },
     "servidores": {
       "title": "Serveurs",
