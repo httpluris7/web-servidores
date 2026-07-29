@@ -84,6 +84,13 @@ export function ProviderSettingsForm({ initial }: { initial: ProviderPublicSetti
   const active = settings.enabled && settings.hasToken;
   const expiry = settings.tokenExpiresAt ? new Date(settings.tokenExpiresAt) : null;
   const expired = !!expiry && expiry.getTime() < Date.now();
+  /**
+   * Solo avisamos si la caducidad está cerca. Los tokens buenos del proveedor
+   * también llevan `exp`, pero a cien años vista: avisar de esos convertiría el
+   * recuadro rojo en ruido permanente y acabaría ignorándose cuando importe.
+   */
+  const expiresSoon =
+    !!expiry && expiry.getTime() - Date.now() < 30 * 24 * 60 * 60 * 1000;
 
   return (
     <section className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-6">
@@ -150,8 +157,8 @@ export function ProviderSettingsForm({ initial }: { initial: ProviderPublicSetti
         </div>
       </div>
 
-      {/* Un token con caducidad es el de sesión, no el de API: avisar siempre. */}
-      {expiry && (
+      {/* Caducidad inminente: casi siempre es el token de sesión, no el de API. */}
+      {expiry && expiresSoon && (
         <p className="mt-5 rounded-[var(--radius-md)] border border-[var(--color-danger)]/40 bg-[var(--color-danger)]/5 px-4 py-3 text-xs text-[var(--color-fg)]">
           <strong className="text-[var(--color-danger)]">
             {expired ? t("settings.providerTokenExpired") : t("settings.providerTokenExpires")}

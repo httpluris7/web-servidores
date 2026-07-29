@@ -242,7 +242,7 @@
       "providerClearToken": "Supprimer le jeton",
       "providerTokenExpires": "Ce jeton expire le",
       "providerTokenExpired": "Ce jeton a expiré le",
-      "providerTokenExpiryHint": "Il s'agit d'un jeton de session, pas d'un jeton d'API : il ne dure que 15 minutes. Créez-en un dans Compte → jetons d'API et collez celui-là."
+      "providerTokenExpiryHint": "Les jetons de /auth/login ne durent que 15 minutes. Créez-en un permanent dans Compte → jetons d'API et collez celui-là."
     },
     "servidores": {
       "title": "Serveurs",

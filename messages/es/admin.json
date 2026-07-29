@@ -242,7 +242,7 @@
       "providerClearToken": "Borrar token",
       "providerTokenExpires": "Este token caduca el",
       "providerTokenExpired": "Este token caducó el",
-      "providerTokenExpiryHint": "Ese es un token de sesión, no de API: solo dura 15 minutos. Crea uno en Cuenta → tokens de API y pega ese en su lugar."
+      "providerTokenExpiryHint": "Los tokens de /auth/login solo duran 15 minutos. Crea uno permanente en Cuenta → tokens de API y pega ese en su lugar."
     },
     "servidores": {
       "title": "Servidores",
