@@ -42,18 +42,28 @@ function endpoint(apiUrl: string, path: string): string {
   return `${apiUrl.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
 }
 
-async function request<T>(cfg: ProviderConfig, path: string): Promise<T> {
+type RequestInit_ = { method?: "GET" | "POST" | "PATCH" | "DELETE"; body?: unknown };
+
+async function request<T>(
+  cfg: ProviderConfig,
+  path: string,
+  init: RequestInit_ = {}
+): Promise<T> {
+  const method = init.method ?? "GET";
+  const body = init.body === undefined ? undefined : JSON.stringify(init.body);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
   let res: Response;
   try {
     res = await fetch(endpoint(cfg.apiUrl, path), {
-      method: "GET",
+      method,
       headers: {
         Authorization: `Bearer ${cfg.token}`,
         Accept: "application/json",
+        ...(body ? { "Content-Type": "application/json" } : {}),
       },
+      body,
       signal: controller.signal,
       cache: "no-store",
     });
@@ -77,6 +87,7 @@ async function request<T>(cfg: ProviderConfig, path: string): Promise<T> {
     );
   }
 
+  // 204 y otras respuestas sin cuerpo son válidas en las acciones.
   const json = (await res.json().catch(() => null)) as { message?: string } | null;
 
   if (!res.ok) {
@@ -88,7 +99,7 @@ async function request<T>(cfg: ProviderConfig, path: string): Promise<T> {
         : (json?.message ?? `HTTP ${res.status}`);
     throw new ProviderError(detail, res.status);
   }
-  return json as T;
+  return (json ?? {}) as T;
 }
 
 type Paginated<T> = { data?: T[]; meta?: { current_page?: number; last_page?: number } };
@@ -140,6 +151,14 @@ export type ProviderServer = {
   projectId: number | null;
   projectName: string | null;
   createdAt: string | null;
+  /** Consumo instantáneo, cuando el proveedor lo incluye. */
+  usage: {
+    cpuPct: number | null;
+    diskBytes: number | null;
+    trafficInBytes: number | null;
+    trafficOutBytes: number | null;
+    trafficExceeded: boolean;
+  };
 };
 
 /* -------------------------------- Mapeadores ------------------------------ */
@@ -163,7 +182,17 @@ type RawServer = {
   project?: { id?: number; name?: string } | null;
   specifications?: { vcpu?: number; ram?: number; disk?: number } | null;
   ip_addresses?: { ipv4?: RawIp[]; ipv6?: RawIp[] } | null;
+  usage?: {
+    cpu?: number;
+    disk?: { actual_size?: number } | null;
+    network?: {
+      incoming?: { value?: number; is_exceeded?: boolean } | null;
+      outgoing?: { value?: number; is_exceeded?: boolean } | null;
+    } | null;
+  } | null;
 };
+
+const num = (v: unknown): number | null => (typeof v === "number" ? v : null);
 
 const ips = (list: RawIp[] | undefined): string[] =>
   (list ?? []).map((i) => i.ip).filter((ip): ip is string => !!ip);
@@ -192,6 +221,15 @@ function toServer(raw: RawServer, project?: ProviderProject): ProviderServer {
     projectId: raw.project?.id ?? project?.id ?? null,
     projectName: raw.project?.name ?? project?.name ?? null,
     createdAt: raw.created_at ?? null,
+    usage: {
+      cpuPct: num(raw.usage?.cpu),
+      diskBytes: num(raw.usage?.disk?.actual_size),
+      trafficInBytes: num(raw.usage?.network?.incoming?.value),
+      trafficOutBytes: num(raw.usage?.network?.outgoing?.value),
+      trafficExceeded:
+        raw.usage?.network?.incoming?.is_exceeded === true ||
+        raw.usage?.network?.outgoing?.is_exceeded === true,
+    },
   };
 }
 
@@ -254,4 +292,216 @@ export async function getServer(
     if (err instanceof ProviderError && err.status === 404) return null;
     throw err;
   }
+}
+
+/** Consumo frente a los límites del plan (tráfico, sobre todo). */
+export type ServerLimit = {
+  name: string;
+  used: number;
+  limit: number | null;
+  unit: string | null;
+  isExceeded: boolean;
+};
+
+export async function listServerLimits(
+  cfg: ProviderConfig,
+  id: number
+): Promise<ServerLimit[]> {
+  const res = await request<{
+    data?: {
+      name?: string;
+      used?: number;
+      is_exceeded?: boolean;
+      limit?: { limit?: number; is_enabled?: boolean; unit?: string } | null;
+    }[];
+  }>(cfg, `/servers/${id}/limits`);
+  return (res.data ?? [])
+    // Un límite deshabilitado no dice nada al cliente: se omite.
+    .filter((l) => l.limit?.is_enabled !== false)
+    .map((l) => ({
+      name: l.name ?? "",
+      used: l.used ?? 0,
+      limit: num(l.limit?.limit),
+      unit: l.limit?.unit ?? null,
+      isExceeded: l.is_exceeded === true,
+    }));
+}
+
+/* -------------------------------- Acciones -------------------------------- */
+
+/**
+ * Las acciones son ASÍNCRONAS: el proveedor responde con una tarea, no con el
+ * resultado. Y esta versión de la API no expone endpoint de tareas, así que el
+ * seguimiento se hace releyendo el servidor (`is_processing` / `progress`).
+ * Por eso ninguna de estas funciones devuelve el estado final.
+ */
+
+export async function startServer(cfg: ProviderConfig, id: number): Promise<void> {
+  await request(cfg, `/servers/${id}/start`, { method: "POST" });
+}
+
+export async function stopServer(
+  cfg: ProviderConfig,
+  id: number,
+  force = false
+): Promise<void> {
+  await request(cfg, `/servers/${id}/stop`, { method: "POST", body: { force } });
+}
+
+export async function restartServer(
+  cfg: ProviderConfig,
+  id: number,
+  force = false
+): Promise<void> {
+  await request(cfg, `/servers/${id}/restart`, { method: "POST", body: { force } });
+}
+
+/** Reinstala el sistema. BORRA TODOS LOS DATOS del servidor. */
+export async function reinstallServer(
+  cfg: ProviderConfig,
+  id: number,
+  opts: { osVersionId: number; sshKeyIds?: number[] }
+): Promise<void> {
+  await request(cfg, `/servers/${id}/reinstall`, {
+    method: "POST",
+    body: {
+      os: opts.osVersionId,
+      ...(opts.sshKeyIds?.length ? { ssh_keys: opts.sshKeyIds } : {}),
+    },
+  });
+}
+
+/**
+ * Genera una contraseña de root nueva y la devuelve.
+ *
+ * `send_password_to_current_user` se queda en `false` a propósito: si se activa,
+ * el proveedor manda la contraseña por correo al dueño de la cuenta —que somos
+ * NOSOTROS, no el cliente—. Se la enseñamos una sola vez en pantalla y no la
+ * guardamos en ningún sitio.
+ */
+export async function resetRootPassword(
+  cfg: ProviderConfig,
+  id: number
+): Promise<string | null> {
+  const res = await request<{ data?: { password?: string } }>(
+    cfg,
+    `/servers/${id}/reset_password`,
+    { method: "POST", body: { send_password_to_current_user: false } }
+  );
+  return res.data?.password ?? null;
+}
+
+/** Abre una consola VNC y devuelve la URL temporal a la que enviar al cliente. */
+export async function openVncConsole(
+  cfg: ProviderConfig,
+  id: number
+): Promise<string | null> {
+  const res = await request<{ url?: string; vnc_proxy_url?: string }>(
+    cfg,
+    `/servers/${id}/vnc_up`,
+    { method: "POST" }
+  );
+  // El proxy es el que sabe descifrar la URL: si viene, es el que hay que abrir.
+  return res.vnc_proxy_url ?? res.url ?? null;
+}
+
+/* ------------------------------- Instantáneas ----------------------------- */
+
+export type ProviderSnapshot = {
+  id: number;
+  name: string;
+  status: string;
+  sizeBytes: number | null;
+  createdAt: string | null;
+};
+
+export async function listSnapshots(
+  cfg: ProviderConfig,
+  id: number
+): Promise<ProviderSnapshot[]> {
+  const res = await request<{
+    data?: { id?: number; name?: string; status?: string; size?: number; created_at?: string }[];
+  }>(cfg, `/servers/${id}/snapshots`);
+  return (res.data ?? []).map((s) => ({
+    id: Number(s.id ?? 0),
+    name: s.name ?? "",
+    status: s.status ?? "unknown",
+    sizeBytes: num(s.size),
+    createdAt: s.created_at ?? null,
+  }));
+}
+
+export async function createSnapshot(
+  cfg: ProviderConfig,
+  id: number,
+  name: string
+): Promise<void> {
+  await request(cfg, `/servers/${id}/snapshots`, { method: "POST", body: { name } });
+}
+
+/** Devuelve el servidor al estado de la instantánea. Descarta lo posterior. */
+export async function revertSnapshot(cfg: ProviderConfig, snapshotId: number): Promise<void> {
+  await request(cfg, `/snapshots/${snapshotId}/revert`, { method: "POST" });
+}
+
+export async function deleteSnapshot(cfg: ProviderConfig, snapshotId: number): Promise<void> {
+  await request(cfg, `/snapshots/${snapshotId}`, { method: "DELETE" });
+}
+
+/* ------------------------------ Sistemas y claves ------------------------- */
+
+/** Una versión concreta instalable: es el id que espera `reinstall`. */
+export type ProviderOsOption = {
+  /** Id de la VERSIÓN, que es lo que pide el endpoint de reinstalación. */
+  id: number;
+  /** Etiqueta lista para mostrar: "Ubuntu 24.04". */
+  label: string;
+  family: string;
+  supportsSshKeys: boolean;
+};
+
+export async function listOsOptions(cfg: ProviderConfig): Promise<ProviderOsOption[]> {
+  const raw = await requestAll<{
+    name?: string;
+    is_visible?: boolean;
+    versions?: {
+      id?: number;
+      version?: string;
+      is_visible?: boolean;
+      is_deprecated?: boolean;
+      is_ssh_keys_supported?: boolean;
+      position?: number;
+    }[];
+  }>(cfg, "/os_images");
+
+  const out: ProviderOsOption[] = [];
+  for (const image of raw) {
+    if (image.is_visible === false) continue;
+    for (const v of image.versions ?? []) {
+      // Las versiones ocultas o retiradas no deben ofrecerse al cliente.
+      if (!v.id || v.is_visible === false || v.is_deprecated === true) continue;
+      out.push({
+        id: v.id,
+        label: `${image.name ?? ""} ${v.version ?? ""}`.trim(),
+        family: image.name ?? "",
+        supportsSshKeys: v.is_ssh_keys_supported === true,
+      });
+    }
+  }
+  return out.sort((a, b) => a.label.localeCompare(b.label));
+}
+
+export type ProviderSshKey = { id: number; name: string };
+
+export async function listProjectSshKeys(
+  cfg: ProviderConfig,
+  projectId: number
+): Promise<ProviderSshKey[]> {
+  const raw = await requestAll<{ id?: number; name?: string }>(
+    cfg,
+    `/projects/${projectId}/ssh_keys`
+  );
+  return raw
+    .filter((k) => !!k.id)
+    .map((k) => ({ id: k.id as number, name: k.name ?? `#${k.id}` }));
 }

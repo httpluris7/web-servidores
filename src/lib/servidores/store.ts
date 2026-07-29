@@ -71,6 +71,19 @@ export async function listManagedServers(): Promise<ManagedServer[]> {
   return readAll();
 }
 
+/** Ficha por su id interno (el que viaja en las URLs del área de cliente). */
+export async function getManagedById(id: string): Promise<ManagedServer | null> {
+  const list = await readAll();
+  return list.find((s) => s.id === id) ?? null;
+}
+
+/** Fichas asignadas a un cliente. Sin `userId` no devuelve nada nunca. */
+export async function listManagedByUser(userId: string): Promise<ManagedServer[]> {
+  if (!userId) return [];
+  const list = await readAll();
+  return list.filter((s) => s.userId === userId);
+}
+
 /** Vinculación de un servidor del proveedor, o null si no está dado de alta. */
 export async function getManagedByRemoteId(
   proveedor: ServerProvider,

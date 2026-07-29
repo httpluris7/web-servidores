@@ -43,6 +43,23 @@ export function invalidateInventoryCache(): void {
   cache = null;
 }
 
+/**
+ * Configuración del proveedor lista para usar, o null si no está activo. Es el
+ * único sitio donde se decide que "se puede hablar con el proveedor".
+ */
+export async function providerConfig(): Promise<ProviderConfig | null> {
+  const { provider } = await readSettings();
+  if (!provider.enabled || !provider.token) return null;
+  return { apiUrl: provider.apiUrl, token: provider.token };
+}
+
+/** Listado de servidores del proveedor (cacheado). Vacío si no está activo. */
+export async function providerServers(refresh = false): Promise<ProviderServer[]> {
+  const cfg = await providerConfig();
+  if (!cfg) return [];
+  return fetchServers(cfg, refresh);
+}
+
 export type InventoryCustomer = { id: string; nombre: string; email: string };
 
 export type InventoryItem = {
@@ -84,7 +101,10 @@ export async function buildInventory(refresh = false): Promise<Inventory> {
     return { configured: false, items: [], huerfanos: [], clientes };
   }
 
-  const servers = await fetchServers({ apiUrl: provider.apiUrl, token: provider.token }, refresh);
+  const servers = await fetchServers(
+    { apiUrl: provider.apiUrl, token: provider.token },
+    refresh
+  );
 
   const porRemoteId = new Map(managed.map((m) => [m.remoteId, m]));
   const porUserId = new Map(clientes.map((c) => [c.id, c]));

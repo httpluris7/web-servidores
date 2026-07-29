@@ -8,6 +8,7 @@ import { ChangePasswordForm } from "@/components/forms/ChangePasswordForm";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
 import { listInvoicesByUser } from "@/lib/facturas";
+import { listServersForUser } from "@/lib/servidores/cliente";
 import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata({
@@ -57,6 +58,10 @@ export default async function CuentaPage({
   const facturas = await listInvoicesByUser(user.id, user.email);
   const pendientes = facturas.filter((f) => f.estado === "pendiente").length;
 
+  // Un fallo del proveedor no debe tumbar la portada de la cuenta: sin
+  // servidores legibles, simplemente no se muestra la sección.
+  const servidores = await listServersForUser(user.id).catch(() => []);
+
   return (
     <>
       <PageHero
@@ -98,6 +103,22 @@ export default async function CuentaPage({
             {facturas.length > 0 ? ` (${facturas.length})` : ""}
           </Link>
         </section>
+
+        {/* Servidores: solo aparece si el cliente tiene alguno asignado. */}
+        {servidores.length > 0 && (
+          <section className="mt-12 border-t border-[var(--color-line)] pt-10">
+            <h2 className="mono-label mb-1">{t("account.serversHeading")}</h2>
+            <p className="mb-5 text-sm text-[var(--color-fg-muted)]">
+              {t("account.serversIntro")}
+            </p>
+            <Link
+              href="/cuenta/servidores"
+              className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-6 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+            >
+              {t("account.serversLink")} ({servidores.length})
+            </Link>
+          </section>
+        )}
 
         <section className="mt-12 border-t border-[var(--color-line)] pt-10">
           <h2 className="mono-label mb-1">{t("account.securityHeading")}</h2>

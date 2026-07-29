@@ -29,6 +29,11 @@
       "pendiente": "Pendiente de pago",
       "pagada": "Pagada",
       "cancelada": "Anulada"
+    },
+    "serverStatus": {
+      "started": "encendido",
+      "stopped": "apagado",
+      "processing": "trabajando"
     }
   },
   "nav": {
