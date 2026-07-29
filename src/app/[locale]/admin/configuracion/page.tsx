@@ -7,6 +7,7 @@ import {
   WEBHOOK_URL,
 } from "@/lib/ajustes";
 import { StripeSettingsForm } from "@/components/admin/StripeSettingsForm";
+import { ProviderSettingsForm } from "@/components/admin/ProviderSettingsForm";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,7 @@ export default async function ConfiguracionPage({
   const t = await getTranslations("admin");
 
   // Al cliente solo viaja la versión enmascarada: los secretos no salen de aquí.
-  const { stripe } = await readSettings();
+  const { stripe, provider } = await readSettings();
   const initial = {
     enabled: stripe.enabled,
     hasSecretKey: !!stripe.secretKey,
@@ -28,6 +29,12 @@ export default async function ConfiguracionPage({
     hasWebhookSecret: !!stripe.webhookSecret,
     webhookSecretMask: maskSecret(stripe.webhookSecret),
     mode: stripeMode(stripe.secretKey),
+  };
+  const initialProvider = {
+    enabled: provider.enabled,
+    apiUrl: provider.apiUrl,
+    hasToken: !!provider.token,
+    tokenMask: maskSecret(provider.token),
   };
 
   return (
@@ -42,6 +49,8 @@ export default async function ConfiguracionPage({
         webhookUrl={WEBHOOK_URL}
         webhookEvents={WEBHOOK_EVENTS}
       />
+
+      <ProviderSettingsForm initial={initialProvider} />
     </div>
   );
 }

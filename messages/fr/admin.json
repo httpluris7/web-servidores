@@ -14,7 +14,8 @@
       "customers": "Clients",
       "invoices": "Factures",
       "ordersAndContacts": "Commandes et contacts",
-      "settings": "Configuration"
+      "settings": "Configuration",
+      "servers": "Serveurs"
     },
     "dashboard": {
       "summary": "Résumé",
@@ -229,7 +230,40 @@
       "webhookUrlLabel": "URL de l'endpoint",
       "webhookEventsLabel": "Événements à souscrire",
       "copy": "Copier",
-      "copied": "Copié"
+      "copied": "Copié",
+      "providerHeading": "Fournisseur de serveurs",
+      "providerIntro": "Accès par API au fournisseur où se trouvent les VPS, pour que les clients gèrent le leur d'ici.",
+      "providerEnableLabel": "Utiliser l'API du fournisseur",
+      "providerUrlLabel": "URL de l'API",
+      "providerUrlHint": "Adresse de base avec la version, p. ex. https://manage.v4vm.com/api/v1",
+      "providerTokenLabel": "Jeton d'API",
+      "providerTokenHint": "Créez-le chez le fournisseur, dans Compte → jetons d'API.",
+      "providerWarning": "Ce jeton peut éteindre, réinstaller et supprimer des serveurs. Il ne quitte jamais le serveur et n'est plus affiché une fois enregistré.",
+      "providerClearToken": "Supprimer le jeton"
+    },
+    "servidores": {
+      "title": "Serveurs",
+      "subtitle": "Tout ce que vous avez chez le fournisseur, et à quel client chacun appartient.",
+      "heading": "Inventaire",
+      "notConfigured": "Aucun jeton du fournisseur pour l'instant. Ajoutez-le dans Configuration et l'inventaire apparaîtra ici.",
+      "refresh": "Actualiser",
+      "refreshing": "Actualisation…",
+      "searchPlaceholder": "Nom, IP ou client",
+      "none": "Il n'y a pas encore de serveurs sur ce compte.",
+      "noMatch": "Aucun serveur ne correspond à cette recherche.",
+      "colServer": "Serveur",
+      "colStatus": "État",
+      "colSpecs": "Ressources",
+      "colCustomer": "Client",
+      "unassigned": "— Non attribué —",
+      "statusProcessing": "Tâche en cours",
+      "statusSuspended": "Suspendu",
+      "orphansHeading": "Liens sans serveur",
+      "orphansIntro": "Ils étaient attribués à un client mais n'existent plus chez le fournisseur. Retirer le lien ne touche à rien chez le fournisseur.",
+      "forget": "Retirer le lien",
+      "errorLoad": "La liste des serveurs n'a pas pu être chargée.",
+      "errorSave": "L'attribution n'a pas pu être enregistrée.",
+      "errorConnection": "Erreur de connexion."
     }
   }
 }

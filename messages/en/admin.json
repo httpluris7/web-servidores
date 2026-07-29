@@ -14,7 +14,8 @@
       "customers": "Customers",
       "invoices": "Invoices",
       "ordersAndContacts": "Orders and contacts",
-      "settings": "Settings"
+      "settings": "Settings",
+      "servers": "Servers"
     },
     "dashboard": {
       "summary": "Summary",
@@ -229,7 +230,40 @@
       "webhookUrlLabel": "Endpoint URL",
       "webhookEventsLabel": "Events to subscribe to",
       "copy": "Copy",
-      "copied": "Copied"
+      "copied": "Copied",
+      "providerHeading": "Server provider",
+      "providerIntro": "API access to the provider that hosts the VPS, so customers can manage theirs from here.",
+      "providerEnableLabel": "Use the provider API",
+      "providerUrlLabel": "API URL",
+      "providerUrlHint": "Base address including the version, e.g. https://manage.v4vm.com/api/v1",
+      "providerTokenLabel": "API token",
+      "providerTokenHint": "Create it at the provider under Account → API tokens.",
+      "providerWarning": "This token can power off, reinstall and delete servers. It never leaves the server and is never shown again once saved.",
+      "providerClearToken": "Delete token"
+    },
+    "servidores": {
+      "title": "Servers",
+      "subtitle": "Everything you have at the provider, and which customer each one belongs to.",
+      "heading": "Inventory",
+      "notConfigured": "No provider API token yet. Add it under Settings and the inventory will show up here.",
+      "refresh": "Refresh",
+      "refreshing": "Refreshing…",
+      "searchPlaceholder": "Name, IP or customer",
+      "none": "There are no servers in this account yet.",
+      "noMatch": "No server matches that search.",
+      "colServer": "Server",
+      "colStatus": "Status",
+      "colSpecs": "Resources",
+      "colCustomer": "Customer",
+      "unassigned": "— Unassigned —",
+      "statusProcessing": "Task in progress",
+      "statusSuspended": "Suspended",
+      "orphansHeading": "Links with no server",
+      "orphansIntro": "These were assigned to a customer but no longer exist at the provider. Removing the link does not touch anything at the provider.",
+      "forget": "Remove link",
+      "errorLoad": "The server list could not be loaded.",
+      "errorSave": "The assignment could not be saved.",
+      "errorConnection": "Connection error."
     }
   }
 }

@@ -32,7 +32,24 @@ export type StripeSettings = {
   webhookSecret: string;
 };
 
-export type Settings = { stripe: StripeSettings };
+/**
+ * Proveedor de servidores (hoy v4vm, que expone una API SolusVM 2). El token
+ * da control total sobre los VPS —encender, borrar, reinstalar—, así que se
+ * trata con el mismo cuidado que la clave de Stripe.
+ */
+export type ProviderSettings = {
+  /** Interruptor: sin esto no se habla con el proveedor aunque haya token. */
+  enabled: boolean;
+  /** Base de la API, con la versión incluida. */
+  apiUrl: string;
+  /** Token de API que viaja como `Authorization: Bearer …`. */
+  token: string;
+};
+
+export type Settings = { stripe: StripeSettings; provider: ProviderSettings };
+
+/** Base de la API del proveedor actual, si no se configura otra. */
+export const DEFAULT_PROVIDER_API_URL = "https://manage.v4vm.com/api/v1";
 
 /* --------------------------------- Lectura -------------------------------- */
 
@@ -41,6 +58,14 @@ function fromEnv(): StripeSettings {
     enabled: false,
     secretKey: (process.env.STRIPE_SECRET_KEY || "").trim(),
     webhookSecret: (process.env.STRIPE_WEBHOOK_SECRET || "").trim(),
+  };
+}
+
+function providerFromEnv(): ProviderSettings {
+  return {
+    enabled: false,
+    apiUrl: (process.env.PROVIDER_API_URL || "").trim() || DEFAULT_PROVIDER_API_URL,
+    token: (process.env.PROVIDER_API_TOKEN || "").trim(),
   };
 }
 
@@ -56,19 +81,37 @@ function normalizeStripe(raw: unknown, fallback: StripeSettings): StripeSettings
   };
 }
 
+function normalizeProvider(raw: unknown, fallback: ProviderSettings): ProviderSettings {
+  const o = (raw ?? {}) as Partial<Record<keyof ProviderSettings, unknown>>;
+  const apiUrl = typeof o.apiUrl === "string" ? o.apiUrl.trim() : "";
+  const token = typeof o.token === "string" ? o.token.trim() : "";
+  return {
+    enabled: o.enabled === true,
+    apiUrl: apiUrl || fallback.apiUrl,
+    token: token || fallback.token,
+  };
+}
+
 /** Ajustes efectivos (fichero sobre entorno). Nunca lanza: sin fichero, vacíos. */
 export async function readSettings(): Promise<Settings> {
   const env = fromEnv();
+  const providerEnv = providerFromEnv();
   let parsed: unknown = null;
   try {
     parsed = JSON.parse(await readFile(FILE, "utf8"));
   } catch {
     // Sin fichero (o ilegible/corrupto): nos quedamos con el entorno.
     // Si el entorno trae claves, damos por activo el cobro por Stripe.
-    return { stripe: { ...env, enabled: !!env.secretKey || !!env.webhookSecret } };
+    return {
+      stripe: { ...env, enabled: !!env.secretKey || !!env.webhookSecret },
+      provider: { ...providerEnv, enabled: !!providerEnv.token },
+    };
   }
-  const obj = (parsed ?? {}) as { stripe?: unknown };
-  return { stripe: normalizeStripe(obj.stripe, env) };
+  const obj = (parsed ?? {}) as { stripe?: unknown; provider?: unknown };
+  return {
+    stripe: normalizeStripe(obj.stripe, env),
+    provider: normalizeProvider(obj.provider, providerEnv),
+  };
 }
 
 /* -------------------------------- Escritura ------------------------------- */
@@ -85,27 +128,54 @@ export async function writeSettings(next: Settings): Promise<void> {
 }
 
 /**
+ * Resuelve el valor nuevo de un secreto en una actualización parcial: `null`
+ * lo borra, `undefined` (o cadena vacía) conserva el que ya había. Los
+ * formularios no reciben nunca los secretos, así que no pueden reenviarlos:
+ * dejar el campo en blanco tiene que significar "no lo toques".
+ */
+function pickSecret(value: string | null | undefined, previous: string): string {
+  if (value === null) return "";
+  if (value === undefined) return previous;
+  const trimmed = value.trim();
+  return trimmed === "" ? previous : trimmed;
+}
+
+/**
  * Aplica cambios parciales de Stripe. Una cadena vacía significa "deja la que
- * ya había" (el formulario no recibe nunca los secretos, así que no puede
- * reenviarlos); para borrar una clave se envía `null`.
+ * ya había"; para borrar una clave se envía `null`.
  */
 export async function updateStripeSettings(patch: {
   enabled?: boolean;
   secretKey?: string | null;
   webhookSecret?: string | null;
 }): Promise<Settings> {
-  const current = (await readSettings()).stripe;
-  const pick = (value: string | null | undefined, previous: string): string => {
-    if (value === null) return "";
-    if (value === undefined) return previous;
-    const trimmed = value.trim();
-    return trimmed === "" ? previous : trimmed;
-  };
+  const current = await readSettings();
   const next: Settings = {
+    ...current,
     stripe: {
-      enabled: patch.enabled ?? current.enabled,
-      secretKey: pick(patch.secretKey, current.secretKey),
-      webhookSecret: pick(patch.webhookSecret, current.webhookSecret),
+      enabled: patch.enabled ?? current.stripe.enabled,
+      secretKey: pickSecret(patch.secretKey, current.stripe.secretKey),
+      webhookSecret: pickSecret(patch.webhookSecret, current.stripe.webhookSecret),
+    },
+  };
+  await writeSettings(next);
+  return next;
+}
+
+/** Igual que `updateStripeSettings`, para las credenciales del proveedor. */
+export async function updateProviderSettings(patch: {
+  enabled?: boolean;
+  apiUrl?: string;
+  token?: string | null;
+}): Promise<Settings> {
+  const current = await readSettings();
+  const apiUrl = (patch.apiUrl ?? "").trim();
+  const next: Settings = {
+    ...current,
+    provider: {
+      enabled: patch.enabled ?? current.provider.enabled,
+      apiUrl: apiUrl || current.provider.apiUrl || DEFAULT_PROVIDER_API_URL,
+      token: pickSecret(patch.token, current.provider.token),
     },
   };
   await writeSettings(next);
@@ -152,4 +222,10 @@ export const WEBHOOK_EVENTS = ["checkout.session.completed", "payment_intent.suc
 export async function stripeIsReady(): Promise<boolean> {
   const { stripe } = await readSettings();
   return stripe.enabled && !!stripe.secretKey;
+}
+
+/** ¿Se puede consultar el proveedor de servidores? (activo y con token) */
+export async function providerIsReady(): Promise<boolean> {
+  const { provider } = await readSettings();
+  return provider.enabled && !!provider.token;
 }

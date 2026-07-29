@@ -4,12 +4,15 @@ import {
   maskSecret,
   readSettings,
   stripeMode,
+  updateProviderSettings,
   updateStripeSettings,
   WEBHOOK_EVENTS,
   WEBHOOK_URL,
   type Settings,
 } from "@/lib/ajustes";
 import { retrieveAccount, StripeError } from "@/lib/payments/stripe";
+import { invalidateInventoryCache } from "@/lib/servidores/inventario";
+import { ProviderError, verifyToken } from "@/lib/servidores/v4vm";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,7 +22,7 @@ export const dynamic = "force-dynamic";
  * versión enmascarada y si están puestos o no.
  */
 function publicView(settings: Settings) {
-  const { stripe } = settings;
+  const { stripe, provider } = settings;
   return {
     stripe: {
       enabled: stripe.enabled,
@@ -28,6 +31,12 @@ function publicView(settings: Settings) {
       hasWebhookSecret: !!stripe.webhookSecret,
       webhookSecretMask: maskSecret(stripe.webhookSecret),
       mode: stripeMode(stripe.secretKey),
+    },
+    provider: {
+      enabled: provider.enabled,
+      apiUrl: provider.apiUrl,
+      hasToken: !!provider.token,
+      tokenMask: maskSecret(provider.token),
     },
     webhookUrl: WEBHOOK_URL,
     webhookEvents: WEBHOOK_EVENTS,
@@ -51,6 +60,44 @@ function keyError(value: string, prefixes: string[], label: string): string | nu
   return null;
 }
 
+/** Guarda las credenciales del proveedor de servidores. */
+async function putProvider(body: Record<string, unknown>) {
+  const token = body.token === null ? null : typeof body.token === "string" ? body.token.trim() : undefined;
+
+  if (typeof token === "string" && token && token.length < 20) {
+    return NextResponse.json({ ok: false, error: "The API token looks too short." }, { status: 422 });
+  }
+
+  // La URL se valida de verdad: un fallo aquí manda el token a otro servidor.
+  let apiUrl: string | undefined;
+  if (typeof body.apiUrl === "string" && body.apiUrl.trim()) {
+    const raw = body.apiUrl.trim();
+    let parsed: URL;
+    try {
+      parsed = new URL(raw);
+    } catch {
+      return NextResponse.json({ ok: false, error: "The API URL is not valid." }, { status: 422 });
+    }
+    if (parsed.protocol !== "https:") {
+      return NextResponse.json({ ok: false, error: "The API URL must use https." }, { status: 422 });
+    }
+    apiUrl = raw;
+  }
+
+  const enabled = typeof body.enabled === "boolean" ? body.enabled : undefined;
+  const settings = await updateProviderSettings({ enabled, apiUrl, token });
+
+  // Cambiar el token invalida lo que hubiera cacheado del token anterior.
+  invalidateInventoryCache();
+
+  const warning =
+    settings.provider.enabled && !settings.provider.token
+      ? "The provider is enabled but there is no API token yet."
+      : null;
+
+  return NextResponse.json({ ok: true, warning, ...publicView(settings) });
+}
+
 export async function PUT(req: Request) {
   if (!(await getAdminSession())) {
     return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 403 });
@@ -62,6 +109,8 @@ export async function PUT(req: Request) {
   } catch {
     return NextResponse.json({ ok: false, error: "Invalid JSON." }, { status: 400 });
   }
+
+  if (body.section === "provider") return putProvider(body);
 
   // `null` borra la clave guardada; ausente o cadena vacía la deja como está.
   const readKey = (v: unknown): string | null | undefined => {
@@ -100,10 +149,28 @@ export async function PUT(req: Request) {
   return NextResponse.json({ ok: true, warning, ...publicView(settings) });
 }
 
-/** Prueba la clave guardada contra Stripe y devuelve de qué cuenta es. */
-export async function POST() {
+/**
+ * Prueba las credenciales guardadas. Por defecto las de Stripe; con
+ * `?target=provider`, las del proveedor de servidores.
+ */
+export async function POST(req: Request) {
   if (!(await getAdminSession())) {
     return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 403 });
+  }
+
+  if (new URL(req.url).searchParams.get("target") === "provider") {
+    const { provider } = await readSettings();
+    if (!provider.token) {
+      return NextResponse.json({ ok: false, error: "No API token saved yet." }, { status: 422 });
+    }
+    try {
+      const account = await verifyToken({ apiUrl: provider.apiUrl, token: provider.token });
+      return NextResponse.json({ ok: true, account });
+    } catch (err) {
+      const message =
+        err instanceof ProviderError ? err.message : "Could not reach the provider.";
+      return NextResponse.json({ ok: false, error: message }, { status: 502 });
+    }
   }
 
   const { stripe } = await readSettings();

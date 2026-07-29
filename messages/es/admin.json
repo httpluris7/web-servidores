@@ -14,7 +14,8 @@
       "customers": "Clientes",
       "invoices": "Facturas",
       "ordersAndContacts": "Pedidos y contactos",
-      "settings": "Configuración"
+      "settings": "Configuración",
+      "servers": "Servidores"
     },
     "dashboard": {
       "summary": "Resumen",
@@ -229,7 +230,40 @@
       "webhookUrlLabel": "URL del endpoint",
       "webhookEventsLabel": "Eventos a suscribir",
       "copy": "Copiar",
-      "copied": "Copiado"
+      "copied": "Copiado",
+      "providerHeading": "Proveedor de servidores",
+      "providerIntro": "Acceso por API al proveedor donde están los VPS, para que los clientes gestionen el suyo desde aquí.",
+      "providerEnableLabel": "Usar la API del proveedor",
+      "providerUrlLabel": "URL de la API",
+      "providerUrlHint": "Dirección base con la versión incluida, p. ej. https://manage.v4vm.com/api/v1",
+      "providerTokenLabel": "Token de API",
+      "providerTokenHint": "Créalo en el proveedor, en Cuenta → tokens de API.",
+      "providerWarning": "Este token puede apagar, reinstalar y borrar servidores. No sale nunca del servidor y no se vuelve a mostrar una vez guardado.",
+      "providerClearToken": "Borrar token"
+    },
+    "servidores": {
+      "title": "Servidores",
+      "subtitle": "Todo lo que tienes en el proveedor, y de qué cliente es cada uno.",
+      "heading": "Inventario",
+      "notConfigured": "Todavía no hay token del proveedor. Añádelo en Configuración y el inventario aparecerá aquí.",
+      "refresh": "Refrescar",
+      "refreshing": "Refrescando…",
+      "searchPlaceholder": "Nombre, IP o cliente",
+      "none": "Aún no hay servidores en esta cuenta.",
+      "noMatch": "Ningún servidor coincide con la búsqueda.",
+      "colServer": "Servidor",
+      "colStatus": "Estado",
+      "colSpecs": "Recursos",
+      "colCustomer": "Cliente",
+      "unassigned": "— Sin asignar —",
+      "statusProcessing": "Tarea en curso",
+      "statusSuspended": "Suspendido",
+      "orphansHeading": "Vinculaciones sin servidor",
+      "orphansIntro": "Estaban asignadas a un cliente pero ya no existen en el proveedor. Quitar la vinculación no toca nada en el proveedor.",
+      "forget": "Quitar vinculación",
+      "errorLoad": "No se ha podido cargar la lista de servidores.",
+      "errorSave": "No se ha podido guardar la asignación.",
+      "errorConnection": "Error de conexión."
     }
   }
 }
