@@ -1,5 +1,5 @@
 import { randomUUID, randomBytes } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { chmod, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 /**
@@ -158,7 +158,9 @@ function normalize(raw: Record<string, unknown>): Invoice {
 async function writeAll(list: Invoice[]): Promise<void> {
   await mkdir(DATA_DIR, { recursive: true });
   const body = list.map((inv) => JSON.stringify(inv)).join("\n");
-  await writeFile(FILE, body ? body + "\n" : "", "utf8");
+  // 0600: las facturas llevan datos personales del cliente e importes.
+  await writeFile(FILE, body ? body + "\n" : "", { encoding: "utf8", mode: 0o600 });
+  await chmod(FILE, 0o600);
 }
 
 /**

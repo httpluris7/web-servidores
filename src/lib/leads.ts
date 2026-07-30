@@ -1,4 +1,4 @@
-import { appendFile, mkdir, readFile } from "node:fs/promises";
+import { appendFile, chmod, mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 /**
@@ -24,7 +24,11 @@ export async function saveLead(kind: LeadKind, payload: Record<string, unknown>)
   };
 
   await mkdir(DATA_DIR, { recursive: true });
-  await appendFile(path.join(DATA_DIR, `${kind}s.jsonl`), JSON.stringify(record) + "\n", "utf8");
+  const file = path.join(DATA_DIR, `${kind}s.jsonl`);
+  // Datos personales (nombre, email, teléfono): 0600, no legibles por cualquier
+  // usuario de la máquina. `mode` solo aplica al crear; el chmod cubre el resto.
+  await appendFile(file, JSON.stringify(record) + "\n", { encoding: "utf8", mode: 0o600 });
+  await chmod(file, 0o600);
 
   const webhook = process.env.LEADS_WEBHOOK_URL;
   if (webhook) {

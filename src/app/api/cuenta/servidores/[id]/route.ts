@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
+import { rateLimit } from "@/lib/rate-limit";
+import { esIdInterno } from "@/lib/servidores/store";
 import { getServerForUser } from "@/lib/servidores/cliente";
 import { listServerLimits, listSnapshots, ProviderError } from "@/lib/servidores/v4vm";
 
@@ -18,6 +20,21 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
   }
 
   const { id } = await ctx.params;
+  if (!esIdInterno(id)) {
+    return NextResponse.json({ ok: false, error: "Not found." }, { status: 404 });
+  }
+
+  // Cada lectura son 1-3 llamadas a la API del proveedor, que limita el ritmo
+  // para TODA la cuenta: sin tope aquí, un cliente sondeando en bucle deja sin
+  // cuota a los demás y al panel de administración. La pantalla consulta cada
+  // 5 s mientras hay una tarea en curso (12/min por pestaña abierta).
+  const limite = rateLimit(`srv-ver:${session.uid}:${id}`, { limit: 60, windowMs: 60_000 });
+  if (!limite.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many requests.", retryAfter: limite.retryAfter },
+      { status: 429, headers: { "Retry-After": String(limite.retryAfter) } }
+    );
+  }
 
   try {
     const found = await getServerForUser(id, session.uid);
@@ -44,8 +61,16 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
       ...(limits ? { limits } : {}),
     });
   } catch (err) {
-    const message =
-      err instanceof ProviderError ? err.message : "Could not reach the provider.";
-    return NextResponse.json({ ok: false, error: message }, { status: 502 });
+    // El detalle del proveedor es interno —puede hablar de nuestro token o de
+    // su infraestructura—: se registra y al cliente se le da un mensaje llano.
+    console.error(
+      "[servidores] fallo leyendo el servidor",
+      id,
+      err instanceof ProviderError ? `${err.status} ${err.message}` : err
+    );
+    return NextResponse.json(
+      { ok: false, error: "Could not reach the provider." },
+      { status: 502 }
+    );
   }
 }

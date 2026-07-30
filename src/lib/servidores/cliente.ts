@@ -39,8 +39,26 @@ export async function getServerForUser(
   // Sin caché: quien va a actuar sobre el servidor necesita su estado real.
   const remote = await getServer(cfg, managed.remoteId);
   if (!remote) return null;
+  if (!mismoServidor(managed, remote)) return null;
 
   return { managed, remote, cfg };
+}
+
+/**
+ * ¿El servidor que devuelve el proveedor es el mismo que asignamos?
+ *
+ * La ficha guarda el UUID justamente para esto. El id numérico es del
+ * proveedor: si borra un servidor y reutiliza el número —o si lo movemos de
+ * cuenta—, nuestra ficha seguiría apuntando a ese id y le daríamos a un cliente
+ * el mando de una máquina que ya no es suya. El UUID no se reutiliza, así que
+ * un desajuste significa "no es este servidor" y se trata como inexistente.
+ *
+ * Las fichas antiguas pueden no tener UUID guardado; en ese caso no hay nada
+ * que comparar y se deja pasar (el id sigue siendo el criterio).
+ */
+function mismoServidor(managed: ManagedServer, remote: ProviderServer): boolean {
+  if (!managed.remoteUuid || !remote.uuid) return true;
+  return managed.remoteUuid === remote.uuid;
 }
 
 /**
@@ -57,9 +75,10 @@ export async function listServersForUser(userId: string): Promise<ClientServer[]
   return managed
     .map((m) => {
       const remote = porId.get(m.remoteId);
-      // Ficha huérfana (el servidor ya no está en el proveedor): se omite. El
-      // admin las ve en su inventario para poder limpiarlas.
-      return remote ? { managed: m, remote } : null;
+      // Ficha huérfana (el servidor ya no está en el proveedor), o un id que ya
+      // no corresponde a la máquina asignada: se omite. El admin las ve en su
+      // inventario para poder limpiarlas.
+      return remote && mismoServidor(m, remote) ? { managed: m, remote } : null;
     })
     .filter((x): x is ClientServer => x !== null)
     .sort((a, b) => a.remote.name.localeCompare(b.remote.name));

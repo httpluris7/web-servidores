@@ -1,5 +1,5 @@
 import { createHash, randomBytes, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
-import { appendFile, mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { appendFile, chmod, mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 /**
@@ -155,7 +155,11 @@ export async function createUser(input: NewUserInput): Promise<PublicUser> {
     createdAt: new Date().toISOString(),
   };
   await mkdir(DATA_DIR, { recursive: true });
-  await appendFile(USERS_FILE, JSON.stringify(user) + "\n", "utf8");
+  await appendFile(USERS_FILE, JSON.stringify(user) + "\n", { encoding: "utf8", mode: 0o600 });
+  // 0600 siempre: este fichero guarda los hashes de contraseña y los datos
+  // personales de los clientes. `mode` solo se aplica al crearlo, así que el
+  // chmod es lo que garantiza que un fichero ya existente quede cerrado.
+  await chmod(USERS_FILE, 0o600);
   return toPublic(user);
 }
 
@@ -177,8 +181,10 @@ export async function updateUserPassword(id: string, newPassword: string): Promi
   const content = users.map((u) => JSON.stringify(u)).join("\n") + "\n";
 
   await mkdir(DATA_DIR, { recursive: true });
+  // El temporal nace ya con 0600: el rename conserva sus permisos, así que si
+  // naciera abierto dejaría el fichero de usuarios abierto tras cada cambio.
   const tmp = `${USERS_FILE}.${randomUUID()}.tmp`;
-  await writeFile(tmp, content, "utf8");
+  await writeFile(tmp, content, { encoding: "utf8", mode: 0o600 });
   await rename(tmp, USERS_FILE);
   return true;
 }

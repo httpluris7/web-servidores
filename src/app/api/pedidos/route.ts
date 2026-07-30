@@ -64,6 +64,24 @@ export async function POST(req: Request) {
   const metodo: CheckoutMethod = body.metodo === "tarjeta" ? "tarjeta" : "transferencia";
   const locale = clean(body.locale, 5) || undefined;
   const session = await getSession();
+
+  // Emitir la proforma manda un PDF con nuestra marca a una dirección que aquí
+  // NO está verificada: sin sesión, este formulario es un pulsador para que
+  // viahost.top escriba a quien sea, con el nombre que elija quien lo pulse.
+  // El tope por IP no basta (las IPs rotan), así que se limita también por
+  // destinatario y en conjunto. El pedido queda guardado igualmente: lo único
+  // que se corta es el correo automático, y el panel lo ve.
+  if (!session) {
+    const porDestinatario = rateLimit(`proforma-mail:${email.toLowerCase()}`, {
+      limit: 3,
+      windowMs: 60 * 60_000,
+    });
+    const enConjunto = rateLimit("proforma-anon", { limit: 30, windowMs: 60 * 60_000 });
+    if (!porDestinatario.ok || !enConjunto.ok) {
+      console.warn("[pedidos] proforma anónima limitada para", email);
+      return NextResponse.json({ ok: true, numero: null, paymentUrl: null });
+    }
+  }
   const regionName = regions.find((r) => r.slug === region)?.name ?? region;
 
   try {

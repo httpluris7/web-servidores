@@ -11,6 +11,18 @@ type Bucket = { count: number; resetAt: number };
 
 const store = new Map<string, Bucket>();
 
+/**
+ * Tope duro de claves vivas.
+ *
+ * Varias claves incluyen datos que elige quien llama (el email en el login, el
+ * id del servidor en su panel). Sin tope, basta con variar ese dato en cada
+ * petición para hacer crecer el Map indefinidamente: la poda perezosa solo
+ * borra lo caducado, y dentro de la ventana no hay nada caducado. Por encima
+ * del tope desalojamos las entradas que antes vencen —las que menos protegen ya—
+ * para que la memoria quede acotada pase lo que pase.
+ */
+const MAX_KEYS = 5000;
+
 export type RateLimitResult = { ok: boolean; retryAfter: number };
 
 /**
@@ -25,8 +37,14 @@ export function rateLimit(
   const now = Date.now();
 
   // Poda perezosa para que el Map no crezca sin límite.
-  if (store.size > 5000) {
+  if (store.size > MAX_KEYS) {
     for (const [k, b] of store) if (b.resetAt <= now) store.delete(k);
+    // Si sigue por encima, es que están todas vivas: alguien está fabricando
+    // claves. Desalojamos por vencimiento más próximo hasta volver al tope.
+    if (store.size > MAX_KEYS) {
+      const porVencimiento = [...store.entries()].sort((a, b) => a[1].resetAt - b[1].resetAt);
+      for (const [k] of porVencimiento.slice(0, store.size - MAX_KEYS)) store.delete(k);
+    }
   }
 
   const bucket = store.get(key);

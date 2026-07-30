@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { rateLimit } from "@/lib/rate-limit";
+import { esIdInterno } from "@/lib/servidores/store";
 import { getServerForUser } from "@/lib/servidores/cliente";
 import {
   createSnapshot,
@@ -57,6 +58,12 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
   }
 
   const { id } = await ctx.params;
+  // El id entra en la clave del límite de peticiones, que se aplica ANTES de
+  // comprobar la pertenencia: si se admitiera cualquier cadena, bastaría con
+  // inventar ids para fabricar claves sin fin. Solo pasan los ids que emitimos.
+  if (!esIdInterno(id)) {
+    return NextResponse.json({ ok: false, error: "Not found." }, { status: 404 });
+  }
 
   let body: Record<string, unknown>;
   try {
@@ -81,7 +88,23 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
     );
   }
 
-  const found = await getServerForUser(id, session.uid);
+  // La comprobación de pertenencia habla con el proveedor, así que puede
+  // fallar: sin este try, un token caducado o una caída del proveedor salían
+  // como un 500 pelado de Next en vez de un error nuestro con su registro.
+  let found;
+  try {
+    found = await getServerForUser(id, session.uid);
+  } catch (err) {
+    console.error(
+      "[servidores] fallo comprobando la pertenencia de",
+      id,
+      err instanceof ProviderError ? `${err.status} ${err.message}` : err
+    );
+    return NextResponse.json(
+      { ok: false, error: "Could not reach the provider." },
+      { status: 502 }
+    );
+  }
   if (!found) {
     return NextResponse.json({ ok: false, error: "Not found." }, { status: 404 });
   }
@@ -191,9 +214,20 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
       }
     }
   } catch (err) {
-    if (err instanceof ProviderError) {
-      const suffix = err.retryAfter ? ` Try again in ${err.retryAfter}s.` : "";
-      return NextResponse.json({ ok: false, error: err.message + suffix }, { status: 502 });
+    // Al cliente, mensaje llano: el detalle del proveedor puede referirse a
+    // nuestro token o a su infraestructura, y no es asunto suyo. Se registra
+    // completo para poder diagnosticarlo.
+    console.error(
+      "[servidores] fallo en la acción",
+      accion,
+      id,
+      err instanceof ProviderError ? `${err.status} ${err.message}` : err
+    );
+    if (err instanceof ProviderError && err.status === 429) {
+      return NextResponse.json(
+        { ok: false, error: "The provider is busy. Please try again in a moment." },
+        { status: 502, ...(err.retryAfter ? { headers: { "Retry-After": String(err.retryAfter) } } : {}) }
+      );
     }
     return NextResponse.json(
       { ok: false, error: "Could not reach the provider." },

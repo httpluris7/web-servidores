@@ -1,4 +1,4 @@
-import { appendFile, mkdir, readFile } from "node:fs/promises";
+import { appendFile, chmod, mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import type { PaymentEvent } from "./types";
 
@@ -76,5 +76,6 @@ export async function markProcessed(
     processedAt: new Date().toISOString(),
     ...extra,
   };
-  await appendFile(FILE, JSON.stringify(record) + "\n", "utf8");
+  await appendFile(FILE, JSON.stringify(record) + "\n", { encoding: "utf8", mode: 0o600 });
+  await chmod(FILE, 0o600);
 }

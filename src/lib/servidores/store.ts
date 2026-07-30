@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { chmod, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 /**
@@ -38,6 +38,18 @@ export type ManagedServer = {
   actualizadoAt: string;
 };
 
+/** Los ids internos los emitimos nosotros con `randomUUID`. */
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * ¿Tiene forma de id nuestro? Sirve para descartar en la puerta lo que no puede
+ * existir, antes de usarlo como clave de nada (ver el límite de peticiones del
+ * área de cliente, que se aplica antes de comprobar la pertenencia).
+ */
+export function esIdInterno(id: string): boolean {
+  return UUID_RE.test(id);
+}
+
 /* ------------------------------- Persistencia ----------------------------- */
 
 async function readAll(): Promise<ManagedServer[]> {
@@ -62,7 +74,10 @@ async function readAll(): Promise<ManagedServer[]> {
 async function writeAll(list: ManagedServer[]): Promise<void> {
   await mkdir(DATA_DIR, { recursive: true });
   const body = list.map((s) => JSON.stringify(s)).join("\n");
-  await writeFile(FILE, body ? body + "\n" : "", "utf8");
+  // 0600: en `data/` viven datos de clientes; que no los pueda leer cualquier
+  // usuario de la máquina. `mode` solo aplica al crear, así que además se fija.
+  await writeFile(FILE, body ? body + "\n" : "", { encoding: "utf8", mode: 0o600 });
+  await chmod(FILE, 0o600);
 }
 
 /* --------------------------------- Lectura -------------------------------- */
