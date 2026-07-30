@@ -288,7 +288,7 @@
         "byUs": "Support",
         "byCustomer": "Customer",
         "replyLabel": "Reply",
-        "replyHint": "You can also reply to the email in soporte@viahost.top — it reaches the customer, but it is not recorded in this thread. Replying here does both.",
+        "replyHint": "You can also reply to the email in soporte@viahost.top: it reaches the customer and the reply lands in this thread on its own.",
         "replyPlaceholder": "Write the reply the customer will receive…",
         "send": "Send reply",
         "sending": "Sending…",

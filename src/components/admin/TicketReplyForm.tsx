@@ -10,8 +10,9 @@ import type { TicketStatus } from "@/lib/tickets";
  * Respuesta a un ticket desde el panel.
  *
  * Se puede contestar también desde el buzón de soporte —el correo que llega
- * lleva al cliente en el `Reply-To`—, pero esa respuesta solo existe en su
- * correo. Respondiendo aquí queda además en el hilo de su área de cliente.
+ * lleva al cliente en el `Reply-To`— y esa respuesta se recoge después de la
+ * carpeta de enviados; las dos vías acaban en el hilo. Esta evita el rodeo y
+ * además avisa al cliente al momento.
  */
 export function TicketReplyForm({ id, estado }: { id: string; estado: TicketStatus }) {
   const t = useTranslations("admin");

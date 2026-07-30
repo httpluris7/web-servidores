@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { TicketStatusBadge } from "@/components/ui/TicketStatusBadge";
 import { TicketReplyForm } from "@/components/admin/TicketReplyForm";
 import { esIdTicket, getTicketById } from "@/lib/tickets";
+import { syncTicketMail } from "@/lib/tickets-mail";
 import { fmtDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +20,7 @@ export default async function AdminTicketDetailPage({
   const tc = await getTranslations("tickets");
 
   if (!esIdTicket(id)) notFound();
+  await syncTicketMail();
   const ticket = await getTicketById(id);
   if (!ticket) notFound();
 

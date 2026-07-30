@@ -8,6 +8,7 @@ import { TicketStatusBadge } from "@/components/ui/TicketStatusBadge";
 import { TicketThread } from "@/components/cuenta/TicketThread";
 import { getSession } from "@/lib/session";
 import { esIdTicket, getTicketForUser } from "@/lib/tickets";
+import { syncTicketMail } from "@/lib/tickets-mail";
 import { fmtDate } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -39,6 +40,8 @@ export default async function TicketClientePage({
   if (!session) redirect("/acceder");
 
   if (!esIdTicket(id)) notFound();
+  // Trae al hilo lo respondido desde el buzón antes de pintarlo.
+  await syncTicketMail();
   // Único punto de comprobación de pertenencia: si no es suyo, no existe.
   const ticket = await getTicketForUser(id, session.uid);
   if (!ticket) notFound();

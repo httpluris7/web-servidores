@@ -100,6 +100,9 @@ export function TicketThread({
         <label htmlFor="respuesta" className="mono-label text-[0.6rem]">
           {t("detail.replyLabel")}
         </label>
+        {/* Responder al correo también vale: lo que llega al buzón se incorpora
+            al hilo, así que conviene decirlo aquí. */}
+        <p className="mt-1 mb-2 text-xs text-[var(--color-fg-muted)]">{t("detail.mailNote")}</p>
         <Textarea
           id="respuesta"
           value={respuesta}

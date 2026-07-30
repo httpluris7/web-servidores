@@ -288,7 +288,7 @@
         "byUs": "Assistance",
         "byCustomer": "Client",
         "replyLabel": "Répondre",
-        "replyHint": "Vous pouvez aussi répondre à l'e-mail dans soporte@viahost.top : le client le reçoit, mais cela n'apparaît pas dans ce fil. Répondre ici fait les deux.",
+        "replyHint": "Vous pouvez aussi répondre à l'e-mail dans soporte@viahost.top : le client le reçoit et la réponse arrive d'elle-même dans ce fil.",
         "replyPlaceholder": "Écrivez la réponse que recevra le client…",
         "send": "Envoyer la réponse",
         "sending": "Envoi…",

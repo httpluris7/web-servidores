@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { TicketStatusBadge } from "@/components/ui/TicketStatusBadge";
 import { listTickets, ticketsAbiertos } from "@/lib/tickets";
+import { syncTicketMail } from "@/lib/tickets-mail";
 import { fmtDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +16,7 @@ export default async function AdminTicketsPage({
   setRequestLocale(locale);
   const t = await getTranslations("admin");
 
+  await syncTicketMail();
   const tickets = await listTickets();
   const pendientes = ticketsAbiertos(tickets);
 

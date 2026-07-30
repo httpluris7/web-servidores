@@ -51,7 +51,8 @@
       "close": "Close ticket",
       "errorSend": "Your reply could not be sent. Please try again.",
       "errorTooMany": "Too many messages in a short time. Please try again later.",
-      "errorConnection": "Connection error. Please try again."
+      "errorConnection": "Connection error. Please try again.",
+      "mailNote": "You can also reply to our emails: your answer will show up in this thread."
     }
   }
 }

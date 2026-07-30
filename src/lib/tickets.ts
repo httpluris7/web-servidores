@@ -39,6 +39,12 @@ export type TicketMessage = {
   nombre: string;
   cuerpo: string;
   creadoAt: string; // ISO
+  /**
+   * `Message-ID` del correo del que salió este mensaje, si vino del buzón. Es
+   * la clave con la que la ingesta sabe que ya lo tiene (ver `tickets-mail.ts`);
+   * los mensajes escritos en la web no lo llevan.
+   */
+  mailMessageId?: string;
 };
 
 export type Ticket = {
@@ -228,6 +234,69 @@ export async function addTicketMessage(
   };
   await writeAll(list.map((t) => (t.id === id ? updated : t)));
   return updated;
+}
+
+/** Mensaje que viene del buzón de soporte y no de la web. */
+export type IngestedMessage = {
+  /** Número del ticket (TCK-AAAA-NNN): es lo que se puede leer del correo. */
+  numero: string;
+  autor: TicketAuthor;
+  nombre: string;
+  cuerpo: string;
+  /** Fecha del correo, no la de la ingesta: el hilo se ordena por ella. */
+  creadoAt: string;
+  mailMessageId: string;
+};
+
+/**
+ * Incorpora al hilo mensajes leídos del buzón.
+ *
+ * Va en bloque (una lectura y una escritura para todos) porque la ingesta
+ * recorre el buzón entero y puede traer varios de golpe. La deduplicación se
+ * hace aquí dentro, contra lo que hay en disco en ese momento: es el único
+ * sitio donde se decide si un correo ya está en el hilo.
+ *
+ * Los mensajes quedan ordenados por fecha: un correo puede llegar con fecha
+ * anterior a algo ya escrito en la web.
+ */
+export async function ingestTicketMessages(entries: IngestedMessage[]): Promise<number> {
+  if (entries.length === 0) return 0;
+  const list = await readAll();
+  const porNumero = new Map(list.map((t) => [t.numero, t]));
+  const tocados = new Map<string, Ticket>();
+  let añadidos = 0;
+
+  for (const entry of entries) {
+    const actual = tocados.get(entry.numero) ?? porNumero.get(entry.numero);
+    if (!actual) continue;
+    if (actual.mensajes.some((m) => m.mailMessageId === entry.mailMessageId)) continue;
+
+    const mensajes = [
+      ...actual.mensajes,
+      {
+        id: randomUUID(),
+        autor: entry.autor,
+        nombre: entry.nombre.trim(),
+        cuerpo: entry.cuerpo.trim(),
+        creadoAt: entry.creadoAt,
+        mailMessageId: entry.mailMessageId,
+      },
+    ].sort((a, b) => a.creadoAt.localeCompare(b.creadoAt));
+
+    tocados.set(entry.numero, {
+      ...actual,
+      // Mismo criterio que al escribir desde la web: si contesta el cliente el
+      // ticket vuelve a estar abierto; si contestamos nosotros, respondido.
+      estado: entry.autor === "cliente" ? "abierto" : "respondido",
+      mensajes,
+      actualizadoAt: entry.creadoAt > actual.actualizadoAt ? entry.creadoAt : actual.actualizadoAt,
+    });
+    añadidos++;
+  }
+
+  if (añadidos === 0) return 0;
+  await writeAll(list.map((t) => tocados.get(t.numero) ?? t));
+  return añadidos;
 }
 
 export async function setTicketStatus(id: string, estado: TicketStatus): Promise<Ticket | null> {

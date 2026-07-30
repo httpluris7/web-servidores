@@ -51,7 +51,8 @@
       "close": "Cerrar el ticket",
       "errorSend": "No se ha podido enviar tu respuesta. Inténtalo de nuevo.",
       "errorTooMany": "Demasiados mensajes en poco tiempo. Inténtalo más tarde.",
-      "errorConnection": "Error de conexión. Inténtalo de nuevo."
+      "errorConnection": "Error de conexión. Inténtalo de nuevo.",
+      "mailNote": "También puedes contestar a nuestros correos: tu respuesta aparecerá en este hilo."
     }
   }
 }

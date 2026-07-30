@@ -288,7 +288,7 @@
         "byUs": "Soporte",
         "byCustomer": "Cliente",
         "replyLabel": "Responder",
-        "replyHint": "También puedes contestar al correo en soporte@viahost.top: le llega al cliente, pero no queda en este hilo. Respondiendo aquí ocurren las dos cosas.",
+        "replyHint": "También puedes contestar al correo en soporte@viahost.top: le llega al cliente y la respuesta entra sola en este hilo.",
         "replyPlaceholder": "Escribe la respuesta que recibirá el cliente…",
         "send": "Enviar respuesta",
         "sending": "Enviando…",

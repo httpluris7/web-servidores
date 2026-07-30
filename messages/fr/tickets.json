@@ -51,7 +51,8 @@
       "close": "Fermer le ticket",
       "errorSend": "Votre réponse n'a pas pu être envoyée. Réessayez.",
       "errorTooMany": "Trop de messages en peu de temps. Réessayez plus tard.",
-      "errorConnection": "Erreur de connexion. Réessayez."
+      "errorConnection": "Erreur de connexion. Réessayez.",
+      "mailNote": "Vous pouvez aussi répondre à nos e-mails : votre réponse apparaîtra dans ce fil."
     }
   }
 }

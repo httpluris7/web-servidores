@@ -8,6 +8,7 @@ import { TicketStatusBadge } from "@/components/ui/TicketStatusBadge";
 import { NewTicketForm, type TicketServerOption } from "@/components/cuenta/NewTicketForm";
 import { getSession } from "@/lib/session";
 import { listTicketsByUser } from "@/lib/tickets";
+import { syncTicketMail } from "@/lib/tickets-mail";
 import { listManagedByUser } from "@/lib/servidores/store";
 import { fmtDate } from "@/lib/utils";
 
@@ -39,6 +40,10 @@ export default async function SoporteClientePage({
   const session = await getSession();
   if (!session) redirect("/acceder");
 
+  // Antes de listar, incorporamos lo que se haya respondido desde el buzón: es
+  // lo que hace que el hilo de la web no se quede atrás. Va limitada en el
+  // tiempo y nunca lanza.
+  await syncTicketMail();
   const tickets = await listTicketsByUser(session.uid);
 
   // Solo la ficha local: para el desplegable no hace falta llamar al proveedor

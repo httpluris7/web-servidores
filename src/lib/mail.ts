@@ -344,9 +344,9 @@ export type TicketMail = {
  * Envía al buzón de soporte el mensaje que acaba de escribir un cliente.
  *
  * El `Reply-To` es el propio cliente: responder desde Roundcube le contesta
- * directamente, que es como se atienden los tickets. Esa respuesta viaja por
- * correo y NO queda en el hilo de la web; para que quede, hay que responder
- * desde `/admin/tickets` (el enlace va en el cuerpo).
+ * directamente, que es como se atienden los tickets. Esa respuesta se recoge
+ * después de la carpeta de enviados y entra en el hilo de la web (ver
+ * `lib/tickets-mail.ts`), así que las dos vías dejan el mismo rastro.
  *
  * Best-effort: si falla, lanza para que quien llama lo registre; el ticket ya
  * quedó guardado en disco y se ve en el panel.
@@ -397,9 +397,9 @@ export async function sendTicketMail(m: TicketMail): Promise<void> {
     "",
     "—",
     replyToSafe
-      ? "Puedes responder directamente a este correo: la respuesta le llega al cliente (pero no queda en el hilo de la web)."
+      ? "Puedes responder directamente a este correo: la respuesta le llega al cliente y entra sola en el hilo de su área."
       : "La dirección del cliente no permite responder directamente a este correo.",
-    `Para responder dejando constancia en su área de cliente: ${m.adminUrl}`,
+    `Ficha del ticket: ${m.adminUrl}`,
   ].join("\n");
 
   await pipeSendmail(TICKETS_MAILBOX, `${headers}\r\n\r\n${body}\n`);
