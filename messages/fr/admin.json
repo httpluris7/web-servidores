@@ -14,6 +14,7 @@
       "customers": "Clients",
       "invoices": "Factures",
       "ordersAndContacts": "Commandes et contacts",
+      "tickets": "Tickets",
       "settings": "Configuration",
       "servers": "Serveurs"
     },
@@ -267,6 +268,36 @@
       "errorLoad": "La liste des serveurs n'a pas pu être chargée.",
       "errorSave": "L'attribution n'a pas pu être enregistrée.",
       "errorConnection": "Erreur de connexion."
+    },
+    "tickets": {
+      "title": "Tickets d'assistance",
+      "subtitle": "Tout ce que les clients ont ouvert depuis leur espace.",
+      "subtitlePending": "{count, plural, one {# ticket en attente de réponse} other {# tickets en attente de réponse}}.",
+      "empty": "Aucun ticket pour le moment.",
+      "colTicket": "Ticket",
+      "colCustomer": "Client",
+      "colStatus": "Statut",
+      "colUpdated": "Dernière activité",
+      "detail": {
+        "back": "← Retour aux tickets",
+        "customer": "Client",
+        "email": "E-mail",
+        "category": "Catégorie",
+        "server": "Serveur",
+        "created": "Ouvert le",
+        "byUs": "Assistance",
+        "byCustomer": "Client",
+        "replyLabel": "Répondre",
+        "replyHint": "Vous pouvez aussi répondre à l'e-mail dans soporte@viahost.top : le client le reçoit, mais cela n'apparaît pas dans ce fil. Répondre ici fait les deux.",
+        "replyPlaceholder": "Écrivez la réponse que recevra le client…",
+        "send": "Envoyer la réponse",
+        "sending": "Envoi…",
+        "close": "Fermer le ticket",
+        "reopen": "Rouvrir le ticket",
+        "mailFailed": "Enregistré dans le fil, mais l'e-mail de notification n'a pas pu être envoyé.",
+        "errorSend": "L'action a échoué. Réessayez.",
+        "errorConnection": "Erreur de connexion. Réessayez."
+      }
     }
   }
 }

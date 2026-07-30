@@ -33,6 +33,9 @@ const FALLBACK_MAILBOX = "administrador@viahost.top";
 /** Buzón que recibe las respuestas a las facturas enviadas a clientes. */
 const BILLING_REPLY_TO = "soporte@viahost.top";
 
+/** Buzón donde se atienden los tickets del área de cliente. */
+const TICKETS_MAILBOX = "soporte@viahost.top";
+
 /** Elimina CR/LF de un valor que va en una cabecera (evita header injection). */
 function headerSafe(value: string): string {
   return value.replace(/[\r\n]+/g, " ").trim();
@@ -303,6 +306,158 @@ export async function sendPasswordResetMail(m: PasswordResetMail): Promise<void>
     "—",
     "ViaHost Networks, LLC",
     BILLING_REPLY_TO,
+  ].join("\r\n");
+
+  await pipeSendmail(to, `${headers}\r\n\r\n${body}\n`);
+}
+
+/* --------------------------------- Tickets -------------------------------- */
+
+/**
+ * Identificador de mensaje del hilo de un ticket.
+ *
+ * Al derivarlo del número del ticket (TCK-AAAA-NNN, solo alfanumérico y
+ * guiones) el cliente de correo agrupa toda la conversación en un hilo, que es
+ * lo que hace usable atender los tickets desde el buzón. El índice es la
+ * posición del mensaje: el primero es la raíz a la que apuntan los siguientes.
+ */
+function ticketMessageId(numero: string, indice: number): string {
+  return `<${headerSafe(numero).toLowerCase()}-${indice}@viahost.top>`;
+}
+
+export type TicketMail = {
+  numero: string;
+  asunto: string;
+  categoria: string;
+  clienteNombre: string;
+  clienteEmail: string;
+  /** Etiqueta del servidor al que se refiere, si el cliente eligió uno. */
+  servidor: string;
+  cuerpo: string;
+  /** Posición del mensaje en el hilo (1 = apertura del ticket). */
+  indice: number;
+  /** Enlace al ticket en el panel de administración. */
+  adminUrl: string;
+};
+
+/**
+ * Envía al buzón de soporte el mensaje que acaba de escribir un cliente.
+ *
+ * El `Reply-To` es el propio cliente: responder desde Roundcube le contesta
+ * directamente, que es como se atienden los tickets. Esa respuesta viaja por
+ * correo y NO queda en el hilo de la web; para que quede, hay que responder
+ * desde `/admin/tickets` (el enlace va en el cuerpo).
+ *
+ * Best-effort: si falla, lanza para que quien llama lo registre; el ticket ya
+ * quedó guardado en disco y se ve en el panel.
+ */
+export async function sendTicketMail(m: TicketMail): Promise<void> {
+  const numero = headerSafe(m.numero);
+  const replyTo = headerSafe(m.clienteEmail);
+  // Mismo criterio que en el formulario de contacto: el Reply-To solo se emite
+  // si la dirección es limpia (`emailRe` admite `<`/`>`, que romperían la
+  // cabecera). Si no lo es, el aviso se entrega igual sin respuesta directa.
+  const replyToSafe = emailRe.test(replyTo) && !/[<>,;"]/.test(replyTo);
+
+  const asunto = `[${numero}] ${m.asunto}`;
+  const headers = [
+    `From: Tickets viahost <${FROM}>`,
+    `To: ${TICKETS_MAILBOX}`,
+    ...(replyToSafe
+      ? [`Reply-To: ${addressDisplayName(m.clienteNombre)} <${replyTo}>`]
+      : []),
+    `Subject: ${encodeHeader(m.indice > 1 ? `Re: ${asunto}` : asunto)}`,
+    `Message-ID: ${ticketMessageId(numero, m.indice)}`,
+    ...(m.indice > 1
+      ? [
+          `In-Reply-To: ${ticketMessageId(numero, 1)}`,
+          `References: ${ticketMessageId(numero, 1)}`,
+        ]
+      : []),
+    // Cabecera propia para poder filtrar/clasificar en el buzón por ticket.
+    `X-ViaHost-Ticket: ${numero}`,
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: 8bit",
+  ].join("\r\n");
+
+  const body = [
+    m.indice > 1
+      ? `Nueva respuesta del cliente en el ticket ${numero}`
+      : `Nuevo ticket ${numero} desde el área de cliente de viahost.top`,
+    "",
+    `Asunto:    ${m.asunto}`,
+    `Categoría: ${m.categoria}`,
+    `Cliente:   ${m.clienteNombre}`,
+    `Email:     ${m.clienteEmail}`,
+    ...(m.servidor ? [`Servidor:  ${m.servidor}`] : []),
+    "",
+    "Mensaje:",
+    m.cuerpo,
+    "",
+    "—",
+    replyToSafe
+      ? "Puedes responder directamente a este correo: la respuesta le llega al cliente (pero no queda en el hilo de la web)."
+      : "La dirección del cliente no permite responder directamente a este correo.",
+    `Para responder dejando constancia en su área de cliente: ${m.adminUrl}`,
+  ].join("\n");
+
+  await pipeSendmail(TICKETS_MAILBOX, `${headers}\r\n\r\n${body}\n`);
+}
+
+export type TicketReplyMail = {
+  to: string;
+  clienteNombre: string;
+  numero: string;
+  asunto: string;
+  cuerpo: string;
+  /** Posición del mensaje en el hilo, para encadenarlo con los anteriores. */
+  indice: number;
+  /** Enlace al ticket en el área de cliente. */
+  url: string;
+};
+
+/**
+ * Avisa al cliente de que hemos respondido a su ticket desde el panel.
+ *
+ * El `Reply-To` es el buzón de soporte, de modo que si responde por correo la
+ * conversación sigue donde se atiende. El texto va en inglés, como el resto de
+ * la comunicación transaccional saliente (facturas): el cuerpo lo escribe quien
+ * responde, en el idioma que corresponda.
+ */
+export async function sendTicketReplyMail(m: TicketReplyMail): Promise<void> {
+  const to = headerSafe(m.to);
+  if (!emailRe.test(to) || to.startsWith("-")) {
+    throw new Error("Invalid recipient address.");
+  }
+  const numero = headerSafe(m.numero);
+
+  const headers = [
+    `From: ViaHost Support <${FROM}>`,
+    `To: ${to}`,
+    `Reply-To: ${TICKETS_MAILBOX}`,
+    `Subject: ${encodeHeader(`Re: [${numero}] ${m.asunto}`)}`,
+    `Message-ID: ${ticketMessageId(numero, m.indice)}`,
+    `In-Reply-To: ${ticketMessageId(numero, 1)}`,
+    `References: ${ticketMessageId(numero, 1)}`,
+    `X-ViaHost-Ticket: ${numero}`,
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: 8bit",
+  ].join("\r\n");
+
+  const body = [
+    `Dear ${headerSafe(m.clienteNombre)},`,
+    "",
+    `We have replied to your support ticket ${numero} — ${headerSafe(m.asunto)}:`,
+    "",
+    m.cuerpo,
+    "",
+    `You can see the full conversation and reply here: ${m.url}`,
+    "",
+    "—",
+    "ViaHost Networks, LLC",
+    TICKETS_MAILBOX,
   ].join("\r\n");
 
   await pipeSendmail(to, `${headers}\r\n\r\n${body}\n`);

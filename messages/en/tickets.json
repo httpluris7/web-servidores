@@ -1,0 +1,57 @@
+{
+  "tickets": {
+    "metaTitle": "Support tickets",
+    "metaDescription": "Open a support ticket with {brand} and follow the conversation.",
+    "kicker": "Support",
+    "titleA": "Your",
+    "titleB": "tickets",
+    "description": "Open a ticket and our team will answer by email and here, in the same thread.",
+    "backToAccount": "← Back to my account",
+    "newHeading": "New ticket",
+    "newIntro": "Tell us what is going on. We answer to the email address of your account.",
+    "listHeading": "Your tickets",
+    "empty": "You have not opened any ticket yet.",
+    "messageCount": "{count, plural, one {# message} other {# messages}}",
+    "category": {
+      "tecnico": "Technical",
+      "facturacion": "Billing",
+      "otro": "Other"
+    },
+    "form": {
+      "category": "Category",
+      "server": "Server",
+      "serverNone": "Not related to a server",
+      "subject": "Subject",
+      "subjectPlaceholder": "Short summary of the issue",
+      "message": "Message",
+      "messagePlaceholder": "Describe the problem: what you did, what you expected and what happened.",
+      "send": "Open ticket",
+      "sending": "Sending…",
+      "errorSubject": "Enter a subject.",
+      "errorMessage": "Tell us a little more (min. 10 characters).",
+      "errorSend": "The ticket could not be sent. Please try again.",
+      "errorTooMany": "Too many tickets in a short time. Please try again later.",
+      "errorConnection": "Connection error. Please try again."
+    },
+    "detail": {
+      "metaTitle": "Ticket",
+      "description": "Full conversation. Reply here and we will get your message straight away.",
+      "backToList": "← Back to my tickets",
+      "statusLabel": "Status",
+      "categoryLabel": "Category",
+      "serverLabel": "Server",
+      "createdLabel": "Opened",
+      "you": "You",
+      "support": "Support",
+      "closedNotice": "This ticket is closed. If you reply it will be reopened.",
+      "replyLabel": "Reply",
+      "replyPlaceholder": "Write your reply…",
+      "reply": "Send reply",
+      "replying": "Sending…",
+      "close": "Close ticket",
+      "errorSend": "Your reply could not be sent. Please try again.",
+      "errorTooMany": "Too many messages in a short time. Please try again later.",
+      "errorConnection": "Connection error. Please try again."
+    }
+  }
+}

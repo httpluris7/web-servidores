@@ -14,6 +14,7 @@
       "customers": "Clientes",
       "invoices": "Facturas",
       "ordersAndContacts": "Pedidos y contactos",
+      "tickets": "Tickets",
       "settings": "Configuración",
       "servers": "Servidores"
     },
@@ -267,6 +268,36 @@
       "errorLoad": "No se ha podido cargar la lista de servidores.",
       "errorSave": "No se ha podido guardar la asignación.",
       "errorConnection": "Error de conexión."
+    },
+    "tickets": {
+      "title": "Tickets de soporte",
+      "subtitle": "Todo lo que han abierto los clientes desde su área.",
+      "subtitlePending": "{count, plural, one {# ticket esperando respuesta} other {# tickets esperando respuesta}}.",
+      "empty": "Todavía no hay tickets.",
+      "colTicket": "Ticket",
+      "colCustomer": "Cliente",
+      "colStatus": "Estado",
+      "colUpdated": "Última actividad",
+      "detail": {
+        "back": "← Volver a tickets",
+        "customer": "Cliente",
+        "email": "Correo",
+        "category": "Categoría",
+        "server": "Servidor",
+        "created": "Abierto el",
+        "byUs": "Soporte",
+        "byCustomer": "Cliente",
+        "replyLabel": "Responder",
+        "replyHint": "También puedes contestar al correo en soporte@viahost.top: le llega al cliente, pero no queda en este hilo. Respondiendo aquí ocurren las dos cosas.",
+        "replyPlaceholder": "Escribe la respuesta que recibirá el cliente…",
+        "send": "Enviar respuesta",
+        "sending": "Enviando…",
+        "close": "Cerrar el ticket",
+        "reopen": "Reabrir el ticket",
+        "mailFailed": "Guardado en el hilo, pero no se ha podido enviar el aviso por correo.",
+        "errorSend": "La acción ha fallado. Inténtalo de nuevo.",
+        "errorConnection": "Error de conexión. Inténtalo de nuevo."
+      }
     }
   }
 }

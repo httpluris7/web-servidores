@@ -34,6 +34,11 @@
       "started": "running",
       "stopped": "stopped",
       "processing": "working"
+    },
+    "ticketStatus": {
+      "abierto": "open",
+      "respondido": "answered",
+      "cerrado": "closed"
     }
   },
   "nav": {

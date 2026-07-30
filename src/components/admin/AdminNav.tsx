@@ -9,6 +9,7 @@ const links: { href: string; key: string; exact?: boolean }[] = [
   { href: "/admin/clientes", key: "customers" },
   { href: "/admin/facturas", key: "invoices" },
   { href: "/admin/pedidos", key: "ordersAndContacts" },
+  { href: "/admin/tickets", key: "tickets" },
   { href: "/admin/servidores", key: "servers" },
   { href: "/admin/configuracion", key: "settings" },
 ];

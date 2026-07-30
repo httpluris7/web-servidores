@@ -1,0 +1,57 @@
+{
+  "tickets": {
+    "metaTitle": "Tickets d'assistance",
+    "metaDescription": "Ouvrez un ticket d'assistance avec {brand} et suivez la conversation.",
+    "kicker": "Assistance",
+    "titleA": "Vos",
+    "titleB": "tickets",
+    "description": "Ouvrez un ticket : notre équipe vous répond par e-mail et ici, dans le même fil.",
+    "backToAccount": "← Retour à mon compte",
+    "newHeading": "Nouveau ticket",
+    "newIntro": "Expliquez-nous ce qui se passe. Nous répondons à l'adresse e-mail de votre compte.",
+    "listHeading": "Vos tickets",
+    "empty": "Vous n'avez encore ouvert aucun ticket.",
+    "messageCount": "{count, plural, one {# message} other {# messages}}",
+    "category": {
+      "tecnico": "Technique",
+      "facturacion": "Facturation",
+      "otro": "Autre"
+    },
+    "form": {
+      "category": "Catégorie",
+      "server": "Serveur",
+      "serverNone": "Sans rapport avec un serveur",
+      "subject": "Objet",
+      "subjectPlaceholder": "Résumé court du problème",
+      "message": "Message",
+      "messagePlaceholder": "Décrivez le problème : ce que vous avez fait, ce que vous attendiez et ce qui s'est passé.",
+      "send": "Ouvrir le ticket",
+      "sending": "Envoi…",
+      "errorSubject": "Indiquez un objet.",
+      "errorMessage": "Donnez-nous un peu plus de détails (10 caractères min.).",
+      "errorSend": "Le ticket n'a pas pu être envoyé. Réessayez.",
+      "errorTooMany": "Trop de tickets en peu de temps. Réessayez plus tard.",
+      "errorConnection": "Erreur de connexion. Réessayez."
+    },
+    "detail": {
+      "metaTitle": "Ticket",
+      "description": "Conversation complète. Répondez ici : votre message nous parvient aussitôt.",
+      "backToList": "← Retour à mes tickets",
+      "statusLabel": "Statut",
+      "categoryLabel": "Catégorie",
+      "serverLabel": "Serveur",
+      "createdLabel": "Ouvert le",
+      "you": "Vous",
+      "support": "Assistance",
+      "closedNotice": "Ce ticket est fermé. Si vous répondez, il sera rouvert.",
+      "replyLabel": "Répondre",
+      "replyPlaceholder": "Écrivez votre réponse…",
+      "reply": "Envoyer la réponse",
+      "replying": "Envoi…",
+      "close": "Fermer le ticket",
+      "errorSend": "Votre réponse n'a pas pu être envoyée. Réessayez.",
+      "errorTooMany": "Trop de messages en peu de temps. Réessayez plus tard.",
+      "errorConnection": "Erreur de connexion. Réessayez."
+    }
+  }
+}

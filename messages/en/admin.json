@@ -14,6 +14,7 @@
       "customers": "Customers",
       "invoices": "Invoices",
       "ordersAndContacts": "Orders and contacts",
+      "tickets": "Tickets",
       "settings": "Settings",
       "servers": "Servers"
     },
@@ -267,6 +268,36 @@
       "errorLoad": "The server list could not be loaded.",
       "errorSave": "The assignment could not be saved.",
       "errorConnection": "Connection error."
+    },
+    "tickets": {
+      "title": "Support tickets",
+      "subtitle": "Everything customers have opened from their account area.",
+      "subtitlePending": "{count, plural, one {# ticket waiting for an answer} other {# tickets waiting for an answer}}.",
+      "empty": "No tickets yet.",
+      "colTicket": "Ticket",
+      "colCustomer": "Customer",
+      "colStatus": "Status",
+      "colUpdated": "Last activity",
+      "detail": {
+        "back": "← Back to tickets",
+        "customer": "Customer",
+        "email": "Email",
+        "category": "Category",
+        "server": "Server",
+        "created": "Opened",
+        "byUs": "Support",
+        "byCustomer": "Customer",
+        "replyLabel": "Reply",
+        "replyHint": "You can also reply to the email in soporte@viahost.top — it reaches the customer, but it is not recorded in this thread. Replying here does both.",
+        "replyPlaceholder": "Write the reply the customer will receive…",
+        "send": "Send reply",
+        "sending": "Sending…",
+        "close": "Close ticket",
+        "reopen": "Reopen ticket",
+        "mailFailed": "Saved in the thread, but the notification email could not be sent.",
+        "errorSend": "The action failed. Please try again.",
+        "errorConnection": "Connection error. Please try again."
+      }
     }
   }
 }

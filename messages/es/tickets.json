@@ -1,0 +1,57 @@
+{
+  "tickets": {
+    "metaTitle": "Tickets de soporte",
+    "metaDescription": "Abre un ticket de soporte con {brand} y sigue la conversación.",
+    "kicker": "Soporte",
+    "titleA": "Tus",
+    "titleB": "tickets",
+    "description": "Abre un ticket y nuestro equipo te responde por correo y aquí, en el mismo hilo.",
+    "backToAccount": "← Volver a mi cuenta",
+    "newHeading": "Nuevo ticket",
+    "newIntro": "Cuéntanos qué ocurre. Te respondemos al correo de tu cuenta.",
+    "listHeading": "Tus tickets",
+    "empty": "Todavía no has abierto ningún ticket.",
+    "messageCount": "{count, plural, one {# mensaje} other {# mensajes}}",
+    "category": {
+      "tecnico": "Técnico",
+      "facturacion": "Facturación",
+      "otro": "Otro"
+    },
+    "form": {
+      "category": "Categoría",
+      "server": "Servidor",
+      "serverNone": "No es sobre un servidor",
+      "subject": "Asunto",
+      "subjectPlaceholder": "Resumen breve del problema",
+      "message": "Mensaje",
+      "messagePlaceholder": "Describe el problema: qué hiciste, qué esperabas y qué ha pasado.",
+      "send": "Abrir ticket",
+      "sending": "Enviando…",
+      "errorSubject": "Escribe un asunto.",
+      "errorMessage": "Cuéntanos un poco más (mín. 10 caracteres).",
+      "errorSend": "No se ha podido enviar el ticket. Inténtalo de nuevo.",
+      "errorTooMany": "Demasiados tickets en poco tiempo. Inténtalo más tarde.",
+      "errorConnection": "Error de conexión. Inténtalo de nuevo."
+    },
+    "detail": {
+      "metaTitle": "Ticket",
+      "description": "Conversación completa. Responde aquí y nos llega al momento.",
+      "backToList": "← Volver a mis tickets",
+      "statusLabel": "Estado",
+      "categoryLabel": "Categoría",
+      "serverLabel": "Servidor",
+      "createdLabel": "Abierto el",
+      "you": "Tú",
+      "support": "Soporte",
+      "closedNotice": "Este ticket está cerrado. Si respondes, se vuelve a abrir.",
+      "replyLabel": "Responder",
+      "replyPlaceholder": "Escribe tu respuesta…",
+      "reply": "Enviar respuesta",
+      "replying": "Enviando…",
+      "close": "Cerrar el ticket",
+      "errorSend": "No se ha podido enviar tu respuesta. Inténtalo de nuevo.",
+      "errorTooMany": "Demasiados mensajes en poco tiempo. Inténtalo más tarde.",
+      "errorConnection": "Error de conexión. Inténtalo de nuevo."
+    }
+  }
+}

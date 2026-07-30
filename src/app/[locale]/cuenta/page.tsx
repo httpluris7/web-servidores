@@ -9,6 +9,7 @@ import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
 import { listInvoicesByUser } from "@/lib/facturas";
 import { listServersForUser } from "@/lib/servidores/cliente";
+import { listTicketsByUser, ticketsAbiertos } from "@/lib/tickets";
 import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata({
@@ -61,6 +62,8 @@ export default async function CuentaPage({
   // Un fallo del proveedor no debe tumbar la portada de la cuenta: sin
   // servidores legibles, simplemente no se muestra la sección.
   const servidores = await listServersForUser(user.id).catch(() => []);
+
+  const abiertos = ticketsAbiertos(await listTicketsByUser(user.id));
 
   return (
     <>
@@ -119,6 +122,22 @@ export default async function CuentaPage({
             </Link>
           </section>
         )}
+
+        {/* Soporte: el cliente abre un ticket y lo sigue desde aquí. */}
+        <section className="mt-12 border-t border-[var(--color-line)] pt-10">
+          <h2 className="mono-label mb-1">{t("account.supportHeading")}</h2>
+          <p className="mb-5 text-sm text-[var(--color-fg-muted)]">
+            {abiertos > 0
+              ? t("account.supportOpen", { count: abiertos })
+              : t("account.supportIntro")}
+          </p>
+          <Link
+            href="/cuenta/soporte"
+            className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-6 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+          >
+            {t("account.supportLink")}
+          </Link>
+        </section>
 
         <section className="mt-12 border-t border-[var(--color-line)] pt-10">
           <h2 className="mono-label mb-1">{t("account.securityHeading")}</h2>
