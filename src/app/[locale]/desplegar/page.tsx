@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { vps, dedicatedTypes } from "@/data/products";
+import { getCatalog } from "@/data/products";
 import { Price } from "@/components/ui/Price";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
@@ -60,6 +60,7 @@ export default async function DeployPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("pages");
+  const { vps, dedicatedTypes } = await getCatalog(locale);
 
   return (
     <>

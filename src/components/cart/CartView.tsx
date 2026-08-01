@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useCart } from "@/lib/cart";
-import { regions } from "@/data/products";
+import type { Region } from "@/data/products";
 import { site } from "@/data/site";
 import { eur } from "@/lib/utils";
 import { Price, PriceSum } from "@/components/ui/Price";
@@ -14,9 +14,12 @@ type InitialUser = { nombre: string; email: string } | null;
 
 export function CartView({
   initialUser,
+  regions,
   stripeEnabled = false,
 }: {
   initialUser: InitialUser;
+  /** Ubicaciones donde desplegar un VPS; llegan de la página (catálogo en disco). */
+  regions: Region[];
   /** ¿Hay pasarela configurada? Sin ella solo se ofrece la transferencia. */
   stripeEnabled?: boolean;
 }) {

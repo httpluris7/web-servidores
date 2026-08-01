@@ -2,22 +2,25 @@
 
 import { useTranslations } from "next-intl";
 import { motion, useReducedMotion } from "framer-motion";
-import { regions } from "@/data/products";
+import type { Region } from "@/data/products";
 import { viewportOnce } from "@/lib/motion";
 
 /**
  * Mapa estilizado de Europa en SVG propio (sin librería de mapas).
  * Silueta abstracta + nodos con pulso CSS + backbone que se dibuja una vez.
  */
-export function EuropeMap() {
+export function EuropeMap({ regions }: { regions: Region[] }) {
   const t = useTranslations("home");
   const reduce = useReducedMotion();
 
-  // Punto medio del backbone: centro de masa de los nodos activos.
-  const center = {
-    x: regions.reduce((s, r) => s + r.map.x, 0) / regions.length,
-    y: regions.reduce((s, r) => s + r.map.y, 0) / regions.length,
-  };
+  // Punto medio del backbone: centro de masa de los nodos activos. El catálogo
+  // es editable y puede quedarse sin ubicaciones: sin el guard sería NaN.
+  const center = regions.length
+    ? {
+        x: regions.reduce((s, r) => s + r.map.x, 0) / regions.length,
+        y: regions.reduce((s, r) => s + r.map.y, 0) / regions.length,
+      }
+    : { x: 50, y: 50 };
 
   return (
     <div className="relative aspect-square w-full">

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { regions, getRegion, vps } from "@/data/products";
+import { getCatalog, getRegion, getRegions } from "@/data/products";
 import { vpsFaq } from "@/data/faq";
 import { site } from "@/data/site";
-import { eur, jsonLdScript } from "@/lib/utils";
+import { eurPrecio, jsonLdScript } from "@/lib/utils";
 import { Price } from "@/components/ui/Price";
 import { PageHero } from "@/components/ui/PageHero";
 import { PlanGrid } from "@/components/product/PlanGrid";
@@ -13,8 +13,8 @@ import { CtaBand } from "@/components/ui/CtaBand";
 
 type Params = { locale: string; region: string };
 
-export function generateStaticParams(): { region: string }[] {
-  return regions.map((r) => ({ region: r.slug }));
+export async function generateStaticParams(): Promise<{ region: string }[]> {
+  return (await getRegions()).map((r) => ({ region: r.slug }));
 }
 
 export async function generateMetadata({
@@ -23,19 +23,16 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { locale, region: slug } = await params;
-  const region = getRegion(slug);
+  const region = await getRegion(slug, locale);
   if (!region) return {};
   const t = await getTranslations({ locale, namespace: "products" });
   return {
-    title: t("vpsRegion.meta.title", {
-      name: t(`vps.regions.${slug}.name`),
-      city: t(`vps.regions.${slug}.city`),
-    }),
+    title: t("vpsRegion.meta.title", { name: region.name, city: region.city }),
     description: t("vpsRegion.meta.description", {
-      name: t(`vps.regions.${slug}.name`),
-      city: t(`vps.regions.${slug}.city`),
-      latencyNote: t(`vps.regions.${slug}.latencyNote`),
-      price: eur(region.priceFrom),
+      name: region.name,
+      city: region.city,
+      latencyNote: region.latencyNote ?? "",
+      price: eurPrecio(region.priceFrom),
     }),
   };
 }
@@ -43,13 +40,13 @@ export async function generateMetadata({
 export default async function RegionPage({ params }: { params: Promise<Params> }) {
   const { locale, region: slug } = await params;
   setRequestLocale(locale);
-  const region = getRegion(slug);
+  const { vps, regions } = await getCatalog(locale);
+  const region = regions.find((r) => r.slug === slug);
   if (!region) notFound();
 
   const t = await getTranslations("products");
-  const name = t(`vps.regions.${slug}.name`);
-  const city = t(`vps.regions.${slug}.city`);
-  const latencyNote = t(`vps.regions.${slug}.latencyNote`);
+  const { name, city } = region;
+  const latencyNote = region.latencyNote ?? "";
 
   const productJsonLd = {
     "@context": "https://schema.org",

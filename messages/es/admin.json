@@ -11,12 +11,82 @@
     "nav": {
       "aria": "Administración",
       "overview": "Resumen",
+      "catalog": "Catálogo",
       "customers": "Clientes",
       "invoices": "Facturas",
       "ordersAndContacts": "Pedidos y contactos",
       "tickets": "Tickets",
       "settings": "Configuración",
       "servers": "Servidores"
+    },
+    "catalog": {
+      "title": "Catálogo",
+      "subtitle": "Productos, categorías y ubicaciones que se ven en la web. Los cambios salen al momento.",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "cancel": "Cancelar",
+      "hidden": "oculto",
+      "categories": {
+        "title": "Categorías",
+        "hint": "Cada categoría es una familia de productos con su propia página. Las nuevas se publican en /dedicados/<slug>.",
+        "add": "Añadir categoría",
+        "count": "{count} productos",
+        "vpsBadge": "familia VPS",
+        "confirmDelete": "¿Eliminar esta categoría? Tiene que estar sin productos."
+      },
+      "products": {
+        "title": "Productos",
+        "hint": "Los planes que se pueden contratar. El precio es el mensual en euros.",
+        "add": "Añadir producto",
+        "empty": "Todavía no hay productos en esta categoría.",
+        "popular": "más popular",
+        "confirmDelete": "¿Eliminar este producto? Desaparece de la web y de los carritos que lo tengan."
+      },
+      "locations": {
+        "title": "Ubicaciones VPS",
+        "hint": "Regiones donde se despliega un VPS, cada una con su página en /vps/<slug>.",
+        "add": "Añadir ubicación",
+        "confirmDelete": "¿Eliminar esta ubicación? Su página dejará de funcionar."
+      },
+      "form": {
+        "name": "Nombre",
+        "description": "Descripción",
+        "badge": "Etiqueta corta",
+        "badgeHint": "Texto pequeño en mono sobre el título, por ejemplo «🇫🇷 Paris · bare metal».",
+        "slug": "URL",
+        "slugHint": "Déjalo vacío para sacarlo del nombre. Al guardar se normaliza y se hace único.",
+        "category": "Categoría",
+        "cpu": "CPU",
+        "ram": "RAM",
+        "storage": "Almacenamiento",
+        "network": "Red",
+        "price": "Precio",
+        "priceHint": "Euros al mes. Al cliente se le convierte si elige dólares.",
+        "priceFrom": "Precio desde",
+        "city": "Ciudad",
+        "note": "Nota de latencia",
+        "noteHint": "Se muestra junto a la ciudad, por ejemplo «< 5 ms a Europa Occidental».",
+        "flag": "Bandera",
+        "flagHint": "Un emoji de bandera.",
+        "mapX": "Mapa X",
+        "mapY": "Mapa Y",
+        "mapHint": "0–100 sobre el mapa de Europa de la portada.",
+        "order": "Orden",
+        "visible": "Visible en la web",
+        "popular": "Destacar como más popular",
+        "planId": "Id del plan: {id} — fijo, lo usan las URLs de contratación y las facturas emitidas.",
+        "langHint": "El inglés es obligatorio. Lo que dejes vacío se muestra en inglés."
+      },
+      "errors": {
+        "generico": "No se ha podido guardar el cambio.",
+        "conexion": "Error de conexión. Inténtalo de nuevo.",
+        "datos": "Rellena al menos el nombre en inglés.",
+        "no-encontrado": "Ese elemento ya no existe. Recarga la página.",
+        "categoria-con-productos": "Elimina o mueve antes sus productos.",
+        "categoria-vps-protegida": "La familia VPS no se puede eliminar: /vps depende de ella."
+      }
     },
     "dashboard": {
       "summary": "Resumen",

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { dedicatedTypes } from "@/data/products";
+import { getDedicatedTypes } from "@/data/products";
 import { dedicatedFaq } from "@/data/faq";
+import { precioDesde } from "@/lib/utils";
 import { Price } from "@/components/ui/Price";
 import { PageHero } from "@/components/ui/PageHero";
 import { FaqSection } from "@/components/ui/FaqSection";
@@ -31,6 +32,7 @@ export default async function DedicatedPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("products");
+  const dedicatedTypes = await getDedicatedTypes(locale);
 
   return (
     <>
@@ -55,7 +57,7 @@ export default async function DedicatedPage({
         />
         <div className="mt-12 grid gap-5 sm:grid-cols-2">
           {dedicatedTypes.map((d, i) => {
-            const from = Math.min(...d.plans.map((p) => p.price));
+            const from = precioDesde(d.plans);
             return (
               <Reveal key={d.slug} delay={i} as="article">
                 <Link
@@ -63,13 +65,13 @@ export default async function DedicatedPage({
                   className="group flex h-full flex-col rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-6 transition-all hover:border-[var(--color-accent)]"
                 >
                   <span className="font-mono text-xs text-[var(--color-accent)]">
-                    {t(`dedicated.types.${d.slug}.highlight`)}
+                    {d.highlight}
                   </span>
                   <h3 className="mt-4 text-2xl font-semibold tracking-tight">
-                    {t(`dedicated.types.${d.slug}.title`)}
+                    {d.title}
                   </h3>
                   <p className="mt-2 text-sm text-[var(--color-fg-muted)]">
-                    {t(`dedicated.types.${d.slug}.tagline`)}
+                    {d.tagline}
                   </p>
                   <div className="mt-auto pt-8">
                     <span className="mono-label block text-[0.65rem]">{t("dedicated.from")}</span>

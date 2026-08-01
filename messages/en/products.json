@@ -79,14 +79,7 @@
       "locationsKicker": "Locations",
       "locationsTitle": "Deploy close to your users.",
       "locationsDescription": "European regions with direct peering. Same experience, lower latency.",
-      "from": "from",
-      "regions": {
-        "francia": {
-          "name": "France",
-          "city": "Paris",
-          "latencyNote": "< 5 ms to Western Europe"
-        }
-      }
+      "from": "from"
     },
     "vpsRegion": {
       "meta": {
@@ -118,19 +111,7 @@
       "from": "From",
       "perMonth": "/mo",
       "viewConfigurations": "View configurations →",
-      "ctaTitle": "Need a custom configuration?",
-      "types": {
-        "francia": {
-          "title": "Dedicated Servers France",
-          "tagline": "AMD EPYC and Ryzen bare metal in our Paris datacenter. Guaranteed uplinks and NVMe Gen4, with no overselling.",
-          "highlight": "🇫🇷 Paris · bare metal"
-        },
-        "holanda": {
-          "title": "Dedicated Servers Netherlands",
-          "tagline": "AMD EPYC and Ryzen bare metal in Amsterdam with direct peering at AMS-IX. Guaranteed uplinks and NVMe Gen4, with no overselling.",
-          "highlight": "🇳🇱 Amsterdam · bare metal"
-        }
-      }
+      "ctaTitle": "Need a custom configuration?"
     },
     "dedicatedType": {
       "plansKicker": "Configurations",

@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { saveLead, clean } from "@/lib/leads";
-import { getPlanById, regions, vps } from "@/data/products";
+import { getCatalog } from "@/data/products";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
@@ -65,9 +65,11 @@ export async function POST(req: Request) {
     line: string;
   }[] = [];
 
+  const { allPlans, regions } = await getCatalog();
+
   for (const item of rawItems) {
     const planId = clean(item.planId, 60);
-    const located = getPlanById(planId);
+    const located = allPlans.find((p) => p.plan.id === planId);
     if (!located) {
       return NextResponse.json(
         { ok: false, error: `Invalid plan: ${planId || "unknown"}.` },
@@ -75,7 +77,7 @@ export async function POST(req: Request) {
       );
     }
     const qty = clampQty(item.qty);
-    const isVps = located.lineSlug === vps.slug;
+    const isVps = located.lineTipo === "vps";
     const regionSlug = clean(item.region, 60);
     const region = isVps && regions.some((r) => r.slug === regionSlug) ? regionSlug : "";
 

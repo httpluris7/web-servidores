@@ -6,6 +6,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing, type Locale } from "@/i18n/routing";
 import { site } from "@/data/site";
+import { getCartCatalog, getNavCatalog } from "@/data/products";
 import { jsonLdScript } from "@/lib/utils";
 import { CURRENCY_INIT_SCRIPT } from "@/lib/currency";
 import { Header } from "@/components/layout/Header";
@@ -82,6 +83,11 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   const t = await getTranslations({ locale, namespace: "common" });
   const tMeta = await getTranslations({ locale, namespace: "meta" });
 
+  // El catálogo se edita en caliente desde /admin/catalogo y vive en disco, así
+  // que se lee aquí y baja como prop a lo que se pinta en cliente.
+  const nav = await getNavCatalog(locale);
+  const cartCatalog = await getCartCatalog(locale);
+
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -114,10 +120,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
           {t("skipToContent")}
         </a>
         <NextIntlClientProvider>
-          <CartProvider>
-            <Header />
+          <CartProvider catalog={cartCatalog}>
+            <Header nav={nav} />
             <main id="contenido">{children}</main>
-            <Footer />
+            <Footer nav={nav} />
             <CookieBanner />
           </CartProvider>
         </NextIntlClientProvider>

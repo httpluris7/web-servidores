@@ -1,10 +1,26 @@
 /**
- * Catálogo de productos ViaHost (sin CMS — fuente única tipada).
- * Precios y specs son datos de demostración realistas marcados con `TODO:`.
- * Edita aquí para cambiar planes, precios o regiones.
+ * Catálogo de productos ViaHost.
+ *
+ * Los datos ya no viven aquí: se editan desde `/admin/catalogo` y se guardan en
+ * `data/catalogo.json` (ver `src/lib/catalogo/store.ts`). Este módulo es la capa
+ * de lectura: resuelve el almacén al idioma pedido y lo devuelve con las mismas
+ * formas (`Region`, `Plan`, `ProductLine`, `DedicatedType`) que ya esperaban las
+ * páginas, para que pintar un plan siga siendo exactamente igual que antes.
+ *
+ * Todo lo que se exporta es asíncrono a propósito: lee de disco. Los
+ * componentes de cliente NO deben importar de aquí más que los tipos —el
+ * almacén usa `node:fs` y el bundle no compilaría—; los datos les llegan como
+ * props desde la página o el layout que los renderiza.
  */
 
 import { deployUrl } from "./site";
+import {
+  readCatalogo,
+  texto,
+  type Categoria,
+  type Producto,
+  type Ubicacion,
+} from "@/lib/catalogo/store";
 
 export type Region = {
   slug: string;
@@ -37,79 +53,6 @@ export type ProductLine = {
   plans: Plan[];
 };
 
-/* -------------------------------------------------------------------------- */
-/*  Regiones VPS                                                              */
-/*  TODO: confirmar regiones disponibles y precio "desde" reales del cliente. */
-/* -------------------------------------------------------------------------- */
-export const regions: Region[] = [
-  {
-    slug: "francia",
-    name: "France",
-    flag: "🇫🇷",
-    city: "Paris",
-    priceFrom: 8,
-    latencyNote: "< 5 ms to Western Europe",
-    map: { x: 42, y: 54 },
-  },
-];
-
-/* -------------------------------------------------------------------------- */
-/*  Línea VPS                                                                  */
-/* -------------------------------------------------------------------------- */
-export const vps: ProductLine = {
-  slug: "vps",
-  title: "Cloud VPS",
-  tagline: "NVMe virtual machines with a 10 Gbps network and DDoS protection included.",
-  regions,
-  plans: [
-    {
-      id: "vps-start",
-      name: "VPS Start",
-      cpu: "2 vCore AMD EPYC",
-      ram: "4 GB DDR5",
-      storage: "60 GB NVMe Gen4",
-      bandwidth: "10 Gbps · unlimited traffic",
-      price: 8,
-      orderUrl: deployUrl("/order/vps-start"),
-    },
-    {
-      id: "vps-pro",
-      name: "VPS Pro",
-      cpu: "4 vCore AMD EPYC",
-      ram: "8 GB DDR5",
-      storage: "120 GB NVMe Gen4",
-      bandwidth: "10 Gbps · unlimited traffic",
-      price: 14,
-      orderUrl: deployUrl("/order/vps-pro"),
-      popular: true,
-    },
-    {
-      id: "vps-max",
-      name: "VPS Max",
-      cpu: "8 vCore AMD EPYC",
-      ram: "16 GB DDR5",
-      storage: "240 GB NVMe Gen4",
-      bandwidth: "10 Gbps · unlimited traffic",
-      price: 30,
-      orderUrl: deployUrl("/order/vps-max"),
-    },
-    {
-      id: "vps-scale",
-      name: "VPS Scale",
-      cpu: "16 vCore AMD EPYC",
-      ram: "32 GB DDR5",
-      storage: "480 GB NVMe Gen4",
-      bandwidth: "10 Gbps · unlimited traffic",
-      price: 42,
-      orderUrl: deployUrl("/order/vps-scale"),
-    },
-  ],
-};
-
-/* -------------------------------------------------------------------------- */
-/*  Servidores dedicados                                                       */
-/*  TODO: confirmar planes dedicados, hardware y precios reales.               */
-/* -------------------------------------------------------------------------- */
 export type DedicatedType = {
   slug: string;
   title: string;
@@ -118,108 +61,150 @@ export type DedicatedType = {
   plans: Plan[];
 };
 
-/**
- * Catálogo de planes dedicados (bare metal), compartido entre países.
- * El mismo hardware se ofrece en cada ubicación; el `id` se prefija por país
- * para que cada combinación país+plan tenga una URL de contratación única.
- */
-const dedicatedBasePlans: Omit<Plan, "id" | "orderUrl">[] = [
-  {
-    name: "Ryzen 7950X",
-    cpu: "AMD Ryzen 9 7950X · 16C/32T",
-    ram: "64 GB DDR5 ECC",
-    storage: "2 × 1 TB NVMe Gen4",
-    bandwidth: "1 Gbps guaranteed",
-    price: 150,
-    popular: true,
-  },
-  {
-    name: "EPYC 7443",
-    cpu: "AMD EPYC 7443 · 24C/48T",
-    ram: "128 GB DDR4 ECC",
-    storage: "2 × 1.92 TB NVMe Gen4",
-    bandwidth: "1 Gbps guaranteed",
-    price: 300,
-  },
-  {
-    name: "EPYC 9354",
-    cpu: "AMD EPYC 9354 · 32C/64T",
-    ram: "256 GB DDR5 ECC",
-    storage: "4 × 3.84 TB NVMe Gen4",
-    bandwidth: "10 Gbps dedicated",
-    price: 500,
-  },
-  {
-    name: "Dual EPYC 9454",
-    cpu: "2 × AMD EPYC 9454 · 96C/192T",
-    ram: "512 GB DDR5 ECC",
-    storage: "6 × 3.84 TB NVMe Gen4",
-    bandwidth: "10 Gbps dedicated",
-    price: 900,
-  },
-  {
-    name: "Storage 360",
-    cpu: "AMD EPYC 7443 · 24C/48T",
-    ram: "128 GB DDR4 ECC",
-    storage: "18 × 20 TB HDD + 2 TB NVMe cache",
-    bandwidth: "2 Gbps guaranteed",
-    price: 1700,
-  },
-];
-
-/** Genera los planes dedicados de un país a partir del catálogo base. */
-function dedicatedPlansFor(prefix: string): Plan[] {
-  return dedicatedBasePlans.map((p) => {
-    const slug = p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-    const id = `ded-${prefix}-${slug}`;
-    return { ...p, id, orderUrl: deployUrl(`/order/${id}`) };
-  });
-}
-
-export const dedicatedTypes: DedicatedType[] = [
-  {
-    slug: "francia",
-    title: "Dedicated Servers France",
-    tagline: "AMD EPYC and Ryzen bare metal in our Paris datacenter. Guaranteed uplinks and NVMe Gen4, with no overselling.",
-    highlight: "🇫🇷 Paris · bare metal",
-    plans: dedicatedPlansFor("fr"),
-  },
-  {
-    slug: "holanda",
-    title: "Dedicated Servers Netherlands",
-    tagline: "AMD EPYC and Ryzen bare metal in Amsterdam with direct peering at AMS-IX. Guaranteed uplinks and NVMe Gen4, with no overselling.",
-    highlight: "🇳🇱 Amsterdam · bare metal",
-    plans: dedicatedPlansFor("nl"),
-  },
-];
-
-/** Todos los productos para el mega-menú y sitemap. */
-export const allProductSlugs = {
-  vpsRegions: regions.map((r) => r.slug),
-  dedicatedTypes: dedicatedTypes.map((d) => d.slug),
+/** Plan localizado junto a la línea de producto a la que pertenece. */
+export type LocatedPlan = {
+  plan: Plan;
+  lineSlug: string;
+  lineTitle: string;
+  /** `vps` admite región de despliegue; `dedicados` no. */
+  lineTipo: "vps" | "dedicados";
 };
 
-export function getRegion(slug: string): Region | undefined {
-  return regions.find((r) => r.slug === slug);
+/** El catálogo público completo, ya resuelto a un idioma. */
+export type Catalog = {
+  regions: Region[];
+  vps: ProductLine;
+  dedicatedTypes: DedicatedType[];
+  allPlans: LocatedPlan[];
+};
+
+/* --------------------------------- Mapeo ---------------------------------- */
+
+const porOrden = <T extends { orden: number }>(a: T, b: T) => a.orden - b.orden;
+
+function aRegion(u: Ubicacion, locale: string): Region {
+  const nota = texto(u.nota, locale);
+  return {
+    slug: u.slug,
+    name: texto(u.nombre, locale),
+    flag: u.bandera,
+    city: texto(u.ciudad, locale),
+    priceFrom: u.precioDesde,
+    ...(nota ? { latencyNote: nota } : {}),
+    map: { x: u.mapX, y: u.mapY },
+  };
 }
 
-export function getDedicatedType(slug: string): DedicatedType | undefined {
-  return dedicatedTypes.find((d) => d.slug === slug);
+function aPlan(p: Producto): Plan {
+  return {
+    id: p.planId,
+    name: p.nombre,
+    cpu: p.cpu,
+    ram: p.ram,
+    storage: p.almacenamiento,
+    bandwidth: p.red,
+    price: p.precio,
+    orderUrl: deployUrl(`/order/${p.planId}`),
+    ...(p.popular ? { popular: true } : {}),
+  };
 }
 
-/** Plan localizado junto a la línea de producto a la que pertenece. */
-export type LocatedPlan = { plan: Plan; lineSlug: string; lineTitle: string };
+/**
+ * Línea de reserva: el almacén protege la categoría VPS de borrado, pero un
+ * `catalogo.json` editado a mano podría no traerla y no queremos reventar.
+ */
+const LINEA_VPS_VACIA: ProductLine = { slug: "vps", title: "Cloud VPS", tagline: "", plans: [] };
 
-/** Todos los planes (VPS + dedicados) aplanados, con su línea de producto. */
-export const allPlans: LocatedPlan[] = [
-  ...vps.plans.map((plan) => ({ plan, lineSlug: vps.slug, lineTitle: vps.title })),
-  ...dedicatedTypes.flatMap((d) =>
-    d.plans.map((plan) => ({ plan, lineSlug: d.slug, lineTitle: d.title }))
-  ),
-];
+/* -------------------------------- Lectura --------------------------------- */
 
-export function getPlanById(id: string): LocatedPlan | undefined {
-  return allPlans.find((p) => p.plan.id === id);
+/**
+ * El catálogo público en un idioma: solo lo marcado como visible, en el orden
+ * que se le haya dado en el panel.
+ */
+export async function getCatalog(locale = "en"): Promise<Catalog> {
+  const { categorias, productos, ubicaciones } = await readCatalogo();
+
+  const visibles = productos.filter((p) => p.visible).sort(porOrden);
+  const planesDe = (categoria: Categoria) =>
+    visibles.filter((p) => p.categoriaId === categoria.id).map(aPlan);
+
+  const regions = ubicaciones
+    .filter((u) => u.visible)
+    .sort(porOrden)
+    .map((u) => aRegion(u, locale));
+
+  const publicas = categorias.filter((c) => c.visible).sort(porOrden);
+
+  const catVps = publicas.find((c) => c.tipo === "vps");
+  const vps: ProductLine = catVps
+    ? {
+        slug: catVps.slug,
+        title: texto(catVps.nombre, locale),
+        tagline: texto(catVps.descripcion, locale),
+        regions,
+        plans: planesDe(catVps),
+      }
+    : { ...LINEA_VPS_VACIA, regions };
+
+  const dedicatedTypes: DedicatedType[] = publicas
+    .filter((c) => c.tipo === "dedicados")
+    .map((c) => ({
+      slug: c.slug,
+      title: texto(c.nombre, locale),
+      tagline: texto(c.descripcion, locale),
+      highlight: texto(c.etiqueta, locale),
+      plans: planesDe(c),
+    }));
+
+  const allPlans: LocatedPlan[] = [
+    ...vps.plans.map((plan) => ({
+      plan,
+      lineSlug: vps.slug,
+      lineTitle: vps.title,
+      lineTipo: "vps" as const,
+    })),
+    ...dedicatedTypes.flatMap((d) =>
+      d.plans.map((plan) => ({
+        plan,
+        lineSlug: d.slug,
+        lineTitle: d.title,
+        lineTipo: "dedicados" as const,
+      }))
+    ),
+  ];
+
+  return { regions, vps, dedicatedTypes, allPlans };
+}
+
+export async function getRegions(locale = "en"): Promise<Region[]> {
+  return (await getCatalog(locale)).regions;
+}
+
+export async function getRegion(slug: string, locale = "en"): Promise<Region | undefined> {
+  return (await getCatalog(locale)).regions.find((r) => r.slug === slug);
+}
+
+export async function getDedicatedTypes(locale = "en"): Promise<DedicatedType[]> {
+  return (await getCatalog(locale)).dedicatedTypes;
+}
+
+export async function getDedicatedType(
+  slug: string,
+  locale = "en"
+): Promise<DedicatedType | undefined> {
+  return (await getCatalog(locale)).dedicatedTypes.find((d) => d.slug === slug);
+}
+
+export async function getAllPlans(locale = "en"): Promise<LocatedPlan[]> {
+  return (await getCatalog(locale)).allPlans;
+}
+
+/**
+ * Un plan contratable por su id público. Los ocultos no se resuelven: retirar un
+ * plan del catálogo lo saca también del carrito y de las rutas de pago.
+ */
+export async function getPlanById(id: string, locale = "en"): Promise<LocatedPlan | undefined> {
+  return (await getCatalog(locale)).allPlans.find((p) => p.plan.id === id);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -233,9 +218,65 @@ export type InvoiceProduct = {
   price: number; // €/mes (precio unitario sugerido)
 };
 
-/** Todos los planes (VPS + dedicados) como opciones para el selector de factura. */
-export const invoiceCatalog: InvoiceProduct[] = allPlans.map(({ plan, lineTitle }) => ({
-  id: plan.id,
-  label: `${plan.name} · ${lineTitle}`,
-  price: plan.price,
-}));
+/**
+ * Opciones del selector de facturas. Aquí SÍ entran los planes ocultos: un plan
+ * retirado del escaparate se sigue facturando a quien ya lo tiene contratado.
+ */
+export async function getInvoiceCatalog(locale = "en"): Promise<InvoiceProduct[]> {
+  const { categorias, productos } = await readCatalogo();
+  const titulo = new Map(categorias.map((c) => [c.id, texto(c.nombre, locale)]));
+  return [...productos].sort(porOrden).map((p) => {
+    const linea = titulo.get(p.categoriaId);
+    return {
+      id: p.planId,
+      label: linea ? `${p.nombre} · ${linea}` : p.nombre,
+      price: p.precio,
+    };
+  });
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Vistas reducidas para los componentes de cliente                          */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Lo justo que necesitan la cabecera, el menú móvil y el pie para construir
+ * sus enlaces. Va como prop desde el layout porque son componentes de cliente
+ * (o síncronos) y no pueden leer del disco.
+ */
+export type NavCatalog = {
+  regions: { slug: string; flag: string; name: string; priceFrom: number }[];
+  lines: { slug: string; title: string; highlight: string }[];
+};
+
+export async function getNavCatalog(locale = "en"): Promise<NavCatalog> {
+  const { regions, dedicatedTypes } = await getCatalog(locale);
+  return {
+    regions: regions.map((r) => ({
+      slug: r.slug,
+      flag: r.flag,
+      name: r.name,
+      priceFrom: r.priceFrom,
+    })),
+    lines: dedicatedTypes.map((d) => ({
+      slug: d.slug,
+      title: d.title,
+      highlight: d.highlight,
+    })),
+  };
+}
+
+/**
+ * El carrito vive en el navegador y resuelve contra el catálogo en cada render
+ * (nunca guarda precios), así que necesita la lista completa de planes.
+ */
+export type CartCatalog = {
+  plans: LocatedPlan[];
+  /** Región preseleccionada al añadir un VPS; null si no hay ubicaciones. */
+  defaultRegion: string | null;
+};
+
+export async function getCartCatalog(locale = "en"): Promise<CartCatalog> {
+  const { allPlans, regions } = await getCatalog(locale);
+  return { plans: allPlans, defaultRegion: regions[0]?.slug ?? null };
+}

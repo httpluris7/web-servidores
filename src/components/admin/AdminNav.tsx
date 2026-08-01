@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 const links: { href: string; key: string; exact?: boolean }[] = [
   { href: "/admin", key: "overview", exact: true },
+  { href: "/admin/catalogo", key: "catalog" },
   { href: "/admin/clientes", key: "customers" },
   { href: "/admin/facturas", key: "invoices" },
   { href: "/admin/pedidos", key: "ordersAndContacts" },

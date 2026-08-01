@@ -52,3 +52,22 @@ export function fmtDate(iso: string | null | undefined, withTime = false): strin
     ...(withTime ? { hour: "2-digit", minute: "2-digit" } : {}),
   });
 }
+
+/**
+ * Precio "desde" de una lista de planes. El catálogo es editable desde el
+ * panel, así que una línea puede quedarse sin planes visibles: `Math.min()` de
+ * un array vacío devuelve `Infinity` y pintaría "€∞" en el escaparate.
+ */
+export function precioDesde(planes: { price: number }[]): number {
+  if (planes.length === 0) return 0;
+  return Math.min(...planes.map((p) => p.price));
+}
+
+/**
+ * Importe de escaparate: entero cuando el precio es redondo —que es lo normal
+ * en el catálogo— y con céntimos cuando los tiene. El panel permite guardar
+ * 9,99 y pintar "€10" en la tarjeta del plan sería mentir sobre el precio.
+ */
+export function eurPrecio(value: number): string {
+  return eur(value, Number.isInteger(value) ? 0 : 2);
+}

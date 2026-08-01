@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { site, deployUrl } from "@/data/site";
-import { regions, dedicatedTypes } from "@/data/products";
+import type { NavCatalog } from "@/data/products";
 import { cn } from "@/lib/utils";
 import { Price } from "@/components/ui/Price";
 import { MobileMenu } from "./MobileMenu";
@@ -20,7 +20,12 @@ const navLinks = [
   { href: "/soporte", key: "support" },
 ] as const;
 
-export function Header() {
+/**
+ * `nav` llega como prop desde el layout: el catálogo se lee del disco y este es
+ * un componente de cliente. Ver `getNavCatalog`.
+ */
+export function Header({ nav }: { nav: NavCatalog }) {
+  const { regions, lines: dedicatedTypes } = nav;
   const t = useTranslations("nav");
   const tc = useTranslations("common");
   const [scrolled, setScrolled] = useState(false);
@@ -166,7 +171,7 @@ export function Header() {
           <CurrencySwitcher />
           <CartButton />
           <AccountButton />
-          <MobileMenu />
+          <MobileMenu nav={nav} />
         </div>
       </div>
     </header>

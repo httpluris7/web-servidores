@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/data/site";
-import { regions, dedicatedTypes } from "@/data/products";
+import { getCatalog } from "@/data/products";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = site.url;
+  const { regions, dedicatedTypes } = await getCatalog();
   const staticRoutes = [
     "",
     "/vps",

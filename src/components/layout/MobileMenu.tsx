@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { site, deployUrl } from "@/data/site";
-import { regions, dedicatedTypes } from "@/data/products";
+import type { NavCatalog } from "@/data/products";
 import { Price } from "@/components/ui/Price";
 
 const directLinks = [
@@ -19,7 +19,8 @@ const directLinks = [
 
 type Me = { id: string; nombre: string; email: string } | null;
 
-export function MobileMenu() {
+export function MobileMenu({ nav }: { nav: NavCatalog }) {
+  const { regions, lines: dedicatedTypes } = nav;
   const t = useTranslations("nav");
   const tc = useTranslations("common");
   const ta = useTranslations("account");

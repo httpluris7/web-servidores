@@ -11,12 +11,82 @@
     "nav": {
       "aria": "Administration",
       "overview": "Aperçu",
+      "catalog": "Catalogue",
       "customers": "Clients",
       "invoices": "Factures",
       "ordersAndContacts": "Commandes et contacts",
       "tickets": "Tickets",
       "settings": "Configuration",
       "servers": "Serveurs"
+    },
+    "catalog": {
+      "title": "Catalogue",
+      "subtitle": "Produits, catégories et emplacements affichés sur le site. Les changements sont immédiats.",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "cancel": "Annuler",
+      "hidden": "masqué",
+      "categories": {
+        "title": "Catégories",
+        "hint": "Chaque catégorie est une famille de produits avec sa page. Les nouvelles sont publiées sur /dedicados/<slug>.",
+        "add": "Ajouter une catégorie",
+        "count": "{count} produits",
+        "vpsBadge": "famille VPS",
+        "confirmDelete": "Supprimer cette catégorie ? Elle doit être vide de produits."
+      },
+      "products": {
+        "title": "Produits",
+        "hint": "Les offres commandables. Le prix est le prix mensuel en euros.",
+        "add": "Ajouter un produit",
+        "empty": "Aucun produit dans cette catégorie pour l'instant.",
+        "popular": "le plus populaire",
+        "confirmDelete": "Supprimer ce produit ? Il disparaîtra du site et des paniers qui le contiennent."
+      },
+      "locations": {
+        "title": "Emplacements VPS",
+        "hint": "Régions de déploiement d'un VPS, chacune avec sa page sur /vps/<slug>.",
+        "add": "Ajouter un emplacement",
+        "confirmDelete": "Supprimer cet emplacement ? Sa page cessera de fonctionner."
+      },
+      "form": {
+        "name": "Nom",
+        "description": "Description",
+        "badge": "Étiquette courte",
+        "badgeHint": "Petit texte mono au-dessus du titre, par exemple « 🇫🇷 Paris · bare metal ».",
+        "slug": "URL",
+        "slugHint": "Laissez vide pour la déduire du nom. Elle est normalisée et rendue unique à l'enregistrement.",
+        "category": "Catégorie",
+        "cpu": "CPU",
+        "ram": "RAM",
+        "storage": "Stockage",
+        "network": "Réseau",
+        "price": "Prix",
+        "priceHint": "Euros par mois. Converti pour le client s'il choisit le dollar.",
+        "priceFrom": "Prix à partir de",
+        "city": "Ville",
+        "note": "Note de latence",
+        "noteHint": "Affichée à côté de la ville, par exemple « < 5 ms vers l'Europe de l'Ouest ».",
+        "flag": "Drapeau",
+        "flagHint": "Un emoji de drapeau.",
+        "mapX": "Carte X",
+        "mapY": "Carte Y",
+        "mapHint": "0–100 sur la carte d'Europe de l'accueil.",
+        "order": "Ordre",
+        "visible": "Visible sur le site",
+        "popular": "Mettre en avant comme le plus populaire",
+        "planId": "Id de l'offre : {id} — fixe, utilisé par les URL de commande et les factures émises.",
+        "langHint": "L'anglais est obligatoire. Ce qui est laissé vide s'affiche en anglais."
+      },
+      "errors": {
+        "generico": "Le changement n'a pas pu être enregistré.",
+        "conexion": "Erreur de connexion. Réessayez.",
+        "datos": "Renseignez au moins le nom en anglais.",
+        "no-encontrado": "Cet élément n'existe plus. Rechargez la page.",
+        "categoria-con-productos": "Supprimez ou déplacez d'abord ses produits.",
+        "categoria-vps-protegida": "La famille VPS ne peut pas être supprimée : /vps en dépend."
+      }
     },
     "dashboard": {
       "summary": "Résumé",

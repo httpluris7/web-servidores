@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { site } from "@/data/site";
-import { regions } from "@/data/products";
+import { getRegions } from "@/data/products";
 import {
   services,
   regionStatus,
@@ -45,6 +45,7 @@ export default async function StatusPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("pages");
+  const regions = await getRegions(locale);
 
   const overall = overallStatus();
   const allOk = overall === "operational";

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { site } from "@/data/site";
-import { regions } from "@/data/products";
+import { getRegions } from "@/data/products";
 import { PageHero } from "@/components/ui/PageHero";
 import { EuropeMap } from "@/components/home/EuropeMap";
 import { CtaBand } from "@/components/ui/CtaBand";
@@ -35,6 +35,7 @@ export default async function NetworkPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("pages");
+  const regions = await getRegions(locale);
 
   const bigStats = [
     { v: site.network.asn, l: t("red.stats.asn") },
@@ -107,7 +108,7 @@ export default async function NetworkPage({
           </div>
         </Reveal>
         <Reveal delay={1}>
-          <EuropeMap />
+          <EuropeMap regions={regions} />
         </Reveal>
       </section>
 

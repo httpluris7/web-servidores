@@ -1,9 +1,14 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { site } from "@/data/site";
-import { regions, dedicatedTypes } from "@/data/products";
+import type { NavCatalog } from "@/data/products";
 
-export function Footer() {
+/**
+ * Síncrono a propósito: `useTranslations` es un hook y no puede vivir en un
+ * componente async, así que el catálogo entra como prop desde el layout.
+ */
+export function Footer({ nav }: { nav: NavCatalog }) {
+  const { regions, lines: dedicatedTypes } = nav;
   const t = useTranslations("footer");
   const tMeta = useTranslations("meta");
 

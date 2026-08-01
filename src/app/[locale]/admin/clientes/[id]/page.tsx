@@ -8,7 +8,7 @@ import { eur, fmtDate } from "@/lib/utils";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { InvoiceActions } from "@/components/admin/InvoiceActions";
 import { InvoiceForm } from "@/components/admin/InvoiceForm";
-import { invoiceCatalog } from "@/data/products";
+import { getInvoiceCatalog } from "@/data/products";
 import { ResetPasswordForm } from "@/components/admin/ResetPasswordForm";
 import { stripeIsReady } from "@/lib/ajustes";
 
@@ -165,7 +165,7 @@ export default async function ClienteDetallePage({
         <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-5 md:p-6">
           <InvoiceForm
             clientes={[]}
-            productos={invoiceCatalog}
+            productos={await getInvoiceCatalog()}
             preset={{
               id: cliente.id,
               nombre: cliente.nombre,

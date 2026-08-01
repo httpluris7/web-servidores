@@ -1,11 +1,13 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { site } from "@/data/site";
+import { getRegions } from "@/data/products";
 import { Reveal } from "@/components/ui/Reveal";
 import { EuropeMap } from "./EuropeMap";
 
 export async function NetworkBackbone() {
   const t = await getTranslations("home");
+  const regions = await getRegions();
   const miniStats = [
     { value: `${site.network.peers}+`, label: t("networkBackbone.stats.peers") },
     { value: `${site.network.capacityTbps} Tbps`, label: t("networkBackbone.stats.capacity") },
@@ -47,7 +49,7 @@ export async function NetworkBackbone() {
         {/* Derecha: mapa */}
         <Reveal delay={1} className="relative">
           <div className="pointer-events-none absolute inset-0 -z-10 grid-lines opacity-30" aria-hidden="true" />
-          <EuropeMap />
+          <EuropeMap regions={regions} />
         </Reveal>
       </div>
     </section>

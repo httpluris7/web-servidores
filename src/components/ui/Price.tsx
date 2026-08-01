@@ -1,4 +1,4 @@
-import { eur } from "@/lib/utils";
+import { eurPrecio } from "@/lib/utils";
 import { usd, usdSum } from "@/lib/currency";
 
 /**
@@ -16,7 +16,7 @@ import { usd, usdSum } from "@/lib/currency";
 export function Price({ value }: { value: number }) {
   return (
     <>
-      <span className="c-eur">{eur(value)}</span>
+      <span className="c-eur">{eurPrecio(value)}</span>
       <span className="c-usd">{usd(value)}</span>
     </>
   );
@@ -32,7 +32,7 @@ export function Price({ value }: { value: number }) {
 export function PriceSum({ values }: { values: number[] }) {
   return (
     <>
-      <span className="c-eur">{eur(values.reduce((acc, v) => acc + v, 0))}</span>
+      <span className="c-eur">{eurPrecio(values.reduce((acc, v) => acc + v, 0))}</span>
       <span className="c-usd">{usdSum(values)}</span>
     </>
   );

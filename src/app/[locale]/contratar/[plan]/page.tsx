@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
-import { allPlans, getPlanById, regions, vps } from "@/data/products";
+import { getAllPlans, getCatalog } from "@/data/products";
 import { PageHero } from "@/components/ui/PageHero";
 import { OrderForm } from "@/components/forms/OrderForm";
 import { stripeIsReady } from "@/lib/ajustes";
@@ -16,14 +16,8 @@ type Params = { locale: string; plan: string };
  */
 export const dynamic = "force-dynamic";
 
-export function generateStaticParams(): { plan: string }[] {
-  return allPlans.map((p) => ({ plan: p.plan.id }));
-}
-
-/** Resuelve el título traducido de la línea de producto del plan localizado. */
-function lineTitleKey(lineSlug: string): string | null {
-  if (lineSlug === vps.slug) return null; // "Cloud VPS" es nombre de producto, no se traduce
-  return `dedicated.types.${lineSlug}.title`;
+export async function generateStaticParams(): Promise<{ plan: string }[]> {
+  return (await getAllPlans()).map((p) => ({ plan: p.plan.id }));
 }
 
 export async function generateMetadata({
@@ -32,11 +26,10 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { locale, plan: id } = await params;
-  const located = getPlanById(id);
+  const located = (await getCatalog(locale)).allPlans.find((p) => p.plan.id === id);
   if (!located) return {};
   const t = await getTranslations({ locale, namespace: "products" });
-  const key = lineTitleKey(located.lineSlug);
-  const lineTitle = key ? t(key) : located.lineTitle;
+  const lineTitle = located.lineTitle;
   return {
     title: t("order.meta.title", { name: located.plan.name }),
     description: t("order.meta.description", {
@@ -52,13 +45,13 @@ export async function generateMetadata({
 export default async function OrderPage({ params }: { params: Promise<Params> }) {
   const { locale, plan: id } = await params;
   setRequestLocale(locale);
-  const located = getPlanById(id);
+  const { allPlans, regions } = await getCatalog(locale);
+  const located = allPlans.find((p) => p.plan.id === id);
   if (!located) notFound();
 
   const t = await getTranslations("products");
-  const isVps = located.lineSlug === vps.slug;
-  const key = lineTitleKey(located.lineSlug);
-  const lineTitle = key ? t(key) : located.lineTitle;
+  const isVps = located.lineTipo === "vps";
+  const lineTitle = located.lineTitle;
 
   return (
     <>

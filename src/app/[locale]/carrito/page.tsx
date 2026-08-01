@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { site } from "@/data/site";
+import { getRegions } from "@/data/products";
 import { PageHero } from "@/components/ui/PageHero";
 import { CartView } from "@/components/cart/CartView";
 import { getSession } from "@/lib/session";
@@ -53,7 +54,11 @@ export default async function CarritoPage({
       />
 
       <section className="container-edge py-16 md:py-20">
-        <CartView initialUser={initialUser} stripeEnabled={await stripeIsReady()} />
+        <CartView
+          initialUser={initialUser}
+          regions={await getRegions(locale)}
+          stripeEnabled={await stripeIsReady()}
+        />
       </section>
     </>
   );

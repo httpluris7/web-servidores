@@ -1,30 +1,28 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { vps, dedicatedTypes } from "@/data/products";
+import { getCatalog } from "@/data/products";
+import { precioDesde } from "@/lib/utils";
 import { Price } from "@/components/ui/Price";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 
-const cards = [
-  {
-    n: "/01",
-    priceFrom: Math.min(...vps.plans.map((p) => p.price)),
-    href: "/vps",
-  },
-  {
-    n: "/02",
-    priceFrom: Math.min(...(dedicatedTypes.find((d) => d.slug === "francia")?.plans.map((p) => p.price) ?? [0])),
-    href: "/dedicados/francia",
-  },
-  {
-    n: "/03",
-    priceFrom: Math.min(...(dedicatedTypes.find((d) => d.slug === "holanda")?.plans.map((p) => p.price) ?? [0])),
-    href: "/dedicados/holanda",
-  },
-];
-
+/**
+ * Tres tarjetas: la familia VPS y las dos primeras líneas de dedicados que haya
+ * en el catálogo. El copy de cada tarjeta sigue en `messages/*​/home.json` por
+ * índice; los precios salen del catálogo.
+ */
 export async function ProductsGrid() {
   const t = await getTranslations("home");
+  const { vps, dedicatedTypes } = await getCatalog();
+
+  const cards = [
+    { n: "/01", priceFrom: precioDesde(vps.plans), href: "/vps" },
+    ...dedicatedTypes.slice(0, 2).map((d, i) => ({
+      n: `/0${i + 2}`,
+      priceFrom: precioDesde(d.plans),
+      href: `/dedicados/${d.slug}`,
+    })),
+  ];
   return (
     <section className="container-edge py-16 md:py-32">
       <SectionHeader

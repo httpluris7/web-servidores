@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { saveLead, clean, emailRe } from "@/lib/leads";
-import { getPlanById, regions } from "@/data/products";
+import { getCatalog } from "@/data/products";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { getSession } from "@/lib/session";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
@@ -34,7 +34,8 @@ export async function POST(req: Request) {
   if (name.length < 2) errors.name = "Enter your name or company.";
   if (!emailRe.test(email)) errors.email = "Enter a valid email.";
 
-  const located = getPlanById(planId);
+  const { allPlans, regions } = await getCatalog();
+  const located = allPlans.find((p) => p.plan.id === planId);
   if (!located) errors.planId = "Invalid plan.";
 
   if (Object.keys(errors).length > 0) {

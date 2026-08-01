@@ -5,12 +5,23 @@
  *
  * Solo se almacena lo mínimo y estable por línea: `{ planId, qty, region }`.
  * Los datos visibles (nombre, precio, specs, línea de producto) se derivan en
- * cada render desde `getPlanById`, de modo que el catálogo es la única fuente de
- * verdad y nunca se sirven precios obsoletos guardados en el navegador.
+ * cada render desde el catálogo, de modo que este es la única fuente de verdad
+ * y nunca se sirven precios obsoletos guardados en el navegador.
+ *
+ * El catálogo se edita desde `/admin/catalogo` y se lee del disco, así que
+ * entra por prop desde el layout (`getCartCatalog`) en vez de importarse aquí.
  */
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { getPlanById, regions, vps, type Plan } from "@/data/products";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import type { CartCatalog, LocatedPlan, Plan } from "@/data/products";
 
 const STORAGE_KEY = "vh_cart";
 const MAX_QTY = 99;
@@ -49,33 +60,50 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
-/** ¿El plan pertenece a la línea VPS (y por tanto admite región de despliegue)? */
-function isVpsPlan(planId: string): boolean {
-  return getPlanById(planId)?.lineSlug === vps.slug;
-}
-
 function clampQty(qty: number): number {
   if (!Number.isFinite(qty)) return 1;
   return Math.min(MAX_QTY, Math.max(1, Math.floor(qty)));
 }
 
-function sanitize(raw: unknown): CartLine[] {
-  if (!Array.isArray(raw)) return [];
-  const out: CartLine[] = [];
-  for (const it of raw) {
-    if (!it || typeof it !== "object") continue;
-    const planId = (it as CartLine).planId;
-    if (typeof planId !== "string" || !getPlanById(planId)) continue;
-    if (out.some((l) => l.planId === planId)) continue; // una línea por plan
-    const region = typeof (it as CartLine).region === "string" ? (it as CartLine).region : undefined;
-    out.push({ planId, qty: clampQty((it as CartLine).qty), region });
-  }
-  return out;
-}
-
-export function CartProvider({ children }: { children: React.ReactNode }) {
+export function CartProvider({
+  catalog,
+  children,
+}: {
+  catalog: CartCatalog;
+  children: React.ReactNode;
+}) {
   const [items, setItems] = useState<CartLine[]>([]);
   const [ready, setReady] = useState(false);
+
+  const porId = useMemo(
+    () => new Map<string, LocatedPlan>(catalog.plans.map((p) => [p.plan.id, p])),
+    [catalog]
+  );
+
+  // Los callbacks y las suscripciones se crean una sola vez y leen el catálogo
+  // por referencia, para no tener que recrearse si este cambia.
+  const porIdRef = useRef(porId);
+  const defaultRegionRef = useRef(catalog.defaultRegion);
+  useEffect(() => {
+    porIdRef.current = porId;
+    defaultRegionRef.current = catalog.defaultRegion;
+  }, [porId, catalog.defaultRegion]);
+
+  /** Descarta lo que no sea una línea válida de un plan que siga existiendo. */
+  const sanitize = useCallback((raw: unknown): CartLine[] => {
+    if (!Array.isArray(raw)) return [];
+    const out: CartLine[] = [];
+    for (const it of raw) {
+      if (!it || typeof it !== "object") continue;
+      const planId = (it as CartLine).planId;
+      if (typeof planId !== "string" || !porIdRef.current.has(planId)) continue;
+      if (out.some((l) => l.planId === planId)) continue; // una línea por plan
+      const region =
+        typeof (it as CartLine).region === "string" ? (it as CartLine).region : undefined;
+      out.push({ planId, qty: clampQty((it as CartLine).qty), region });
+    }
+    return out;
+  }, []);
 
   // Hidratar desde localStorage una sola vez, en cliente.
   useEffect(() => {
@@ -86,7 +114,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       // localStorage corrupto o no disponible: arrancamos con carrito vacío.
     }
     setReady(true);
-  }, []);
+  }, [sanitize]);
 
   // Persistir en cada cambio (solo tras hidratar, para no pisar lo guardado).
   useEffect(() => {
@@ -110,18 +138,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
-  }, []);
+  }, [sanitize]);
 
   const add = useCallback<CartContextValue["add"]>((planId, opts) => {
-    if (!getPlanById(planId)) return;
+    const located = porIdRef.current.get(planId);
+    if (!located) return;
     const addQty = clampQty(opts?.qty ?? 1);
-    const region = opts?.region ?? (isVpsPlan(planId) ? regions[0]?.slug : undefined);
+    const region =
+      opts?.region ??
+      (located.lineTipo === "vps" ? defaultRegionRef.current ?? undefined : undefined);
     setItems((prev) => {
       const existing = prev.find((l) => l.planId === planId);
       if (existing) {
-        return prev.map((l) =>
-          l.planId === planId ? { ...l, qty: clampQty(l.qty + addQty) } : l
-        );
+        return prev.map((l) => (l.planId === planId ? { ...l, qty: clampQty(l.qty + addQty) } : l));
       }
       return [...prev, { planId, qty: addQty, region }];
     });
@@ -143,9 +172,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<CartContextValue>(() => {
     const lines: ResolvedLine[] = items.flatMap((l) => {
-      const located = getPlanById(l.planId);
+      const located = porId.get(l.planId);
       if (!located) return [];
-      const isVps = located.lineSlug === vps.slug;
+      const isVps = located.lineTipo === "vps";
       return [
         {
           planId: l.planId,
@@ -171,7 +200,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setRegion,
       clear,
     };
-  }, [items, ready, add, remove, setQty, setRegion, clear]);
+  }, [items, porId, ready, add, remove, setQty, setRegion, clear]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

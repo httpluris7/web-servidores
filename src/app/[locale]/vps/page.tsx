@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { vps, regions } from "@/data/products";
+import { getCatalog } from "@/data/products";
 import { vpsFaq } from "@/data/faq";
 import { site } from "@/data/site";
-import { eur, jsonLdScript } from "@/lib/utils";
+import { eurPrecio, jsonLdScript, precioDesde } from "@/lib/utils";
 import { Price } from "@/components/ui/Price";
 import { PageHero } from "@/components/ui/PageHero";
 import { PlanGrid } from "@/components/product/PlanGrid";
@@ -20,10 +20,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "products" });
+  const { vps } = await getCatalog(locale);
   return {
     title: t("vps.meta.title"),
     description: t("vps.meta.description", {
-      price: eur(Math.min(...vps.plans.map((p) => p.price))),
+      price: eurPrecio(precioDesde(vps.plans)),
     }),
   };
 }
@@ -36,6 +37,7 @@ export default async function VpsPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("products");
+  const { vps, regions } = await getCatalog(locale);
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -95,10 +97,11 @@ export default async function VpsPage({
                   <div>
                     <span className="flex items-center gap-2 text-lg font-medium">
                       <span aria-hidden="true">{r.flag}</span>
-                      {t(`vps.regions.${r.slug}.name`)}
+                      {r.name}
                     </span>
                     <span className="mt-1 block font-mono text-xs text-[var(--color-fg-muted)]">
-                      {t(`vps.regions.${r.slug}.city`)} · {t(`vps.regions.${r.slug}.latencyNote`)}
+                      {r.city}
+                      {r.latencyNote ? ` · ${r.latencyNote}` : ""}
                     </span>
                   </div>
                   <span className="text-right">

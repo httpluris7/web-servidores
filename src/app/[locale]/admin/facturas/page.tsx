@@ -6,7 +6,7 @@ import { eur, fmtDate } from "@/lib/utils";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { InvoiceActions } from "@/components/admin/InvoiceActions";
 import { InvoiceForm } from "@/components/admin/InvoiceForm";
-import { invoiceCatalog } from "@/data/products";
+import { getInvoiceCatalog } from "@/data/products";
 import { stripeIsReady } from "@/lib/ajustes";
 
 export const dynamic = "force-dynamic";
@@ -45,7 +45,7 @@ export default async function FacturasPage({
             </span>
           </summary>
           <div className="border-t border-[var(--color-line)] p-5 md:p-6">
-            <InvoiceForm clientes={clientes} productos={invoiceCatalog} />
+            <InvoiceForm clientes={clientes} productos={await getInvoiceCatalog()} />
           </div>
         </details>
       </section>
