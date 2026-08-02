@@ -2,9 +2,11 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { listUsers } from "@/lib/auth";
 import { listInvoices, invoiceStats, invoiceConcepto } from "@/lib/facturas";
+import { filtrarFacturas, parseInvoiceFilter } from "@/lib/facturas-filtro";
 import { eur, fmtDate } from "@/lib/utils";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { InvoiceActions } from "@/components/admin/InvoiceActions";
+import { InvoiceFilters } from "@/components/admin/InvoiceFilters";
 import { InvoiceForm } from "@/components/admin/InvoiceForm";
 import { getInvoiceCatalog } from "@/data/products";
 import { stripeIsReady } from "@/lib/ajustes";
@@ -13,18 +15,26 @@ export const dynamic = "force-dynamic";
 
 export default async function FacturasPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("admin");
 
-  const [usuarios, facturas, stripeReady] = await Promise.all([
+  const [usuarios, todas, stripeReady, sp] = await Promise.all([
     listUsers(),
     listInvoices(),
     stripeIsReady(),
+    searchParams,
   ]);
+
+  // Un único filtro para la tabla y para la descarga en lote: lo que se ve en
+  // pantalla es exactamente lo que entra en el zip.
+  const filtro = parseInvoiceFilter(sp);
+  const facturas = filtrarFacturas(todas, filtro);
   const stats = invoiceStats(facturas);
 
   const clientes = usuarios.map((u) => ({
@@ -51,10 +61,16 @@ export default async function FacturasPage({
       </section>
 
       <section>
+        <InvoiceFilters filtro={filtro} resultados={facturas.length} />
+      </section>
+
+      <section>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold">
             {t("facturas.heading")}{" "}
-            <span className="font-mono text-sm text-[var(--color-fg-muted)]">({stats.total})</span>
+            <span className="font-mono text-sm text-[var(--color-fg-muted)]">
+              ({stats.total === todas.length ? stats.total : `${stats.total}/${todas.length}`})
+            </span>
           </h2>
           <p className="font-mono text-xs text-[var(--color-fg-muted)]">
             {t.rich("facturas.invoicedCollectedOutstanding", {
@@ -67,7 +83,7 @@ export default async function FacturasPage({
 
         {facturas.length === 0 ? (
           <p className="text-sm text-[var(--color-fg-muted)]">
-            {t("facturas.noInvoices")}
+            {todas.length === 0 ? t("facturas.noInvoices") : t("facturas.filters.noResults")}
           </p>
         ) : (
           <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] md:overflow-x-auto">
