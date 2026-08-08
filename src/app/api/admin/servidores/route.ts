@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/admin";
 import { readSettings } from "@/lib/ajustes";
 import { listUsers } from "@/lib/auth";
+import { olvidarAvisos } from "@/lib/servidores/avisos";
 import { buildInventory, invalidateInventoryCache } from "@/lib/servidores/inventario";
 import { borrarMetricas } from "@/lib/servidores/metricas";
 import {
@@ -207,9 +208,11 @@ async function fichaPropia(accion: string, body: Record<string, unknown>) {
       );
     }
     await deleteManaged(id);
-    // El histórico se va con la ficha: si no, quedaría ocupando disco para
-    // siempre sin nada que lo enseñe.
+    // El histórico y los avisos se van con la ficha: si no, quedarían ocupando
+    // disco para siempre sin nada que los enseñe, y un aviso abierto de un
+    // servidor que ya no existe no podría cerrarse nunca.
     await borrarMetricas(id);
+    await olvidarAvisos(id);
     return NextResponse.json({ ok: true });
   }
 
@@ -218,5 +221,8 @@ async function fichaPropia(accion: string, body: Record<string, unknown>) {
   }
 
   await revokeAgentToken(id);
+  // Sin token no volverán a llegar muestras, así que un aviso abierto se
+  // quedaría colgado esperando una recuperación que no puede llegar.
+  await olvidarAvisos(id);
   return NextResponse.json({ ok: true });
 }

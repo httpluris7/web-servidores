@@ -46,10 +46,56 @@ export type ProviderSettings = {
   token: string;
 };
 
-export type Settings = { stripe: StripeSettings; provider: ProviderSettings };
+/**
+ * Avisos por umbral sobre las métricas que envía el agente.
+ *
+ * Un umbral a 0 desactiva esa regla, que es más claro que un interruptor por
+ * regla: quien no quiera vigilar la CPU pone 0 y se acabó.
+ */
+export type AlertSettings = {
+  enabled: boolean;
+  /** Destinatarios separados por coma. Vacío = el buzón de administración. */
+  destinatarios: string;
+  /** Umbrales en % (0 = regla desactivada). */
+  cpu: number;
+  memoria: number;
+  disco: number;
+  /**
+   * Minutos que el valor debe estar por encima antes de avisar. Evita que un
+   * pico de un minuto —un backup, un `apt upgrade`— genere un correo.
+   * El disco no lo usa: si está lleno, lo está.
+   */
+  sostenido: number;
+  /** Avisar si el agente lleva estos minutos sin enviar (0 = no avisar). */
+  agenteCaido: number;
+  /** Repetir el aviso cada estas horas mientras siga activo (0 = una sola vez). */
+  recordatorio: number;
+};
+
+export type Settings = {
+  stripe: StripeSettings;
+  provider: ProviderSettings;
+  alerts: AlertSettings;
+};
 
 /** Base de la API del proveedor actual, si no se configura otra. */
 export const DEFAULT_PROVIDER_API_URL = "https://manage.v4vm.com/api/v1";
+
+/**
+ * Valores de partida. Un 90% sostenido un cuarto de hora es la frontera
+ * habitual entre "está trabajando" y "hay un problema"; por debajo de eso los
+ * avisos se vuelven ruido y se acaban ignorando, que es peor que no tenerlos.
+ */
+export const DEFAULT_ALERTS: AlertSettings = {
+  enabled: true,
+  destinatarios: "",
+  cpu: 90,
+  memoria: 90,
+  disco: 90,
+  sostenido: 15,
+  agenteCaido: 20,
+  recordatorio: 24,
+};
 
 /* --------------------------------- Lectura -------------------------------- */
 
@@ -92,6 +138,29 @@ function normalizeProvider(raw: unknown, fallback: ProviderSettings): ProviderSe
   };
 }
 
+/** Entero acotado; fuera de rango o ausente, se queda el valor por defecto. */
+function entero(v: unknown, min: number, max: number, porDefecto: number): number {
+  if (typeof v !== "number" || !Number.isFinite(v)) return porDefecto;
+  return Math.min(max, Math.max(min, Math.round(v)));
+}
+
+function normalizeAlerts(raw: unknown): AlertSettings {
+  const o = (raw ?? {}) as Partial<Record<keyof AlertSettings, unknown>>;
+  return {
+    // Sin sección guardada, `o.enabled` es undefined y los avisos quedan
+    // activos: es lo que espera quien acaba de configurar los umbrales.
+    enabled: o.enabled === undefined ? DEFAULT_ALERTS.enabled : o.enabled === true,
+    destinatarios:
+      typeof o.destinatarios === "string" ? o.destinatarios.trim() : DEFAULT_ALERTS.destinatarios,
+    cpu: entero(o.cpu, 0, 100, DEFAULT_ALERTS.cpu),
+    memoria: entero(o.memoria, 0, 100, DEFAULT_ALERTS.memoria),
+    disco: entero(o.disco, 0, 100, DEFAULT_ALERTS.disco),
+    sostenido: entero(o.sostenido, 1, 720, DEFAULT_ALERTS.sostenido),
+    agenteCaido: entero(o.agenteCaido, 0, 1440, DEFAULT_ALERTS.agenteCaido),
+    recordatorio: entero(o.recordatorio, 0, 720, DEFAULT_ALERTS.recordatorio),
+  };
+}
+
 /** Ajustes efectivos (fichero sobre entorno). Nunca lanza: sin fichero, vacíos. */
 export async function readSettings(): Promise<Settings> {
   const env = fromEnv();
@@ -105,12 +174,14 @@ export async function readSettings(): Promise<Settings> {
     return {
       stripe: { ...env, enabled: !!env.secretKey || !!env.webhookSecret },
       provider: { ...providerEnv, enabled: !!providerEnv.token },
+      alerts: { ...DEFAULT_ALERTS },
     };
   }
-  const obj = (parsed ?? {}) as { stripe?: unknown; provider?: unknown };
+  const obj = (parsed ?? {}) as { stripe?: unknown; provider?: unknown; alerts?: unknown };
   return {
     stripe: normalizeStripe(obj.stripe, env),
     provider: normalizeProvider(obj.provider, providerEnv),
+    alerts: normalizeAlerts(obj.alerts),
   };
 }
 
@@ -177,6 +248,17 @@ export async function updateProviderSettings(patch: {
       apiUrl: apiUrl || current.provider.apiUrl || DEFAULT_PROVIDER_API_URL,
       token: pickSecret(patch.token, current.provider.token),
     },
+  };
+  await writeSettings(next);
+  return next;
+}
+
+/** Aplica cambios parciales de los avisos por umbral. */
+export async function updateAlertSettings(patch: Partial<AlertSettings>): Promise<Settings> {
+  const current = await readSettings();
+  const next: Settings = {
+    ...current,
+    alerts: normalizeAlerts({ ...current.alerts, ...patch }),
   };
   await writeSettings(next);
   return next;

@@ -439,6 +439,37 @@
         "errorSend": "L'action a échoué. Réessayez.",
         "errorConnection": "Erreur de connexion. Réessayez."
       }
+    },
+    "avisos": {
+      "heading": "Alertes par seuil",
+      "intro": "Un courriel quand une machine avec agent dépasse un seuil, et un autre quand elle revient à la normale. Un seuil à 0 désactive la règle.",
+      "enabled": "Envoyer les alertes",
+      "save": "Enregistrer les alertes",
+      "saving": "Enregistrement…",
+      "saved": "Alertes enregistrées.",
+      "errorSave": "Impossible d'enregistrer les alertes.",
+      "errorConnection": "Connexion impossible.",
+      "field": {
+        "cpu": "CPU au-dessus de",
+        "memoria": "Mémoire au-dessus de",
+        "disco": "Disque au-dessus de",
+        "sostenido": "Pendant au moins",
+        "agenteCaido": "Agent silencieux pendant",
+        "recordatorio": "Répéter l'alerte toutes les",
+        "destinatarios": "Destinataires"
+      },
+      "help": {
+        "cpu": "0 désactive l'alerte CPU.",
+        "memoria": "0 désactive l'alerte mémoire.",
+        "disco": "Signalé dès le franchissement : si le disque est plein, il est plein.",
+        "sostenido": "S'applique au CPU et à la mémoire, pour qu'un pic d'une minute n'envoie pas de courriel.",
+        "agenteCaido": "0 : aucune alerte si une machine cesse de transmettre.",
+        "recordatorio": "0 : une seule alerte, jusqu'à résolution.",
+        "destinatarios": "Séparés par des virgules. Vide, ils partent vers administrador@viahost.top."
+      },
+      "openHeading": "{count, plural, one {# alerte ouverte} other {# alertes ouvertes}}",
+      "openValue": "{metrica} à {valor} % (seuil {umbral} %)",
+      "openAgent": "Sans données depuis plus de {min} min"
     }
   }
 }

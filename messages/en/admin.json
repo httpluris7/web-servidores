@@ -439,6 +439,37 @@
         "errorSend": "The action failed. Please try again.",
         "errorConnection": "Connection error. Please try again."
       }
+    },
+    "avisos": {
+      "heading": "Threshold alerts",
+      "intro": "An email when a machine with an agent crosses a threshold, and another when it recovers. A threshold of 0 turns that rule off.",
+      "enabled": "Send alerts",
+      "save": "Save alerts",
+      "saving": "Saving…",
+      "saved": "Alerts saved.",
+      "errorSave": "The alerts could not be saved.",
+      "errorConnection": "Could not connect.",
+      "field": {
+        "cpu": "CPU above",
+        "memoria": "Memory above",
+        "disco": "Disk above",
+        "sostenido": "Sustained for",
+        "agenteCaido": "Agent silent for",
+        "recordatorio": "Repeat the alert every",
+        "destinatarios": "Recipients"
+      },
+      "help": {
+        "cpu": "0 turns the CPU alert off.",
+        "memoria": "0 turns the memory alert off.",
+        "disco": "Reported as soon as it is crossed: if the disk is full, it is full.",
+        "sostenido": "Applies to CPU and memory, so a one-minute spike does not send email.",
+        "agenteCaido": "0 means no alert when a machine stops reporting.",
+        "recordatorio": "0 reports once, until it clears.",
+        "destinatarios": "Comma separated. Left blank, they go to administrador@viahost.top."
+      },
+      "openHeading": "{count, plural, one {# open alert} other {# open alerts}}",
+      "openValue": "{metrica} at {valor} % (threshold {umbral} %)",
+      "openAgent": "No data for over {min} min"
     }
   }
 }

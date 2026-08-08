@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { evaluarMuestra } from "@/lib/servidores/avisos";
 import {
   guardarMuestra,
   MAX_CUERPO_BYTES,
@@ -83,6 +84,11 @@ export async function POST(req: Request) {
   const meta = sanearMeta((cuerpo as { meta?: unknown }).meta, ip);
   const guardada = await guardarMuestra(ficha.id, muestra, meta);
   if (!guardada) return no(500, "Could not store the sample.");
+
+  // Los umbrales se comprueban con la muestra recién guardada, para que el
+  // aviso salga en el momento y sin depender de ningún proceso aparte. La
+  // función se traga sus propios errores: vigilar no puede romper lo vigilado.
+  await evaluarMuestra(ficha, muestra);
 
   // El intervalo lo manda el panel para poder cambiarlo sin tocar las máquinas.
   return NextResponse.json({ ok: true, intervalo: meta.intervalo ?? 60 });

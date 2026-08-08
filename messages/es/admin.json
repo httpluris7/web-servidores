@@ -439,6 +439,37 @@
         "errorSend": "La acción ha fallado. Inténtalo de nuevo.",
         "errorConnection": "Error de conexión. Inténtalo de nuevo."
       }
+    },
+    "avisos": {
+      "heading": "Avisos por umbral",
+      "intro": "Correo cuando una máquina con agente pasa de un umbral, y otro cuando se recupera. Un umbral a 0 desactiva esa regla.",
+      "enabled": "Enviar avisos",
+      "save": "Guardar avisos",
+      "saving": "Guardando…",
+      "saved": "Avisos guardados.",
+      "errorSave": "No se han podido guardar los avisos.",
+      "errorConnection": "No se ha podido conectar.",
+      "field": {
+        "cpu": "CPU por encima de",
+        "memoria": "Memoria por encima de",
+        "disco": "Disco por encima de",
+        "sostenido": "Sostenido durante",
+        "agenteCaido": "Agente sin enviar durante",
+        "recordatorio": "Repetir el aviso cada",
+        "destinatarios": "Destinatarios"
+      },
+      "help": {
+        "cpu": "0 desactiva el aviso de CPU.",
+        "memoria": "0 desactiva el aviso de memoria.",
+        "disco": "Avisa en cuanto se cruza, sin esperar: si está lleno, lo está.",
+        "sostenido": "Se aplica a CPU y memoria, para que un pico de un minuto no genere correo.",
+        "agenteCaido": "0 no avisa si una máquina deja de enviar.",
+        "recordatorio": "0 avisa una sola vez, hasta que se resuelva.",
+        "destinatarios": "Separados por comas. En blanco, van a administrador@viahost.top."
+      },
+      "openHeading": "{count, plural, one {# aviso abierto} other {# avisos abiertos}}",
+      "openValue": "{metrica} al {valor} % (umbral {umbral} %)",
+      "openAgent": "Sin enviar datos desde hace más de {min} min"
     }
   }
 }

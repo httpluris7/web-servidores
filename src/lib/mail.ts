@@ -462,3 +462,83 @@ export async function sendTicketReplyMail(m: TicketReplyMail): Promise<void> {
 
   await pipeSendmail(to, `${headers}\r\n\r\n${body}\n`);
 }
+
+export type AlertMail = {
+  /** Direcciones ya validadas por quien llama. */
+  to: string[];
+  /** Nombre del servidor tal y como se ve en el panel. */
+  servidor: string;
+  /** Métrica en cristiano: "Disco", "Memoria", "Agente"… */
+  metrica: string;
+  /**
+   * Qué ha pasado, para el asunto. Sin esto, el aviso del agente —que no tiene
+   * valor que enseñar— se quedaba en «Aviso: agente en tal servidor», que no
+   * dice nada al leerlo en el móvil.
+   */
+  resumen?: string;
+  /** Texto del valor actual, con su unidad. Vacío en el aviso del agente. */
+  valor: string;
+  umbral: string;
+  desde: string;
+  url: string;
+  /** false = el aviso se ha resuelto solo. */
+  activa: boolean;
+  /** true si es un recordatorio de un aviso que sigue abierto. */
+  recordatorio?: boolean;
+};
+
+/**
+ * Aviso por umbral de una métrica, al buzón de administración.
+ *
+ * Va en español y no en inglés como las facturas: esto lo lee quien lleva el
+ * panel, no un cliente. Se envía uno por destinatario en lugar de un To con
+ * varias direcciones para no revelar a unos las direcciones de los otros.
+ */
+export async function sendAlertMail(m: AlertMail): Promise<void> {
+  const servidor = headerSafe(m.servidor);
+  const metrica = headerSafe(m.metrica);
+
+  const que =
+    headerSafe(m.resumen ?? "") ||
+    `${metrica.toLowerCase()}${m.valor ? ` al ${m.valor}` : ""}`;
+
+  const asunto = m.activa
+    ? `${m.recordatorio ? "Sigue abierto" : "Aviso"}: ${que} en ${servidor}`
+    : `Resuelto: ${que} en ${servidor}`;
+
+  const cuerpo = [
+    m.activa
+      ? `El servidor ${servidor} ha superado un umbral de vigilancia.`
+      : `El aviso de ${metrica.toLowerCase()} en ${servidor} se ha resuelto.`,
+    "",
+    `Métrica:  ${metrica}`,
+    ...(m.valor ? [`Valor:    ${m.valor}`] : []),
+    ...(m.umbral ? [`Umbral:   ${m.umbral}`] : []),
+    `Desde:    ${m.desde}`,
+    "",
+    m.url,
+    "",
+    "—",
+    "Aviso automático de ViaHost. Los umbrales se cambian en /admin/configuracion.",
+  ].join("\n");
+
+  for (const destino of m.to) {
+    const to = headerSafe(destino);
+    if (!emailRe.test(to) || /[<>,;"]/.test(to)) continue;
+    const headers = [
+      `From: Avisos ViaHost <${FROM}>`,
+      `To: ${to}`,
+      `Subject: ${encodeHeader(`[ViaHost] ${asunto}`)}`,
+      // Que los avisos no generen respuestas automáticas ni vacaciones.
+      "Auto-Submitted: auto-generated",
+      "X-Auto-Response-Suppress: All",
+      "MIME-Version: 1.0",
+      "Content-Type: text/plain; charset=UTF-8",
+      "Content-Transfer-Encoding: 8bit",
+    ].join("\r\n");
+    await pipeSendmail(to, `${headers}\r\n\r\n${cuerpo}\n`);
+  }
+}
+
+/** Buzón al que van los avisos si no se configura ningún destinatario. */
+export const ALERT_FALLBACK_MAILBOX = FALLBACK_MAILBOX;

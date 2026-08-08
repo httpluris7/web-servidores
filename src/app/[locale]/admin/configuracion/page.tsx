@@ -9,6 +9,7 @@ import {
 } from "@/lib/ajustes";
 import { StripeSettingsForm } from "@/components/admin/StripeSettingsForm";
 import { ProviderSettingsForm } from "@/components/admin/ProviderSettingsForm";
+import { AlertSettingsForm } from "@/components/admin/AlertSettingsForm";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,7 @@ export default async function ConfiguracionPage({
   const t = await getTranslations("admin");
 
   // Al cliente solo viaja la versión enmascarada: los secretos no salen de aquí.
-  const { stripe, provider } = await readSettings();
+  const { stripe, provider, alerts } = await readSettings();
   const initial = {
     enabled: stripe.enabled,
     hasSecretKey: !!stripe.secretKey,
@@ -55,6 +56,8 @@ export default async function ConfiguracionPage({
       />
 
       <ProviderSettingsForm initial={initialProvider} />
+
+      <AlertSettingsForm initial={alerts} />
     </div>
   );
 }

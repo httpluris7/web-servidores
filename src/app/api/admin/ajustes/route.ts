@@ -5,12 +5,14 @@ import {
   readSettings,
   stripeMode,
   tokenExpiresAt,
+  updateAlertSettings,
   updateProviderSettings,
   updateStripeSettings,
   WEBHOOK_EVENTS,
   WEBHOOK_URL,
   type Settings,
 } from "@/lib/ajustes";
+import { emailRe } from "@/lib/leads";
 import { retrieveAccount, StripeError } from "@/lib/payments/stripe";
 import { invalidateInventoryCache } from "@/lib/servidores/inventario";
 import { ProviderError, verifyToken } from "@/lib/servidores/v4vm";
@@ -23,8 +25,10 @@ export const dynamic = "force-dynamic";
  * versión enmascarada y si están puestos o no.
  */
 function publicView(settings: Settings) {
-  const { stripe, provider } = settings;
+  const { stripe, provider, alerts } = settings;
   return {
+    // Los umbrales no son secretos: van tal cual, que el formulario los pinta.
+    alerts,
     stripe: {
       enabled: stripe.enabled,
       hasSecretKey: !!stripe.secretKey,
@@ -102,6 +106,51 @@ async function putProvider(body: Record<string, unknown>) {
   return NextResponse.json({ ok: true, warning, ...publicView(settings) });
 }
 
+/**
+ * Guarda los umbrales de aviso. Los valores se acotan en `updateAlertSettings`;
+ * aquí solo se comprueba lo que el usuario podría escribir mal sin darse
+ * cuenta, que son las direcciones de correo: una lista con una errata deja los
+ * avisos yéndose a ninguna parte sin que nadie lo note.
+ */
+async function putAlerts(body: Record<string, unknown>) {
+  const destinatarios =
+    typeof body.destinatarios === "string" ? body.destinatarios.trim() : undefined;
+
+  if (destinatarios) {
+    const malas = destinatarios
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .filter((s) => !emailRe.test(s) || /[<>,;"]/.test(s));
+    if (malas.length > 0) {
+      return NextResponse.json(
+        { ok: false, error: `Not a valid email address: ${malas[0]}` },
+        { status: 422 }
+      );
+    }
+  }
+
+  const num = (v: unknown): number | undefined => (typeof v === "number" ? v : undefined);
+  const settings = await updateAlertSettings({
+    enabled: typeof body.enabled === "boolean" ? body.enabled : undefined,
+    destinatarios,
+    cpu: num(body.cpu),
+    memoria: num(body.memoria),
+    disco: num(body.disco),
+    sostenido: num(body.sostenido),
+    agenteCaido: num(body.agenteCaido),
+    recordatorio: num(body.recordatorio),
+  });
+
+  const { cpu, memoria, disco, agenteCaido } = settings.alerts;
+  const warning =
+    settings.alerts.enabled && cpu === 0 && memoria === 0 && disco === 0 && agenteCaido === 0
+      ? "Alerts are on but every threshold is set to 0, so nothing will ever be reported."
+      : null;
+
+  return NextResponse.json({ ok: true, warning, ...publicView(settings) });
+}
+
 export async function PUT(req: Request) {
   if (!(await getAdminSession())) {
     return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 403 });
@@ -115,6 +164,7 @@ export async function PUT(req: Request) {
   }
 
   if (body.section === "provider") return putProvider(body);
+  if (body.section === "alerts") return putAlerts(body);
 
   // `null` borra la clave guardada; ausente o cadena vacía la deja como está.
   const readKey = (v: unknown): string | null | undefined => {
