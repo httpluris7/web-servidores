@@ -2,14 +2,22 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import type { InventoryCustomer, InventoryItem } from "@/lib/servidores/inventario";
+import { Link } from "@/i18n/navigation";
+import type {
+  AgentStatus,
+  ExternalItem,
+  InventoryCustomer,
+  InventoryItem,
+} from "@/lib/servidores/inventario";
 import type { ManagedServer } from "@/lib/servidores/store";
 
 type Data = {
   configured: boolean;
   items: InventoryItem[];
+  externos: ExternalItem[];
   huerfanos: ManagedServer[];
   clientes: InventoryCustomer[];
+  agentes: Record<string, AgentStatus>;
 };
 
 /** Colorea el estado del servidor. Cualquier estado desconocido va en neutro. */
@@ -20,19 +28,25 @@ function statusTone(status: string): string {
 }
 
 /**
- * Inventario de servidores del proveedor y su asignación a clientes.
+ * Inventario de servidores y su asignación a clientes.
  *
  * Asignar aquí NO toca nada en el proveedor: solo decide a quién se le muestra
  * cada servidor en su área de cliente. Por eso "olvidar" una ficha huérfana es
  * inofensivo — borra nuestra vinculación, no el VPS.
+ *
+ * Conviven dos clases de máquina: las del proveedor, que llegan de su API, y
+ * las externas, que damos de alta a mano porque no hay API a la que preguntar
+ * (takehost y demás). De las dos se ven las gráficas si tienen agente.
  */
 export function ServerInventory({ initial }: { initial: Data }) {
   const t = useTranslations("admin");
   const [data, setData] = useState(initial);
   const [query, setQuery] = useState("");
-  const [busyId, setBusyId] = useState<number | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [alta, setAlta] = useState(false);
+  const [nuevo, setNuevo] = useState({ etiqueta: "", host: "", userId: "" });
 
   async function reload(refresh: boolean) {
     setError(null);
@@ -47,8 +61,10 @@ export function ServerInventory({ initial }: { initial: Data }) {
       setData({
         configured: json.configured,
         items: json.items,
+        externos: json.externos ?? [],
         huerfanos: json.huerfanos,
         clientes: json.clientes,
+        agentes: json.agentes ?? {},
       });
     } catch {
       setError(t("servidores.errorConnection"));
@@ -57,67 +73,66 @@ export function ServerInventory({ initial }: { initial: Data }) {
     }
   }
 
-  async function assign(remoteId: number, userId: string | null) {
+  async function enviar(cuerpo: Record<string, unknown>, clave: string) {
     setError(null);
-    setBusyId(remoteId);
+    setBusyId(clave);
     try {
       const res = await fetch("/api/admin/servidores", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ remoteId, userId }),
+        body: JSON.stringify(cuerpo),
       });
       const json = await res.json().catch(() => null);
       if (!res.ok || !json?.ok) {
         setError(json?.error ?? t("servidores.errorSave"));
-        return;
+        return null;
       }
       await reload(false);
+      return json;
     } catch {
       setError(t("servidores.errorConnection"));
+      return null;
     } finally {
       setBusyId(null);
     }
   }
 
-  async function forget(remoteId: number) {
-    setBusyId(remoteId);
-    try {
-      await fetch("/api/admin/servidores", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ action: "forget", remoteId }),
-      });
-      await reload(false);
-    } catch {
-      setError(t("servidores.errorConnection"));
-    } finally {
-      setBusyId(null);
-    }
-  }
-
-  if (!data.configured) {
-    return (
-      <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-6">
-        <p className="text-sm text-[var(--color-fg-muted)]">{t("servidores.notConfigured")}</p>
-      </div>
+  async function crearExterno(e: React.FormEvent) {
+    e.preventDefault();
+    if (!nuevo.etiqueta.trim()) return;
+    const json = await enviar(
+      { action: "crear-externo", ...nuevo, userId: nuevo.userId || null },
+      "nuevo"
     );
+    if (json) {
+      setNuevo({ etiqueta: "", host: "", userId: "" });
+      setAlta(false);
+    }
   }
 
   const q = query.trim().toLowerCase();
-  const items = q
-    ? data.items.filter((i) =>
-        `${i.remote.name} ${i.remote.ipv4.join(" ")} ${i.remote.projectName ?? ""} ${
-          i.cliente?.nombre ?? ""
-        } ${i.cliente?.email ?? ""}`
-          .toLowerCase()
-          .includes(q)
-      )
-    : data.items;
+  const coincide = (texto: string) => !q || texto.toLowerCase().includes(q);
+
+  const items = data.items.filter((i) =>
+    coincide(
+      `${i.remote.name} ${i.remote.ipv4.join(" ")} ${i.remote.projectName ?? ""} ${
+        i.cliente?.nombre ?? ""
+      } ${i.cliente?.email ?? ""}`
+    )
+  );
+  const externos = data.externos.filter((e) =>
+    coincide(`${e.managed.etiqueta} ${e.managed.host} ${e.cliente?.nombre ?? ""} ${e.cliente?.email ?? ""}`)
+  );
 
   const asignados = data.items.filter((i) => i.cliente).length;
 
+  const campo =
+    "min-h-11 w-full rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-2 text-sm placeholder:text-[var(--color-fg-dim)] focus:border-[var(--color-accent)] focus:outline-none md:min-h-0";
+  const boton =
+    "inline-flex min-h-11 shrink-0 items-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-3 py-2 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] disabled:opacity-50 md:min-h-0";
+
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 className="text-lg font-semibold">
           {t("servidores.heading")}{" "}
@@ -131,14 +146,9 @@ export function ServerInventory({ initial }: { initial: Data }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("servidores.searchPlaceholder")}
-            className="min-w-0 flex-1 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-2.5 text-sm placeholder:text-[var(--color-fg-dim)] focus:border-[var(--color-accent)] focus:outline-none sm:w-64 sm:flex-none sm:py-2"
+            className={campo + " sm:w-64 sm:flex-none"}
           />
-          <button
-            type="button"
-            onClick={() => reload(true)}
-            disabled={refreshing}
-            className="shrink-0 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-3 py-2.5 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] disabled:opacity-50 sm:py-2"
-          >
+          <button type="button" onClick={() => reload(true)} disabled={refreshing} className={boton}>
             {refreshing ? t("servidores.refreshing") : t("servidores.refresh")}
           </button>
         </div>
@@ -150,23 +160,28 @@ export function ServerInventory({ initial }: { initial: Data }) {
         </p>
       )}
 
-      {items.length === 0 ? (
+      {!data.configured ? (
+        <p className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-6 text-sm text-[var(--color-fg-muted)]">
+          {t("servidores.notConfigured")}
+        </p>
+      ) : items.length === 0 ? (
         <p className="text-sm text-[var(--color-fg-muted)]">
           {q ? t("servidores.noMatch") : t("servidores.none")}
         </p>
       ) : (
         <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] md:overflow-x-auto">
-          <table className="table-cards w-full border-collapse text-sm md:min-w-[760px]">
+          <table className="table-cards w-full border-collapse text-sm md:min-w-[860px]">
             <thead>
               <tr className="border-b border-[var(--color-line)] text-left">
                 <th className="px-4 py-3 mono-label text-[0.6rem]">{t("servidores.colServer")}</th>
                 <th className="px-4 py-3 mono-label text-[0.6rem]">{t("servidores.colStatus")}</th>
                 <th className="px-4 py-3 mono-label text-[0.6rem]">{t("servidores.colSpecs")}</th>
+                <th className="px-4 py-3 mono-label text-[0.6rem]">{t("servidores.colMonitor")}</th>
                 <th className="px-4 py-3 mono-label text-[0.6rem]">{t("servidores.colCustomer")}</th>
               </tr>
             </thead>
             <tbody>
-              {items.map(({ remote, cliente }) => (
+              {items.map(({ remote, managed, cliente }) => (
                 <tr
                   key={remote.id}
                   className="border-b border-[var(--color-line)] transition-colors last:border-0 hover:bg-white/[0.02]"
@@ -218,12 +233,26 @@ export function ServerInventory({ initial }: { initial: Data }) {
                     )}
                   </td>
 
+                  <td data-label={t("servidores.colMonitor")} className="px-4 py-3">
+                    <Monitor
+                      managed={managed}
+                      agente={managed ? data.agentes[managed.id] : undefined}
+                      ocupado={busyId === `m${remote.id}`}
+                      // Sin ficha no hay a qué colgar el agente: se crea una sin
+                      // cliente asignado, que es exactamente lo que hace asignar.
+                      onAlta={() => enviar({ remoteId: remote.id, userId: null }, `m${remote.id}`)}
+                      t={t}
+                    />
+                  </td>
+
                   <td data-label={t("servidores.colCustomer")} className="px-4 py-3">
                     <select
                       value={cliente?.id ?? ""}
-                      disabled={busyId === remote.id}
-                      onChange={(e) => assign(remote.id, e.target.value || null)}
-                      className="w-full min-w-0 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-2 text-sm focus:border-[var(--color-accent)] focus:outline-none disabled:opacity-50 md:max-w-[220px]"
+                      disabled={busyId === `c${remote.id}`}
+                      onChange={(e) =>
+                        enviar({ remoteId: remote.id, userId: e.target.value || null }, `c${remote.id}`)
+                      }
+                      className={campo + " md:max-w-[220px]"}
                     >
                       <option value="">{t("servidores.unassigned")}</option>
                       {data.clientes.map((c) => (
@@ -239,6 +268,116 @@ export function ServerInventory({ initial }: { initial: Data }) {
           </table>
         </div>
       )}
+
+      {/* ------------------------------ Externos ----------------------------- */}
+      <section>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold">
+              {t("servidores.external.heading")}{" "}
+              <span className="font-mono text-sm text-[var(--color-fg-muted)]">
+                ({data.externos.length})
+              </span>
+            </h2>
+            <p className="mt-0.5 text-xs text-[var(--color-fg-muted)]">
+              {t("servidores.external.intro")}
+            </p>
+          </div>
+          <button type="button" onClick={() => setAlta((v) => !v)} className={boton}>
+            {alta ? t("servidores.external.cancel") : t("servidores.external.add")}
+          </button>
+        </div>
+
+        {alta && (
+          <form
+            onSubmit={crearExterno}
+            className="mb-4 grid gap-3 rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-5 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            <label className="grid gap-1">
+              <span className="mono-label text-[0.55rem]">{t("servidores.external.name")}</span>
+              <input
+                value={nuevo.etiqueta}
+                onChange={(e) => setNuevo({ ...nuevo, etiqueta: e.target.value })}
+                required
+                maxLength={80}
+                placeholder={t("servidores.external.namePlaceholder")}
+                className={campo}
+              />
+            </label>
+            <label className="grid gap-1">
+              <span className="mono-label text-[0.55rem]">{t("servidores.external.host")}</span>
+              <input
+                value={nuevo.host}
+                onChange={(e) => setNuevo({ ...nuevo, host: e.target.value })}
+                maxLength={120}
+                placeholder="203.0.113.10"
+                className={campo}
+              />
+            </label>
+            <label className="grid gap-1">
+              <span className="mono-label text-[0.55rem]">{t("servidores.colCustomer")}</span>
+              <select
+                value={nuevo.userId}
+                onChange={(e) => setNuevo({ ...nuevo, userId: e.target.value })}
+                className={campo}
+              >
+                <option value="">{t("servidores.unassigned")}</option>
+                {data.clientes.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.nombre} — {c.email}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="flex items-end">
+              <button type="submit" disabled={busyId === "nuevo"} className={boton + " w-full justify-center"}>
+                {t("servidores.external.create")}
+              </button>
+            </div>
+          </form>
+        )}
+
+        {externos.length === 0 ? (
+          <p className="text-sm text-[var(--color-fg-muted)]">
+            {q ? t("servidores.noMatch") : t("servidores.external.none")}
+          </p>
+        ) : (
+          <ul className="grid gap-2">
+            {externos.map(({ managed, cliente }) => {
+              const agente = data.agentes[managed.id];
+              return (
+                <li
+                  key={managed.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-4"
+                >
+                  <div className="min-w-0">
+                    <Link
+                      href={`/admin/servidores/${managed.id}`}
+                      className="font-medium break-words hover:text-[var(--color-accent)]"
+                    >
+                      {managed.etiqueta}
+                    </Link>
+                    <p className="font-mono text-xs text-[var(--color-fg-muted)]">
+                      {managed.host || "—"}
+                      {agente?.hostname ? ` · ${agente.hostname}` : ""}
+                    </p>
+                    <p className="mt-0.5 text-xs text-[var(--color-fg-dim)]">
+                      {cliente ? `${cliente.nombre} — ${cliente.email}` : t("servidores.unassigned")}
+                    </p>
+                  </div>
+                  <Monitor
+                    managed={managed}
+                    agente={agente}
+                    ocupado={false}
+                    onAlta={() => undefined}
+                    t={t}
+                  />
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
 
       {data.huerfanos.length > 0 && (
         <section className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-6">
@@ -257,8 +396,8 @@ export function ServerInventory({ initial }: { initial: Data }) {
                 </span>
                 <button
                   type="button"
-                  onClick={() => forget(h.remoteId)}
-                  disabled={busyId === h.remoteId}
+                  onClick={() => enviar({ action: "forget", remoteId: h.remoteId }, `o${h.remoteId}`)}
+                  disabled={busyId === `o${h.remoteId}`}
                   className="shrink-0 text-xs text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-danger)] disabled:opacity-50"
                 >
                   {t("servidores.forget")}
@@ -269,5 +408,72 @@ export function ServerInventory({ initial }: { initial: Data }) {
         </section>
       )}
     </div>
+  );
+}
+
+/**
+ * Celda de monitorización: el punto verde no dice "está encendido" sino "el
+ * agente ha enviado algo hace poco", que es lo único que sabemos de una máquina
+ * sin API detrás.
+ */
+function Monitor({
+  managed,
+  agente,
+  ocupado,
+  onAlta,
+  t,
+}: {
+  managed: { id: string } | null;
+  agente: AgentStatus | undefined;
+  ocupado: boolean;
+  onAlta: () => void;
+  t: ReturnType<typeof useTranslations<"admin">>;
+}) {
+  if (!managed) {
+    return (
+      <button
+        type="button"
+        onClick={onAlta}
+        disabled={ocupado}
+        className="text-xs text-[var(--color-fg-muted)] underline-offset-2 transition-colors hover:text-[var(--color-accent)] hover:underline disabled:opacity-50"
+      >
+        {t("servidores.monitor.enable")}
+      </button>
+    );
+  }
+
+  return (
+    <Link
+      href={`/admin/servidores/${managed.id}`}
+      className="group inline-flex flex-col gap-0.5 text-xs"
+    >
+      <span className="inline-flex items-center gap-1.5">
+        <span
+          aria-hidden="true"
+          className={`inline-block size-1.5 rounded-full ${
+            !agente?.activo
+              ? "bg-[var(--color-fg-dim)]"
+              : agente.vivo
+                ? "bg-[var(--color-accent)]"
+                : "bg-[var(--color-danger)]"
+          }`}
+        />
+        <span className="text-[var(--color-fg-muted)] group-hover:text-[var(--color-accent)] group-hover:underline">
+          {!agente?.activo
+            ? t("servidores.monitor.noAgent")
+            : agente.vivo
+              ? t("servidores.monitor.live")
+              : t("servidores.monitor.stale")}
+        </span>
+      </span>
+      {agente?.vivo && (
+        <span className="font-mono text-[0.65rem] text-[var(--color-fg-dim)]">
+          {t("servidores.monitor.now", {
+            cpu: agente.cpu !== null ? `${agente.cpu.toFixed(0)}%` : "—",
+            ram: agente.memPct !== null ? `${agente.memPct.toFixed(0)}%` : "—",
+          })}
+        </span>
+      )}
+    </Link>
   );
 }

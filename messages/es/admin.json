@@ -354,6 +354,7 @@
       "colServer": "Servidor",
       "colStatus": "Estado",
       "colSpecs": "Recursos",
+      "colMonitor": "Monitorización",
       "colCustomer": "Cliente",
       "unassigned": "— Sin asignar —",
       "statusProcessing": "Tarea en curso",
@@ -363,7 +364,51 @@
       "forget": "Quitar vinculación",
       "errorLoad": "No se ha podido cargar la lista de servidores.",
       "errorSave": "No se ha podido guardar la asignación.",
-      "errorConnection": "Error de conexión."
+      "errorConnection": "Error de conexión.",
+      "monitor": {
+        "enable": "Activar seguimiento",
+        "noAgent": "Sin agente",
+        "live": "Enviando datos",
+        "stale": "Agente parado",
+        "now": "CPU {cpu} · RAM {ram}"
+      },
+      "external": {
+        "heading": "Servidores externos",
+        "intro": "Máquinas de otros proveedores, sin API que consultar. Se dan de alta a mano y su único origen de datos es el agente instalado dentro.",
+        "add": "Añadir servidor",
+        "cancel": "Cancelar",
+        "create": "Dar de alta",
+        "name": "Nombre",
+        "namePlaceholder": "VPS takehost — web",
+        "host": "IP o dominio",
+        "none": "Todavía no hay servidores externos dados de alta."
+      },
+      "detail": {
+        "back": "← Volver al inventario",
+        "provider": "Proveedor",
+        "external": "Externo",
+        "address": "Dirección",
+        "location": "Ubicación",
+        "plan": "Plan"
+      },
+      "agente": {
+        "heading": "Agente de métricas",
+        "statusActive": "Token activo desde el {fecha}. Si el agente ya está instalado, no hace falta tocar nada.",
+        "statusNone": "Sin token. Genera uno para poder instalar el agente en esta máquina y ver su consumo.",
+        "generate": "Generar token",
+        "regenerate": "Generar token nuevo",
+        "revoke": "Revocar",
+        "revokeConfirm": "El agente instalado dejará de enviar datos inmediatamente. ¿Seguir?",
+        "once": "Este token se enseña una sola vez. Cópialo ahora: después solo se puede generar otro.",
+        "commandLabel": "Ejecutar dentro del servidor (como root)",
+        "copyCommand": "Copiar orden",
+        "copyToken": "Copiar solo el token",
+        "copied": "Copiado",
+        "copyError": "No se ha podido copiar; selecciónalo a mano.",
+        "help": "Funciona en cualquier Linux con systemd o cron. No instala paquetes, no abre puertos y se quita con «sudo /usr/local/bin/viahost-agent --uninstall».",
+        "deleteExternal": "Borrar este servidor del panel",
+        "deleteConfirm": "Se borra la ficha y todo su histórico de métricas. La máquina no se toca. ¿Seguir?"
+      }
     },
     "tickets": {
       "title": "Tickets de soporte",

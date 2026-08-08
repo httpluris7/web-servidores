@@ -83,19 +83,26 @@ export default async function ServidoresClientePage({
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="min-w-0">
                       <p className="font-medium break-words text-[var(--color-fg)]">
-                        {managed.etiqueta || remote.name}
+                        {managed.etiqueta || remote?.name}
                       </p>
                       <p className="mt-1 font-mono text-xs break-words text-[var(--color-fg-muted)]">
-                        {remote.ipv4[0] ?? "—"}
+                        {remote?.ipv4[0] ?? managed.host ?? "—"}
                       </p>
                     </div>
-                    <ServerStatusBadge status={remote.status} processing={remote.isProcessing} />
+                    {/* Las máquinas externas no tienen proveedor al que
+                        preguntarle el estado: sin insignia, en vez de una que
+                        diría "desconocido" en todas. */}
+                    {remote && (
+                      <ServerStatusBadge status={remote.status} processing={remote.isProcessing} />
+                    )}
                   </div>
-                  <p className="mt-4 font-mono text-xs text-[var(--color-fg-dim)]">
-                    {remote.vcpu ?? "—"} vCPU ·{" "}
-                    {remote.ramMb ? Math.round(remote.ramMb / 1024) : "—"} GB ·{" "}
-                    {remote.diskGb ?? "—"} GB · {remote.location ?? "—"}
-                  </p>
+                  {remote && (
+                    <p className="mt-4 font-mono text-xs text-[var(--color-fg-dim)]">
+                      {remote.vcpu ?? "—"} vCPU ·{" "}
+                      {remote.ramMb ? Math.round(remote.ramMb / 1024) : "—"} GB ·{" "}
+                      {remote.diskGb ?? "—"} GB · {remote.location ?? "—"}
+                    </p>
+                  )}
                 </Link>
               </li>
             ))}

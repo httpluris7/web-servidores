@@ -1,5 +1,6 @@
 import { readSettings } from "@/lib/ajustes";
 import { listUsers } from "@/lib/auth";
+import { agenteVivo, ultimasMuestras } from "./metricas";
 import { listManagedServers, type ManagedServer } from "./store";
 import { listAllServers, type ProviderConfig, type ProviderServer } from "./v4vm";
 
@@ -68,10 +69,37 @@ export type InventoryItem = {
   cliente: InventoryCustomer | null;
 };
 
+/** Máquina sin proveedor: no hay `remote`, solo nuestra ficha y su agente. */
+export type ExternalItem = {
+  managed: ManagedServer;
+  cliente: InventoryCustomer | null;
+};
+
+/**
+ * Estado del agente de una ficha. Vale igual para un servidor del proveedor
+ * —donde el agente añade la RAM, que la API no da— que para uno externo, donde
+ * es la única fuente de datos que hay.
+ */
+export type AgentStatus = {
+  /** Hay token emitido: el agente puede enviar. */
+  activo: boolean;
+  /** Ha enviado algo hace poco. */
+  vivo: boolean;
+  ultimaAt: string | null;
+  hostname: string | null;
+  os: string | null;
+  version: string | null;
+  cpu: number | null;
+  memPct: number | null;
+  discoPct: number | null;
+};
+
 export type Inventory = {
   /** false si aún no hay token del proveedor: la pantalla lo explica. */
   configured: boolean;
   items: InventoryItem[];
+  /** Máquinas dadas de alta a mano (takehost y cualquier otro sin API). */
+  externos: ExternalItem[];
   /**
    * Fichas nuestras cuyo servidor ya no aparece en el proveedor (borrado o
    * movido a otra cuenta). Se muestran para poder limpiarlas a mano.
@@ -79,6 +107,8 @@ export type Inventory = {
   huerfanos: ManagedServer[];
   /** Clientes a los que se puede asignar un servidor. */
   clientes: InventoryCustomer[];
+  /** Estado del agente, indexado por el id interno de la ficha. */
+  agentes: Record<string, AgentStatus>;
 };
 
 /**
@@ -97,8 +127,20 @@ export async function buildInventory(refresh = false): Promise<Inventory> {
     }))
     .sort((a, b) => a.nombre.localeCompare(b.nombre));
 
+  const porUserId = new Map(clientes.map((c) => [c.id, c]));
+  const delProveedor = managed.filter((m) => m.proveedor === "v4vm");
+
+  const externos: ExternalItem[] = managed
+    .filter((m) => m.proveedor === "externo")
+    .map((m) => ({ managed: m, cliente: m.userId ? (porUserId.get(m.userId) ?? null) : null }))
+    .sort((a, b) => a.managed.etiqueta.localeCompare(b.managed.etiqueta));
+
+  // El estado del agente no depende del proveedor: se calcula siempre, también
+  // cuando la API está caída o ni siquiera configurada.
+  const agentes = await estadoAgentes(managed);
+
   if (!provider.enabled || !provider.token) {
-    return { configured: false, items: [], huerfanos: [], clientes };
+    return { configured: false, items: [], externos, huerfanos: [], clientes, agentes };
   }
 
   const servers = await fetchServers(
@@ -106,8 +148,7 @@ export async function buildInventory(refresh = false): Promise<Inventory> {
     refresh
   );
 
-  const porRemoteId = new Map(managed.map((m) => [m.remoteId, m]));
-  const porUserId = new Map(clientes.map((c) => [c.id, c]));
+  const porRemoteId = new Map(delProveedor.map((m) => [m.remoteId, m]));
 
   const items: InventoryItem[] = servers.map((remote) => {
     const ficha = porRemoteId.get(remote.id) ?? null;
@@ -118,8 +159,33 @@ export async function buildInventory(refresh = false): Promise<Inventory> {
     };
   });
 
+  // Solo son huérfanas las fichas del proveedor: un externo no está en su
+  // listado por definición, y marcarlo como huérfano invitaría a borrarlo.
   const vistos = new Set(servers.map((s) => s.id));
-  const huerfanos = managed.filter((m) => !vistos.has(m.remoteId));
+  const huerfanos = delProveedor.filter((m) => !vistos.has(m.remoteId));
 
-  return { configured: true, items, huerfanos, clientes };
+  return { configured: true, items, externos, huerfanos, clientes, agentes };
+}
+
+/** Cruza las fichas con la última muestra que envió cada agente. */
+async function estadoAgentes(managed: ManagedServer[]): Promise<Record<string, AgentStatus>> {
+  const conAgente = managed.filter((m) => m.agenteTokenHash !== null);
+  const muestras = await ultimasMuestras(conAgente.map((m) => m.id));
+
+  const out: Record<string, AgentStatus> = {};
+  for (const m of conAgente) {
+    const dato = muestras.get(m.id) ?? null;
+    out[m.id] = {
+      activo: true,
+      vivo: agenteVivo(dato?.meta ?? null),
+      ultimaAt: dato?.meta?.ultimoAt ?? null,
+      hostname: dato?.meta?.hostname ?? null,
+      os: dato?.meta?.os ?? null,
+      version: dato?.meta?.version ?? null,
+      cpu: dato?.ultima.cpu ?? null,
+      memPct: dato?.ultima.memPct ?? null,
+      discoPct: dato?.ultima.discoPct ?? null,
+    };
+  }
+  return out;
 }

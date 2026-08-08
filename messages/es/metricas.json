@@ -1,0 +1,48 @@
+{
+  "metricas": {
+    "title": "Consumo",
+    "rangeLabel": "Periodo",
+    "range": {
+      "1h": "1 h",
+      "6h": "6 h",
+      "24h": "24 h",
+      "7d": "7 días",
+      "30d": "30 días"
+    },
+    "cpu": "CPU",
+    "ram": "Memoria",
+    "network": "Red",
+    "disk": "Disco",
+    "down": "Descarga",
+    "up": "Subida",
+    "peak": "pico",
+    "summary": "ahora {now} · media {avg} · pico {peak}",
+    "ramDetail": "{usada} de {total} · {pct}",
+    "networkDetail": "↓ {down} · ↑ {up}",
+    "diskDetail": "{usado} de {total} · {pct}",
+    "empty": "Sin datos en este periodo.",
+    "errorLoad": "No se han podido cargar las métricas.",
+    "agentLive": "Agente enviando datos",
+    "agentStale": "El agente lleva rato sin enviar",
+    "waitingTitle": "Esperando la primera lectura",
+    "waitingBody": "El agente ya está dado de alta pero todavía no ha enviado ninguna medida. La primera aparece un par de minutos después de instalarlo.",
+    "noAgentTitle": "Sin agente instalado",
+    "noAgentBody": {
+      "admin": "Esta máquina no tiene agente. Genera un token e instálalo dentro del servidor para ver CPU, memoria, red y disco.",
+      "cuenta": "Este servidor todavía no envía datos de consumo. Escríbenos y te pasamos el instalador: son dos órdenes y no hace falta reiniciar nada."
+    },
+    "machine": "La máquina",
+    "fieldOs": "Sistema",
+    "fieldKernel": "Núcleo",
+    "fieldCpus": "vCPU",
+    "fieldLoad": "Carga (1 min)",
+    "fieldProcs": "Procesos",
+    "fieldSwap": "Swap",
+    "fieldUptime": "Encendido desde hace",
+    "fieldTraffic": "Tráfico desde el arranque",
+    "fieldAgent": "Agente",
+    "uptimeDh": "{d} d {h} h",
+    "uptimeHm": "{h} h {m} min",
+    "uptimeM": "{m} min"
+  }
+}

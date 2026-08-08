@@ -354,6 +354,7 @@
       "colServer": "Server",
       "colStatus": "Status",
       "colSpecs": "Resources",
+      "colMonitor": "Monitoring",
       "colCustomer": "Customer",
       "unassigned": "— Unassigned —",
       "statusProcessing": "Task in progress",
@@ -363,7 +364,51 @@
       "forget": "Remove link",
       "errorLoad": "The server list could not be loaded.",
       "errorSave": "The assignment could not be saved.",
-      "errorConnection": "Connection error."
+      "errorConnection": "Connection error.",
+      "monitor": {
+        "enable": "Enable monitoring",
+        "noAgent": "No agent",
+        "live": "Reporting",
+        "stale": "Agent stopped",
+        "now": "CPU {cpu} · RAM {ram}"
+      },
+      "external": {
+        "heading": "External servers",
+        "intro": "Machines from other providers, with no API to query. You add them by hand and their only source of data is the agent installed inside.",
+        "add": "Add server",
+        "cancel": "Cancel",
+        "create": "Add",
+        "name": "Name",
+        "namePlaceholder": "takehost VPS — web",
+        "host": "IP or domain",
+        "none": "No external servers added yet."
+      },
+      "detail": {
+        "back": "← Back to inventory",
+        "provider": "Provider",
+        "external": "External",
+        "address": "Address",
+        "location": "Location",
+        "plan": "Plan"
+      },
+      "agente": {
+        "heading": "Metrics agent",
+        "statusActive": "Token active since {fecha}. If the agent is already installed, there is nothing to do.",
+        "statusNone": "No token yet. Generate one to install the agent on this machine and see its usage.",
+        "generate": "Generate token",
+        "regenerate": "Generate a new token",
+        "revoke": "Revoke",
+        "revokeConfirm": "The installed agent will stop reporting immediately. Continue?",
+        "once": "This token is shown once. Copy it now: afterwards you can only generate another one.",
+        "commandLabel": "Run inside the server (as root)",
+        "copyCommand": "Copy command",
+        "copyToken": "Copy token only",
+        "copied": "Copied",
+        "copyError": "Could not copy; select it by hand.",
+        "help": "Works on any Linux with systemd or cron. It installs no packages, opens no ports, and is removed with «sudo /usr/local/bin/viahost-agent --uninstall».",
+        "deleteExternal": "Delete this server from the panel",
+        "deleteConfirm": "The record and its whole metrics history are deleted. The machine itself is untouched. Continue?"
+      }
     },
     "tickets": {
       "title": "Support tickets",

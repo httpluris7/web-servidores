@@ -354,6 +354,7 @@
       "colServer": "Serveur",
       "colStatus": "État",
       "colSpecs": "Ressources",
+      "colMonitor": "Supervision",
       "colCustomer": "Client",
       "unassigned": "— Non attribué —",
       "statusProcessing": "Tâche en cours",
@@ -363,7 +364,51 @@
       "forget": "Retirer le lien",
       "errorLoad": "La liste des serveurs n'a pas pu être chargée.",
       "errorSave": "L'attribution n'a pas pu être enregistrée.",
-      "errorConnection": "Erreur de connexion."
+      "errorConnection": "Erreur de connexion.",
+      "monitor": {
+        "enable": "Activer le suivi",
+        "noAgent": "Sans agent",
+        "live": "Transmet des données",
+        "stale": "Agent arrêté",
+        "now": "CPU {cpu} · RAM {ram}"
+      },
+      "external": {
+        "heading": "Serveurs externes",
+        "intro": "Machines d'autres fournisseurs, sans API à interroger. On les ajoute à la main et leur seule source de données est l'agent installé à l'intérieur.",
+        "add": "Ajouter un serveur",
+        "cancel": "Annuler",
+        "create": "Ajouter",
+        "name": "Nom",
+        "namePlaceholder": "VPS takehost — web",
+        "host": "IP ou domaine",
+        "none": "Aucun serveur externe pour l'instant."
+      },
+      "detail": {
+        "back": "← Retour à l'inventaire",
+        "provider": "Fournisseur",
+        "external": "Externe",
+        "address": "Adresse",
+        "location": "Emplacement",
+        "plan": "Offre"
+      },
+      "agente": {
+        "heading": "Agent de métriques",
+        "statusActive": "Jeton actif depuis le {fecha}. Si l'agent est déjà installé, il n'y a rien à faire.",
+        "statusNone": "Aucun jeton. Générez-en un pour installer l'agent sur cette machine et voir sa consommation.",
+        "generate": "Générer un jeton",
+        "regenerate": "Générer un nouveau jeton",
+        "revoke": "Révoquer",
+        "revokeConfirm": "L'agent installé cessera immédiatement de transmettre. Continuer ?",
+        "once": "Ce jeton n'est affiché qu'une fois. Copiez-le maintenant : ensuite, il ne restera qu'à en générer un autre.",
+        "commandLabel": "À exécuter dans le serveur (en root)",
+        "copyCommand": "Copier la commande",
+        "copyToken": "Copier le jeton seul",
+        "copied": "Copié",
+        "copyError": "Copie impossible ; sélectionnez-le à la main.",
+        "help": "Fonctionne sur tout Linux avec systemd ou cron. N'installe aucun paquet, n'ouvre aucun port, et se retire avec « sudo /usr/local/bin/viahost-agent --uninstall ».",
+        "deleteExternal": "Supprimer ce serveur du panneau",
+        "deleteConfirm": "La fiche et tout son historique de métriques sont supprimés. La machine n'est pas touchée. Continuer ?"
+      }
     },
     "tickets": {
       "title": "Tickets d'assistance",

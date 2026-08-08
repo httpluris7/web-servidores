@@ -16,7 +16,14 @@ export default async function ServidoresPage({
 
   // Un fallo del proveedor no debe dejar la página en blanco: se muestra el
   // aviso y el inventario vacío, y el botón de refrescar permite reintentar.
-  let inventory: Inventory = { configured: false, items: [], huerfanos: [], clientes: [] };
+  let inventory: Inventory = {
+    configured: false,
+    items: [],
+    externos: [],
+    huerfanos: [],
+    clientes: [],
+    agentes: {},
+  };
   let error: string | null = null;
   try {
     inventory = await buildInventory();

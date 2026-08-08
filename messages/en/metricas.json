@@ -1,0 +1,48 @@
+{
+  "metricas": {
+    "title": "Resource usage",
+    "rangeLabel": "Period",
+    "range": {
+      "1h": "1 h",
+      "6h": "6 h",
+      "24h": "24 h",
+      "7d": "7 days",
+      "30d": "30 days"
+    },
+    "cpu": "CPU",
+    "ram": "Memory",
+    "network": "Network",
+    "disk": "Disk",
+    "down": "Inbound",
+    "up": "Outbound",
+    "peak": "peak",
+    "summary": "now {now} · avg {avg} · peak {peak}",
+    "ramDetail": "{usada} of {total} · {pct}",
+    "networkDetail": "↓ {down} · ↑ {up}",
+    "diskDetail": "{usado} of {total} · {pct}",
+    "empty": "No readings in this period.",
+    "errorLoad": "The metrics could not be loaded.",
+    "agentLive": "Agent reporting",
+    "agentStale": "The agent has not reported in a while",
+    "waitingTitle": "Waiting for the first reading",
+    "waitingBody": "The agent is registered but has not sent a reading yet. The first one shows up a couple of minutes after you install it.",
+    "noAgentTitle": "No agent installed",
+    "noAgentBody": {
+      "admin": "This machine has no agent. Generate a token and install it inside the server to see CPU, memory, network and disk.",
+      "cuenta": "This server is not reporting usage yet. Get in touch and we will send you the installer: two commands, no reboot needed."
+    },
+    "machine": "The machine",
+    "fieldOs": "System",
+    "fieldKernel": "Kernel",
+    "fieldCpus": "vCPU",
+    "fieldLoad": "Load (1 min)",
+    "fieldProcs": "Processes",
+    "fieldSwap": "Swap",
+    "fieldUptime": "Up for",
+    "fieldTraffic": "Traffic since boot",
+    "fieldAgent": "Agent",
+    "uptimeDh": "{d} d {h} h",
+    "uptimeHm": "{h} h {m} min",
+    "uptimeM": "{m} min"
+  }
+}

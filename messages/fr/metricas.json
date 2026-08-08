@@ -1,0 +1,48 @@
+{
+  "metricas": {
+    "title": "Consommation",
+    "rangeLabel": "Période",
+    "range": {
+      "1h": "1 h",
+      "6h": "6 h",
+      "24h": "24 h",
+      "7d": "7 jours",
+      "30d": "30 jours"
+    },
+    "cpu": "CPU",
+    "ram": "Mémoire",
+    "network": "Réseau",
+    "disk": "Disque",
+    "down": "Entrant",
+    "up": "Sortant",
+    "peak": "pic",
+    "summary": "maintenant {now} · moyenne {avg} · pic {peak}",
+    "ramDetail": "{usada} sur {total} · {pct}",
+    "networkDetail": "↓ {down} · ↑ {up}",
+    "diskDetail": "{usado} sur {total} · {pct}",
+    "empty": "Aucune donnée sur cette période.",
+    "errorLoad": "Impossible de charger les métriques.",
+    "agentLive": "Agent en cours d'envoi",
+    "agentStale": "L'agent n'a rien envoyé depuis un moment",
+    "waitingTitle": "En attente de la première mesure",
+    "waitingBody": "L'agent est enregistré mais n'a encore rien envoyé. La première mesure apparaît deux minutes après l'installation.",
+    "noAgentTitle": "Aucun agent installé",
+    "noAgentBody": {
+      "admin": "Cette machine n'a pas d'agent. Générez un jeton et installez-le sur le serveur pour voir le CPU, la mémoire, le réseau et le disque.",
+      "cuenta": "Ce serveur ne transmet pas encore sa consommation. Écrivez-nous et nous vous enverrons l'installateur : deux commandes, sans redémarrage."
+    },
+    "machine": "La machine",
+    "fieldOs": "Système",
+    "fieldKernel": "Noyau",
+    "fieldCpus": "vCPU",
+    "fieldLoad": "Charge (1 min)",
+    "fieldProcs": "Processus",
+    "fieldSwap": "Swap",
+    "fieldUptime": "Allumé depuis",
+    "fieldTraffic": "Trafic depuis le démarrage",
+    "fieldAgent": "Agent",
+    "uptimeDh": "{d} j {h} h",
+    "uptimeHm": "{h} h {m} min",
+    "uptimeM": "{m} min"
+  }
+}

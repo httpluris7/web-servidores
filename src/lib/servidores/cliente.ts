@@ -17,8 +17,26 @@ import { getServer, type ProviderConfig, type ProviderServer } from "./v4vm";
 
 export type ClientServer = {
   managed: ManagedServer;
-  remote: ProviderServer;
+  /** null en las máquinas externas: no hay proveedor al que preguntarle. */
+  remote: ProviderServer | null;
 };
+
+/**
+ * Ficha de un servidor del cliente SIN hablar con el proveedor.
+ *
+ * Es la comprobación de pertenencia que usan las métricas: los datos vienen de
+ * nuestro propio almacén, así que pedirle el estado al proveedor sería una
+ * llamada de red para nada — y dejaría sin gráficas a las máquinas externas,
+ * que no tienen proveedor al que preguntar.
+ */
+export async function getManagedForUser(
+  id: string,
+  userId: string
+): Promise<ManagedServer | null> {
+  const managed = await getManagedById(id);
+  if (!managed || !managed.userId || managed.userId !== userId) return null;
+  return managed;
+}
 
 /**
  * Servidor de un cliente, con su estado recién leído del proveedor.
@@ -29,9 +47,11 @@ export type ClientServer = {
 export async function getServerForUser(
   id: string,
   userId: string
-): Promise<(ClientServer & { cfg: ProviderConfig }) | null> {
-  const managed = await getManagedById(id);
-  if (!managed || !managed.userId || managed.userId !== userId) return null;
+): Promise<({ managed: ManagedServer; remote: ProviderServer; cfg: ProviderConfig }) | null> {
+  const managed = await getManagedForUser(id, userId);
+  // Una máquina externa no tiene proveedor: aquí no hay nada que devolver, y
+  // quien llama (energía, consola, reinstalación) no puede hacer nada con ella.
+  if (!managed || managed.proveedor !== "v4vm") return null;
 
   const cfg = await providerConfig();
   if (!cfg) return null;
@@ -69,11 +89,15 @@ export async function listServersForUser(userId: string): Promise<ClientServer[]
   const managed = await listManagedByUser(userId);
   if (managed.length === 0) return [];
 
-  const servers = await providerServers();
+  // Solo se pregunta al proveedor si el cliente tiene alguna máquina suya: con
+  // un cliente de puros externos, la API ni se toca.
+  const hayDelProveedor = managed.some((m) => m.proveedor === "v4vm");
+  const servers = hayDelProveedor ? await providerServers() : [];
   const porId = new Map(servers.map((s) => [s.id, s]));
 
   return managed
-    .map((m) => {
+    .map((m): ClientServer | null => {
+      if (m.proveedor === "externo") return { managed: m, remote: null };
       const remote = porId.get(m.remoteId);
       // Ficha huérfana (el servidor ya no está en el proveedor), o un id que ya
       // no corresponde a la máquina asignada: se omite. El admin las ve en su
@@ -81,5 +105,9 @@ export async function listServersForUser(userId: string): Promise<ClientServer[]
       return remote && mismoServidor(m, remote) ? { managed: m, remote } : null;
     })
     .filter((x): x is ClientServer => x !== null)
-    .sort((a, b) => a.remote.name.localeCompare(b.remote.name));
+    .sort((a, b) => nombre(a).localeCompare(nombre(b)));
+}
+
+function nombre(s: ClientServer): string {
+  return s.managed.etiqueta || s.remote?.name || "";
 }

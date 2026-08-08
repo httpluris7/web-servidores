@@ -3,7 +3,18 @@ import { getAdminSession } from "@/lib/admin";
 import { readSettings } from "@/lib/ajustes";
 import { listUsers } from "@/lib/auth";
 import { buildInventory, invalidateInventoryCache } from "@/lib/servidores/inventario";
-import { assignServer, forgetServer } from "@/lib/servidores/store";
+import { borrarMetricas } from "@/lib/servidores/metricas";
+import {
+  assignServer,
+  createExternalServer,
+  deleteManaged,
+  esIdInterno,
+  forgetServer,
+  getManagedById,
+  issueAgentToken,
+  revokeAgentToken,
+  updateManaged,
+} from "@/lib/servidores/store";
 import { getServer, ProviderError } from "@/lib/servidores/v4vm";
 
 export const runtime = "nodejs";
@@ -51,6 +62,14 @@ export async function POST(req: Request) {
     body = await req.json();
   } catch {
     return NextResponse.json({ ok: false, error: "Invalid JSON." }, { status: 400 });
+  }
+
+  // Acciones que trabajan sobre NUESTRA ficha (id interno) y no tocan la API
+  // del proveedor: alta de máquinas externas y gestión del token del agente.
+  const accion = typeof body.action === "string" ? body.action : "";
+  if (accion === "crear-externo" || accion === "editar" || accion === "borrar" ||
+      accion === "token" || accion === "revocar-token") {
+    return fichaPropia(accion, body);
   }
 
   const remoteId = Number(body.remoteId);
@@ -109,4 +128,95 @@ export async function POST(req: Request) {
   invalidateInventoryCache();
 
   return NextResponse.json({ ok: true, managed });
+}
+
+/* ------------------- Fichas propias: externos y agente -------------------- */
+
+/** null si no se indicó cliente; `false` si el indicado no existe. */
+async function resolverCliente(valor: unknown): Promise<string | null | false> {
+  if (valor === null || valor === undefined || valor === "") return null;
+  if (typeof valor !== "string") return false;
+  const users = await listUsers();
+  return users.some((u) => u.id === valor) ? valor : false;
+}
+
+const cadena = (v: unknown, max: number): string =>
+  typeof v === "string" ? v.trim().slice(0, max) : "";
+
+/**
+ * Alta y mantenimiento de las máquinas que llevamos solo nosotros, y del token
+ * con el que su agente envía métricas.
+ *
+ * El token se devuelve en claro UNA sola vez, aquí: a partir de este momento
+ * solo queda su hash y no hay forma de recuperarlo, únicamente de regenerarlo.
+ */
+async function fichaPropia(accion: string, body: Record<string, unknown>) {
+  if (accion === "crear-externo") {
+    const etiqueta = cadena(body.etiqueta, 80);
+    if (!etiqueta) {
+      return NextResponse.json({ ok: false, error: "A name is required." }, { status: 422 });
+    }
+    const userId = await resolverCliente(body.userId);
+    if (userId === false) {
+      return NextResponse.json({ ok: false, error: "Unknown customer." }, { status: 422 });
+    }
+
+    const managed = await createExternalServer({
+      etiqueta,
+      host: cadena(body.host, 120),
+      userId,
+      notas: cadena(body.notas, 500),
+    });
+    // Se emite el token en el alta: una máquina externa sin agente no muestra
+    // absolutamente nada, así que dar de alta y no dar token no sirve de nada.
+    const token = await issueAgentToken(managed.id);
+    return NextResponse.json({ ok: true, managed, token });
+  }
+
+  const id = typeof body.id === "string" ? body.id : "";
+  if (!esIdInterno(id)) {
+    return NextResponse.json({ ok: false, error: "Invalid server id." }, { status: 422 });
+  }
+  const ficha = await getManagedById(id);
+  if (!ficha) {
+    return NextResponse.json({ ok: false, error: "Not found." }, { status: 404 });
+  }
+
+  if (accion === "editar") {
+    const parche: Parameters<typeof updateManaged>[1] = {};
+    if (body.etiqueta !== undefined) parche.etiqueta = cadena(body.etiqueta, 80);
+    if (body.host !== undefined) parche.host = cadena(body.host, 120);
+    if (body.notas !== undefined) parche.notas = cadena(body.notas, 500);
+    if (body.userId !== undefined) {
+      const userId = await resolverCliente(body.userId);
+      if (userId === false) {
+        return NextResponse.json({ ok: false, error: "Unknown customer." }, { status: 422 });
+      }
+      parche.userId = userId;
+    }
+    return NextResponse.json({ ok: true, managed: await updateManaged(id, parche) });
+  }
+
+  if (accion === "borrar") {
+    // Solo se borran las fichas externas: las del proveedor se quitan con
+    // "forget", que es la vía que ya existe y no deja el inventario a medias.
+    if (ficha.proveedor !== "externo") {
+      return NextResponse.json(
+        { ok: false, error: "Only external servers can be deleted here." },
+        { status: 409 }
+      );
+    }
+    await deleteManaged(id);
+    // El histórico se va con la ficha: si no, quedaría ocupando disco para
+    // siempre sin nada que lo enseñe.
+    await borrarMetricas(id);
+    return NextResponse.json({ ok: true });
+  }
+
+  if (accion === "token") {
+    return NextResponse.json({ ok: true, token: await issueAgentToken(id) });
+  }
+
+  await revokeAgentToken(id);
+  return NextResponse.json({ ok: true });
 }
