@@ -220,6 +220,7 @@
       "colPrice": "Price",
       "colReceived": "Received",
       "perMonth": "{price}/mo",
+      "duplicate": "Duplicate of {numero}",
       "contactMessages": "Contact messages",
       "noContactMessages": "No contact messages."
     },

@@ -52,6 +52,14 @@ export default async function PedidosPage({
                       {typeof p.qty === "number" && p.qty > 1 && (
                         <span className="font-mono text-xs text-[var(--color-fg-muted)]"> ×{p.qty}</span>
                       )}
+                      {/* Repetición de un pedido anterior: no emitió proforma propia,
+                          se quedó en la que ya tenía. Se marca para que nadie lo
+                          aprovisione dos veces. */}
+                      {str(p.duplicadoDe) && (
+                        <p className="mt-1 font-mono text-[0.6rem] uppercase tracking-wider text-[var(--color-fg-dim)]">
+                          {t("pedidos.duplicate", { numero: str(p.duplicadoDe) })}
+                        </p>
+                      )}
                     </td>
                     <td data-label={t("pedidos.colRegion")} className="px-4 py-3 text-[var(--color-fg-muted)]">{str(p.region) || "—"}</td>
                     <td data-label={t("pedidos.colPrice")} className="px-4 py-3 text-right font-mono">

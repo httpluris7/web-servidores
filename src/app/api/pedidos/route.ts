@@ -4,6 +4,7 @@ import { getCatalog } from "@/data/products";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { getSession } from "@/lib/session";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
+import { findDuplicateOrder } from "@/lib/payments/duplicados";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -42,6 +43,21 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, errors }, { status: 422 });
   }
 
+  const regionName = regions.find((r) => r.slug === region)?.name ?? region;
+  const lineas = [
+    {
+      concepto: located!.plan.name,
+      descripcion: [located!.lineTitle, regionName].filter(Boolean).join(" · "),
+      cantidad: 1,
+      precioUnitario: located!.plan.price,
+      productId: planId,
+    },
+  ];
+
+  // ¿Repite un pedido de hace un momento (doble clic, reenvío del formulario)?
+  // Se mira antes de guardar para dejarlo anotado en el propio pedido.
+  const duplicado = await findDuplicateOrder(email, lineas);
+
   try {
     await saveLead("pedido", {
       name,
@@ -51,6 +67,7 @@ export async function POST(req: Request) {
       planName: located!.plan.name,
       price: located!.plan.price,
       line: located!.lineTitle,
+      duplicadoDe: duplicado?.numero ?? null,
     });
   } catch {
     return NextResponse.json(
@@ -72,7 +89,10 @@ export async function POST(req: Request) {
   // El tope por IP no basta (las IPs rotan), así que se limita también por
   // destinatario y en conjunto. El pedido queda guardado igualmente: lo único
   // que se corta es el correo automático, y el panel lo ve.
-  if (!session) {
+  //
+  // Un pedido repetido no gasta cupo: no emite proforma ni manda correo, solo
+  // devuelve la que ya existe.
+  if (!session && !duplicado) {
     const porDestinatario = rateLimit(`proforma-mail:${email.toLowerCase()}`, {
       limit: 3,
       windowMs: 60 * 60_000,
@@ -83,25 +103,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true, numero: null, paymentUrl: null });
     }
   }
-  const regionName = regions.find((r) => r.slug === region)?.name ?? region;
 
   try {
     const { invoice, paymentUrl } = await checkoutOrder({
       userId: session?.uid ?? null,
       clienteNombre: name,
       clienteEmail: email,
-      lineas: [
-        {
-          concepto: located!.plan.name,
-          descripcion: [located!.lineTitle, regionName].filter(Boolean).join(" · "),
-          cantidad: 1,
-          precioUnitario: located!.plan.price,
-          productId: planId,
-        },
-      ],
+      lineas,
       metodo,
       locale,
       cancelPath: `/contratar/${planId}`,
+      duplicado,
     });
     return NextResponse.json({
       ok: true,

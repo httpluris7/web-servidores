@@ -5,6 +5,7 @@ import { getCatalog } from "@/data/products";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
+import { findDuplicateOrder } from "@/lib/payments/duplicados";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -98,6 +99,18 @@ export async function POST(req: Request) {
   const total = validated.reduce((sum, v) => sum + v.lineTotal, 0);
   const clienteNombre = `${user.nombre} ${user.apellidos}`.trim();
 
+  const lineas = validated.map((v) => ({
+    concepto: v.planName,
+    descripcion: [v.line, v.region].filter(Boolean).join(" · "),
+    cantidad: v.qty,
+    precioUnitario: v.price,
+    productId: v.planId,
+  }));
+
+  // ¿El mismo carrito confirmado hace un momento (doble clic, vuelta atrás y
+  // reenvío)? Se mira antes de guardar para anotarlo en las líneas del pedido.
+  const duplicado = await findDuplicateOrder(user.email, lineas);
+
   try {
     for (const v of validated) {
       await saveLead("pedido", {
@@ -112,6 +125,7 @@ export async function POST(req: Request) {
         lineTotal: v.lineTotal,
         region: v.region,
         line: v.line,
+        duplicadoDe: duplicado?.numero ?? null,
       });
     }
   } catch {
@@ -132,17 +146,12 @@ export async function POST(req: Request) {
       userId: user.id,
       clienteNombre,
       clienteEmail: user.email,
-      lineas: validated.map((v) => ({
-        concepto: v.planName,
-        descripcion: [v.line, v.region].filter(Boolean).join(" · "),
-        cantidad: v.qty,
-        precioUnitario: v.price,
-        productId: v.planId,
-      })),
+      lineas,
       metodo,
       locale,
       cancelPath: "/carrito",
       notas: `Order ${orderId}`,
+      duplicado,
     });
 
     return NextResponse.json({
