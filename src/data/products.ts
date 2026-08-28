@@ -29,6 +29,10 @@ export type Region = {
   city: string;
   priceFrom: number; // €/mes desde
   latencyNote?: string;
+  /** Marca de CPU de la región; sustituye la del plan en `/vps/<slug>`. */
+  cpu?: string;
+  /** Location del provisioner (p. ej. "nl-ams"); si existe, la región se aprovisiona sola. */
+  provisionLocation?: string;
   // Coordenadas relativas (0–100) sobre el SVG del mapa de Europa.
   map: { x: number; y: number };
 };
@@ -84,6 +88,8 @@ const porOrden = <T extends { orden: number }>(a: T, b: T) => a.orden - b.orden;
 
 function aRegion(u: Ubicacion, locale: string): Region {
   const nota = texto(u.nota, locale);
+  const cpu = (u.cpu ?? "").trim();
+  const provisionLocation = (u.provisionLocation ?? "").trim();
   return {
     slug: u.slug,
     name: texto(u.nombre, locale),
@@ -91,6 +97,8 @@ function aRegion(u: Ubicacion, locale: string): Region {
     city: texto(u.ciudad, locale),
     priceFrom: u.precioDesde,
     ...(nota ? { latencyNote: nota } : {}),
+    ...(cpu ? { cpu } : {}),
+    ...(provisionLocation ? { provisionLocation } : {}),
     map: { x: u.mapX, y: u.mapY },
   };
 }

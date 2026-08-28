@@ -13,6 +13,16 @@ import { CtaBand } from "@/components/ui/CtaBand";
 
 type Params = { locale: string; region: string };
 
+/**
+ * Sustituye la marca del procesador de un plan por la de la región, conservando
+ * el "N vCore" inicial ("2 vCore AMD EPYC" → "2 vCore Xeon Gold 6150"). Si el
+ * texto no tiene esa forma, se deja intacto para no inventar nada.
+ */
+function conMarcaCpu(cpu: string, marca: string): string {
+  const m = cpu.match(/^(\d+\s*vCores?)\b/i);
+  return m ? `${m[1]} ${marca}` : cpu;
+}
+
 export async function generateStaticParams(): Promise<{ region: string }[]> {
   return (await getRegions()).map((r) => ({ region: r.slug }));
 }
@@ -47,6 +57,12 @@ export default async function RegionPage({ params }: { params: Promise<Params> }
   const t = await getTranslations("products");
   const { name, city } = region;
   const latencyNote = region.latencyNote ?? "";
+
+  // Mismos packs para todas las regiones; solo cambia la marca de CPU si la
+  // región la fija (p. ej. Holanda con Xeon Gold 6150).
+  const plans = region.cpu
+    ? vps.plans.map((p) => ({ ...p, cpu: conMarcaCpu(p.cpu, region.cpu as string) }))
+    : vps.plans;
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -103,7 +119,7 @@ export default async function RegionPage({ params }: { params: Promise<Params> }
         kicker={t("vpsRegion.plansKicker", { name })}
         title={t("vpsRegion.plansTitle")}
         description={t("vpsRegion.plansDescription")}
-        plans={vps.plans}
+        plans={plans}
       />
 
       <FaqSection items={vpsFaq} tKey="vpsFaq" index="/02" />

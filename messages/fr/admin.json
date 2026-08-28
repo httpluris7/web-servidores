@@ -77,7 +77,11 @@
         "visible": "Visible sur le site",
         "popular": "Mettre en avant comme le plus populaire",
         "planId": "Id de l'offre : {id} — fixe, utilisé par les URL de commande et les factures émises.",
-        "langHint": "L'anglais est obligatoire. Ce qui est laissé vide s'affiche en anglais."
+        "langHint": "L'anglais est obligatoire. Ce qui est laissé vide s'affiche en anglais.",
+        "regionCpu": "CPU de la région",
+        "regionCpuHint": "Marque du processeur affichée sur les cartes VPS de cette région, par ex. « Xeon Gold 6150 ». Vide = celle du plan.",
+        "provisionLocation": "Emplacement du provisioner",
+        "provisionLocationHint": "Slug de l’emplacement dans le module de provisioning (par ex. « nl-ams »). C’est ce qui relie la région à Proxmox. Vide = livraison manuelle."
       },
       "errors": {
         "generico": "Le changement n'a pas pu être enregistré.",

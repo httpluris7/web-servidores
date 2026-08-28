@@ -27,7 +27,7 @@ const FILE = path.join(DATA_DIR, "servidores.jsonl");
  * reinstalar, consola) no existe para ellas, y las pantallas lo tienen en
  * cuenta en vez de fingir botones que no harían nada.
  */
-export type ServerProvider = "v4vm" | "externo";
+export type ServerProvider = "v4vm" | "externo" | "proxmox";
 
 export type ManagedServer = {
   id: string;
@@ -80,7 +80,12 @@ export function esIdInterno(id: string): boolean {
 function normalizar(raw: Partial<ManagedServer>): ManagedServer {
   return {
     id: String(raw.id ?? ""),
-    proveedor: raw.proveedor === "externo" ? "externo" : "v4vm",
+    proveedor:
+      raw.proveedor === "externo"
+        ? "externo"
+        : raw.proveedor === "proxmox"
+          ? "proxmox"
+          : "v4vm",
     remoteId: typeof raw.remoteId === "number" ? raw.remoteId : 0,
     remoteUuid: raw.remoteUuid ?? "",
     userId: raw.userId ?? null,

@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { Plan, Region } from "@/data/products";
 import { site } from "@/data/site";
+import { OS_OPTIONS, OS_DEFAULT } from "@/lib/provisioner/os";
 import { eur } from "@/lib/utils";
 import { Price } from "@/components/ui/Price";
 import { BankTransfer } from "@/components/ui/BankTransfer";
@@ -35,7 +36,13 @@ export function OrderForm({
   const t = useTranslations("products");
   const tc = useTranslations("common");
   const locale = useLocale();
-  const [values, setValues] = useState({ name: "", email: "", region: regions?.[0]?.slug ?? "" });
+  const [values, setValues] = useState({
+    name: "",
+    email: "",
+    region: regions?.[0]?.slug ?? "",
+    os: OS_DEFAULT,
+    hostname: "",
+  });
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
@@ -87,7 +94,11 @@ export function OrderForm({
     }
   }
 
-  const regionName = regions?.find((r) => r.slug === values.region)?.name;
+  const selectedRegion = regions?.find((r) => r.slug === values.region);
+  const regionName = selectedRegion?.name;
+  // Solo las regiones conectadas a un Proxmox se entregan al instante: ahí tiene
+  // sentido elegir SO y hostname. En las demás el pedido se gestiona a mano.
+  const provisionable = !!selectedRegion?.provisionLocation;
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
@@ -181,6 +192,38 @@ export function OrderForm({
                     </option>
                   ))}
                 </Select>
+              </div>
+            )}
+
+            {provisionable && (
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="os">{t("orderForm.osLabel")}</Label>
+                  <Select
+                    id="os"
+                    value={values.os}
+                    onChange={(e) => setValues((v) => ({ ...v, os: e.target.value }))}
+                  >
+                    {OS_OPTIONS.map((o) => (
+                      <option key={o.slug} value={o.slug}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="hostname">{t("orderForm.hostnameLabel")}</Label>
+                  <Input
+                    id="hostname"
+                    value={values.hostname}
+                    onChange={(e) => setValues((v) => ({ ...v, hostname: e.target.value }))}
+                    placeholder={t("orderForm.hostnamePlaceholder")}
+                    maxLength={60}
+                  />
+                  <p className="mt-1 font-mono text-[0.65rem] text-[var(--color-fg-dim)]">
+                    {t("orderForm.hostnameHint")}
+                  </p>
+                </div>
               </div>
             )}
 

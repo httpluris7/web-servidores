@@ -77,7 +77,11 @@
         "visible": "Visible on the website",
         "popular": "Highlight as most popular",
         "planId": "Plan id: {id} — fixed, it is used by order URLs and issued invoices.",
-        "langHint": "English is required. Anything left empty falls back to English."
+        "langHint": "English is required. Anything left empty falls back to English.",
+        "regionCpu": "Region CPU",
+        "regionCpuHint": "Processor brand shown on this region’s VPS cards, e.g. “Xeon Gold 6150”. Empty = use the plan’s own.",
+        "provisionLocation": "Provisioner location",
+        "provisionLocationHint": "Location slug in the provisioning module (e.g. “nl-ams”). This is what connects the region to Proxmox. Empty = manual delivery."
       },
       "errors": {
         "generico": "The change could not be saved.",

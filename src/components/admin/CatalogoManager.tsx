@@ -525,6 +525,8 @@ function UbicacionForm({
   const [ciudad, setCiudad] = useState<Texto>(ubicacion?.ciudad ?? TEXTO_VACIO);
   const [nota, setNota] = useState<Texto>(ubicacion?.nota ?? TEXTO_VACIO);
   const [bandera, setBandera] = useState(ubicacion?.bandera ?? "");
+  const [cpu, setCpu] = useState(ubicacion?.cpu ?? "");
+  const [provisionLocation, setProvisionLocation] = useState(ubicacion?.provisionLocation ?? "");
   const [precioDesde, setPrecioDesde] = useState(String(ubicacion?.precioDesde ?? ""));
   const [slug, setSlug] = useState(ubicacion?.slug ?? "");
   const [mapX, setMapX] = useState(String(ubicacion?.mapX ?? 50));
@@ -564,6 +566,22 @@ function UbicacionForm({
       </Campo>
 
       <Fila2>
+        <Campo label={t("catalog.form.regionCpu")} ayuda={t("catalog.form.regionCpuHint")}>
+          <Input value={cpu} onChange={(e) => setCpu(e.target.value)} maxLength={60} />
+        </Campo>
+        <Campo
+          label={t("catalog.form.provisionLocation")}
+          ayuda={t("catalog.form.provisionLocationHint")}
+        >
+          <Input
+            value={provisionLocation}
+            onChange={(e) => setProvisionLocation(e.target.value)}
+            maxLength={40}
+          />
+        </Campo>
+      </Fila2>
+
+      <Fila2>
         <Campo label={t("catalog.form.mapX")} ayuda={t("catalog.form.mapHint")}>
           <Input type="number" min="0" max="100" value={mapX} onChange={(e) => setMapX(e.target.value)} />
         </Campo>
@@ -588,6 +606,8 @@ function UbicacionForm({
             ciudad,
             nota,
             bandera,
+            cpu,
+            provisionLocation,
             precioDesde: Number(precioDesde),
             slug,
             mapX: Number(mapX),

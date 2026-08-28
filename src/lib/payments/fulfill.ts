@@ -1,6 +1,7 @@
 import { readLeads } from "@/lib/leads";
 import { getInvoiceById, setInvoiceStatus } from "@/lib/facturas";
 import { emailInvoiceDocument } from "@/lib/invoice-notify";
+import { aprovisionarFacturaPagada } from "@/lib/provisioner/aprovisionar";
 import type { PaymentEvent } from "./types";
 
 /**
@@ -81,6 +82,9 @@ export async function fulfillOrder(event: PaymentEvent): Promise<FulfillResult> 
       } catch (err) {
         console.error("[payments] no se pudo enviar la factura final:", inv.id, err);
       }
+      // El pago se convierte en servidores. Best-effort: `aprovisionarFacturaPagada`
+      // no lanza, así que un fallo del provisioner no tumba el webhook.
+      await aprovisionarFacturaPagada(inv.id);
     }
     return { ok: true, invoiceId: inv.id, numero: result.invoice.numero };
   }
@@ -98,7 +102,9 @@ export async function fulfillOrder(event: PaymentEvent): Promise<FulfillResult> 
     return { ok: false, reason: "amount_mismatch", expected, got: event.amountCents };
   }
 
-  // TODO(negocio): pedido pagado sin factura asociada. Falta disparar el
-  // aprovisionamiento (idealmente encolado y reintentable, no aquí en línea).
+  // Camino legacy: cobro de un pedido SIN factura. El flujo real de compra
+  // siempre emite proforma, así que el aprovisionamiento se dispara en la rama
+  // `invoiceId` de arriba (`aprovisionarFacturaPagada`). Aquí no hay factura a la
+  // que atar intenciones; si algún día se usa este camino, habría que replicarlo.
   return { ok: true };
 }

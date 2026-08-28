@@ -88,6 +88,18 @@ export type Ubicacion = {
   nota: Texto;
   /** Emoji de bandera. */
   bandera: string;
+  /**
+   * Marca de CPU de las máquinas de esta región (p. ej. "Xeon Gold 6150").
+   * En `/vps/<slug>` sustituye la marca del `cpu` de cada plan (conservando el
+   * "N vCore" inicial). Vacío = se muestra el `cpu` del plan tal cual.
+   */
+  cpu: string;
+  /**
+   * Slug de la ubicación del provisioner a la que se aprovisiona esta región
+   * (p. ej. "nl-ams"). Es la conexión "ubicación web → Proxmox". Vacío = región
+   * sin aprovisionamiento automático (se vende y se entrega a mano).
+   */
+  provisionLocation: string;
   /** €/mes "desde" que se anuncia para la ubicación. */
   precioDesde: number;
   /** Coordenadas relativas (0–100) sobre el SVG del mapa de Europa. */
@@ -422,6 +434,8 @@ export async function crearUbicacion(datos: Record<string, unknown>): Promise<Re
     ciudad: comoTexto(datos.ciudad, 80),
     nota: comoTexto(datos.nota, 160),
     bandera: comoLinea(datos.bandera, 8),
+    cpu: comoLinea(datos.cpu, 60),
+    provisionLocation: comoLinea(datos.provisionLocation, 40),
     precioDesde: comoPrecio(datos.precioDesde),
     mapX: comoCoordenada(datos.mapX, 50),
     mapY: comoCoordenada(datos.mapY, 50),
@@ -454,6 +468,13 @@ export async function actualizarUbicacion(
     ciudad: comoTexto(datos.ciudad, 80),
     nota: comoTexto(datos.nota, 160),
     bandera: comoLinea(datos.bandera, 8),
+    // Si el formulario no manda estos campos, se conserva lo que ya había: así
+    // no se pierden al editar desde una versión del panel que aún no los pinte.
+    cpu: datos.cpu !== undefined ? comoLinea(datos.cpu, 60) : (actual.cpu ?? ""),
+    provisionLocation:
+      datos.provisionLocation !== undefined
+        ? comoLinea(datos.provisionLocation, 40)
+        : (actual.provisionLocation ?? ""),
     precioDesde: comoPrecio(datos.precioDesde),
     mapX: comoCoordenada(datos.mapX, actual.mapX),
     mapY: comoCoordenada(datos.mapY, actual.mapY),

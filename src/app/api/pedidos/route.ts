@@ -5,6 +5,20 @@ import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { getSession } from "@/lib/session";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
 import { findDuplicateOrder } from "@/lib/payments/duplicados";
+import { registrarIntent } from "@/lib/provisioner/intents";
+import { OS_DEFAULT, isKnownOs } from "@/lib/provisioner/os";
+
+/** Hostname url/DNS-safe a partir de lo que teclee el cliente (o null si no da nada). */
+function saneaHostname(raw: string): string | null {
+  const h = raw
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/(^-+|-+$)/g, "")
+    .slice(0, 60);
+  return h || null;
+}
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -30,6 +44,12 @@ export async function POST(req: Request) {
   const email = clean(body.email, 200);
   const planId = clean(body.planId, 60);
   const region = clean(body.region, 60);
+  // SO y hostname del VPS. El SO se acota a la lista conocida (un slug raro se
+  // reconduce al de por defecto en vez de tumbar el checkout); el hostname es
+  // opcional (el provisioner genera uno si no llega).
+  const osRaw = clean(body.os, 40);
+  const osSlug = isKnownOs(osRaw) ? osRaw : OS_DEFAULT;
+  const hostname = saneaHostname(clean(body.hostname, 80));
 
   const errors: Record<string, string> = {};
   if (name.length < 2) errors.name = "Enter your name or company.";
@@ -115,6 +135,31 @@ export async function POST(req: Request) {
       cancelPath: `/contratar/${planId}`,
       duplicado,
     });
+
+    // Money-path: si es un VPS en una región conectada a un Proxmox, dejamos
+    // atada a la factura la intención de aprovisionar. El webhook (tarjeta) o el
+    // panel (transferencia) la ejecutan cuando la proforma pase a pagada. La
+    // ubicación de despliegue sale de la propia región (`provisionLocation`),
+    // nunca del cliente. Best-effort: no romper el checkout por esto.
+    const regionObj = regions.find((r) => r.slug === region);
+    const locationSlug = regionObj?.provisionLocation;
+    if (located!.lineTipo === "vps" && locationSlug) {
+      try {
+        await registrarIntent({
+          invoiceId: invoice.id,
+          planSlug: planId,
+          userId: session?.uid ?? null,
+          email,
+          locationSlug,
+          osSlug,
+          hostname,
+          idioma: locale?.startsWith("es") ? "es" : "en",
+        });
+      } catch (err) {
+        console.error("[pedidos] no se pudo registrar la intención de aprovisionamiento", err);
+      }
+    }
+
     return NextResponse.json({
       ok: true,
       numero: invoice.numero,

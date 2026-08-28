@@ -1,6 +1,56 @@
 import { providerConfig, providerServers } from "./inventario";
-import { getManagedById, listManagedByUser, type ManagedServer } from "./store";
+import { assignServer, getManagedById, listManagedByUser, type ManagedServer } from "./store";
 import { getServer, type ProviderConfig, type ProviderServer } from "./v4vm";
+import { proxmoxRemote } from "./proxmox-view";
+import { getOrder } from "@/lib/provisioner/client";
+import { pendientesDeFicha, marcarFichaCreada } from "@/lib/provisioner/intents";
+
+/**
+ * Reconciliación perezosa de los VPS aprovisionados al pagar.
+ *
+ * El aprovisionamiento se dispara en el webhook, que solo conoce el `order_id`;
+ * el `vps_id` (necesario para dar de alta la ficha del servidor) no existe hasta
+ * unos segundos después, cuando el worker crea la máquina. En vez de sondear en
+ * segundo plano, resolvemos ese hueco aquí, cuando el cliente entra en su área:
+ * por cada provisión suya aún sin ficha, preguntamos el estado del pedido y, si
+ * ya está `active`, creamos la ficha `proxmox`. Es idempotente (la creación de
+ * ficha lo es) y tolerante a fallos (si el provisioner no responde, se reintenta
+ * la próxima vez). Nunca lanza.
+ */
+async function reconciliarFichasProxmox(userId: string): Promise<void> {
+  let pendientes;
+  try {
+    pendientes = await pendientesDeFicha(userId);
+  } catch {
+    return;
+  }
+  for (const it of pendientes) {
+    if (it.provisionOrderId == null) continue;
+    try {
+      const order = await getOrder(it.provisionOrderId);
+      if (order.estado === "active" && order.vps_id != null) {
+        await assignServer({
+          proveedor: "proxmox",
+          remoteId: order.vps_id,
+          remoteUuid: "",
+          userId,
+          etiqueta: it.hostname ?? "",
+        });
+        await marcarFichaCreada(it.invoiceId, it.planSlug);
+      } else if (order.estado === "failed" || order.estado === "cancelled") {
+        // No habrá máquina: se cierra la intención para no reintentar sin fin.
+        await marcarFichaCreada(it.invoiceId, it.planSlug);
+      }
+      // queued/provisioning: se deja pendiente; aparecerá en el próximo acceso.
+    } catch (err) {
+      console.error(
+        "[servidores] reconciliación proxmox falló para el pedido",
+        it.provisionOrderId,
+        err,
+      );
+    }
+  }
+}
 
 /**
  * Acceso del CLIENTE a sus servidores.
@@ -65,6 +115,25 @@ export async function getServerForUser(
 }
 
 /**
+ * Servidor de Proxmox de un cliente, con su estado leído del provisioner,
+ * adaptado a `ProviderServer`. null si no existe, no es suyo, no es proxmox, o
+ * el provisioner no responde. Es el equivalente a `getServerForUser` para los
+ * VPS de nuestro propio Proxmox.
+ */
+export async function getProxmoxServerForUser(
+  id: string,
+  userId: string,
+): Promise<{ managed: ManagedServer; remote: ProviderServer } | null> {
+  // Puede que la ficha aún no exista (VPS recién pagado): se intenta crear.
+  await reconciliarFichasProxmox(userId);
+  const managed = await getManagedForUser(id, userId);
+  if (!managed || managed.proveedor !== "proxmox") return null;
+  const remote = await proxmoxRemote(managed);
+  if (!remote) return null;
+  return { managed, remote };
+}
+
+/**
  * ¿El servidor que devuelve el proveedor es el mismo que asignamos?
  *
  * La ficha guarda el UUID justamente para esto. El id numérico es del
@@ -86,6 +155,10 @@ function mismoServidor(managed: ManagedServer, remote: ProviderServer): boolean 
  * proveedor —una llamada por proyecto— en vez de pedir uno a uno.
  */
 export async function listServersForUser(userId: string): Promise<ClientServer[]> {
+  // Da de alta la ficha de los VPS recién aprovisionados que ya estén listos,
+  // para que aparezcan en el listado sin esperar a nada más.
+  await reconciliarFichasProxmox(userId);
+
   const managed = await listManagedByUser(userId);
   if (managed.length === 0) return [];
 
@@ -95,15 +168,23 @@ export async function listServersForUser(userId: string): Promise<ClientServer[]
   const servers = hayDelProveedor ? await providerServers() : [];
   const porId = new Map(servers.map((s) => [s.id, s]));
 
-  return managed
-    .map((m): ClientServer | null => {
+  // Los VPS de Proxmox se preguntan uno a uno al provisioner (son pocos y su
+  // API es local), en paralelo y tolerante a fallos.
+  const resueltos = await Promise.all(
+    managed.map(async (m): Promise<ClientServer | null> => {
       if (m.proveedor === "externo") return { managed: m, remote: null };
+      if (m.proveedor === "proxmox") {
+        const remote = await proxmoxRemote(m);
+        return remote ? { managed: m, remote } : null;
+      }
       const remote = porId.get(m.remoteId);
       // Ficha huérfana (el servidor ya no está en el proveedor), o un id que ya
       // no corresponde a la máquina asignada: se omite. El admin las ve en su
       // inventario para poder limpiarlas.
       return remote && mismoServidor(m, remote) ? { managed: m, remote } : null;
-    })
+    }),
+  );
+  return resueltos
     .filter((x): x is ClientServer => x !== null)
     .sort((a, b) => nombre(a).localeCompare(nombre(b)));
 }

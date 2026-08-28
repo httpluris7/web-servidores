@@ -5,9 +5,14 @@ import { site } from "@/data/site";
 import { Link } from "@/i18n/navigation";
 import { PageHero } from "@/components/ui/PageHero";
 import { ServerPanel } from "@/components/cuenta/ServerPanel";
+import { ProxmoxServerPanel } from "@/components/cuenta/ProxmoxServerPanel";
 import { MetricasPanel } from "@/components/servidores/MetricasPanel";
 import { getSession } from "@/lib/session";
-import { getManagedForUser, getServerForUser } from "@/lib/servidores/cliente";
+import {
+  getManagedForUser,
+  getProxmoxServerForUser,
+  getServerForUser,
+} from "@/lib/servidores/cliente";
 import {
   listServerLimits,
   listSnapshots,
@@ -50,6 +55,9 @@ export default async function ServidorClientePage({
   // De una máquina externa no hay proveedor al que pedirle nada: la pantalla se
   // queda en las gráficas, que sí son nuestras.
   const found = ficha.proveedor === "v4vm" ? await getServerForUser(id, session.uid) : null;
+  // VPS de nuestro Proxmox: su propio panel (energía + reenvío de credenciales).
+  const foundProxmox =
+    ficha.proveedor === "proxmox" ? await getProxmoxServerForUser(id, session.uid) : null;
 
   // Instantáneas y límites son opcionales: si el proveedor no los da, la
   // pantalla funciona igual y simplemente no se muestran.
@@ -66,7 +74,7 @@ export default async function ServidorClientePage({
     }
   }
 
-  const nombre = ficha.etiqueta || found?.remote.name || ficha.host;
+  const nombre = ficha.etiqueta || found?.remote.name || foundProxmox?.remote.name || ficha.host;
 
   return (
     <>
@@ -93,7 +101,11 @@ export default async function ServidorClientePage({
           />
         )}
 
-        <div className={found ? "mt-10" : ""}>
+        {foundProxmox && (
+          <ProxmoxServerPanel id={foundProxmox.managed.id} initialServer={foundProxmox.remote} />
+        )}
+
+        <div className={found || foundProxmox ? "mt-10" : ""}>
           <MetricasPanel id={ficha.id} ambito="cuenta" />
         </div>
 

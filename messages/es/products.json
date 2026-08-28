@@ -162,7 +162,11 @@
       "vatNote": "Precios sin impuestos",
       "payByCard": "Pagar con tarjeta →",
       "payByTransfer": "Pagar por transferencia",
-      "cardUnavailable": "El pago con tarjeta no está disponible ahora mismo. Puedes pagar por transferencia con los datos de abajo."
+      "cardUnavailable": "El pago con tarjeta no está disponible ahora mismo. Puedes pagar por transferencia con los datos de abajo.",
+      "osLabel": "Sistema operativo",
+      "hostnameLabel": "Hostname (opcional)",
+      "hostnamePlaceholder": "mi-servidor",
+      "hostnameHint": "Solo letras, números y guiones. Si lo dejas vacío, se genera uno."
     }
   }
 }

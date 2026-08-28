@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { rateLimit } from "@/lib/rate-limit";
 import { esIdInterno } from "@/lib/servidores/store";
-import { getServerForUser } from "@/lib/servidores/cliente";
+import { getManagedForUser, getProxmoxServerForUser, getServerForUser } from "@/lib/servidores/cliente";
 import { listServerLimits, listSnapshots, ProviderError } from "@/lib/servidores/v4vm";
 
 export const runtime = "nodejs";
@@ -34,6 +34,16 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
       { ok: false, error: "Too many requests.", retryAfter: limite.retryAfter },
       { status: 429, headers: { "Retry-After": String(limite.retryAfter) } }
     );
+  }
+
+  // VPS de nuestro Proxmox: estado leído del provisioner (sin snapshots/límites).
+  const ficha = await getManagedForUser(id, session.uid);
+  if (ficha?.proveedor === "proxmox") {
+    const found = await getProxmoxServerForUser(id, session.uid);
+    if (!found) {
+      return NextResponse.json({ ok: false, error: "Not found." }, { status: 404 });
+    }
+    return NextResponse.json({ ok: true, server: found.remote, etiqueta: found.managed.etiqueta });
   }
 
   try {

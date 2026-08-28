@@ -10,6 +10,8 @@ import { getPublicUserById } from "@/lib/auth";
 import { listInvoicesByUser } from "@/lib/facturas";
 import { listServersForUser } from "@/lib/servidores/cliente";
 import { listTicketsByUser, ticketsAbiertos } from "@/lib/tickets";
+import { desplieguesDeUsuario } from "@/lib/provisioner/despliegues";
+import { getOrder } from "@/lib/provisioner/client";
 import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata({
@@ -63,6 +65,24 @@ export default async function CuentaPage({
   // servidores legibles, simplemente no se muestra la sección.
   const servidores = await listServersForUser(user.id).catch(() => []);
 
+  // Despliegues aún en marcha (VPS recién pagado que se está creando): se leen
+  // del provisioner para poder enlazar al seguimiento en vivo. Best-effort.
+  const despliegues = await desplieguesDeUsuario(user.id).catch(() => []);
+  const enCurso = (
+    await Promise.all(
+      despliegues.map(async (d) => {
+        try {
+          const o = await getOrder(d.orderId);
+          return o.estado === "queued" || o.estado === "provisioning"
+            ? { orderId: d.orderId }
+            : null;
+        } catch {
+          return null;
+        }
+      }),
+    )
+  ).filter((x): x is { orderId: number } => x !== null);
+
   const abiertos = ticketsAbiertos(await listTicketsByUser(user.id));
 
   return (
@@ -106,6 +126,31 @@ export default async function CuentaPage({
             {facturas.length > 0 ? ` (${facturas.length})` : ""}
           </Link>
         </section>
+
+        {/* Despliegues en curso: un VPS recién pagado que se está creando. */}
+        {enCurso.length > 0 && (
+          <section className="mt-12 border-t border-[var(--color-line)] pt-10">
+            <h2 className="mono-label mb-1">{t("account.deploymentsHeading")}</h2>
+            <p className="mb-5 text-sm text-[var(--color-fg-muted)]">
+              {t("account.deploymentsIntro")}
+            </p>
+            <div className="grid gap-3">
+              {enCurso.map((d) => (
+                <Link
+                  key={d.orderId}
+                  href={`/cuenta/despliegue/${d.orderId}`}
+                  className="inline-flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-accent)] bg-[var(--color-bg-raised)] px-5 text-sm transition-colors hover:bg-[var(--color-bg)]"
+                >
+                  <span
+                    aria-hidden
+                    className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-[var(--color-line-strong)] border-t-[var(--color-accent)]"
+                  />
+                  {t("account.deploymentsLink")}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Servidores: solo aparece si el cliente tiene alguno asignado. */}
         {servidores.length > 0 && (

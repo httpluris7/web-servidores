@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { rateLimit } from "@/lib/rate-limit";
 import { esIdInterno } from "@/lib/servidores/store";
-import { getServerForUser } from "@/lib/servidores/cliente";
+import { getManagedForUser, getServerForUser } from "@/lib/servidores/cliente";
+import { vpsAction, resendCredentials, ProvisionerError } from "@/lib/provisioner/client";
 import {
   createSnapshot,
   deleteSnapshot,
@@ -72,20 +73,63 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
     return NextResponse.json({ ok: false, error: "Invalid JSON." }, { status: 400 });
   }
 
-  const accion = body.accion as Accion;
-  if (!ACCIONES.includes(accion)) {
-    return NextResponse.json({ ok: false, error: "Unknown action." }, { status: 422 });
-  }
+  const accionRaw = typeof body.accion === "string" ? body.accion : "";
 
-  // Cada acción golpea la API del proveedor, que limita el ritmo. El tope va
-  // por usuario y servidor, no por IP: un cliente impaciente no debe poder
-  // dejar sin cuota a los demás.
+  // Cada acción golpea una API que limita el ritmo. El tope va por usuario y
+  // servidor, no por IP: un cliente impaciente no debe dejar sin cuota a los demás.
   const limite = rateLimit(`srv:${session.uid}:${id}`, { limit: 20, windowMs: 60_000 });
   if (!limite.ok) {
     return NextResponse.json(
       { ok: false, error: "Too many requests.", retryAfter: limite.retryAfter },
       { status: 429, headers: { "Retry-After": String(limite.retryAfter) } }
     );
+  }
+
+  // Los VPS de nuestro Proxmox se gestionan por el provisioner, no por v4vm.
+  // Rama propia: pertenencia por ficha (sin llamada de red) y acciones acotadas.
+  const fichaProx = await getManagedForUser(id, session.uid);
+  if (!fichaProx) {
+    return NextResponse.json({ ok: false, error: "Not found." }, { status: 404 });
+  }
+  if (fichaProx.proveedor === "proxmox") {
+    const vpsId = fichaProx.remoteId;
+    try {
+      switch (accionRaw) {
+        case "encender":
+          await vpsAction(vpsId, "start");
+          return NextResponse.json({ ok: true });
+        case "apagar":
+          await vpsAction(vpsId, "stop");
+          return NextResponse.json({ ok: true });
+        case "reiniciar":
+          await vpsAction(vpsId, "reboot");
+          return NextResponse.json({ ok: true });
+        case "reenviar-credenciales":
+          await resendCredentials(vpsId);
+          return NextResponse.json({ ok: true });
+        default:
+          // Consola, reinstalación, snapshots y reseteo de root no aplican a los
+          // VPS de Proxmox por esta vía: pasan por soporte.
+          return NextResponse.json({ ok: false, error: "unsupported" }, { status: 422 });
+      }
+    } catch (err) {
+      console.error(
+        "[servidores] fallo en acción proxmox",
+        accionRaw,
+        id,
+        err instanceof ProvisionerError ? `${err.status ?? ""} ${err.message}` : err,
+      );
+      return NextResponse.json(
+        { ok: false, error: "Could not reach the provisioner." },
+        { status: 502 },
+      );
+    }
+  }
+
+  // A partir de aquí, servidor del proveedor externo (v4vm).
+  const accion = accionRaw as Accion;
+  if (!ACCIONES.includes(accion)) {
+    return NextResponse.json({ ok: false, error: "Unknown action." }, { status: 422 });
   }
 
   // La comprobación de pertenencia habla con el proveedor, así que puede

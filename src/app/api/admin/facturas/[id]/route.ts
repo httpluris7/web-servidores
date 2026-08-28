@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/admin";
 import { deleteInvoice, setInvoiceStatus, type InvoiceStatus } from "@/lib/facturas";
 import { emailInvoiceDocument } from "@/lib/invoice-notify";
+import { aprovisionarFacturaPagada } from "@/lib/provisioner/aprovisionar";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -44,6 +45,9 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     } catch (err) {
       console.error(`No se pudo enviar la factura ${result.invoice.numero} por email:`, err);
     }
+    // Pago por transferencia confirmado a mano: dispara el aprovisionamiento
+    // igual que el webhook de tarjeta. Best-effort (no lanza).
+    await aprovisionarFacturaPagada(result.invoice.id);
   }
 
   return NextResponse.json({ ok: true, factura: result.invoice, emailSent });
