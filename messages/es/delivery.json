@@ -1,0 +1,32 @@
+{
+  "delivery": {
+    "title": "Tu contraseña",
+    "kicker": "Entrega segura",
+    "subtitle": "Enlace de un solo uso para obtener la contraseña de tu servidor.",
+    "intro": "Por seguridad, la contraseña no viaja por correo. Pulsa el botón para revelarla; se mostrará una única vez en esta pantalla.",
+    "reveal": "Ver mi contraseña",
+    "revealing": "Revelando…",
+    "onceNote": "El enlace caduca a las 24 horas y solo puede usarse una vez.",
+    "readyTag": "Credenciales",
+    "readyTitle": "Estas son tus credenciales de acceso",
+    "warnOnce": "Guárdalas ahora: por seguridad no volverán a mostrarse.",
+    "ip": "IP",
+    "user": "Usuario",
+    "password": "Contraseña",
+    "hostname": "Hostname",
+    "os": "Sistema",
+    "location": "Ubicación",
+    "sshHint": "Conéctate por SSH",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "goToAccount": "Ir a mi panel",
+    "errTag": "Enlace no válido",
+    "errTitle": "No hemos podido mostrar la contraseña",
+    "errNotFound": "Este enlace no existe o no es correcto. Revisa que lo has copiado entero desde el correo.",
+    "errUsed": "Este enlace ya se usó. Por seguridad la contraseña solo se muestra una vez; si no la guardaste, pide una nueva desde tu panel o a soporte.",
+    "errExpired": "Este enlace ha caducado (validez de 24 horas). Pide que te reenvíen las credenciales desde tu panel o a soporte.",
+    "errUnavailable": "El servicio de entrega no está disponible en este momento. Inténtalo de nuevo en unos minutos.",
+    "errGeneric": "Ha ocurrido un error al obtener la contraseña. Inténtalo de nuevo o contacta con soporte.",
+    "contactSupport": "Contactar con soporte"
+  }
+}

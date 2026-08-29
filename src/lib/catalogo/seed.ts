@@ -97,7 +97,9 @@ export function catalogoInicial(): Catalogo {
         precioDesde: 8,
         mapX: 42,
         mapY: 54,
-        visible: true,
+        // Oculta hasta que Francia tenga un Proxmox detrás: sin backend, un VPS
+        // "en Francia" no puede aprovisionarse solo (ver `provisionLocation`).
+        visible: false,
         orden: 0,
       },
       {

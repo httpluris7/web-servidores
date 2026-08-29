@@ -1,0 +1,32 @@
+{
+  "delivery": {
+    "title": "Votre mot de passe",
+    "kicker": "Livraison sécurisée",
+    "subtitle": "Lien à usage unique pour récupérer le mot de passe de votre serveur.",
+    "intro": "Pour des raisons de sécurité, le mot de passe n'est pas envoyé par e-mail. Cliquez sur le bouton pour l'afficher ; il ne sera montré qu'une seule fois sur cet écran.",
+    "reveal": "Afficher mon mot de passe",
+    "revealing": "Affichage…",
+    "onceNote": "Le lien expire au bout de 24 heures et ne peut être utilisé qu'une seule fois.",
+    "readyTag": "Identifiants",
+    "readyTitle": "Voici vos identifiants d'accès",
+    "warnOnce": "Enregistrez-les maintenant : pour des raisons de sécurité, ils ne seront plus affichés.",
+    "ip": "IP",
+    "user": "Utilisateur",
+    "password": "Mot de passe",
+    "hostname": "Hostname",
+    "os": "Système",
+    "location": "Emplacement",
+    "sshHint": "Connectez-vous en SSH",
+    "copy": "Copier",
+    "copied": "Copié",
+    "goToAccount": "Aller à mon espace",
+    "errTag": "Lien non valide",
+    "errTitle": "Nous n'avons pas pu afficher le mot de passe",
+    "errNotFound": "Ce lien n'existe pas ou n'est pas correct. Vérifiez que vous l'avez copié en entier depuis l'e-mail.",
+    "errUsed": "Ce lien a déjà été utilisé. Pour des raisons de sécurité, le mot de passe n'est affiché qu'une fois ; si vous ne l'avez pas enregistré, demandez-en un nouveau depuis votre espace ou au support.",
+    "errExpired": "Ce lien a expiré (valable 24 heures). Demandez le renvoi des identifiants depuis votre espace ou au support.",
+    "errUnavailable": "Le service de livraison est indisponible pour le moment. Réessayez dans quelques minutes.",
+    "errGeneric": "Une erreur s'est produite lors de la récupération du mot de passe. Réessayez ou contactez le support.",
+    "contactSupport": "Contacter le support"
+  }
+}

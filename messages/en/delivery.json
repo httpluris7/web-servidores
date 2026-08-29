@@ -1,0 +1,32 @@
+{
+  "delivery": {
+    "title": "Your password",
+    "kicker": "Secure delivery",
+    "subtitle": "One-time link to retrieve your server password.",
+    "intro": "For security, the password is not sent by email. Click the button to reveal it; it will be shown only once on this screen.",
+    "reveal": "Reveal my password",
+    "revealing": "Revealing…",
+    "onceNote": "The link expires after 24 hours and can only be used once.",
+    "readyTag": "Credentials",
+    "readyTitle": "Here are your access credentials",
+    "warnOnce": "Save them now: for security they will not be shown again.",
+    "ip": "IP",
+    "user": "User",
+    "password": "Password",
+    "hostname": "Hostname",
+    "os": "OS",
+    "location": "Location",
+    "sshHint": "Connect via SSH",
+    "copy": "Copy",
+    "copied": "Copied",
+    "goToAccount": "Go to my dashboard",
+    "errTag": "Invalid link",
+    "errTitle": "We couldn't show the password",
+    "errNotFound": "This link doesn't exist or isn't correct. Make sure you copied it in full from the email.",
+    "errUsed": "This link has already been used. For security the password is shown only once; if you didn't save it, request a new one from your dashboard or from support.",
+    "errExpired": "This link has expired (valid for 24 hours). Ask for the credentials to be resent from your dashboard or from support.",
+    "errUnavailable": "The delivery service is unavailable right now. Please try again in a few minutes.",
+    "errGeneric": "Something went wrong retrieving the password. Please try again or contact support.",
+    "contactSupport": "Contact support"
+  }
+}

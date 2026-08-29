@@ -199,3 +199,22 @@ export function deleteVps(vpsId: number): Promise<{ ok: boolean }> {
 export function resendCredentials(vpsId: number): Promise<{ ok: boolean }> {
   return request("POST", `/vps/${vpsId}/resend-credentials`);
 }
+
+/** Credenciales reveladas al canjear un enlace de entrega de un solo uso. */
+export type DeliveryCredentials = {
+  usuario: string;
+  password: string;
+  ip: string | null;
+  hostname: string | null;
+  os: string | null;
+  ubicacion: string | null;
+};
+
+/**
+ * Canjea un token de entrega y devuelve la contraseña UNA vez. Lanza
+ * `ProvisionerError` con status 404 (token inexistente) o 410 (ya usado o
+ * caducado) para que la página muestre el mensaje correcto.
+ */
+export function redeemDelivery(token: string): Promise<DeliveryCredentials> {
+  return request("POST", "/delivery/redeem", { token });
+}
