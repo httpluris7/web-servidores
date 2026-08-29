@@ -32,6 +32,9 @@ const nextConfig: NextConfig = {
   // pdfkit carga sus fuentes .afm desde node_modules en runtime; marcándolo como
   // externo evitamos que el bundler lo empaquete y rompa esas rutas de datos.
   serverExternalPackages: ["pdfkit"],
+  // noVNC se distribuye como ESM sin transpilar; Next debe procesarlo para el
+  // bundle del cliente (consola del panel).
+  transpilePackages: ["@novnc/novnc"],
   images: {
     formats: ["image/avif", "image/webp"],
   },

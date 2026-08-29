@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import type { ProviderServer } from "@/lib/servidores/v4vm";
 import { OS_OPTIONS } from "@/lib/provisioner/os";
 import { ServerStatusBadge } from "@/components/ui/ServerStatusBadge";
@@ -252,6 +253,15 @@ export function ProxmoxServerPanel({
             {t("serverDetail.hardReset")}
           </button>
         </div>
+      </section>
+
+      {/* Consola noVNC */}
+      <section className={card}>
+        <h2 className="text-lg font-semibold">{t("serverDetail.consoleHeading")}</h2>
+        <p className="mt-1 mb-5 text-sm text-[var(--color-fg-muted)]">{t("serverDetail.consoleIntro")}</p>
+        <Link href={`/cuenta/servidores/${id}/consola`} className={boton}>
+          {t("serverDetail.console")}
+        </Link>
       </section>
 
       {/* Contraseña de root */}
