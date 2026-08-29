@@ -20,8 +20,8 @@
         "context": "Uplink garanti sans survente, du plus petit VPS au bare metal."
       },
       "2": {
-        "label": "Mitigation DDoS",
-        "context": "Capacité de filtrage toujours active en périphérie, incluse dans chaque offre."
+        "label": "Paquets vers votre serveur",
+        "context": "Le trafic d'attaque est filtré en périphérie ; aucun n'atteint votre serveur."
       }
     },
     "liveMetrics": {
@@ -208,8 +208,8 @@
       "yourServer": "votre serveur",
       "footnote": "↳ Votre serveur, intact.",
       "stats": {
-        "mitigation": "Capacité de mitigation",
-        "absorbed": "Attaques absorbées",
+        "mitigation": "Mitigation",
+        "absorbed": "Détection en périphérie",
         "filtered": "Paquets d'attaque au serveur"
       },
       "features": {

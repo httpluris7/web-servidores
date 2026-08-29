@@ -20,8 +20,8 @@
         "context": "Uplink garantizado sin sobreventa, desde el VPS más pequeño hasta el bare metal."
       },
       "2": {
-        "label": "Mitigación DDoS",
-        "context": "Capacidad de filtrado siempre activa en el edge, incluida en todos los planes."
+        "label": "Paquetes al servidor",
+        "context": "El tráfico de ataque se filtra en el edge; a tu servidor no llega ninguno."
       }
     },
     "liveMetrics": {
@@ -208,8 +208,8 @@
       "yourServer": "tu servidor",
       "footnote": "↳ Tu servidor, intacto.",
       "stats": {
-        "mitigation": "Capacidad de mitigación",
-        "absorbed": "Ataques absorbidos",
+        "mitigation": "Mitigación",
+        "absorbed": "Detección en el edge",
         "filtered": "Paquetes de ataque al servidor"
       },
       "features": {

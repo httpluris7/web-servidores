@@ -52,6 +52,6 @@ export const dedicatedFaq: FAQItem[] = [
   },
   {
     q: "Does DDoS protection also apply to bare metal?",
-    a: "Yes. The same mitigation of up to 25 Tbps protects VPS and dedicated servers alike, at no additional cost and with no reconfiguration on your part.",
+    a: "Yes. The same always-on mitigation protects VPS and dedicated servers alike, at no additional cost and with no reconfiguration on your part.",
   },
 ];

@@ -20,8 +20,8 @@
         "context": "Guaranteed uplink with no overselling, from the smallest VPS to bare metal."
       },
       "2": {
-        "label": "DDoS Mitigation",
-        "context": "Always-on filtering capacity at the edge, included in every plan."
+        "label": "Packets to your server",
+        "context": "Attack traffic is filtered at the edge; none reaches your server."
       }
     },
     "liveMetrics": {
@@ -208,8 +208,8 @@
       "yourServer": "your server",
       "footnote": "↳ Your server, untouched.",
       "stats": {
-        "mitigation": "Mitigation capacity",
-        "absorbed": "Attacks absorbed",
+        "mitigation": "Mitigation",
+        "absorbed": "Edge detection",
         "filtered": "Attack packets to server"
       },
       "features": {

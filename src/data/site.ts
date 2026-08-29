@@ -64,10 +64,9 @@ export const site = {
   // Métodos de pago mostrados en el footer (texto estilizado, sin logos con licencia).
   paymentMethods: ["Bank transfer", "SEPA", "Visa", "Mastercard", "PayPal", "Crypto"], // TODO: confirmar
 
-  // Mitigación DDoS.
+  // Mitigación DDoS. Sin cifras inventadas (capacidad Tbps, ataques absorbidos):
+  // solo el dato veraz y conceptual: al servidor no llega ningún paquete de ataque.
   ddos: {
-    mitigationTbps: 25, // TODO: capacidad de mitigación real (Tbps)
-    absorbedAttacks: "1.2M", // TODO: ataques absorbidos (acumulado)
     filteredToServer: 0, // paquetes de ataque que llegan al servidor: siempre 0
   },
 } as const;

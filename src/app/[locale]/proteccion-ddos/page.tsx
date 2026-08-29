@@ -16,7 +16,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "pages" });
   return {
     title: t("proteccionDdos.metaTitle"),
-    description: t("proteccionDdos.metaDescription", { mitigation: site.ddos.mitigationTbps }),
+    description: t("proteccionDdos.metaDescription"),
   };
 }
 
@@ -47,15 +47,15 @@ export default async function DdosPage({
             {t("proteccionDdos.titleSuffix")}
           </>
         }
-        description={t("proteccionDdos.description", { mitigation: site.ddos.mitigationTbps })}
+        description={t("proteccionDdos.description")}
       />
 
       {/* Métricas */}
       <section className="border-b border-[var(--color-line)]">
         <div className="container-edge grid gap-px bg-[var(--color-line)] sm:grid-cols-3">
           {[
-            { v: `${site.ddos.mitigationTbps} Tbps`, l: t("proteccionDdos.metrics.capacity") },
-            { v: site.ddos.absorbedAttacks, l: t("proteccionDdos.metrics.absorbed") },
+            { v: "Always-on", l: t("proteccionDdos.metrics.capacity") },
+            { v: "< 2 s", l: t("proteccionDdos.metrics.absorbed") },
             { v: `${site.ddos.filteredToServer}`, l: t("proteccionDdos.metrics.toServer") },
           ].map((s, i) => (
             <Reveal key={s.l} delay={i} className="bg-[var(--color-bg-base)] px-6 py-10">

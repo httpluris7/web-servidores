@@ -6,7 +6,7 @@ import { Reveal } from "@/components/ui/Reveal";
 const stats = [
   { to: 60, suffix: " s" },
   { to: 10, suffix: " Gbps" },
-  { to: site.ddos.mitigationTbps, suffix: " Tbps" },
+  { to: site.ddos.filteredToServer, suffix: "" },
 ];
 
 export async function CredibilityStats() {

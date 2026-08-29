@@ -195,15 +195,15 @@
     },
     "proteccionDdos": {
       "metaTitle": "Protección DDoS",
-      "metaDescription": "Mitigación DDoS always-on de hasta {mitigation} Tbps incluida en todos los planes. Filtrado L3/L4 y L7 en el edge de la red, sin coste por ataque.",
+      "metaDescription": "Mitigación DDoS always-on incluida en todos los planes. Filtrado L3/L4 y L7 en el edge de la red, sin coste por ataque.",
       "kicker": "Protección DDoS",
       "titlePrefix": "El ataque llega. A tu servidor, ",
       "titleAccent": "cero",
       "titleSuffix": ".",
-      "description": "Mitigación always-on de hasta {mitigation} Tbps, incluida con cada VPS y cada servidor dedicado. Sin coste por ataque, sin reconfiguración por tu parte.",
+      "description": "Mitigación always-on incluida con cada VPS y cada servidor dedicado. Sin coste por ataque, sin reconfiguración por tu parte.",
       "metrics": {
-        "capacity": "Capacidad de mitigación",
-        "absorbed": "Ataques absorbidos",
+        "capacity": "Mitigación",
+        "absorbed": "Detección en el edge",
         "toServer": "Paquetes de ataque a tu servidor"
       },
       "howKicker": "Cómo funciona",

@@ -17,7 +17,7 @@ export const whyUs: Feature[] = [
     body: "From payment to a live server in under a minute. No queues, no manual approval.",
   },
   {
-    metric: "25 Tbps",
+    metric: "Always-on",
     label: "DDoS Mitigation",
     body: "Always-on filtering at the network edge. You don't pay extra to stay protected.",
   },

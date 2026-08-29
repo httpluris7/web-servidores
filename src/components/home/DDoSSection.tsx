@@ -125,8 +125,8 @@ export function DDoSSection() {
         {/* Métricas */}
         <dl className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-3">
           {[
-            { v: `${site.ddos.mitigationTbps} Tbps`, l: t("ddos.stats.mitigation") },
-            { v: site.ddos.absorbedAttacks, l: t("ddos.stats.absorbed") },
+            { v: "Always-on", l: t("ddos.stats.mitigation") },
+            { v: "< 2 s", l: t("ddos.stats.absorbed") },
             { v: `${site.ddos.filteredToServer}`, l: t("ddos.stats.filtered") },
           ].map((s) => (
             <div key={s.l} className="bg-[#070b12] px-6 py-5">

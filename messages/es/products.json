@@ -62,7 +62,7 @@
       },
       "5": {
         "q": "¿La protección DDoS también se aplica al bare metal?",
-        "a": "Sí. La misma mitigación de hasta 25 Tbps protege por igual los VPS y los servidores dedicados, sin coste adicional y sin que tengas que reconfigurar nada."
+        "a": "Sí. La misma mitigación always-on protege por igual los VPS y los servidores dedicados, sin coste adicional y sin que tengas que reconfigurar nada."
       }
     },
     "vps": {
