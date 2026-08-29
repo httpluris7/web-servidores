@@ -151,7 +151,31 @@ export type VpsInfo = {
   creado: string;
 };
 
-export type VpsAction = "start" | "stop" | "reboot" | "suspend" | "resume";
+export type VpsAction =
+  | "start"
+  | "stop"
+  | "shutdown"
+  | "reboot"
+  | "reset"
+  | "suspend"
+  | "resume";
+
+export type VpsSnapshot = {
+  name: string;
+  description?: string;
+  snaptime?: number;
+  parent?: string;
+};
+
+/** Datos para abrir la consola noVNC (ticket + puerto del proxy VNC de Proxmox). */
+export type VncProxyInfo = {
+  vmid: number;
+  ticket: string;
+  port: string;
+  user: string;
+  cert: string;
+  upid: string;
+};
 
 /* ------------------------------- Operaciones ------------------------------ */
 
@@ -217,4 +241,39 @@ export type DeliveryCredentials = {
  */
 export function redeemDelivery(token: string): Promise<DeliveryCredentials> {
   return request("POST", "/delivery/redeem", { token });
+}
+
+/** Cambia la contraseña de root en caliente (guest agent) y la entrega por enlace. */
+export function resetVpsPassword(vpsId: number): Promise<{ ok: boolean }> {
+  return request("POST", `/vps/${vpsId}/reset-password`);
+}
+
+/** Encola una reinstalación del SO indicado (destructivo). */
+export function reinstallVps(vpsId: number, osSlug: string): Promise<{ ok: boolean }> {
+  return request("POST", `/vps/${vpsId}/reinstall`, { os_slug: osSlug });
+}
+
+export function listVpsSnapshots(vpsId: number): Promise<{ snapshots: VpsSnapshot[] }> {
+  return request("GET", `/vps/${vpsId}/snapshots`);
+}
+
+export function createVpsSnapshot(
+  vpsId: number,
+  name?: string,
+  description?: string,
+): Promise<{ ok: boolean; name: string }> {
+  return request("POST", `/vps/${vpsId}/snapshots`, { name, description });
+}
+
+export function rollbackVpsSnapshot(vpsId: number, name: string): Promise<{ ok: boolean }> {
+  return request("POST", `/vps/${vpsId}/snapshots/${encodeURIComponent(name)}/rollback`);
+}
+
+export function deleteVpsSnapshot(vpsId: number, name: string): Promise<{ ok: boolean }> {
+  return request("DELETE", `/vps/${vpsId}/snapshots/${encodeURIComponent(name)}`);
+}
+
+/** Abre un proxy VNC en Proxmox y devuelve el ticket/puerto para noVNC. */
+export function vpsVncProxy(vpsId: number): Promise<VncProxyInfo & { ok: boolean }> {
+  return request("POST", `/vps/${vpsId}/vncproxy`);
 }

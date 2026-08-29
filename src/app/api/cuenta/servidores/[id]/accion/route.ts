@@ -2,8 +2,19 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { rateLimit } from "@/lib/rate-limit";
 import { esIdInterno } from "@/lib/servidores/store";
-import { getManagedForUser, getServerForUser } from "@/lib/servidores/cliente";
-import { vpsAction, resendCredentials, ProvisionerError } from "@/lib/provisioner/client";
+import { getManagedForUser, getProxmoxServerForUser, getServerForUser } from "@/lib/servidores/cliente";
+import {
+  vpsAction,
+  resendCredentials,
+  resetVpsPassword,
+  reinstallVps,
+  listVpsSnapshots,
+  createVpsSnapshot,
+  rollbackVpsSnapshot,
+  deleteVpsSnapshot,
+  ProvisionerError,
+} from "@/lib/provisioner/client";
+import { isKnownOs } from "@/lib/provisioner/os";
 import {
   createSnapshot,
   deleteSnapshot,
@@ -95,30 +106,96 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
     const vpsId = fichaProx.remoteId;
     try {
       switch (accionRaw) {
+        // ---- Energía ----
         case "encender":
           await vpsAction(vpsId, "start");
           return NextResponse.json({ ok: true });
-        case "apagar":
+        case "apagar": // apagado ordenado (ACPI)
+          await vpsAction(vpsId, "shutdown");
+          return NextResponse.json({ ok: true });
+        case "apagar-forzado": // corte de energía (hard stop)
           await vpsAction(vpsId, "stop");
           return NextResponse.json({ ok: true });
         case "reiniciar":
           await vpsAction(vpsId, "reboot");
           return NextResponse.json({ ok: true });
+        case "reset": // reset duro
+          await vpsAction(vpsId, "reset");
+          return NextResponse.json({ ok: true });
+        case "suspender":
+          await vpsAction(vpsId, "suspend");
+          return NextResponse.json({ ok: true });
+        case "reanudar":
+          await vpsAction(vpsId, "resume");
+          return NextResponse.json({ ok: true });
+
+        // ---- Credenciales ----
         case "reenviar-credenciales":
           await resendCredentials(vpsId);
           return NextResponse.json({ ok: true });
+        case "password":
+          // Nueva contraseña de root; se entrega por el enlace de un solo uso.
+          await resetVpsPassword(vpsId);
+          return NextResponse.json({ ok: true });
+
+        // ---- Snapshots ----
+        case "snapshot-listar": {
+          const { snapshots } = await listVpsSnapshots(vpsId);
+          return NextResponse.json({ ok: true, snapshots });
+        }
+        case "snapshot-crear": {
+          const nombre =
+            typeof body.nombre === "string" && body.nombre.trim()
+              ? body.nombre.trim().slice(0, 40)
+              : undefined;
+          const r = await createVpsSnapshot(vpsId, nombre);
+          return NextResponse.json({ ok: true, name: r.name });
+        }
+        case "snapshot-revertir": {
+          const name = typeof body.nombre === "string" ? body.nombre : "";
+          if (!name) return NextResponse.json({ ok: false, error: "Invalid snapshot." }, { status: 422 });
+          await rollbackVpsSnapshot(vpsId, name);
+          return NextResponse.json({ ok: true });
+        }
+        case "snapshot-borrar": {
+          const name = typeof body.nombre === "string" ? body.nombre : "";
+          if (!name) return NextResponse.json({ ok: false, error: "Invalid snapshot." }, { status: 422 });
+          await deleteVpsSnapshot(vpsId, name);
+          return NextResponse.json({ ok: true });
+        }
+
+        // ---- Reinstalación (destructivo, confirmación por IP) ----
+        case "reinstalar": {
+          const os = typeof body.os === "string" ? body.os : "";
+          if (!isKnownOs(os)) {
+            return NextResponse.json({ ok: false, error: "Invalid OS." }, { status: 422 });
+          }
+          // Confirmación explícita: el cliente teclea la IP del servidor. Borra
+          // todos los datos, así que no basta con un botón.
+          const detalle = await getProxmoxServerForUser(id, session.uid);
+          const ip = detalle?.remote.ipv4[0] ?? "";
+          if (typeof body.confirmacion !== "string" || body.confirmacion.trim() !== ip) {
+            return NextResponse.json({ ok: false, error: "confirmation_mismatch" }, { status: 422 });
+          }
+          await reinstallVps(vpsId, os);
+          return NextResponse.json({ ok: true });
+        }
+
         default:
-          // Consola, reinstalación, snapshots y reseteo de root no aplican a los
-          // VPS de Proxmox por esta vía: pasan por soporte.
+          // La consola se sirve por su propia ruta (/api/cuenta/servidores/[id]/consola).
           return NextResponse.json({ ok: false, error: "unsupported" }, { status: 422 });
       }
     } catch (err) {
+      const status = err instanceof ProvisionerError ? err.status : undefined;
       console.error(
         "[servidores] fallo en acción proxmox",
         accionRaw,
         id,
-        err instanceof ProvisionerError ? `${err.status ?? ""} ${err.message}` : err,
+        err instanceof ProvisionerError ? `${status ?? ""} ${err.message}` : err,
       );
+      // 409/422/502 del provisioner se pasan como pistas útiles al cliente.
+      if (status === 409) return NextResponse.json({ ok: false, error: "busy" }, { status: 409 });
+      if (status === 422) return NextResponse.json({ ok: false, error: "unsupported" }, { status: 422 });
       return NextResponse.json(
         { ok: false, error: "Could not reach the provisioner." },
         { status: 502 },
