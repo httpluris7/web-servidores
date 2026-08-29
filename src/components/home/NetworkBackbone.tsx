@@ -1,6 +1,5 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { site } from "@/data/site";
 import { getRegions } from "@/data/products";
 import { Reveal } from "@/components/ui/Reveal";
 import { EuropeMap } from "./EuropeMap";
@@ -8,11 +7,13 @@ import { EuropeMap } from "./EuropeMap";
 export async function NetworkBackbone() {
   const t = await getTranslations("home");
   const regions = await getRegions();
+  // Capacidades reales (mismas que anuncia el resto de la web), sin cifras de
+  // red inventadas (peers, capacidad total, ranking IXP).
   const miniStats = [
-    { value: `${site.network.peers}+`, label: t("networkBackbone.stats.peers") },
-    { value: `${site.network.capacityTbps} Tbps`, label: t("networkBackbone.stats.capacity") },
-    { value: site.network.rankingNote, label: t("networkBackbone.stats.ranking") },
-    { value: `${site.network.portMaxGbps} Gbps`, label: t("networkBackbone.stats.maxPort") },
+    { value: "10 Gbps", label: t("networkBackbone.stats.uplink") },
+    { value: "NVMe Gen4", label: t("networkBackbone.stats.storage") },
+    { value: "DDoS", label: t("networkBackbone.stats.ddos") },
+    { value: "60 s", label: t("networkBackbone.stats.provisioning") },
   ];
   return (
     <section className="border-y border-[var(--color-line)] bg-[var(--color-bg-raised)]">

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { site } from "@/data/site";
 import { getRegions } from "@/data/products";
 import { PageHero } from "@/components/ui/PageHero";
 import { EuropeMap } from "@/components/home/EuropeMap";
@@ -17,14 +16,9 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "pages" });
   return {
     title: t("red.metaTitle"),
-    description: t("red.metaDescription", {
-      peers: site.network.peers,
-      capacity: site.network.capacityTbps,
-    }),
+    description: t("red.metaDescription"),
   };
 }
-
-const peeringPoints = ["DE-CIX Frankfurt", "AMS-IX Amsterdam", "LINX London", "ESPANIX Madrid"];
 
 export default async function NetworkPage({
   params,
@@ -37,9 +31,10 @@ export default async function NetworkPage({
   const regions = await getRegions(locale);
 
   const bigStats = [
-    { v: `${site.network.peers}+`, l: t("red.stats.peers") },
-    { v: `${site.network.capacityTbps} Tbps`, l: t("red.stats.capacity") },
-    { v: `${site.network.portMaxGbps} Gbps`, l: t("red.stats.port") },
+    { v: "10 Gbps", l: t("red.stats.uplink") },
+    { v: "NVMe Gen4", l: t("red.stats.storage") },
+    { v: "DDoS", l: t("red.stats.ddos") },
+    { v: "60 s", l: t("red.stats.provisioning") },
   ];
 
   const commitments = [
@@ -86,14 +81,6 @@ export default async function NetworkPage({
             title={t("red.coverageTitle")}
             description={t("red.coverageDescription")}
           />
-          <ul className="mt-8 space-y-3">
-            {peeringPoints.map((p) => (
-              <li key={p} className="flex items-center gap-3 font-mono text-sm text-[var(--color-fg-muted)]">
-                <span className="text-[var(--color-accent)]">▸</span>
-                {p}
-              </li>
-            ))}
-          </ul>
           <div className="mt-8 flex flex-wrap gap-2">
             {regions.map((r) => (
               <span

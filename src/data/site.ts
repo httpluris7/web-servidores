@@ -13,7 +13,7 @@ export const site = {
   url: "https://viahost.top",
   tagline: "European infrastructure deployed in 60 seconds.",
   description:
-    "VPS hosting, dedicated servers and DDoS mitigation on our own network across Europe. 60-second provisioning, NVMe Gen4 and 10 Gbps uplinks.",
+    "VPS hosting, dedicated servers and DDoS mitigation on European infrastructure. 60-second provisioning, NVMe Gen4 and 10 Gbps uplinks.",
   locale: "en",
   accent: "#00E5A0",
 
@@ -63,14 +63,6 @@ export const site = {
 
   // Métodos de pago mostrados en el footer (texto estilizado, sin logos con licencia).
   paymentMethods: ["Bank transfer", "SEPA", "Visa", "Mastercard", "PayPal", "Crypto"], // TODO: confirmar
-
-  // Red / backbone.
-  network: {
-    peers: 320, // TODO: nº real de peers
-    capacityTbps: 12, // TODO: capacidad total de red en Tbps
-    portMaxGbps: 100, // TODO: puerto máximo por servidor (Gbps)
-    rankingNote: "Top 50 IXP Europe", // TODO: ranking real si aplica
-  },
 
   // Mitigación DDoS.
   ddos: {

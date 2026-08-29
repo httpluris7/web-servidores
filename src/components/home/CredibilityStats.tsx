@@ -4,7 +4,7 @@ import { Counter } from "@/components/ui/Counter";
 import { Reveal } from "@/components/ui/Reveal";
 
 const stats = [
-  { to: site.network.peers, suffix: "+" },
+  { to: 60, suffix: " s" },
   { to: 10, suffix: " Gbps" },
   { to: site.ddos.mitigationTbps, suffix: " Tbps" },
 ];

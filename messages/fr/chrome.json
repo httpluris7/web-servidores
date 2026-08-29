@@ -1,7 +1,7 @@
 {
   "meta": {
     "tagline": "Infrastructure européenne déployée en 60 secondes.",
-    "description": "Hébergement VPS, serveurs dédiés et mitigation DDoS sur notre propre réseau à travers l'Europe. Provisionnement en 60 secondes, NVMe Gen4 et liens à 10 Gbps."
+    "description": "Hébergement VPS, serveurs dédiés et mitigation DDoS sur une infrastructure européenne. Provisionnement en 60 secondes, NVMe Gen4 et liens 10 Gbps."
   },
   "common": {
     "skipToContent": "Aller au contenu",
@@ -63,7 +63,7 @@
     "ddosProtection": "Protection DDoS",
     "serviceStatus": "État du service",
     "supportCenter": "Centre d'assistance",
-    "backbonePeering": "Backbone et peering",
+    "backbonePeering": "Réseau",
     "useCases": "Cas d'usage",
     "aboutUs": "À propos",
     "contact": "Contact",

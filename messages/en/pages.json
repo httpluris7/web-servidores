@@ -10,9 +10,18 @@
       "description": "Real people on the other side, 24/7. Reach us through the form or directly via the channel that fits best.",
       "directChannels": "Direct channels",
       "channels": {
-        "sales": { "label": "Sales", "note": "Quotes and custom configurations" },
-        "support": { "label": "Support", "note": "Customers with active service" },
-        "abuse": { "label": "Abuse", "note": "Misuse reports" }
+        "sales": {
+          "label": "Sales",
+          "note": "Quotes and custom configurations"
+        },
+        "support": {
+          "label": "Support",
+          "note": "Customers with active service"
+        },
+        "abuse": {
+          "label": "Abuse",
+          "note": "Misuse reports"
+        }
       },
       "serviceStatus": "Service status",
       "serviceStatusNote": "Check incidents and maintenance in real time.",
@@ -27,28 +36,53 @@
       "titleSuffix": " you need it.",
       "description": "On-call engineering 24/7 with an average response under 10 minutes on incidents. Start here.",
       "quickLinks": {
-        "status": { "title": "Service status", "desc": "Incidents and maintenance in real time." },
-        "request": { "title": "Open a request", "desc": "Sales, technical support or abuse." },
-        "deploy": { "title": "Deploy a server", "desc": "Pick a plan and deploy in 60 s." }
+        "status": {
+          "title": "Service status",
+          "desc": "Incidents and maintenance in real time."
+        },
+        "request": {
+          "title": "Open a request",
+          "desc": "Sales, technical support or abuse."
+        },
+        "deploy": {
+          "title": "Deploy a server",
+          "desc": "Pick a plan and deploy in 60 s."
+        }
       },
       "docsKicker": "Documentation",
       "docsTitle": "Browse by category.",
       "categories": {
         "gettingStarted": {
           "title": "Getting started",
-          "items": ["SSH access", "Reinstall the system", "Keys and users"]
+          "items": [
+            "SSH access",
+            "Reinstall the system",
+            "Keys and users"
+          ]
         },
         "networkDns": {
           "title": "Network and DNS",
-          "items": ["IPs and rDNS", "Point your domain", "Reverse proxy"]
+          "items": [
+            "IPs and rDNS",
+            "Point your domain",
+            "Reverse proxy"
+          ]
         },
         "security": {
           "title": "Security",
-          "items": ["DDoS protection", "Firewall rules", "Best practices"]
+          "items": [
+            "DDoS protection",
+            "Firewall rules",
+            "Best practices"
+          ]
         },
         "billing": {
           "title": "Billing",
-          "items": ["Payment methods", "Change plan", "Cancel service"]
+          "items": [
+            "Payment methods",
+            "Change plan",
+            "Cancel service"
+          ]
         }
       },
       "faqKicker": "Frequently asked questions",
@@ -81,22 +115,22 @@
       "demoData": "Demo data · pending connection to real monitoring."
     },
     "red": {
-      "metaTitle": "Network and backbone",
-      "metaDescription": "Our own network with {peers}+ peers and {capacity} Tbps of capacity. Direct peering at Europe's leading IXPs.",
-      "kickerSuffix": "our own backbone",
-      "titlePrefix": "A network we ",
-      "titleAccent": "control",
-      "titleSuffix": ", end to end.",
-      "description": "We operate our own autonomous system with direct peering at key European exchange points. Shorter routes, lower latency and total predictability.",
+      "metaTitle": "Network",
+      "metaDescription": "European infrastructure with low-latency routing, 10 Gbps uplinks and DDoS mitigation included.",
+      "kickerSuffix": "European connectivity",
+      "titlePrefix": "A network built for ",
+      "titleAccent": "low latency",
+      "titleSuffix": ".",
+      "description": "We connect our European locations with routes optimized to reduce latency, 10 Gbps uplinks and DDoS mitigation included.",
       "stats": {
-        "asn": "Autonomous system",
-        "peers": "Peers",
-        "capacity": "Network capacity",
-        "port": "Maximum port"
+        "uplink": "Per-server uplink",
+        "storage": "Storage",
+        "ddos": "Mitigation included",
+        "provisioning": "Provisioning"
       },
       "coverageKicker": "Coverage",
       "coverageTitle": "Distributed presence across Europe.",
-      "coverageDescription": "Each point is a region with local compute and mitigation. The lines represent the interconnection of our backbone.",
+      "coverageDescription": "Each point is a region with local compute and mitigation. The lines represent the routes between our locations.",
       "commitmentsKicker": "Commitments",
       "commitmentsTitle": "What we guarantee.",
       "commitments": {
@@ -106,14 +140,14 @@
         },
         "optimizedRoutes": {
           "t": "Optimized routes",
-          "d": "Direct peering instead of transit whenever a route exists. Fewer hops, lower latency."
+          "d": "Routes optimized to reduce hops and latency between our locations."
         },
         "edgeMitigation": {
           "t": "Edge mitigation",
           "d": "Attack traffic is filtered before it enters the network, not on your server."
         }
       },
-      "ctaTitle": "Deploy on our network"
+      "ctaTitle": "Deploy in Europe"
     },
     "casosDeUso": {
       "metaTitle": "Use cases",
@@ -213,12 +247,12 @@
     },
     "sobreNosotros": {
       "metaTitle": "About us",
-      "metaDescription": "{brand} is a European hosting provider with its own network, focused on instant provisioning, hardware with no overselling and DDoS mitigation included.",
+      "metaDescription": "{brand} is a European hosting provider with its own infrastructure, focused on instant provisioning, hardware with no overselling and DDoS mitigation included.",
       "kicker": "About us",
       "titlePrefix": "European infrastructure, ",
       "titleAccent": "no fine print",
       "titleSuffix": ".",
-      "description": "{brand} was born to make deploying a server as fast as it should be: seconds, not days. Our own network, real hardware and a single promise kept every time.",
+      "description": "{brand} was born to make deploying a server as fast as it should be: seconds, not days. European infrastructure, real hardware and a single promise kept every time.",
       "principlesKicker": "How we work",
       "principlesTitle": "Four principles, no exceptions.",
       "principles": [
@@ -231,8 +265,8 @@
           "d": "From provisioning to mitigation, the system acts on its own. Human support is reserved for what matters."
         },
         {
-          "t": "Our own network",
-          "d": "We operate our own network with direct peering; we don't resell anyone else's network."
+          "t": "Our own infrastructure",
+          "d": "We run our own infrastructure in Europe, with a low-latency network and DDoS mitigation included."
         },
         {
           "t": "Honest pricing",

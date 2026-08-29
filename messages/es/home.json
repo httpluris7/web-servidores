@@ -5,15 +5,15 @@
       "titleLine1": "Tu servidor,",
       "titleIn": "en",
       "title60s": "60 segundos",
-      "description": "VPS, bare metal y mitigación DDoS sobre nuestra propia red. NVMe Gen4, uplinks de 10 Gbps y presencia en regiones europeas estratégicas. Sin esperas, sin sorpresas.",
+      "description": "VPS, bare metal y mitigación DDoS en infraestructura europea. NVMe Gen4, uplinks de 10 Gbps y presencia en regiones estratégicas. Sin esperas, sin sorpresas.",
       "deploy": "Despliega en 60 segundos →",
       "viewPricing": "Ver precios",
       "scroll": "Scroll"
     },
     "credibilityStats": {
       "0": {
-        "label": "Peers de red",
-        "context": "Interconexión directa en los principales IXP europeos para una latencia mínima."
+        "label": "Aprovisionamiento",
+        "context": "De pago a servidor en marcha en menos de un minuto, sin colas."
       },
       "1": {
         "label": "Por servidor",
@@ -25,10 +25,18 @@
       }
     },
     "liveMetrics": {
-      "0": { "label": "Tráfico de red" },
-      "1": { "label": "Paquetes mitigados" },
-      "2": { "label": "Servidores en línea" },
-      "3": { "label": "Uptime 90 d" }
+      "0": {
+        "label": "Tráfico de red"
+      },
+      "1": {
+        "label": "Paquetes mitigados"
+      },
+      "2": {
+        "label": "Servidores en línea"
+      },
+      "3": {
+        "label": "Uptime 90 d"
+      }
     },
     "provisionTerminal": {
       "kicker": "Aprovisionamiento automatizado",
@@ -36,11 +44,26 @@
       "description": "Sin tickets, sin colas, sin intervención humana. El sistema asigna, instala y conecta tu servidor mientras lees esta frase.",
       "terminalTitle": "viahost@deploy — provision",
       "lines": {
-        "0": { "cmd": "allocating slot", "ok": "ok" },
-        "1": { "cmd": "imaging ubuntu-24.04", "ok": "ok" },
-        "2": { "cmd": "attaching uplink 10G", "ok": "ok" },
-        "3": { "cmd": "applying ddos shield", "ok": "ok" },
-        "4": { "cmd": "server online", "ok": "54s" }
+        "0": {
+          "cmd": "allocating slot",
+          "ok": "ok"
+        },
+        "1": {
+          "cmd": "imaging ubuntu-24.04",
+          "ok": "ok"
+        },
+        "2": {
+          "cmd": "attaching uplink 10G",
+          "ok": "ok"
+        },
+        "3": {
+          "cmd": "applying ddos shield",
+          "ok": "ok"
+        },
+        "4": {
+          "cmd": "server online",
+          "ok": "54s"
+        }
       },
       "footnote": "↳ Esto es lo que ocurre <accent>54 segundos</accent> después de pagar."
     },
@@ -81,7 +104,7 @@
         "tagline": "Bare metal AMD en Ámsterdam.",
         "specs": {
           "0": "EPYC hasta 192 threads",
-          "1": "Peering directo en AMS-IX",
+          "1": "Red de 10 Gbps",
           "2": "Hasta 360 TB de almacenamiento"
         }
       },
@@ -90,7 +113,7 @@
         "tagline": "Bare metal AMD en Ámsterdam.",
         "specs": {
           "0": "EPYC hasta 192 threads",
-          "1": "Peering directo en AMS-IX",
+          "1": "Red de 10 Gbps",
           "2": "Hasta 360 TB de almacenamiento"
         }
       }
@@ -99,15 +122,15 @@
       "label": "Red europea de ViaHost"
     },
     "networkBackbone": {
-      "title": "Nuestra propia red, no alquilada.",
-      "description": "Operamos nuestro propio sistema autónomo con peering directo en los principales IXP europeos. Menos saltos, menor latencia y rutas que controlamos de extremo a extremo.",
+      "title": "Infraestructura europea, sin sorpresas.",
+      "description": "Servidores en ubicaciones europeas estratégicas, con rutas de baja latencia, uplinks de 10 Gbps y mitigación DDoS incluida.",
       "stats": {
-        "peers": "Peers",
-        "capacity": "Capacidad",
-        "ranking": "Ranking IXP",
-        "maxPort": "Puerto máx."
+        "uplink": "Uplink por servidor",
+        "storage": "Almacenamiento",
+        "ddos": "Mitigación incluida",
+        "provisioning": "Aprovisionamiento"
       },
-      "viewNetwork": "Ver red y backbone →"
+      "viewNetwork": "Ver la red →"
     },
     "whyUs": {
       "kicker": "Por qué ViaHost",
@@ -131,7 +154,7 @@
       },
       "4": {
         "label": "Regiones en la UE",
-        "body": "Presencia distribuida por Europa con peering directo en los principales IXP."
+        "body": "Presencia en regiones europeas estratégicas, cerca de tus usuarios."
       },
       "5": {
         "label": "Soporte humano",
@@ -202,10 +225,18 @@
     "trust": {
       "kicker": "/10 — Confianza",
       "partnersLabel": "Hardware y red de primer nivel",
-      "0": { "label": "Servidores activos" },
-      "1": { "label": "SLA de uptime" },
-      "2": { "label": "Regiones en la UE" },
-      "3": { "label": "Soporte" }
+      "0": {
+        "label": "Servidores activos"
+      },
+      "1": {
+        "label": "SLA de uptime"
+      },
+      "2": {
+        "label": "Regiones en la UE"
+      },
+      "3": {
+        "label": "Soporte"
+      }
     },
     "finalCta": {
       "kicker": "/11 — Empieza ahora",

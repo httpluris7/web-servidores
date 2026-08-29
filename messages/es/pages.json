@@ -10,9 +10,18 @@
       "description": "Personas reales al otro lado, 24/7. Contáctanos a través del formulario o directamente por el canal que mejor te encaje.",
       "directChannels": "Canales directos",
       "channels": {
-        "sales": { "label": "Ventas", "note": "Presupuestos y configuraciones a medida" },
-        "support": { "label": "Soporte", "note": "Clientes con servicio activo" },
-        "abuse": { "label": "Abuso", "note": "Reportes de uso indebido" }
+        "sales": {
+          "label": "Ventas",
+          "note": "Presupuestos y configuraciones a medida"
+        },
+        "support": {
+          "label": "Soporte",
+          "note": "Clientes con servicio activo"
+        },
+        "abuse": {
+          "label": "Abuso",
+          "note": "Reportes de uso indebido"
+        }
       },
       "serviceStatus": "Estado del servicio",
       "serviceStatusNote": "Consulta incidencias y mantenimientos en tiempo real.",
@@ -27,28 +36,53 @@
       "titleSuffix": " la necesitas.",
       "description": "Ingeniería de guardia 24/7 con una respuesta media de menos de 10 minutos ante incidencias. Empieza aquí.",
       "quickLinks": {
-        "status": { "title": "Estado del servicio", "desc": "Incidencias y mantenimientos en tiempo real." },
-        "request": { "title": "Abrir una solicitud", "desc": "Ventas, soporte técnico o abuso." },
-        "deploy": { "title": "Desplegar un servidor", "desc": "Elige un plan y despliega en 60 s." }
+        "status": {
+          "title": "Estado del servicio",
+          "desc": "Incidencias y mantenimientos en tiempo real."
+        },
+        "request": {
+          "title": "Abrir una solicitud",
+          "desc": "Ventas, soporte técnico o abuso."
+        },
+        "deploy": {
+          "title": "Desplegar un servidor",
+          "desc": "Elige un plan y despliega en 60 s."
+        }
       },
       "docsKicker": "Documentación",
       "docsTitle": "Explora por categoría.",
       "categories": {
         "gettingStarted": {
           "title": "Primeros pasos",
-          "items": ["Acceso SSH", "Reinstalar el sistema", "Claves y usuarios"]
+          "items": [
+            "Acceso SSH",
+            "Reinstalar el sistema",
+            "Claves y usuarios"
+          ]
         },
         "networkDns": {
           "title": "Red y DNS",
-          "items": ["IPs y rDNS", "Apunta tu dominio", "Proxy inverso"]
+          "items": [
+            "IPs y rDNS",
+            "Apunta tu dominio",
+            "Proxy inverso"
+          ]
         },
         "security": {
           "title": "Seguridad",
-          "items": ["Protección DDoS", "Reglas de firewall", "Buenas prácticas"]
+          "items": [
+            "Protección DDoS",
+            "Reglas de firewall",
+            "Buenas prácticas"
+          ]
         },
         "billing": {
           "title": "Facturación",
-          "items": ["Métodos de pago", "Cambiar de plan", "Cancelar servicio"]
+          "items": [
+            "Métodos de pago",
+            "Cambiar de plan",
+            "Cancelar servicio"
+          ]
         }
       },
       "faqKicker": "Preguntas frecuentes",
@@ -81,22 +115,22 @@
       "demoData": "Datos de demostración · pendiente de conexión con monitorización real."
     },
     "red": {
-      "metaTitle": "Red y backbone",
-      "metaDescription": "Red propia con {peers}+ peers y {capacity} Tbps de capacidad. Peering directo en los principales IXP de Europa.",
-      "kickerSuffix": "nuestro propio backbone",
-      "titlePrefix": "Una red que ",
-      "titleAccent": "controlamos",
-      "titleSuffix": ", de extremo a extremo.",
-      "description": "Operamos nuestro propio sistema autónomo con peering directo en los puntos de intercambio clave de Europa. Rutas más cortas, menor latencia y total previsibilidad.",
+      "metaTitle": "Red",
+      "metaDescription": "Infraestructura europea con rutas de baja latencia, uplinks de 10 Gbps y mitigación DDoS incluida.",
+      "kickerSuffix": "conectividad europea",
+      "titlePrefix": "Una red pensada para la ",
+      "titleAccent": "baja latencia",
+      "titleSuffix": ".",
+      "description": "Conectamos nuestras ubicaciones europeas con rutas optimizadas para reducir la latencia, uplinks de 10 Gbps y mitigación DDoS incluida.",
       "stats": {
-        "asn": "Sistema autónomo",
-        "peers": "Peers",
-        "capacity": "Capacidad de red",
-        "port": "Puerto máximo"
+        "uplink": "Uplink por servidor",
+        "storage": "Almacenamiento",
+        "ddos": "Mitigación incluida",
+        "provisioning": "Aprovisionamiento"
       },
       "coverageKicker": "Cobertura",
       "coverageTitle": "Presencia distribuida por toda Europa.",
-      "coverageDescription": "Cada punto es una región con cómputo y mitigación locales. Las líneas representan la interconexión de nuestro backbone.",
+      "coverageDescription": "Cada punto es una región con cómputo y mitigación locales. Las líneas representan las rutas entre nuestras ubicaciones.",
       "commitmentsKicker": "Compromisos",
       "commitmentsTitle": "Lo que garantizamos.",
       "commitments": {
@@ -106,14 +140,14 @@
         },
         "optimizedRoutes": {
           "t": "Rutas optimizadas",
-          "d": "Peering directo en lugar de tránsito siempre que exista ruta. Menos saltos, menor latencia."
+          "d": "Rutas optimizadas para reducir saltos y latencia entre nuestras ubicaciones."
         },
         "edgeMitigation": {
           "t": "Mitigación en el edge",
           "d": "El tráfico de ataque se filtra antes de entrar en la red, no en tu servidor."
         }
       },
-      "ctaTitle": "Despliega en nuestra red"
+      "ctaTitle": "Despliega en Europa"
     },
     "casosDeUso": {
       "metaTitle": "Casos de uso",
@@ -213,12 +247,12 @@
     },
     "sobreNosotros": {
       "metaTitle": "Sobre nosotros",
-      "metaDescription": "{brand} es un proveedor europeo de hosting con red propia, centrado en aprovisionamiento instantáneo, hardware sin overselling y mitigación DDoS incluida.",
+      "metaDescription": "{brand} es un proveedor europeo de hosting con infraestructura propia, centrado en aprovisionamiento instantáneo, hardware sin overselling y mitigación DDoS incluida.",
       "kicker": "Sobre nosotros",
       "titlePrefix": "Infraestructura europea, ",
       "titleAccent": "sin letra pequeña",
       "titleSuffix": ".",
-      "description": "{brand} nació para hacer que desplegar un servidor sea tan rápido como debería: segundos, no días. Red propia, hardware real y una única promesa cumplida siempre.",
+      "description": "{brand} nació para hacer que desplegar un servidor sea tan rápido como debería: segundos, no días. Infraestructura europea, hardware real y una única promesa cumplida siempre.",
       "principlesKicker": "Cómo trabajamos",
       "principlesTitle": "Cuatro principios, sin excepciones.",
       "principles": [
@@ -231,8 +265,8 @@
           "d": "Desde el aprovisionamiento hasta la mitigación, el sistema actúa por sí solo. El soporte humano se reserva para lo que importa."
         },
         {
-          "t": "Red propia",
-          "d": "Operamos nuestra propia red con peering directo; no revendemos la red de nadie más."
+          "t": "Infraestructura propia",
+          "d": "Operamos nuestra propia infraestructura en Europa, con red de baja latencia y mitigación DDoS incluida."
         },
         {
           "t": "Precios honestos",
