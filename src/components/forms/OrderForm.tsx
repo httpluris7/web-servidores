@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { Plan, Region } from "@/data/products";
 import { site } from "@/data/site";
-import { OS_OPTIONS, OS_DEFAULT } from "@/lib/provisioner/os";
+import { OS_OFERTABLES, OS_DEFAULT } from "@/lib/provisioner/os";
 import { defaultVpsRegionSlug } from "@/lib/regions";
 import { eur } from "@/lib/utils";
 import { Price } from "@/components/ui/Price";
@@ -206,7 +206,7 @@ export function OrderForm({
                     value={values.os}
                     onChange={(e) => setValues((v) => ({ ...v, os: e.target.value }))}
                   >
-                    {OS_OPTIONS.map((o) => (
+                    {OS_OFERTABLES.map((o) => (
                       <option key={o.slug} value={o.slug}>
                         {o.label}
                       </option>

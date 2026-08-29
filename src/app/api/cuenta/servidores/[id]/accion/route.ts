@@ -14,7 +14,7 @@ import {
   deleteVpsSnapshot,
   ProvisionerError,
 } from "@/lib/provisioner/client";
-import { isKnownOs } from "@/lib/provisioner/os";
+import { esOfertable } from "@/lib/provisioner/os";
 import {
   createSnapshot,
   deleteSnapshot,
@@ -167,7 +167,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
         // ---- Reinstalación (destructivo, confirmación por IP) ----
         case "reinstalar": {
           const os = typeof body.os === "string" ? body.os : "";
-          if (!isKnownOs(os)) {
+          if (!esOfertable(os)) {
             return NextResponse.json({ ok: false, error: "Invalid OS." }, { status: 422 });
           }
           // Confirmación explícita: el cliente teclea la IP del servidor. Borra

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { ProviderServer } from "@/lib/servidores/v4vm";
-import { OS_OPTIONS } from "@/lib/provisioner/os";
+import { OS_OFERTABLES } from "@/lib/provisioner/os";
 import { ServerStatusBadge } from "@/components/ui/ServerStatusBadge";
 
 /** Cada cuánto se relee el estado mientras el VPS está trabajando. */
@@ -36,7 +36,7 @@ export function ProxmoxServerPanel({
 
   // Reinstalación
   const [reinstallOpen, setReinstallOpen] = useState(false);
-  const [osElegido, setOsElegido] = useState<string>(OS_OPTIONS[0]?.slug ?? "");
+  const [osElegido, setOsElegido] = useState<string>(OS_OFERTABLES[0]?.slug ?? "");
   const [confirmacion, setConfirmacion] = useState("");
 
   // Snapshots
@@ -360,7 +360,7 @@ export function ProxmoxServerPanel({
                 onChange={(e) => setOsElegido(e.target.value)}
                 className="mt-2 w-full min-w-0 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-2.5 text-sm focus:border-[var(--color-accent)] focus:outline-none"
               >
-                {OS_OPTIONS.map((o) => (
+                {OS_OFERTABLES.map((o) => (
                   <option key={o.slug} value={o.slug}>
                     {o.label}
                   </option>
