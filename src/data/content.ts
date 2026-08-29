@@ -70,7 +70,7 @@ export const useCases: UseCase[] = [
       "ECC RAM on bare metal",
       "Low-latency private network",
     ],
-    href: "/dedicados/francia",
+    href: "/dedicados/holanda",
   },
   {
     n: "/03",

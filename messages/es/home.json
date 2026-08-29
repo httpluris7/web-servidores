@@ -77,12 +77,12 @@
         }
       },
       "1": {
-        "title": "Servidores Dedicados Francia",
-        "tagline": "Bare metal AMD en París.",
+        "title": "Servidores Dedicados Países Bajos",
+        "tagline": "Bare metal AMD en Ámsterdam.",
         "specs": {
           "0": "EPYC hasta 192 threads",
-          "1": "Uplinks de 1 y 10 Gbps",
-          "2": "IPMI/KVM out-of-band"
+          "1": "Peering directo en AMS-IX",
+          "2": "Hasta 360 TB de almacenamiento"
         }
       },
       "2": {

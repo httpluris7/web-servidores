@@ -77,12 +77,12 @@
         }
       },
       "1": {
-        "title": "Dedicated Servers France",
-        "tagline": "AMD bare metal in Paris.",
+        "title": "Dedicated Servers Netherlands",
+        "tagline": "AMD bare metal in Amsterdam.",
         "specs": {
           "0": "EPYC up to 192 threads",
-          "1": "1 and 10 Gbps uplinks",
-          "2": "Out-of-band IPMI/KVM"
+          "1": "Direct peering at AMS-IX",
+          "2": "Up to 360 TB of storage"
         }
       },
       "2": {

@@ -51,7 +51,9 @@ export function catalogoInicial(): Catalogo {
           es: "🇫🇷 Paris · bare metal",
           fr: "🇫🇷 Paris · bare metal",
         },
-        visible: true,
+        // Oculta hasta tener presencia real en Francia (sin datacenter propio no
+        // hay bare metal que servir), en línea con la región VPS de Francia.
+        visible: false,
         orden: 1,
       },
       {

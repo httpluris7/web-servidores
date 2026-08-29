@@ -29,7 +29,7 @@ export const services: ServiceStatus[] = [
 
 /** Estado por región (alineado con los slugs de products.ts). */
 export const regionStatus: Record<string, StatusLevel> = {
-  francia: "operational",
+  holanda: "operational",
 };
 
 /** Histórico reciente de incidencias (placeholder). */
@@ -38,9 +38,9 @@ export type Incident = { date: string; title: string; resolved: boolean; detail:
 export const incidents: Incident[] = [
   {
     date: "2026-06-08",
-    title: "Elevated latency in Paris",
-    resolved: false,
-    detail: "We are investigating an increase in latency on the Paris node. No impact on availability.",
+    title: "Elevated latency in Amsterdam",
+    resolved: true,
+    detail: "A transient latency increase on the Amsterdam node was resolved. No impact on availability.",
   },
   {
     date: "2026-06-02",
