@@ -14,6 +14,7 @@
  */
 
 import { deployUrl } from "./site";
+import { defaultVpsRegionSlug } from "@/lib/regions";
 import {
   readCatalogo,
   texto,
@@ -286,5 +287,7 @@ export type CartCatalog = {
 
 export async function getCartCatalog(locale = "en"): Promise<CartCatalog> {
   const { allPlans, regions } = await getCatalog(locale);
-  return { plans: allPlans, defaultRegion: regions[0]?.slug ?? null };
+  // Región preseleccionada al añadir un VPS: la primera provisionable, nunca una
+  // región sin Proxmox que dejaría el pedido sin aprovisionar (ver `regions.ts`).
+  return { plans: allPlans, defaultRegion: regions.length ? defaultVpsRegionSlug(regions) : null };
 }

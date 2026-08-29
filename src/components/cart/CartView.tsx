@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useCart } from "@/lib/cart";
 import type { Region } from "@/data/products";
+import { defaultVpsRegionSlug } from "@/lib/regions";
 import { site } from "@/data/site";
 import { eur } from "@/lib/utils";
 import { Price, PriceSum } from "@/components/ui/Price";
@@ -203,7 +204,7 @@ export function CartView({
                 <label className="flex items-center gap-2 text-sm">
                   <span className="mono-label text-[0.6rem]">{t("cartView.region")}</span>
                   <select
-                    value={l.region ?? regions[0]?.slug}
+                    value={l.region ?? defaultVpsRegionSlug(regions)}
                     onChange={(e) => setRegion(l.planId, e.target.value)}
                     className="appearance-none rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-1.5 text-sm focus:border-[var(--color-accent)] focus:outline-none"
                   >

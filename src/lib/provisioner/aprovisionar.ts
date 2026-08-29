@@ -1,6 +1,8 @@
 import { provision, isConfigured, ProvisionerError } from "./client";
 import { intentsDeFactura, marcarProvisionado } from "./intents";
 import { registrarDespliegue } from "./despliegues";
+import { getInvoiceById, appendInvoiceNota } from "@/lib/facturas";
+import { getCatalog } from "@/data/products";
 
 /**
  * Dispara el aprovisionamiento de las máquinas de una factura recién pagada.
@@ -65,4 +67,52 @@ export async function aprovisionarFacturaPagada(invoiceId: string): Promise<void
       );
     }
   }
+
+  // Red de seguridad: una factura VPS pagada NUNCA debe quedarse sin máquina en
+  // silencio (fue lo que pasó con el carrito antes de conectarlo). Si alguna
+  // línea VPS no ha quedado aprovisionada, se marca en la factura para que el
+  // panel lo vea y se atienda a mano. Best-effort: no propaga.
+  try {
+    await avisarVpsSinAprovisionar(invoiceId);
+  } catch (err) {
+    console.error("[aprovisionar] no se pudo comprobar VPS sin aprovisionar en", invoiceId, err);
+  }
+}
+
+/**
+ * Comprueba si la factura tiene líneas VPS que NO han quedado aprovisionadas
+ * (región sin Proxmox, compra por un camino que no registró intención, o qty>1)
+ * y, si las hay, lo deja anotado en la propia factura + log de error.
+ */
+async function avisarVpsSinAprovisionar(invoiceId: string): Promise<void> {
+  const inv = await getInvoiceById(invoiceId);
+  if (!inv) return;
+
+  const { allPlans } = await getCatalog();
+  const esVps = (productId: string | null) =>
+    !!productId && allPlans.find((p) => p.plan.id === productId)?.lineTipo === "vps";
+  const vpsLineas = inv.lineas.filter((l) => esVps(l.productId));
+  if (vpsLineas.length === 0) return;
+
+  const provisionadas = new Set(
+    (await intentsDeFactura(invoiceId))
+      .filter((it) => it.provisionOrderId != null)
+      .map((it) => it.planSlug),
+  );
+
+  const sinMaquina = vpsLineas.filter((l) => !provisionadas.has(l.productId as string));
+  const conExtras = vpsLineas.filter(
+    (l) => l.cantidad > 1 && provisionadas.has(l.productId as string),
+  );
+  if (sinMaquina.length === 0 && conExtras.length === 0) return;
+
+  const detalle = [
+    ...sinMaquina.map((l) => l.concepto),
+    ...conExtras.map((l) => `${l.concepto} (×${l.cantidad}, solo 1 automática)`),
+  ].join(", ");
+
+  console.error(
+    `[aprovisionar] ⚠ factura ${invoiceId} pagada con VPS SIN aprovisionar automáticamente: ${detalle}`,
+  );
+  await appendInvoiceNota(inv.id, `⚠ Aprovisionamiento manual pendiente: ${detalle}`);
 }

@@ -6,6 +6,8 @@ import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
 import { findDuplicateOrder } from "@/lib/payments/duplicados";
+import { registrarIntent } from "@/lib/provisioner/intents";
+import { OS_DEFAULT } from "@/lib/provisioner/os";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -153,6 +155,38 @@ export async function POST(req: Request) {
       notas: `Order ${orderId}`,
       duplicado,
     });
+
+    // Money-path (igual que /api/pedidos): por cada línea VPS en una región
+    // conectada a un Proxmox dejamos atada a la factura la intención de
+    // aprovisionar; el webhook (tarjeta) o el panel (transferencia) la ejecutan
+    // al pasar a pagada. El carrito no pide SO/hostname: SO por defecto y el
+    // provisioner genera el hostname. Best-effort: no romper el checkout.
+    for (const v of validated) {
+      const located = allPlans.find((p) => p.plan.id === v.planId);
+      if (located?.lineTipo !== "vps" || !v.region) continue;
+      const locationSlug = regions.find((r) => r.slug === v.region)?.provisionLocation;
+      if (!locationSlug) continue;
+      if (v.qty > 1) {
+        // El modelo de intención es 1 máquina por (factura, plan): un qty>1 solo
+        // aprovisiona una automáticamente. La red de seguridad lo marca en la
+        // factura para atender las extra a mano.
+        console.warn(`[checkout] VPS con qty=${v.qty}; solo se aprovisiona 1 automáticamente:`, v.planId, "factura", invoice.id);
+      }
+      try {
+        await registrarIntent({
+          invoiceId: invoice.id,
+          planSlug: v.planId,
+          userId: user.id,
+          email: user.email,
+          locationSlug,
+          osSlug: OS_DEFAULT,
+          hostname: null,
+          idioma: locale?.startsWith("es") ? "es" : "en",
+        });
+      } catch (err) {
+        console.error("[checkout] no se pudo registrar la intención de aprovisionamiento", v.planId, err);
+      }
+    }
 
     return NextResponse.json({
       ok: true,

@@ -352,6 +352,22 @@ export async function setInvoicePayment(
   return updated;
 }
 
+/**
+ * Añade una nota a la factura. Idempotente por contenido: si la nota exacta ya
+ * está, no la duplica. Lo usa la red de seguridad del aprovisionamiento para
+ * dejar visible en el panel una factura VPS pagada que quedó sin máquina.
+ */
+export async function appendInvoiceNota(id: string, text: string): Promise<Invoice | null> {
+  const list = await readAll();
+  const current = list.find((i) => i.id === id);
+  if (!current) return null;
+  const prev = current.notas ?? "";
+  if (prev.includes(text)) return current;
+  const updated: Invoice = { ...current, notas: prev ? `${prev}\n${text}` : text };
+  await writeAll(list.map((i) => (i.id === id ? updated : i)));
+  return updated;
+}
+
 export async function deleteInvoice(id: string): Promise<boolean> {
   const list = await readAll();
   const next = list.filter((i) => i.id !== id);

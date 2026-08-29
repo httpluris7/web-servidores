@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import type { Plan, Region } from "@/data/products";
 import { site } from "@/data/site";
 import { OS_OPTIONS, OS_DEFAULT } from "@/lib/provisioner/os";
+import { defaultVpsRegionSlug } from "@/lib/regions";
 import { eur } from "@/lib/utils";
 import { Price } from "@/components/ui/Price";
 import { BankTransfer } from "@/components/ui/BankTransfer";
@@ -39,7 +40,8 @@ export function OrderForm({
   const [values, setValues] = useState({
     name: "",
     email: "",
-    region: regions?.[0]?.slug ?? "",
+    // Región provisionable por defecto (nunca una sin Proxmox: ver `regions.ts`).
+    region: regions ? defaultVpsRegionSlug(regions) : "",
     os: OS_DEFAULT,
     hostname: "",
   });
