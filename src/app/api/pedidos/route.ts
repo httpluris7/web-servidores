@@ -6,7 +6,7 @@ import { getSession } from "@/lib/session";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
 import { findDuplicateOrder } from "@/lib/payments/duplicados";
 import { registrarIntent } from "@/lib/provisioner/intents";
-import { OS_DEFAULT, esOfertable } from "@/lib/provisioner/os";
+import { OS_DEFAULT, esOfertableParaDisco, discoGbDeTexto } from "@/lib/provisioner/os";
 
 /** Hostname url/DNS-safe a partir de lo que teclee el cliente (o null si no da nada). */
 function saneaHostname(raw: string): string | null {
@@ -48,8 +48,6 @@ export async function POST(req: Request) {
   // reconduce al de por defecto en vez de tumbar el checkout); el hostname es
   // opcional (el provisioner genera uno si no llega).
   const osRaw = clean(body.os, 40);
-  // Solo SO ofertables (con plantilla); cualquier otro cae al de por defecto.
-  const osSlug = esOfertable(osRaw) ? osRaw : OS_DEFAULT;
   const hostname = saneaHostname(clean(body.hostname, 80));
 
   const errors: Record<string, string> = {};
@@ -63,6 +61,11 @@ export async function POST(req: Request) {
   if (Object.keys(errors).length > 0) {
     return NextResponse.json({ ok: false, errors }, { status: 422 });
   }
+
+  // SO acotado a los ofertables y que además quepan en el disco del plan (un
+  // slug raro o incompatible cae al de por defecto en vez de tumbar el checkout).
+  const planDisco = discoGbDeTexto(located!.plan.storage);
+  const osSlug = esOfertableParaDisco(osRaw, planDisco) ? osRaw : OS_DEFAULT;
 
   const regionName = regions.find((r) => r.slug === region)?.name ?? region;
   const lineas = [

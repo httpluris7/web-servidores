@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { Plan, Region } from "@/data/products";
 import { site } from "@/data/site";
-import { OS_OFERTABLES, OS_DEFAULT } from "@/lib/provisioner/os";
+import { ofertablesParaDisco, discoGbDeTexto, OS_DEFAULT } from "@/lib/provisioner/os";
 import { defaultVpsRegionSlug } from "@/lib/regions";
 import { eur } from "@/lib/utils";
 import { Price } from "@/components/ui/Price";
@@ -98,6 +98,8 @@ export function OrderForm({
 
   const selectedRegion = regions?.find((r) => r.slug === values.region);
   const regionName = selectedRegion?.name;
+  // SO que caben en el disco de este plan (p. ej. Win 11 exige 64 GB → fuera de Start).
+  const osDisponibles = ofertablesParaDisco(discoGbDeTexto(plan.storage));
   // Solo las regiones conectadas a un Proxmox se entregan al instante: ahí tiene
   // sentido elegir SO y hostname. En las demás el pedido se gestiona a mano.
   const provisionable = !!selectedRegion?.provisionLocation;
@@ -206,7 +208,7 @@ export function OrderForm({
                     value={values.os}
                     onChange={(e) => setValues((v) => ({ ...v, os: e.target.value }))}
                   >
-                    {OS_OFERTABLES.map((o) => (
+                    {osDisponibles.map((o) => (
                       <option key={o.slug} value={o.slug}>
                         {o.label}
                       </option>

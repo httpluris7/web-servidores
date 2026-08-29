@@ -14,7 +14,7 @@ import {
   deleteVpsSnapshot,
   ProvisionerError,
 } from "@/lib/provisioner/client";
-import { esOfertable } from "@/lib/provisioner/os";
+import { esOfertableParaDisco } from "@/lib/provisioner/os";
 import {
   createSnapshot,
   deleteSnapshot,
@@ -167,12 +167,14 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
         // ---- Reinstalación (destructivo, confirmación por IP) ----
         case "reinstalar": {
           const os = typeof body.os === "string" ? body.os : "";
-          if (!esOfertable(os)) {
+          const detalle = await getProxmoxServerForUser(id, session.uid);
+          // El SO debe estar ofertable y caber en el disco de ESTE servidor
+          // (p. ej. Win 11 exige 64 GB → no en un plan de 50 GB).
+          if (!esOfertableParaDisco(os, detalle?.remote.diskGb ?? null)) {
             return NextResponse.json({ ok: false, error: "Invalid OS." }, { status: 422 });
           }
           // Confirmación explícita: el cliente teclea la IP del servidor. Borra
           // todos los datos, así que no basta con un botón.
-          const detalle = await getProxmoxServerForUser(id, session.uid);
           const ip = detalle?.remote.ipv4[0] ?? "";
           if (typeof body.confirmacion !== "string" || body.confirmacion.trim() !== ip) {
             return NextResponse.json({ ok: false, error: "confirmation_mismatch" }, { status: 422 });
