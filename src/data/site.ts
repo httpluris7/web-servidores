@@ -66,7 +66,6 @@ export const site = {
 
   // Red / backbone.
   network: {
-    asn: "AS201234", // TODO: ASN real del cliente
     peers: 320, // TODO: nº real de peers
     capacityTbps: 12, // TODO: capacidad total de red en Tbps
     portMaxGbps: 100, // TODO: puerto máximo por servidor (Gbps)

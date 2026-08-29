@@ -82,8 +82,8 @@
     },
     "red": {
       "metaTitle": "Red y backbone",
-      "metaDescription": "Sistema autónomo {asn} con {peers}+ peers y {capacity} Tbps de capacidad. Peering directo en los principales IXP de Europa.",
-      "kickerSuffix": " · nuestro propio backbone",
+      "metaDescription": "Red propia con {peers}+ peers y {capacity} Tbps de capacidad. Peering directo en los principales IXP de Europa.",
+      "kickerSuffix": "nuestro propio backbone",
       "titlePrefix": "Una red que ",
       "titleAccent": "controlamos",
       "titleSuffix": ", de extremo a extremo.",
@@ -213,7 +213,7 @@
     },
     "sobreNosotros": {
       "metaTitle": "Sobre nosotros",
-      "metaDescription": "{brand} es un proveedor europeo de hosting con red propia ({asn}), centrado en aprovisionamiento instantáneo, hardware sin overselling y mitigación DDoS incluida.",
+      "metaDescription": "{brand} es un proveedor europeo de hosting con red propia, centrado en aprovisionamiento instantáneo, hardware sin overselling y mitigación DDoS incluida.",
       "kicker": "Sobre nosotros",
       "titlePrefix": "Infraestructura europea, ",
       "titleAccent": "sin letra pequeña",
@@ -232,7 +232,7 @@
         },
         {
           "t": "Red propia",
-          "d": "Operamos nuestro sistema autónomo {asn} y peering directo; no revendemos la red de nadie más."
+          "d": "Operamos nuestra propia red con peering directo; no revendemos la red de nadie más."
         },
         {
           "t": "Precios honestos",

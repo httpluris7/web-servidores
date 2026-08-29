@@ -82,8 +82,8 @@
     },
     "red": {
       "metaTitle": "Network and backbone",
-      "metaDescription": "Autonomous system {asn} with {peers}+ peers and {capacity} Tbps of capacity. Direct peering at Europe's leading IXPs.",
-      "kickerSuffix": " · our own backbone",
+      "metaDescription": "Our own network with {peers}+ peers and {capacity} Tbps of capacity. Direct peering at Europe's leading IXPs.",
+      "kickerSuffix": "our own backbone",
       "titlePrefix": "A network we ",
       "titleAccent": "control",
       "titleSuffix": ", end to end.",
@@ -213,7 +213,7 @@
     },
     "sobreNosotros": {
       "metaTitle": "About us",
-      "metaDescription": "{brand} is a European hosting provider with its own network ({asn}), focused on instant provisioning, hardware with no overselling and DDoS mitigation included.",
+      "metaDescription": "{brand} is a European hosting provider with its own network, focused on instant provisioning, hardware with no overselling and DDoS mitigation included.",
       "kicker": "About us",
       "titlePrefix": "European infrastructure, ",
       "titleAccent": "no fine print",
@@ -232,7 +232,7 @@
         },
         {
           "t": "Our own network",
-          "d": "We operate our autonomous system {asn} and direct peering; we don't resell anyone else's network."
+          "d": "We operate our own network with direct peering; we don't resell anyone else's network."
         },
         {
           "t": "Honest pricing",

@@ -18,7 +18,6 @@ export async function generateMetadata({
   return {
     title: t("red.metaTitle"),
     description: t("red.metaDescription", {
-      asn: site.network.asn,
       peers: site.network.peers,
       capacity: site.network.capacityTbps,
     }),
@@ -38,7 +37,6 @@ export default async function NetworkPage({
   const regions = await getRegions(locale);
 
   const bigStats = [
-    { v: site.network.asn, l: t("red.stats.asn") },
     { v: `${site.network.peers}+`, l: t("red.stats.peers") },
     { v: `${site.network.capacityTbps} Tbps`, l: t("red.stats.capacity") },
     { v: `${site.network.portMaxGbps} Gbps`, l: t("red.stats.port") },
@@ -54,7 +52,7 @@ export default async function NetworkPage({
     <>
       <PageHero
         index="/01"
-        kicker={`${site.network.asn}${t("red.kickerSuffix")}`}
+        kicker={t("red.kickerSuffix")}
         title={
           <>
             {t("red.titlePrefix")}

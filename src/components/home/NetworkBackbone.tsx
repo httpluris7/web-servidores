@@ -19,10 +19,7 @@ export async function NetworkBackbone() {
       <div className="container-edge grid gap-12 py-16 md:py-24 md:grid-cols-2 md:items-center md:py-32">
         {/* Izquierda: copy + stats */}
         <Reveal>
-          <span className="inline-block rounded border border-[var(--color-line)] px-2.5 py-1 font-mono text-xs text-[var(--color-accent)]">
-            {site.network.asn}
-          </span>
-          <h2 className="mt-6 text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
+          <h2 className="text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
             {t("networkBackbone.title")}
           </h2>
           <p className="mt-5 max-w-md text-base text-[var(--color-fg-muted)] md:text-lg">

@@ -82,8 +82,8 @@
     },
     "red": {
       "metaTitle": "Réseau et backbone",
-      "metaDescription": "Système autonome {asn} avec plus de {peers} peers et {capacity} Tbps de capacité. Peering direct sur les principaux IXP d'Europe.",
-      "kickerSuffix": " · notre propre backbone",
+      "metaDescription": "Réseau propre avec plus de {peers} peers et {capacity} Tbps de capacité. Peering direct sur les principaux IXP d'Europe.",
+      "kickerSuffix": "notre propre backbone",
       "titlePrefix": "Un réseau que nous ",
       "titleAccent": "contrôlons",
       "titleSuffix": ", de bout en bout.",
@@ -213,7 +213,7 @@
     },
     "sobreNosotros": {
       "metaTitle": "À propos",
-      "metaDescription": "{brand} est un hébergeur européen disposant de son propre réseau ({asn}), axé sur le provisionnement instantané, du matériel sans surréservation et la mitigation DDoS incluse.",
+      "metaDescription": "{brand} est un hébergeur européen disposant de son propre réseau, axé sur le provisionnement instantané, du matériel sans surréservation et la mitigation DDoS incluse.",
       "kicker": "À propos",
       "titlePrefix": "Infrastructure européenne, ",
       "titleAccent": "sans petits caractères",
@@ -232,7 +232,7 @@
         },
         {
           "t": "Notre propre réseau",
-          "d": "Nous exploitons notre système autonome {asn} et un peering direct ; nous ne revendons le réseau de personne d'autre."
+          "d": "Nous exploitons notre propre réseau avec un peering direct ; nous ne revendons le réseau de personne d'autre."
         },
         {
           "t": "Des prix honnêtes",

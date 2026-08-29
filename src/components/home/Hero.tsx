@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { deployUrl, site } from "@/data/site";
+import { deployUrl } from "@/data/site";
 import { Cta } from "@/components/ui/Cta";
 import { LiveMetrics } from "./LiveMetrics";
 
@@ -13,7 +13,7 @@ export async function Hero() {
         <div className="flex items-center gap-2">
           <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-accent)]" />
           <span className="mono-label">
-            {t("hero.kicker", { asn: site.network.asn })}
+            {t("hero.kicker")}
           </span>
         </div>
 

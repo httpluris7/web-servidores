@@ -17,7 +17,6 @@ export async function generateMetadata({
     title: t("sobreNosotros.metaTitle"),
     description: t("sobreNosotros.metaDescription", {
       brand: site.brand,
-      asn: site.network.asn,
     }),
   };
 }
@@ -31,12 +30,7 @@ export default async function AboutPage({
   setRequestLocale(locale);
   const t = await getTranslations("pages");
 
-  const principles = [
-    { key: 0 },
-    { key: 1 },
-    { key: 2, asn: site.network.asn },
-    { key: 3 },
-  ];
+  const principles = [{ key: 0 }, { key: 1 }, { key: 2 }, { key: 3 }];
 
   return (
     <>
@@ -61,7 +55,7 @@ export default async function AboutPage({
             <Reveal key={p.key} className="bg-[var(--color-bg-base)] p-8">
               <h3 className="text-xl font-semibold">{t(`sobreNosotros.principles.${p.key}.t`)}</h3>
               <p className="mt-2 text-sm leading-relaxed text-[var(--color-fg-muted)]">
-                {t(`sobreNosotros.principles.${p.key}.d`, { asn: site.network.asn })}
+                {t(`sobreNosotros.principles.${p.key}.d`)}
               </p>
             </Reveal>
           ))}
@@ -82,10 +76,6 @@ export default async function AboutPage({
               <div>
                 <dt className="text-[var(--color-fg-dim)]">{t("sobreNosotros.taxId")}</dt>
                 <dd className="mt-1">{site.legal.taxId}</dd>
-              </div>
-              <div>
-                <dt className="text-[var(--color-fg-dim)]">{t("sobreNosotros.autonomousSystem")}</dt>
-                <dd className="mt-1 text-[var(--color-accent)]">{site.network.asn}</dd>
               </div>
               <div className="sm:col-span-2">
                 <dt className="text-[var(--color-fg-dim)]">{t("sobreNosotros.registeredAddress")}</dt>

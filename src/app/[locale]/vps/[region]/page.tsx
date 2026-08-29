@@ -100,9 +100,6 @@ export default async function RegionPage({ params }: { params: Promise<Params> }
       >
         <div className="flex flex-wrap gap-3 font-mono text-xs">
           <span className="rounded border border-[var(--color-line)] px-3 py-1.5 text-[var(--color-fg-muted)]">
-            {site.network.asn}
-          </span>
-          <span className="rounded border border-[var(--color-line)] px-3 py-1.5 text-[var(--color-fg-muted)]">
             {/* El importe va como etiqueta rica para poder pintarlo en las dos divisas. */}
             {t.rich("vpsRegion.fromBadge", {
               price: () => <Price value={region.priceFrom} />,

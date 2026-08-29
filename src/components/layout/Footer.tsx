@@ -58,7 +58,7 @@ export function Footer({ nav }: { nav: NavCatalog }) {
             </Link>
             <p className="mt-4 max-w-xs text-sm text-[var(--color-fg-muted)]">{tMeta("tagline")}</p>
             <p className="mt-4 font-mono text-xs text-[var(--color-fg-dim)]">
-              {site.network.asn} · {site.domain}
+              {site.domain}
             </p>
           </div>
 
