@@ -38,8 +38,8 @@ export const OS_OPTIONS: readonly OsOption[] = [
   // Windows (BYOL: el cliente aporta su licencia). Oculto hasta que existan las
   // plantillas cloudbase-init en el nodo Proxmox; entonces pasar a disponible:true.
   // Win 11 exige 64 GB (MS) → no cabe en el plan Start (50 GB); mínimo Pro.
-  { slug: "windows-server-2022", label: "Windows Server 2022", familia: "windows", disponible: false, minDiscoGb: 40 },
-  { slug: "windows-server-2025", label: "Windows Server 2025", familia: "windows", disponible: false, minDiscoGb: 40 },
+  { slug: "windows-server-2022", label: "Windows Server 2022", familia: "windows", disponible: true, minDiscoGb: 40 },
+  { slug: "windows-server-2025", label: "Windows Server 2025", familia: "windows", disponible: true, minDiscoGb: 40 },
   { slug: "windows-11", label: "Windows 11", familia: "windows", disponible: false, minDiscoGb: 64 },
   { slug: "windows-10", label: "Windows 10", familia: "windows", disponible: false, minDiscoGb: 40 },
 ] as const;
