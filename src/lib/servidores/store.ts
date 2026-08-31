@@ -52,6 +52,13 @@ export type ManagedServer = {
   agenteTokenHash: string | null;
   /** Cuándo se generó el token vigente (para poder rotarlo con criterio). */
   agenteAltaAt: string | null;
+  /**
+   * Cuándo se intentó por primera vez instalar el agente de forma automática (al
+   * aprovisionar). Marca de "ya intentado", para que el auto-instalador dispare
+   * EXACTAMENTE una vez por ficha: null = nunca intentado; con fecha = ya se hizo
+   * (con éxito o no; si falló, queda el flujo manual del panel como respaldo).
+   */
+  agenteAutoAt: string | null;
   creadoAt: string;
   actualizadoAt: string;
 };
@@ -94,6 +101,7 @@ function normalizar(raw: Partial<ManagedServer>): ManagedServer {
     notas: raw.notas ?? "",
     agenteTokenHash: raw.agenteTokenHash ?? null,
     agenteAltaAt: raw.agenteAltaAt ?? null,
+    agenteAutoAt: raw.agenteAutoAt ?? null,
     creadoAt: raw.creadoAt ?? new Date(0).toISOString(),
     actualizadoAt: raw.actualizadoAt ?? new Date(0).toISOString(),
   };
@@ -191,6 +199,7 @@ export async function assignServer(input: AssignInput): Promise<ManagedServer> {
       notas: (input.notas ?? "").trim(),
       agenteTokenHash: null,
       agenteAltaAt: null,
+      agenteAutoAt: null,
       creadoAt: now,
       actualizadoAt: now,
     };
@@ -254,6 +263,7 @@ export async function createExternalServer(input: ExternalInput): Promise<Manage
     notas: (input.notas ?? "").trim(),
     agenteTokenHash: null,
     agenteAltaAt: null,
+    agenteAutoAt: null,
     creadoAt: now,
     actualizadoAt: now,
   };
@@ -320,6 +330,22 @@ export async function issueAgentToken(id: string): Promise<string | null> {
   };
   await writeAll(list.map((s) => (s.id === id ? updated : s)));
   return token;
+}
+
+/**
+ * Marca que ya se intentó la auto-instalación del agente en esta ficha. Se llama
+ * ANTES de intentarlo, para que el disparo automático ocurra una sola vez por
+ * ficha aunque el intento falle o el proceso se reinicie a mitad. Devuelve false
+ * si la ficha no existe o si ya estaba marcada (nadie más debe volver a intentar).
+ */
+export async function marcarAutoIntentoAgente(id: string): Promise<boolean> {
+  const list = await readAll();
+  const current = list.find((s) => s.id === id);
+  if (!current || current.agenteAutoAt !== null) return false;
+  const now = new Date().toISOString();
+  const updated: ManagedServer = { ...current, agenteAutoAt: now, actualizadoAt: now };
+  await writeAll(list.map((s) => (s.id === id ? updated : s)));
+  return true;
 }
 
 /** Revoca el token: el agente instalado deja de poder enviar métricas. */

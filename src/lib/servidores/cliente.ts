@@ -1,9 +1,43 @@
 import { providerConfig, providerServers } from "./inventario";
-import { assignServer, getManagedById, listManagedByUser, type ManagedServer } from "./store";
+import {
+  assignServer,
+  getManagedById,
+  issueAgentToken,
+  listManagedByUser,
+  marcarAutoIntentoAgente,
+  revokeAgentToken,
+  type ManagedServer,
+} from "./store";
 import { getServer, type ProviderConfig, type ProviderServer } from "./v4vm";
 import { proxmoxRemote } from "./proxmox-view";
-import { getOrder } from "@/lib/provisioner/client";
+import { getOrder, installAgent } from "@/lib/provisioner/client";
+import { osFamilia } from "@/lib/provisioner/os";
 import { pendientesDeFicha, marcarFichaCreada } from "@/lib/provisioner/intents";
+
+/**
+ * Instala el agente de métricas dentro de un VPS recién aprovisionado, en segundo
+ * plano y UNA sola vez, para que el cliente vea las gráficas (CPU/RAM/red/disco)
+ * sin tener que hacer nada. Solo Linux: el agente lee `/proc`, en Windows no hay
+ * equivalente. No se espera: no debe añadir latencia a la página (el servidor de
+ * la web es de larga vida, pm2, así que la promesa suelta continúa).
+ */
+async function autoinstalarAgente(fichaId: string, vpsId: number, osSlug: string): Promise<void> {
+  if (osFamilia(osSlug) !== "linux") return;
+  // Reclamar el intento de forma atómica: si otro acceso concurrente ya lo tomó,
+  // no repetir (evita instalar dos veces y rotar el token sin querer).
+  const reclamado = await marcarAutoIntentoAgente(fichaId);
+  if (!reclamado) return;
+  const token = await issueAgentToken(fichaId);
+  if (!token) return;
+  try {
+    await installAgent(vpsId, token);
+  } catch (err) {
+    // No se pudo instalar: revocar el token para no dejar la ficha con "agente
+    // activo" pero sin datos. Queda el flujo manual del panel como respaldo.
+    await revokeAgentToken(fichaId).catch(() => {});
+    console.error("[servidores] auto-instalación del agente falló", vpsId, err);
+  }
+}
 
 /**
  * Reconciliación perezosa de los VPS aprovisionados al pagar.
@@ -29,7 +63,7 @@ async function reconciliarFichasProxmox(userId: string): Promise<void> {
     try {
       const order = await getOrder(it.provisionOrderId);
       if (order.estado === "active" && order.vps_id != null) {
-        await assignServer({
+        const ficha = await assignServer({
           proveedor: "proxmox",
           remoteId: order.vps_id,
           remoteUuid: "",
@@ -37,6 +71,11 @@ async function reconciliarFichasProxmox(userId: string): Promise<void> {
           etiqueta: it.hostname ?? "",
         });
         await marcarFichaCreada(it.invoiceId, it.planSlug);
+        // Recién dada de alta la ficha: instalar el agente de métricas en segundo
+        // plano, una sola vez (Linux). No se espera para no frenar la página.
+        if (ficha.agenteAutoAt == null) {
+          void autoinstalarAgente(ficha.id, order.vps_id, order.os);
+        }
       } else if (order.estado === "failed" || order.estado === "cancelled") {
         // No habrá máquina: se cierra la intención para no reintentar sin fin.
         await marcarFichaCreada(it.invoiceId, it.planSlug);

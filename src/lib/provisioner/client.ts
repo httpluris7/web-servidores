@@ -248,6 +248,15 @@ export function resetVpsPassword(vpsId: number): Promise<{ ok: boolean }> {
   return request("POST", `/vps/${vpsId}/reset-password`);
 }
 
+/**
+ * Instala el agente de métricas dentro de un VPS Linux por el guest agent. El
+ * provisioner descarga el script y lo ejecuta dentro de la máquina, así que
+ * responde despacio: timeout holgado (mayor que el del propio agent/exec).
+ */
+export function installAgent(vpsId: number, token: string): Promise<{ ok: boolean }> {
+  return request("POST", `/vps/${vpsId}/agent-install`, { token }, 130_000);
+}
+
 /** Encola una reinstalación del SO indicado (destructivo). */
 export function reinstallVps(vpsId: number, osSlug: string): Promise<{ ok: boolean }> {
   return request("POST", `/vps/${vpsId}/reinstall`, { os_slug: osSlug });
