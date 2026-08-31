@@ -17,7 +17,8 @@
       "ordersAndContacts": "Commandes et contacts",
       "tickets": "Tickets",
       "settings": "Configuration",
-      "servers": "Serveurs"
+      "servers": "Serveurs",
+      "backups": "Sauvegardes"
     },
     "catalog": {
       "title": "Catalogue",

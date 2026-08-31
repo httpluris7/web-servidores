@@ -1,4 +1,5 @@
 import { barrerAgentesCaidos } from "@/lib/servidores/avisos";
+import { comprobarBackupDiario } from "@/lib/backup/planificador";
 
 /**
  * Único trabajo periódico de la aplicación: buscar agentes que han dejado de
@@ -17,7 +18,7 @@ import { barrerAgentesCaidos } from "@/lib/servidores/avisos";
  * Este módulo solo se carga en el runtime nodejs (ver `instrumentation.ts`).
  */
 
-/** Cada cuánto se buscan agentes caídos. */
+/** Cada cuánto se buscan agentes caídos y se comprueba si toca copia diaria. */
 const BARRIDO_MS = 5 * 60_000;
 
 /** Margen antes del primer barrido, para no competir con el arranque. */
@@ -25,6 +26,9 @@ const ESPERA_INICIAL_MS = 60_000;
 
 const lanzar = () => {
   void barrerAgentesCaidos();
+  // La copia diaria comparte el mismo latido: comprueba si ya es su hora y si
+  // no se ha hecho hoy. El planificador decide; aquí solo se le da el pulso.
+  void comprobarBackupDiario();
 };
 
 // `unref` para que un temporizador pendiente no mantenga vivo el proceso

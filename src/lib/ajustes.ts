@@ -72,10 +72,76 @@ export type AlertSettings = {
   recordatorio: number;
 };
 
+/**
+ * Copias de seguridad automáticas (módulo `lib/backup`).
+ *
+ * Guarda SECRETOS: la frase de cifrado del backup, el token de Dropbox y la
+ * clave privada del SFTP. Por eso vive aquí, en el mismo fichero 0600 que el
+ * resto, y nunca sale en claro del servidor (la API lo enmascara).
+ *
+ * Aviso sobre la frase de paso: el servidor la guarda para poder cifrar el
+ * backup diario sin intervención, pero para RESTAURAR en otro servidor hay que
+ * teclearla a mano (el servidor original puede estar muerto). Quien la configura
+ * tiene que apuntarla también fuera de aquí; si se pierde, los backups son
+ * irrecuperables. El cifrado protege la copia en el tercero (Dropbox/SFTP), no
+ * frente a alguien que ya controle este servidor.
+ */
+export type BackupDropbox = {
+  /** Token de acceso (puede ser de corta duración). */
+  accessToken: string;
+  /** Alternativa recomendada: refresh token + app, que no caduca. */
+  refreshToken: string;
+  appKey: string;
+  appSecret: string;
+  /** Carpeta destino en Dropbox, p.ej. `/viahost-backups`. */
+  folder: string;
+};
+
+export type BackupSftp = {
+  host: string;
+  port: number;
+  user: string;
+  /** Carpeta destino en el servidor SFTP (absoluta o relativa al home). */
+  dir: string;
+  /** Clave privada SSH en PEM (secreto). Se escribe a un fichero 0600 al usarla. */
+  privateKey: string;
+};
+
+export type BackupSettings = {
+  /** Programación diaria activa. */
+  enabled: boolean;
+  /** Hora local (0-23) del backup diario. */
+  hour: number;
+  /** Frase de cifrado del backup (secreto). Sin ella no se genera nada. */
+  passphrase: string;
+  /** Cuántas copias conservar (local y en cada destino). 0 = no purgar. */
+  retain: number;
+  /** Guardar además una copia local en `data/backups/`. */
+  keepLocal: boolean;
+  dropboxEnabled: boolean;
+  sftpEnabled: boolean;
+  dropbox: BackupDropbox;
+  sftp: BackupSftp;
+};
+
 export type Settings = {
   stripe: StripeSettings;
   provider: ProviderSettings;
   alerts: AlertSettings;
+  backup: BackupSettings;
+};
+
+/** Valores de partida de las copias de seguridad: a las 03:00, sin destinos. */
+export const DEFAULT_BACKUP: BackupSettings = {
+  enabled: false,
+  hour: 3,
+  passphrase: "",
+  retain: 14,
+  keepLocal: true,
+  dropboxEnabled: false,
+  sftpEnabled: false,
+  dropbox: { accessToken: "", refreshToken: "", appKey: "", appSecret: "", folder: "/viahost-backups" },
+  sftp: { host: "", port: 22, user: "", dir: "viahost-backups", privateKey: "" },
 };
 
 /** Base de la API del proveedor actual, si no se configura otra. */
@@ -161,6 +227,39 @@ function normalizeAlerts(raw: unknown): AlertSettings {
   };
 }
 
+function texto(v: unknown): string {
+  return typeof v === "string" ? v.trim() : "";
+}
+
+function normalizeBackup(raw: unknown): BackupSettings {
+  const o = (raw ?? {}) as Partial<Record<keyof BackupSettings, unknown>>;
+  const d = (o.dropbox ?? {}) as Partial<Record<keyof BackupDropbox, unknown>>;
+  const s = (o.sftp ?? {}) as Partial<Record<keyof BackupSftp, unknown>>;
+  return {
+    enabled: o.enabled === true,
+    hour: entero(o.hour, 0, 23, DEFAULT_BACKUP.hour),
+    passphrase: texto(o.passphrase),
+    retain: entero(o.retain, 0, 365, DEFAULT_BACKUP.retain),
+    keepLocal: o.keepLocal === undefined ? DEFAULT_BACKUP.keepLocal : o.keepLocal === true,
+    dropboxEnabled: o.dropboxEnabled === true,
+    sftpEnabled: o.sftpEnabled === true,
+    dropbox: {
+      accessToken: texto(d.accessToken),
+      refreshToken: texto(d.refreshToken),
+      appKey: texto(d.appKey),
+      appSecret: texto(d.appSecret),
+      folder: texto(d.folder) || DEFAULT_BACKUP.dropbox.folder,
+    },
+    sftp: {
+      host: texto(s.host),
+      port: entero(s.port, 1, 65535, DEFAULT_BACKUP.sftp.port),
+      user: texto(s.user),
+      dir: texto(s.dir) || DEFAULT_BACKUP.sftp.dir,
+      privateKey: typeof s.privateKey === "string" ? s.privateKey : "",
+    },
+  };
+}
+
 /** Ajustes efectivos (fichero sobre entorno). Nunca lanza: sin fichero, vacíos. */
 export async function readSettings(): Promise<Settings> {
   const env = fromEnv();
@@ -175,13 +274,20 @@ export async function readSettings(): Promise<Settings> {
       stripe: { ...env, enabled: !!env.secretKey || !!env.webhookSecret },
       provider: { ...providerEnv, enabled: !!providerEnv.token },
       alerts: { ...DEFAULT_ALERTS },
+      backup: { ...DEFAULT_BACKUP },
     };
   }
-  const obj = (parsed ?? {}) as { stripe?: unknown; provider?: unknown; alerts?: unknown };
+  const obj = (parsed ?? {}) as {
+    stripe?: unknown;
+    provider?: unknown;
+    alerts?: unknown;
+    backup?: unknown;
+  };
   return {
     stripe: normalizeStripe(obj.stripe, env),
     provider: normalizeProvider(obj.provider, providerEnv),
     alerts: normalizeAlerts(obj.alerts),
+    backup: normalizeBackup(obj.backup),
   };
 }
 
@@ -260,6 +366,68 @@ export async function updateAlertSettings(patch: Partial<AlertSettings>): Promis
     ...current,
     alerts: normalizeAlerts({ ...current.alerts, ...patch }),
   };
+  await writeSettings(next);
+  return next;
+}
+
+/**
+ * Cambios parciales de las copias de seguridad. Los secretos siguen la misma
+ * regla que Stripe: cadena vacía o ausente = "no lo toques"; `null` = borrarlo.
+ * Así el formulario, que nunca recibe los secretos, no puede borrarlos sin querer.
+ */
+export type BackupPatch = {
+  enabled?: boolean;
+  hour?: number;
+  passphrase?: string | null;
+  retain?: number;
+  keepLocal?: boolean;
+  dropboxEnabled?: boolean;
+  sftpEnabled?: boolean;
+  dropbox?: {
+    accessToken?: string | null;
+    refreshToken?: string | null;
+    appKey?: string;
+    appSecret?: string | null;
+    folder?: string;
+  };
+  sftp?: {
+    host?: string;
+    port?: number;
+    user?: string;
+    dir?: string;
+    privateKey?: string | null;
+  };
+};
+
+export async function updateBackupSettings(patch: BackupPatch): Promise<Settings> {
+  const current = await readSettings();
+  const b = current.backup;
+  const pd = patch.dropbox ?? {};
+  const ps = patch.sftp ?? {};
+  const merged: BackupSettings = {
+    enabled: patch.enabled ?? b.enabled,
+    hour: patch.hour ?? b.hour,
+    passphrase: pickSecret(patch.passphrase, b.passphrase),
+    retain: patch.retain ?? b.retain,
+    keepLocal: patch.keepLocal ?? b.keepLocal,
+    dropboxEnabled: patch.dropboxEnabled ?? b.dropboxEnabled,
+    sftpEnabled: patch.sftpEnabled ?? b.sftpEnabled,
+    dropbox: {
+      accessToken: pickSecret(pd.accessToken, b.dropbox.accessToken),
+      refreshToken: pickSecret(pd.refreshToken, b.dropbox.refreshToken),
+      appKey: (pd.appKey ?? "").trim() || b.dropbox.appKey,
+      appSecret: pickSecret(pd.appSecret, b.dropbox.appSecret),
+      folder: (pd.folder ?? "").trim() || b.dropbox.folder,
+    },
+    sftp: {
+      host: (ps.host ?? "").trim() || b.sftp.host,
+      port: ps.port ?? b.sftp.port,
+      user: (ps.user ?? "").trim() || b.sftp.user,
+      dir: (ps.dir ?? "").trim() || b.sftp.dir,
+      privateKey: pickSecret(ps.privateKey, b.sftp.privateKey),
+    },
+  };
+  const next: Settings = { ...current, backup: normalizeBackup(merged) };
   await writeSettings(next);
   return next;
 }
