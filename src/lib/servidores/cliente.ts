@@ -40,6 +40,26 @@ async function autoinstalarAgente(fichaId: string, vpsId: number, osSlug: string
 }
 
 /**
+ * Back-fill del agente en los VPS Linux YA existentes (aprovisionados antes de
+ * que existiera la auto-instalación). Se dispara al ver el servidor en el área de
+ * cliente, en segundo plano y una sola vez por ficha. Condiciones:
+ *  - proxmox + Linux (Windows no tiene agente),
+ *  - nunca se intentó auto-instalar (`agenteAutoAt` null) Y sin token todavía
+ *    (`agenteTokenHash` null): así no se rota el token de quien ya lo instaló a
+ *    mano, ni se reinstala a quien lo quitó a propósito (ese ya tiene `agenteAutoAt`),
+ *  - la VM está en marcha; si no, no se reclama el intento y se reintenta en otra
+ *    visita cuando esté encendida.
+ */
+function quizaBackfillAgente(managed: ManagedServer, remote: ProviderServer): void {
+  if (managed.proveedor !== "proxmox") return;
+  if (managed.agenteAutoAt != null || managed.agenteTokenHash != null) return;
+  if (remote.status !== "started" || remote.isProcessing) return;
+  if (!remote.osType || osFamilia(remote.osType) !== "linux") return;
+  // Fire-and-forget: no debe frenar el listado ni la ficha.
+  void autoinstalarAgente(managed.id, managed.remoteId, remote.osType);
+}
+
+/**
  * Reconciliación perezosa de los VPS aprovisionados al pagar.
  *
  * El aprovisionamiento se dispara en el webhook, que solo conoce el `order_id`;
@@ -169,6 +189,8 @@ export async function getProxmoxServerForUser(
   if (!managed || managed.proveedor !== "proxmox") return null;
   const remote = await proxmoxRemote(managed);
   if (!remote) return null;
+  // Back-fill del agente si es un VPS Linux ya existente sin agente (una vez).
+  quizaBackfillAgente(managed, remote);
   return { managed, remote };
 }
 
@@ -214,7 +236,10 @@ export async function listServersForUser(userId: string): Promise<ClientServer[]
       if (m.proveedor === "externo") return { managed: m, remote: null };
       if (m.proveedor === "proxmox") {
         const remote = await proxmoxRemote(m);
-        return remote ? { managed: m, remote } : null;
+        if (!remote) return null;
+        // Back-fill del agente en los VPS Linux existentes (una vez, en segundo plano).
+        quizaBackfillAgente(m, remote);
+        return { managed: m, remote };
       }
       const remote = porId.get(m.remoteId);
       // Ficha huérfana (el servidor ya no está en el proveedor), o un id que ya
