@@ -254,7 +254,9 @@ export function resetVpsPassword(vpsId: number): Promise<{ ok: boolean }> {
  * responde despacio: timeout holgado (mayor que el del propio agent/exec).
  */
 export function installAgent(vpsId: number, token: string): Promise<{ ok: boolean }> {
-  return request("POST", `/vps/${vpsId}/agent-install`, { token }, 130_000);
+  // Holgado y mayor que el agent/exec del provisioner (Linux 120 s, Windows 180 s):
+  // descarga el script y lo instala dentro del guest. Es fire-and-forget en la web.
+  return request("POST", `/vps/${vpsId}/agent-install`, { token }, 200_000);
 }
 
 /** Encola una reinstalación del SO indicado (destructivo). */

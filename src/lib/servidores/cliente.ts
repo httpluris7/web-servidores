@@ -11,18 +11,18 @@ import {
 import { getServer, type ProviderConfig, type ProviderServer } from "./v4vm";
 import { proxmoxRemote } from "./proxmox-view";
 import { getOrder, installAgent } from "@/lib/provisioner/client";
-import { osFamilia } from "@/lib/provisioner/os";
 import { pendientesDeFicha, marcarFichaCreada } from "@/lib/provisioner/intents";
 
 /**
  * Instala el agente de métricas dentro de un VPS recién aprovisionado, en segundo
  * plano y UNA sola vez, para que el cliente vea las gráficas (CPU/RAM/red/disco)
- * sin tener que hacer nada. Solo Linux: el agente lee `/proc`, en Windows no hay
- * equivalente. No se espera: no debe añadir latencia a la página (el servidor de
- * la web es de larga vida, pm2, así que la promesa suelta continúa).
+ * sin tener que hacer nada. Vale para Linux (agente.sh) y Windows (agente.ps1); el
+ * provisioner elige el intérprete según el SO. No se espera: no debe añadir
+ * latencia a la página (el servidor de la web es de larga vida, pm2, así que la
+ * promesa suelta continúa).
  */
 async function autoinstalarAgente(fichaId: string, vpsId: number, osSlug: string): Promise<void> {
-  if (osFamilia(osSlug) !== "linux") return;
+  void osSlug; // el provisioner decide sh/ps por el SO del pedido; aquí no filtra.
   // Reclamar el intento de forma atómica: si otro acceso concurrente ya lo tomó,
   // no repetir (evita instalar dos veces y rotar el token sin querer).
   const reclamado = await marcarAutoIntentoAgente(fichaId);
@@ -40,10 +40,10 @@ async function autoinstalarAgente(fichaId: string, vpsId: number, osSlug: string
 }
 
 /**
- * Back-fill del agente en los VPS Linux YA existentes (aprovisionados antes de
- * que existiera la auto-instalación). Se dispara al ver el servidor en el área de
- * cliente, en segundo plano y una sola vez por ficha. Condiciones:
- *  - proxmox + Linux (Windows no tiene agente),
+ * Back-fill del agente en los VPS YA existentes (aprovisionados antes de que
+ * existiera la auto-instalación), Linux o Windows. Se dispara al ver el servidor
+ * en el área de cliente, en segundo plano y una sola vez por ficha. Condiciones:
+ *  - proxmox (los VPS de nuestro Proxmox),
  *  - nunca se intentó auto-instalar (`agenteAutoAt` null) Y sin token todavía
  *    (`agenteTokenHash` null): así no se rota el token de quien ya lo instaló a
  *    mano, ni se reinstala a quien lo quitó a propósito (ese ya tiene `agenteAutoAt`),
@@ -54,7 +54,7 @@ function quizaBackfillAgente(managed: ManagedServer, remote: ProviderServer): vo
   if (managed.proveedor !== "proxmox") return;
   if (managed.agenteAutoAt != null || managed.agenteTokenHash != null) return;
   if (remote.status !== "started" || remote.isProcessing) return;
-  if (!remote.osType || osFamilia(remote.osType) !== "linux") return;
+  if (!remote.osType) return;
   // Fire-and-forget: no debe frenar el listado ni la ficha.
   void autoinstalarAgente(managed.id, managed.remoteId, remote.osType);
 }
