@@ -1,4 +1,4 @@
-import { createSign } from "node:crypto";
+import { createSign, createVerify } from "node:crypto";
 import type { WiseSettings } from "@/lib/ajustes";
 
 /**
@@ -33,6 +33,29 @@ export class WiseError extends Error {
 /** Base de la API según el entorno. */
 export function wiseBaseUrl(sandbox: boolean): string {
   return sandbox ? "https://api.sandbox.transferwise.tech" : "https://api.wise.com";
+}
+
+/**
+ * Verifica la firma `X-Signature-SHA256` de un webhook de Wise (RSA-SHA256 base64
+ * sobre el cuerpo CRUDO) contra la clave PÚBLICA de Wise, que llega por parámetro
+ * (se guarda en ajustes, no se incrusta en el código, para poder rotarla). Nunca
+ * lanza: firma ausente, clave vacía o mal formada → false. Una firma que no valide
+ * degrada al sondeo de 5 min, nunca a una entrega falsa.
+ */
+export function verifyWiseWebhook(
+  rawBody: string,
+  signatureB64: string,
+  publicKeyPem: string
+): boolean {
+  try {
+    if (!signatureB64 || !publicKeyPem) return false;
+    const v = createVerify("RSA-SHA256");
+    v.update(rawBody);
+    v.end();
+    return v.verify(publicKeyPem, signatureB64, "base64");
+  } catch {
+    return false;
+  }
 }
 
 /**

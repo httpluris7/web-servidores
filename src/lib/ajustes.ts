@@ -147,6 +147,9 @@ export type WiseSettings = {
   balanceId: string;
   /** Clave privada RSA en PEM que firma el reto SCA (secreto). */
   privateKey: string;
+  /** Clave PÚBLICA de Wise (PEM) para verificar la firma de sus webhooks. No es
+   *  secreta; vacía = el webhook rechaza (y se depende solo del sondeo). */
+  webhookPublicKey: string;
 };
 
 export type Settings = {
@@ -165,6 +168,7 @@ export const DEFAULT_WISE: WiseSettings = {
   profileId: "",
   balanceId: "",
   privateKey: "",
+  webhookPublicKey: "",
 };
 
 /** Valores de partida de las copias de seguridad: a las 03:00, sin destinos. */
@@ -227,6 +231,7 @@ function wiseFromEnv(): WiseSettings {
     balanceId: (process.env.WISE_BALANCE_ID || "").trim(),
     // La clave puede venir con \n escapados si se guarda en una sola línea de .env.
     privateKey: (process.env.WISE_PRIVATE_KEY || "").replace(/\\n/g, "\n"),
+    webhookPublicKey: (process.env.WISE_WEBHOOK_PUBKEY || "").replace(/\\n/g, "\n"),
   };
 }
 
@@ -315,6 +320,7 @@ function normalizeWise(raw: unknown, fallback: WiseSettings): WiseSettings {
   const profileId = typeof o.profileId === "string" ? o.profileId.trim() : "";
   const balanceId = typeof o.balanceId === "string" ? o.balanceId.trim() : "";
   const privateKey = typeof o.privateKey === "string" ? o.privateKey : "";
+  const webhookPublicKey = typeof o.webhookPublicKey === "string" ? o.webhookPublicKey : "";
   return {
     enabled: o.enabled === true,
     // Sin valor guardado, sandbox por defecto: nunca ir a producción por omisión.
@@ -323,6 +329,7 @@ function normalizeWise(raw: unknown, fallback: WiseSettings): WiseSettings {
     profileId: profileId || fallback.profileId,
     balanceId: balanceId || fallback.balanceId,
     privateKey: privateKey || fallback.privateKey,
+    webhookPublicKey: webhookPublicKey || fallback.webhookPublicKey,
   };
 }
 
@@ -528,6 +535,8 @@ export async function updateWiseSettings(patch: WisePatch): Promise<Settings> {
       profileId: (patch.profileId ?? "").trim() || w.profileId,
       balanceId: (patch.balanceId ?? "").trim() || w.balanceId,
       privateKey: pickSecret(patch.privateKey, w.privateKey),
+      // No editable desde el panel; se preserva lo que haya en config/entorno.
+      webhookPublicKey: w.webhookPublicKey,
     },
   };
   await writeSettings(next);
