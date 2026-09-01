@@ -146,7 +146,10 @@ export function CartProvider({
     const addQty = clampQty(opts?.qty ?? 1);
     const region =
       opts?.region ??
-      (located.lineTipo === "vps" ? defaultRegionRef.current ?? undefined : undefined);
+      (located.lineTipo === "vps"
+        ? // un plan con gama por región se preselecciona en la suya; el resto, en la global.
+          (located.plan.ubicacionSlug || defaultRegionRef.current) ?? undefined
+        : undefined);
     setItems((prev) => {
       const existing = prev.find((l) => l.planId === planId);
       if (existing) {

@@ -72,6 +72,12 @@ export type Producto = {
   red: string;
   /** €/mes. */
   precio: number;
+  /**
+   * Región (slug de `Ubicacion`) a la que este plan es EXCLUSIVO. Si está vacío,
+   * el plan es GLOBAL (se ofrece en toda región que no tenga gama propia). Permite
+   * gamas por ubicación (p. ej. Germany con EPYC y más RAM) sin duplicar la familia.
+   */
+  ubicacionSlug?: string;
   popular: boolean;
   visible: boolean;
   orden: number;

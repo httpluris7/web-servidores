@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { saveLead, clean, emailRe } from "@/lib/leads";
-import { getCatalog } from "@/data/products";
+import { getCatalog, regionsForPlan } from "@/data/products";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { getSession } from "@/lib/session";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
@@ -54,9 +54,18 @@ export async function POST(req: Request) {
   if (name.length < 2) errors.name = "Enter your name or company.";
   if (!emailRe.test(email)) errors.email = "Enter a valid email.";
 
-  const { allPlans, regions } = await getCatalog();
+  const catalog = await getCatalog();
+  const { allPlans, regions } = catalog;
   const located = allPlans.find((p) => p.plan.id === planId);
   if (!located) errors.planId = "Invalid plan.";
+
+  // La región debe ser una válida para el plan: los planes con gama por región
+  // (p. ej. Germany) no se contratan en otra ubicación, y a la inversa. Así no se
+  // emite una proforma que el aprovisionador rechazaría por disponibilidad.
+  if (located && located.lineTipo === "vps") {
+    const permitidas = regionsForPlan(catalog, planId).map((r) => r.slug);
+    if (!permitidas.includes(region)) errors.region = "This plan is not available in that region.";
+  }
 
   if (Object.keys(errors).length > 0) {
     return NextResponse.json({ ok: false, errors }, { status: 422 });

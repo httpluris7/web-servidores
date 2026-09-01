@@ -48,6 +48,8 @@ export type Plan = {
   price: number; // €/mes
   orderUrl: string;
   popular?: boolean;
+  /** Región a la que el plan es exclusivo; si falta, es global (ver `Producto`). */
+  ubicacionSlug?: string;
 };
 
 export type ProductLine = {
@@ -115,6 +117,7 @@ function aPlan(p: Producto): Plan {
     price: p.precio,
     orderUrl: deployUrl(`/order/${p.planId}`),
     ...(p.popular ? { popular: true } : {}),
+    ...(((p.ubicacionSlug ?? "").trim()) ? { ubicacionSlug: (p.ubicacionSlug as string).trim() } : {}),
   };
 }
 
@@ -145,13 +148,21 @@ export async function getCatalog(locale = "en"): Promise<Catalog> {
   const publicas = categorias.filter((c) => c.visible).sort(porOrden);
 
   const catVps = publicas.find((c) => c.tipo === "vps");
+  // La familia VPS admite gamas por región: los productos con `ubicacionSlug` son
+  // exclusivos de esa región; los que no lo tienen son GLOBALES. `vps.plans` (la
+  // línea base y la página /vps general) muestra solo los globales; `allPlans`
+  // incluye todos (para que /contratar/<planId>, carrito y validación resuelvan
+  // también los específicos). Ver `vpsPlansForRegion` y `regionsForPlan`.
+  const vpsProductos = catVps ? visibles.filter((p) => p.categoriaId === catVps.id) : [];
+  const vpsPlanesTodos = vpsProductos.map(aPlan);
+  const vpsPlanesGlobales = vpsPlanesTodos.filter((p) => !(p.ubicacionSlug ?? "").trim());
   const vps: ProductLine = catVps
     ? {
         slug: catVps.slug,
         title: texto(catVps.nombre, locale),
         tagline: texto(catVps.descripcion, locale),
         regions,
-        plans: planesDe(catVps),
+        plans: vpsPlanesGlobales,
       }
     : { ...LINEA_VPS_VACIA, regions };
 
@@ -166,7 +177,7 @@ export async function getCatalog(locale = "en"): Promise<Catalog> {
     }));
 
   const allPlans: LocatedPlan[] = [
-    ...vps.plans.map((plan) => ({
+    ...vpsPlanesTodos.map((plan) => ({
       plan,
       lineSlug: vps.slug,
       lineTitle: vps.title,
@@ -214,6 +225,39 @@ export async function getAllPlans(locale = "en"): Promise<LocatedPlan[]> {
  */
 export async function getPlanById(id: string, locale = "en"): Promise<LocatedPlan | undefined> {
   return (await getCatalog(locale)).allPlans.find((p) => p.plan.id === id);
+}
+
+/** Regiones VPS con gama propia (alguna con planes exclusivos suyos). */
+function regionesConGamaPropia(allPlans: LocatedPlan[]): Set<string> {
+  const s = new Set<string>();
+  for (const lp of allPlans) {
+    if (lp.lineTipo === "vps" && lp.plan.ubicacionSlug) s.add(lp.plan.ubicacionSlug);
+  }
+  return s;
+}
+
+/**
+ * Planes VPS a mostrar en `/vps/<region>`: la gama propia de la región si la
+ * tiene, o los globales en su defecto.
+ */
+export function vpsPlansForRegion(catalog: Catalog, regionSlug: string): Plan[] {
+  const propios = catalog.allPlans
+    .filter((lp) => lp.lineTipo === "vps" && lp.plan.ubicacionSlug === regionSlug)
+    .map((lp) => lp.plan);
+  return propios.length ? propios : catalog.vps.plans;
+}
+
+/**
+ * Regiones donde un plan es contratable: un plan exclusivo, solo en su región; un
+ * plan global, en toda región que NO tenga gama propia. (Dedicados: sin región.)
+ */
+export function regionsForPlan(catalog: Catalog, planId: string): Region[] {
+  const lp = catalog.allPlans.find((x) => x.plan.id === planId);
+  if (!lp || lp.lineTipo !== "vps") return catalog.regions;
+  const esp = lp.plan.ubicacionSlug;
+  if (esp) return catalog.regions.filter((r) => r.slug === esp);
+  const propias = regionesConGamaPropia(catalog.allPlans);
+  return catalog.regions.filter((r) => !propias.has(r.slug));
 }
 
 /* -------------------------------------------------------------------------- */

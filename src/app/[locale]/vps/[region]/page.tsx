@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getCatalog, getRegion, getRegions } from "@/data/products";
+import { getCatalog, getRegion, getRegions, vpsPlansForRegion } from "@/data/products";
 import { vpsFaq } from "@/data/faq";
 import { site } from "@/data/site";
 import { eurPrecio, jsonLdScript } from "@/lib/utils";
@@ -50,7 +50,8 @@ export async function generateMetadata({
 export default async function RegionPage({ params }: { params: Promise<Params> }) {
   const { locale, region: slug } = await params;
   setRequestLocale(locale);
-  const { vps, regions } = await getCatalog(locale);
+  const catalog = await getCatalog(locale);
+  const { regions } = catalog;
   const region = regions.find((r) => r.slug === slug);
   if (!region) notFound();
 
@@ -58,11 +59,12 @@ export default async function RegionPage({ params }: { params: Promise<Params> }
   const { name, city } = region;
   const latencyNote = region.latencyNote ?? "";
 
-  // Mismos packs para todas las regiones; solo cambia la marca de CPU si la
-  // región la fija (p. ej. Holanda con Xeon Gold 6150).
+  // Gama de la región: la propia si la tiene (p. ej. Germany con EPYC y más RAM),
+  // o los packs globales. Solo se reetiqueta la marca de CPU si la región la fija.
+  const planesRegion = vpsPlansForRegion(catalog, slug);
   const plans = region.cpu
-    ? vps.plans.map((p) => ({ ...p, cpu: conMarcaCpu(p.cpu, region.cpu as string) }))
-    : vps.plans;
+    ? planesRegion.map((p) => ({ ...p, cpu: conMarcaCpu(p.cpu, region.cpu as string) }))
+    : planesRegion;
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -70,7 +72,7 @@ export default async function RegionPage({ params }: { params: Promise<Params> }
     name: `${site.brand} VPS — ${region.name}`,
     description: `VPS in ${region.city}, ${region.name}.`,
     brand: { "@type": "Brand", name: site.brand },
-    offers: vps.plans.map((p) => ({
+    offers: plans.map((p) => ({
       "@type": "Offer",
       name: `${p.name} · ${region.name}`,
       price: p.price,

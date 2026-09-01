@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { saveLead, clean } from "@/lib/leads";
-import { getCatalog } from "@/data/products";
+import { getCatalog, regionsForPlan } from "@/data/products";
+import { defaultVpsRegionSlug } from "@/lib/regions";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
@@ -68,7 +69,8 @@ export async function POST(req: Request) {
     line: string;
   }[] = [];
 
-  const { allPlans, regions } = await getCatalog();
+  const catalog = await getCatalog();
+  const { allPlans, regions } = catalog;
 
   for (const item of rawItems) {
     const planId = clean(item.planId, 60);
@@ -81,8 +83,18 @@ export async function POST(req: Request) {
     }
     const qty = clampQty(item.qty);
     const isVps = located.lineTipo === "vps";
+    // La región debe ser válida para el plan (los planes con gama por región solo
+    // en la suya). Si la del carrito no lo es, se reconduce a una válida —prefiere
+    // provisionable— en vez de crear un pedido que no se podría aprovisionar.
+    const permitidas = isVps ? regionsForPlan(catalog, planId) : [];
     const regionSlug = clean(item.region, 60);
-    const region = isVps && regions.some((r) => r.slug === regionSlug) ? regionSlug : "";
+    const region = !isVps
+      ? ""
+      : permitidas.some((r) => r.slug === regionSlug)
+        ? regionSlug
+        : permitidas.length
+          ? defaultVpsRegionSlug(permitidas)
+          : "";
 
     validated.push({
       planId,

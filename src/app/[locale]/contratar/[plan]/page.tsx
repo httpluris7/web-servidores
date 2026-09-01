@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
-import { getAllPlans, getCatalog } from "@/data/products";
+import { getAllPlans, getCatalog, regionsForPlan } from "@/data/products";
 import { PageHero } from "@/components/ui/PageHero";
 import { OrderForm } from "@/components/forms/OrderForm";
 import { stripeIsReady } from "@/lib/ajustes";
@@ -45,8 +45,8 @@ export async function generateMetadata({
 export default async function OrderPage({ params }: { params: Promise<Params> }) {
   const { locale, plan: id } = await params;
   setRequestLocale(locale);
-  const { allPlans, regions } = await getCatalog(locale);
-  const located = allPlans.find((p) => p.plan.id === id);
+  const catalog = await getCatalog(locale);
+  const located = catalog.allPlans.find((p) => p.plan.id === id);
   if (!located) notFound();
 
   const t = await getTranslations("products");
@@ -72,7 +72,7 @@ export default async function OrderPage({ params }: { params: Promise<Params> })
         <OrderForm
           plan={located.plan}
           lineTitle={lineTitle}
-          regions={isVps ? regions : undefined}
+          regions={isVps ? regionsForPlan(catalog, id) : undefined}
           stripeEnabled={await stripeIsReady()}
         />
 
