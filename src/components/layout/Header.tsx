@@ -83,8 +83,18 @@ export function Header({ nav }: { nav: NavCatalog }) {
             </button>
 
             {megaOpen && (
-              <div className="absolute left-1/2 top-full z-50 w-[640px] -translate-x-1/2 pt-3">
-                <div className="grid grid-cols-2 gap-2 rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-overlay)] p-3 shadow-2xl shadow-black/50">
+              <div
+                className={cn(
+                  "absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3",
+                  dedicatedTypes.length > 0 ? "w-[640px]" : "w-[340px]"
+                )}
+              >
+                <div
+                  className={cn(
+                    "grid gap-2 rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-overlay)] p-3 shadow-2xl shadow-black/50",
+                    dedicatedTypes.length > 0 ? "grid-cols-2" : "grid-cols-1"
+                  )}
+                >
                   {/* Columna VPS */}
                   <div className="rounded-[var(--radius-md)] p-3">
                     <div className="mb-3 flex items-center justify-between">
@@ -116,33 +126,35 @@ export function Header({ nav }: { nav: NavCatalog }) {
                     </ul>
                   </div>
 
-                  {/* Columna Dedicados */}
-                  <div className="rounded-[var(--radius-md)] bg-white/[0.02] p-3">
-                    <div className="mb-3 flex items-center justify-between">
-                      <span className="mono-label">{t("dedicated")}</span>
-                      <Link
-                        href="/dedicados"
-                        className="text-xs text-[var(--color-accent)] hover:underline"
-                      >
-                        {tc("viewAll")} →
-                      </Link>
+                  {/* Columna Dedicados (oculta si no hay líneas dedicadas visibles) */}
+                  {dedicatedTypes.length > 0 && (
+                    <div className="rounded-[var(--radius-md)] bg-white/[0.02] p-3">
+                      <div className="mb-3 flex items-center justify-between">
+                        <span className="mono-label">{t("dedicated")}</span>
+                        <Link
+                          href="/dedicados"
+                          className="text-xs text-[var(--color-accent)] hover:underline"
+                        >
+                          {tc("viewAll")} →
+                        </Link>
+                      </div>
+                      <ul className="space-y-0.5">
+                        {dedicatedTypes.map((d) => (
+                          <li key={d.slug}>
+                            <Link
+                              href={`/dedicados/${d.slug}`}
+                              className="block rounded px-2 py-1.5 transition-colors hover:bg-white/5"
+                            >
+                              <span className="block text-sm">{d.title}</span>
+                              <span className="block font-mono text-xs text-[var(--color-fg-muted)]">
+                                {d.highlight}
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                    <ul className="space-y-0.5">
-                      {dedicatedTypes.map((d) => (
-                        <li key={d.slug}>
-                          <Link
-                            href={`/dedicados/${d.slug}`}
-                            className="block rounded px-2 py-1.5 transition-colors hover:bg-white/5"
-                          >
-                            <span className="block text-sm">{d.title}</span>
-                            <span className="block font-mono text-xs text-[var(--color-fg-muted)]">
-                              {d.highlight}
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  )}
                 </div>
               </div>
             )}

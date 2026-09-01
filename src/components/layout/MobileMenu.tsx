@@ -45,10 +45,19 @@ export function MobileMenu({ nav }: { nav: NavCatalog }) {
         ),
       })),
     },
-    {
-      label: t("dedicated"),
-      items: dedicatedTypes.map((d) => ({ href: `/dedicados/${d.slug}`, label: d.title, note: d.highlight })),
-    },
+    // Sección Dedicados: solo si hay líneas dedicadas visibles en el catálogo.
+    ...(dedicatedTypes.length > 0
+      ? [
+          {
+            label: t("dedicated"),
+            items: dedicatedTypes.map((d) => ({
+              href: `/dedicados/${d.slug}`,
+              label: d.title,
+              note: d.highlight,
+            })),
+          },
+        ]
+      : []),
   ];
 
   useEffect(() => {

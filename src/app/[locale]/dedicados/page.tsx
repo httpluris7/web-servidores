@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getDedicatedTypes } from "@/data/products";
@@ -33,6 +34,10 @@ export default async function DedicatedPage({
   setRequestLocale(locale);
   const t = await getTranslations("products");
   const dedicatedTypes = await getDedicatedTypes(locale);
+
+  // Sin líneas dedicadas visibles no hay escaparate: se oculta del público
+  // (404) hasta que exista una categoría de dedicados con entrega inmediata.
+  if (dedicatedTypes.length === 0) notFound();
 
   return (
     <>

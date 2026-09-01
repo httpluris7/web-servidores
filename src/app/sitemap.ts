@@ -8,7 +8,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
     "",
     "/vps",
-    "/dedicados",
+    // `/dedicados` solo si hay alguna línea dedicada visible (si no, la página es 404).
+    ...(dedicatedTypes.length > 0 ? ["/dedicados"] : []),
     "/red",
     "/proteccion-ddos",
     "/casos-de-uso",
