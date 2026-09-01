@@ -34,7 +34,11 @@ export function CartView({
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const [formError, setFormError] = useState<string | null>(null);
   // Datos de la proforma emitida, para enseñar su referencia en la confirmación.
-  const [proforma, setProforma] = useState<{ numero: string | null; total: number } | null>(null);
+  const [proforma, setProforma] = useState<{
+    numero: string | null;
+    refPago: string | null;
+    total: number;
+  } | null>(null);
   const [payError, setPayError] = useState<string | null>(null);
 
   async function completeOrder(metodo: "tarjeta" | "transferencia") {
@@ -76,7 +80,11 @@ export function CartView({
         return;
       }
       if (metodo === "tarjeta") setPayError(t("cartView.cardUnavailable"));
-      setProforma({ numero: (data.numero as string) ?? null, total });
+      setProforma({
+        numero: (data.numero as string) ?? null,
+        refPago: (data.refPago as string) ?? null,
+        total,
+      });
       setStatus("done");
     } catch {
       setFormError(t("cartView.errorConnection"));
@@ -105,7 +113,7 @@ export function CartView({
         {/* Transferencia con la referencia ya emitida (o el aviso de que llegará). */}
         <div className="mt-6">
           <BankTransfer
-            reference={proforma?.numero ?? undefined}
+            reference={proforma?.refPago ?? proforma?.numero ?? undefined}
             amountLabel={proforma ? eur(proforma.total, 2) : undefined}
           />
         </div>

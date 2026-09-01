@@ -20,11 +20,14 @@ type Metodo = "tarjeta" | "transferencia";
 export function InvoicePayPanel({
   invoiceId,
   numero,
+  reference,
   amountLabel,
   stripeEnabled,
 }: {
   invoiceId: string;
   numero: string;
+  /** Referencia de la transferencia (VH…); si falta, cae al número de documento. */
+  reference?: string;
   amountLabel: string;
   stripeEnabled: boolean;
 }) {
@@ -123,7 +126,7 @@ export function InvoicePayPanel({
         </>
       ) : (
         <div className="mt-6">
-          <BankTransfer reference={numero} amountLabel={amountLabel} />
+          <BankTransfer reference={reference || numero} amountLabel={amountLabel} />
         </div>
       )}
 

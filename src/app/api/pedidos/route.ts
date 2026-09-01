@@ -167,6 +167,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       ok: true,
       numero: invoice.numero,
+      refPago: invoice.refPago,
       paymentUrl,
     });
   } catch (err) {

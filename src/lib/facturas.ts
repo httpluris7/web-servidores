@@ -56,6 +56,11 @@ export type Invoice = {
   // Número fiscal de la serie (FACT-AAAA-NNN). Se asigna SOLO al confirmar el
   // pago y ya no cambia (continuidad de serie, sin huecos). null = proforma.
   numeroFactura: string | null;
+  // Referencia CORTA de la transferencia (VH + 5 dígitos, p. ej. `VH00016`).
+  // Es lo que el cliente pone como concepto y con lo que el conciliador de Wise
+  // casa el ingreso con el pedido. Solo alfanumérico a propósito: muchos bancos
+  // no aceptan guiones ni signos en la referencia. Facturas antiguas: "".
+  refPago: string;
   metodoPago: PaymentMethod | null; // método de cobro (informativo)
   pago: InvoicePayment | null; // sesión de pago viva en la pasarela, si la hay
   userId: string | null; // usuario registrado vinculado (o null si es manual)
@@ -152,6 +157,11 @@ function normalize(raw: Record<string, unknown>): Invoice {
   if (raw.pago === undefined) {
     inv = { ...inv, pago: null };
   }
+  // Compat: referencia de transferencia (facturas anteriores a la conciliación
+  // Wise). Sin ella, `transferRef` cae al número de proforma.
+  if (typeof raw.refPago !== "string") {
+    inv = { ...inv, refPago: "" };
+  }
   return inv;
 }
 
@@ -186,6 +196,33 @@ function newProformaNumero(list: Invoice[], year: number): string {
     numero = `PRO-${year}-${randomBytes(3).toString("hex").toUpperCase()}`;
   } while (used.has(numero));
   return numero;
+}
+
+/**
+ * Siguiente referencia de transferencia (`VH` + 5 dígitos, secuencial global).
+ * Se deriva de las referencias ya emitidas, así que es única y de ancho fijo:
+ * el ancho fijo evita que una referencia sea prefijo de otra (`VH00001` no es
+ * subcadena de `VH00016`), lo que hace seguro el casado por coincidencia exacta.
+ */
+export const REF_PAGO_PREFIX = "VH";
+
+function nextRefPago(list: Invoice[]): string {
+  const max = list.reduce((acc, i) => {
+    const r = i.refPago ?? "";
+    if (!r.startsWith(REF_PAGO_PREFIX)) return acc;
+    const n = Number.parseInt(r.slice(REF_PAGO_PREFIX.length), 10);
+    return Number.isFinite(n) && n > acc ? n : acc;
+  }, 0);
+  return `${REF_PAGO_PREFIX}${String(max + 1).padStart(5, "0")}`;
+}
+
+/**
+ * Referencia que el cliente debe poner en la transferencia. Las facturas nuevas
+ * llevan `refPago` (VH…); las anteriores a este campo caen al número de proforma,
+ * que es lo que se les comunicó en su día.
+ */
+export function transferRef(inv: Invoice): string {
+  return inv.refPago || inv.numero;
 }
 
 /** Redondea a 2 decimales evitando errores de coma flotante. */
@@ -275,6 +312,8 @@ export async function createInvoice(input: NewInvoiceInput): Promise<Invoice> {
     // Nace como PROFORMA con número aleatorio; el número fiscal se asigna al pagar.
     numero: newProformaNumero(list, now.getFullYear()),
     numeroFactura: null,
+    // Referencia corta de la transferencia, secuencial y única.
+    refPago: nextRefPago(list),
     metodoPago: input.metodoPago ?? null,
     pago: null,
     userId: input.userId ?? null,

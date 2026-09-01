@@ -7,7 +7,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { InvoiceStatusBadge } from "@/components/ui/InvoiceStatusBadge";
 import { InvoicePayPanel } from "@/components/cuenta/InvoicePayPanel";
 import { getSession } from "@/lib/session";
-import { getInvoiceForUser } from "@/lib/facturas";
+import { getInvoiceForUser, transferRef } from "@/lib/facturas";
 import { stripeIsReady } from "@/lib/ajustes";
 import { eur, fmtDate } from "@/lib/utils";
 
@@ -154,6 +154,7 @@ export default async function FacturaClientePage({
             <InvoicePayPanel
               invoiceId={f.id}
               numero={f.numero}
+              reference={transferRef(f)}
               amountLabel={eur(f.total, 2)}
               stripeEnabled={stripeEnabled}
             />

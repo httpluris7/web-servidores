@@ -8,12 +8,15 @@ import {
   updateAlertSettings,
   updateProviderSettings,
   updateStripeSettings,
+  updateWiseSettings,
+  wiseHasCreds,
   WEBHOOK_EVENTS,
   WEBHOOK_URL,
   type Settings,
 } from "@/lib/ajustes";
 import { emailRe } from "@/lib/leads";
 import { retrieveAccount, StripeError } from "@/lib/payments/stripe";
+import { probarWise, WiseError } from "@/lib/payments/wise";
 import { invalidateInventoryCache } from "@/lib/servidores/inventario";
 import { ProviderError, verifyToken } from "@/lib/servidores/v4vm";
 
@@ -25,7 +28,7 @@ export const dynamic = "force-dynamic";
  * versión enmascarada y si están puestos o no.
  */
 function publicView(settings: Settings) {
-  const { stripe, provider, alerts } = settings;
+  const { stripe, provider, alerts, wise } = settings;
   return {
     // Los umbrales no son secretos: van tal cual, que el formulario los pinta.
     alerts,
@@ -45,6 +48,15 @@ function publicView(settings: Settings) {
       // Un token con caducidad es casi siempre el de sesión (15 min) en lugar
       // del de API: la pantalla lo avisa en vez de dejarlo fallar solo.
       tokenExpiresAt: provider.token ? (tokenExpiresAt(provider.token)?.toISOString() ?? null) : null,
+    },
+    wise: {
+      enabled: wise.enabled,
+      sandbox: wise.sandbox,
+      profileId: wise.profileId,
+      balanceId: wise.balanceId,
+      hasApiToken: !!wise.apiToken,
+      apiTokenMask: maskSecret(wise.apiToken),
+      hasPrivateKey: !!wise.privateKey,
     },
     webhookUrl: WEBHOOK_URL,
     webhookEvents: WEBHOOK_EVENTS,
@@ -151,6 +163,50 @@ async function putAlerts(body: Record<string, unknown>) {
   return NextResponse.json({ ok: true, warning, ...publicView(settings) });
 }
 
+/** Guarda las credenciales de Wise para la conciliación de transferencias. */
+async function putWise(body: Record<string, unknown>) {
+  const readKey = (v: unknown): string | null | undefined => {
+    if (v === null) return null;
+    if (typeof v !== "string") return undefined;
+    return v.trim();
+  };
+
+  const apiToken = readKey(body.apiToken);
+  const privateKey = body.privateKey === null ? null : typeof body.privateKey === "string" ? body.privateKey : undefined;
+
+  // La clave privada se valida por forma: sin cabecera PEM no firmará el SCA.
+  if (typeof privateKey === "string" && privateKey.trim() && !privateKey.includes("PRIVATE KEY")) {
+    return NextResponse.json(
+      { ok: false, error: "The private key must be a PEM block (BEGIN PRIVATE KEY / BEGIN RSA PRIVATE KEY)." },
+      { status: 422 }
+    );
+  }
+
+  // Los ids de Wise (perfil y balance) son numéricos: se avisa de una errata.
+  const idErr = (v: unknown, label: string): string | null => {
+    if (typeof v !== "string" || v.trim() === "") return null; // ausente = no cambiar
+    return /^\d+$/.test(v.trim()) ? null : `The ${label} must be numeric.`;
+  };
+  const err = idErr(body.profileId, "profile ID") ?? idErr(body.balanceId, "balance ID");
+  if (err) return NextResponse.json({ ok: false, error: err }, { status: 422 });
+
+  const settings = await updateWiseSettings({
+    enabled: typeof body.enabled === "boolean" ? body.enabled : undefined,
+    sandbox: typeof body.sandbox === "boolean" ? body.sandbox : undefined,
+    apiToken,
+    profileId: typeof body.profileId === "string" ? body.profileId.trim() : undefined,
+    balanceId: typeof body.balanceId === "string" ? body.balanceId.trim() : undefined,
+    privateKey: privateKey === null ? null : typeof privateKey === "string" ? privateKey.trim() : undefined,
+  });
+
+  const warning =
+    settings.wise.enabled && !wiseHasCreds(settings.wise)
+      ? "Wise reconciliation is enabled but the credentials are incomplete (token, profile, balance and private key are all required)."
+      : null;
+
+  return NextResponse.json({ ok: true, warning, ...publicView(settings) });
+}
+
 export async function PUT(req: Request) {
   if (!(await getAdminSession())) {
     return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 403 });
@@ -165,6 +221,7 @@ export async function PUT(req: Request) {
 
   if (body.section === "provider") return putProvider(body);
   if (body.section === "alerts") return putAlerts(body);
+  if (body.section === "wise") return putWise(body);
 
   // `null` borra la clave guardada; ausente o cadena vacía la deja como está.
   const readKey = (v: unknown): string | null | undefined => {
@@ -212,7 +269,30 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 403 });
   }
 
-  if (new URL(req.url).searchParams.get("target") === "provider") {
+  const target = new URL(req.url).searchParams.get("target");
+
+  if (target === "wise") {
+    const { wise } = await readSettings();
+    if (!wiseHasCreds(wise)) {
+      return NextResponse.json(
+        { ok: false, error: "Wise credentials are incomplete (need token, profile, balance and private key)." },
+        { status: 422 }
+      );
+    }
+    try {
+      const res = await probarWise(wise);
+      return NextResponse.json({
+        ok: true,
+        mode: wise.sandbox ? "sandbox" : "live",
+        transactions: res.transacciones,
+      });
+    } catch (err) {
+      const message = err instanceof WiseError ? err.message : "Could not reach Wise.";
+      return NextResponse.json({ ok: false, error: message }, { status: 502 });
+    }
+  }
+
+  if (target === "provider") {
     const { provider } = await readSettings();
     if (!provider.token) {
       return NextResponse.json({ ok: false, error: "No API token saved yet." }, { status: 422 });

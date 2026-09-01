@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { site } from "@/data/site";
-import { getInvoiceById, esProforma, PAYMENT_METHOD_LABEL } from "@/lib/facturas";
+import { getInvoiceById, esProforma, PAYMENT_METHOD_LABEL, transferRef } from "@/lib/facturas";
 import { eur, fmtDate } from "@/lib/utils";
 import { PrintButton } from "@/components/admin/PrintButton";
 import { BankTransfer } from "@/components/ui/BankTransfer";
@@ -173,7 +173,7 @@ export default async function FacturaImprimiblePage({
         {/* Cómo pagar: solo mientras quede pendiente de cobro */}
         {f.estado === "pendiente" && (
           <div className="mt-8">
-            <BankTransfer variant="document" reference={f.numero} amountLabel={eur(f.total, 2)} />
+            <BankTransfer variant="document" reference={transferRef(f)} amountLabel={eur(f.total, 2)} />
           </div>
         )}
 

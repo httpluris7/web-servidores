@@ -4,6 +4,7 @@ import { BANK_LABEL_EN, bankReferenceNoteEn, bankRows } from "@/lib/bank";
 import {
   esProforma,
   PAYMENT_METHOD_LABEL,
+  transferRef,
   type Invoice,
   type InvoiceStatus,
   type PaymentMethod,
@@ -182,7 +183,7 @@ export function generateInvoicePdf(inv: Invoice): Promise<Buffer> {
 
     // --- Instrucciones de pago (solo si queda algo por cobrar) ---
     if (inv.estado === "pendiente") {
-      const rows = bankRows({ amountLabel: invoiceMoney(inv.total), reference: inv.numero });
+      const rows = bankRows({ amountLabel: invoiceMoney(inv.total), reference: transferRef(inv) });
       // Alto aproximado del recuadro, para decidir si cabe o toca página nueva.
       const estimated = 34 + rows.length * 14 + 30;
       const bottomLimit = doc.page.height - doc.page.margins.bottom - 44;
@@ -222,7 +223,7 @@ export function generateInvoicePdf(inv: Invoice): Promise<Buffer> {
         .font("Helvetica-Oblique")
         .fontSize(8)
         .fillColor(muted)
-        .text(bankReferenceNoteEn(inv.numero), padX, py + 2, { width: right - 14 - padX });
+        .text(bankReferenceNoteEn(transferRef(inv)), padX, py + 2, { width: right - 14 - padX });
 
       const boxBottom = doc.y + 12;
       // El marco se dibuja al final, ya conocida la altura real del contenido.

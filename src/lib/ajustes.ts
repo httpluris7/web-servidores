@@ -124,11 +124,47 @@ export type BackupSettings = {
   sftp: BackupSftp;
 };
 
+/**
+ * Conciliación de transferencias por Wise (módulo `lib/payments/wise*`).
+ *
+ * Guarda SECRETOS: el token de API de Wise y la CLAVE PRIVADA RSA que firma el
+ * reto SCA (sin la cual no se pueden leer los movimientos). Por eso vive aquí,
+ * en el mismo fichero 0600 que el resto, y nunca sale en claro del servidor.
+ *
+ * `sandbox` decide contra qué API se habla (`api.sandbox.transferwise.tech` vs
+ * `api.wise.com`): se prueba primero en sandbox, sin mover dinero real.
+ */
+export type WiseSettings = {
+  /** Interruptor: sin esto no se sondea Wise aunque haya credenciales. */
+  enabled: boolean;
+  /** true = API sandbox (pruebas); false = producción (api.wise.com). */
+  sandbox: boolean;
+  /** Token de API (viaja como `Authorization: Bearer …`). */
+  apiToken: string;
+  /** Id del perfil (business) del que se lee el statement. */
+  profileId: string;
+  /** Id del balance EUR del que se leen los ingresos. */
+  balanceId: string;
+  /** Clave privada RSA en PEM que firma el reto SCA (secreto). */
+  privateKey: string;
+};
+
 export type Settings = {
   stripe: StripeSettings;
   provider: ProviderSettings;
   alerts: AlertSettings;
   backup: BackupSettings;
+  wise: WiseSettings;
+};
+
+/** Valores de partida de Wise: apagado y en sandbox (pruebas sin dinero real). */
+export const DEFAULT_WISE: WiseSettings = {
+  enabled: false,
+  sandbox: true,
+  apiToken: "",
+  profileId: "",
+  balanceId: "",
+  privateKey: "",
 };
 
 /** Valores de partida de las copias de seguridad: a las 03:00, sin destinos. */
@@ -178,6 +214,19 @@ function providerFromEnv(): ProviderSettings {
     enabled: false,
     apiUrl: (process.env.PROVIDER_API_URL || "").trim() || DEFAULT_PROVIDER_API_URL,
     token: (process.env.PROVIDER_API_TOKEN || "").trim(),
+  };
+}
+
+function wiseFromEnv(): WiseSettings {
+  return {
+    enabled: false,
+    // Por defecto sandbox; solo se va a producción poniendo WISE_SANDBOX=false.
+    sandbox: (process.env.WISE_SANDBOX || "").trim().toLowerCase() !== "false",
+    apiToken: (process.env.WISE_API_TOKEN || "").trim(),
+    profileId: (process.env.WISE_PROFILE_ID || "").trim(),
+    balanceId: (process.env.WISE_BALANCE_ID || "").trim(),
+    // La clave puede venir con \n escapados si se guarda en una sola línea de .env.
+    privateKey: (process.env.WISE_PRIVATE_KEY || "").replace(/\\n/g, "\n"),
   };
 }
 
@@ -260,10 +309,28 @@ function normalizeBackup(raw: unknown): BackupSettings {
   };
 }
 
+function normalizeWise(raw: unknown, fallback: WiseSettings): WiseSettings {
+  const o = (raw ?? {}) as Partial<Record<keyof WiseSettings, unknown>>;
+  const apiToken = typeof o.apiToken === "string" ? o.apiToken.trim() : "";
+  const profileId = typeof o.profileId === "string" ? o.profileId.trim() : "";
+  const balanceId = typeof o.balanceId === "string" ? o.balanceId.trim() : "";
+  const privateKey = typeof o.privateKey === "string" ? o.privateKey : "";
+  return {
+    enabled: o.enabled === true,
+    // Sin valor guardado, sandbox por defecto: nunca ir a producción por omisión.
+    sandbox: o.sandbox === undefined ? fallback.sandbox : o.sandbox === true,
+    apiToken: apiToken || fallback.apiToken,
+    profileId: profileId || fallback.profileId,
+    balanceId: balanceId || fallback.balanceId,
+    privateKey: privateKey || fallback.privateKey,
+  };
+}
+
 /** Ajustes efectivos (fichero sobre entorno). Nunca lanza: sin fichero, vacíos. */
 export async function readSettings(): Promise<Settings> {
   const env = fromEnv();
   const providerEnv = providerFromEnv();
+  const wiseEnv = wiseFromEnv();
   let parsed: unknown = null;
   try {
     parsed = JSON.parse(await readFile(FILE, "utf8"));
@@ -275,6 +342,7 @@ export async function readSettings(): Promise<Settings> {
       provider: { ...providerEnv, enabled: !!providerEnv.token },
       alerts: { ...DEFAULT_ALERTS },
       backup: { ...DEFAULT_BACKUP },
+      wise: { ...wiseEnv },
     };
   }
   const obj = (parsed ?? {}) as {
@@ -282,12 +350,14 @@ export async function readSettings(): Promise<Settings> {
     provider?: unknown;
     alerts?: unknown;
     backup?: unknown;
+    wise?: unknown;
   };
   return {
     stripe: normalizeStripe(obj.stripe, env),
     provider: normalizeProvider(obj.provider, providerEnv),
     alerts: normalizeAlerts(obj.alerts),
     backup: normalizeBackup(obj.backup),
+    wise: normalizeWise(obj.wise, wiseEnv),
   };
 }
 
@@ -432,6 +502,38 @@ export async function updateBackupSettings(patch: BackupPatch): Promise<Settings
   return next;
 }
 
+/**
+ * Cambios parciales de Wise. El token y la clave privada siguen la regla de los
+ * secretos (cadena vacía o ausente = "no lo toques"; `null` = borrarlo); el
+ * resto se sobrescribe con lo que llegue.
+ */
+export type WisePatch = {
+  enabled?: boolean;
+  sandbox?: boolean;
+  apiToken?: string | null;
+  profileId?: string;
+  balanceId?: string;
+  privateKey?: string | null;
+};
+
+export async function updateWiseSettings(patch: WisePatch): Promise<Settings> {
+  const current = await readSettings();
+  const w = current.wise;
+  const next: Settings = {
+    ...current,
+    wise: {
+      enabled: patch.enabled ?? w.enabled,
+      sandbox: patch.sandbox ?? w.sandbox,
+      apiToken: pickSecret(patch.apiToken, w.apiToken),
+      profileId: (patch.profileId ?? "").trim() || w.profileId,
+      balanceId: (patch.balanceId ?? "").trim() || w.balanceId,
+      privateKey: pickSecret(patch.privateKey, w.privateKey),
+    },
+  };
+  await writeSettings(next);
+  return next;
+}
+
 /* --------------------------------- Ayudas --------------------------------- */
 
 /**
@@ -513,4 +615,19 @@ export function tokenExpiresAt(token: string): Date | null {
 export async function providerIsReady(): Promise<boolean> {
   const { provider } = await readSettings();
   return provider.enabled && !!provider.token;
+}
+
+/**
+ * ¿Están completas las credenciales de Wise para conciliar? (independiente del
+ * interruptor `enabled`, que decide si el sondeo automático corre). Hacen falta
+ * las cuatro cosas: token, perfil, balance y clave privada para el SCA.
+ */
+export function wiseHasCreds(wise: WiseSettings): boolean {
+  return !!wise.apiToken && !!wise.profileId && !!wise.balanceId && !!wise.privateKey;
+}
+
+/** ¿Se puede sondear Wise ahora mismo? (activo y con credenciales completas) */
+export async function wiseIsReady(): Promise<boolean> {
+  const { wise } = await readSettings();
+  return wise.enabled && wiseHasCreds(wise);
 }

@@ -49,8 +49,10 @@ export function OrderForm({
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const [formError, setFormError] = useState<string | null>(null);
-  // Proforma emitida al confirmar: su número es la referencia de la transferencia.
+  // Proforma emitida al confirmar. `refPago` (VH…) es la referencia que el
+  // cliente pone en la transferencia; `numero` identifica el documento.
   const [numero, setNumero] = useState<string | null>(null);
+  const [refPago, setRefPago] = useState<string | null>(null);
   const [payError, setPayError] = useState<string | null>(null);
 
   function validate(): boolean {
@@ -89,6 +91,7 @@ export function OrderForm({
       }
       if (metodo === "tarjeta") setPayError(t("orderForm.cardUnavailable"));
       setNumero((data.numero as string) ?? null);
+      setRefPago((data.refPago as string) ?? null);
       setStatus("done");
     } catch {
       setFormError(t("orderForm.errConnection"));
@@ -128,7 +131,7 @@ export function OrderForm({
             {/* Transferencia con la referencia ya emitida (o el aviso de que llegará). */}
             <div className="mt-6">
               <BankTransfer
-                reference={numero ?? undefined}
+                reference={refPago ?? numero ?? undefined}
                 amountLabel={numero ? eur(plan.price, 2) : undefined}
               />
             </div>

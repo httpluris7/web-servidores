@@ -1,4 +1,4 @@
-import { esProforma, type Invoice } from "@/lib/facturas";
+import { esProforma, transferRef, type Invoice } from "@/lib/facturas";
 import { sendInvoiceMail } from "@/lib/mail";
 import {
   generateInvoicePdf,
@@ -18,6 +18,7 @@ export async function emailInvoiceDocument(inv: Invoice): Promise<void> {
     to: inv.clienteEmail,
     clientName: inv.clienteNombre,
     numero: inv.numero,
+    bankReference: transferRef(inv),
     amountLabel: invoiceMoney(inv.total),
     dueDate: invoiceDateEn(inv.vencimientoAt),
     status: invoiceStatusEn(inv.estado),

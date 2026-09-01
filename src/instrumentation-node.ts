@@ -1,5 +1,6 @@
 import { barrerAgentesCaidos } from "@/lib/servidores/avisos";
 import { comprobarBackupDiario } from "@/lib/backup/planificador";
+import { comprobarWise } from "@/lib/payments/wise-reconcile";
 
 /**
  * Único trabajo periódico de la aplicación: buscar agentes que han dejado de
@@ -29,6 +30,10 @@ const lanzar = () => {
   // La copia diaria comparte el mismo latido: comprueba si ya es su hora y si
   // no se ha hecho hoy. El planificador decide; aquí solo se le da el pulso.
   void comprobarBackupDiario();
+  // La conciliación de transferencias por Wise también: sondea el statement y
+  // entrega los VPS de las proformas cuyo ingreso ha llegado. No hace nada si
+  // Wise está apagado o sin credenciales.
+  void comprobarWise();
 };
 
 // `unref` para que un temporizador pendiente no mantenga vivo el proceso

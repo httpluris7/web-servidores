@@ -141,6 +141,8 @@ export type InvoiceMail = {
   to: string;
   clientName: string;
   numero: string;
+  /** Referencia de la transferencia (VH…). La que el cliente pone como concepto. */
+  bankReference: string;
   amountLabel: string; // p. ej. "EUR 94.38"
   dueDate: string; // ya formateada
   status: string; // en inglés
@@ -162,6 +164,9 @@ export async function sendInvoiceMail(m: InvoiceMail): Promise<void> {
     throw new Error("Invalid recipient address.");
   }
   const numero = headerSafe(m.numero);
+  // La referencia de la transferencia va en el cuerpo (no en cabeceras): saneada
+  // igual, por si el dato llegara con CR/LF.
+  const bankReference = headerSafe(m.bankReference) || numero;
   const doc = m.isProforma ? "Proforma" : "Invoice";
   const subject = encodeHeader(
     m.isProforma
@@ -190,11 +195,11 @@ export async function sendInvoiceMail(m: InvoiceMail): Promise<void> {
         ...cardBlock,
         "",
         "HOW TO PAY — BANK TRANSFER",
-        ...bankRows({ amountLabel: m.amountLabel, reference: numero }).map(
+        ...bankRows({ amountLabel: m.amountLabel, reference: bankReference }).map(
           (r) => `${(BANK_LABEL_EN[r.key] + ":").padEnd(18)}${r.value}`
         ),
         "",
-        bankReferenceNoteEn(numero),
+        bankReferenceNoteEn(bankReference),
       ]
     : [];
 
