@@ -56,10 +56,11 @@ export type Invoice = {
   // Número fiscal de la serie (FACT-AAAA-NNN). Se asigna SOLO al confirmar el
   // pago y ya no cambia (continuidad de serie, sin huecos). null = proforma.
   numeroFactura: string | null;
-  // Referencia CORTA de la transferencia (VH + 5 dígitos, p. ej. `VH00016`).
-  // Es lo que el cliente pone como concepto y con lo que el conciliador de Wise
-  // casa el ingreso con el pedido. Solo alfanumérico a propósito: muchos bancos
-  // no aceptan guiones ni signos en la referencia. Facturas antiguas: "".
+  // Referencia CORTA de la transferencia (`VH` + código de la proforma, p. ej.
+  // `PRO-2026-C3C161` → `VHC3C161`). Es lo que el cliente pone como concepto y con
+  // lo que el conciliador de Wise casa el ingreso con el pedido. Solo alfanumérico
+  // a propósito: muchos bancos no aceptan guiones ni signos en la referencia.
+  // Facturas antiguas: "" (transferRef lo deriva del número al vuelo).
   refPago: string;
   metodoPago: PaymentMethod | null; // método de cobro (informativo)
   pago: InvoicePayment | null; // sesión de pago viva en la pasarela, si la hay
@@ -198,31 +199,34 @@ function newProformaNumero(list: Invoice[], year: number): string {
   return numero;
 }
 
-/**
- * Siguiente referencia de transferencia (`VH` + 5 dígitos, secuencial global).
- * Se deriva de las referencias ya emitidas, así que es única y de ancho fijo:
- * el ancho fijo evita que una referencia sea prefijo de otra (`VH00001` no es
- * subcadena de `VH00016`), lo que hace seguro el casado por coincidencia exacta.
- */
 export const REF_PAGO_PREFIX = "VH";
 
-function nextRefPago(list: Invoice[]): string {
-  const max = list.reduce((acc, i) => {
-    const r = i.refPago ?? "";
-    if (!r.startsWith(REF_PAGO_PREFIX)) return acc;
-    const n = Number.parseInt(r.slice(REF_PAGO_PREFIX.length), 10);
-    return Number.isFinite(n) && n > acc ? n : acc;
-  }, 0);
-  return `${REF_PAGO_PREFIX}${String(max + 1).padStart(5, "0")}`;
+/**
+ * Código único de la proforma, sin prefijo ni símbolos: `PRO-2026-C3C161` → `C3C161`.
+ */
+function codigoProforma(numero: string): string {
+  return (numero.split("-").pop() || numero).toUpperCase();
 }
 
 /**
- * Referencia que el cliente debe poner en la transferencia. Las facturas nuevas
- * llevan `refPago` (VH…); las anteriores a este campo caen al número de proforma,
- * que es lo que se les comunicó en su día.
+ * Referencia de transferencia que el cliente pone como CONCEPTO. Se deriva del
+ * código único de la proforma: `PRO-2026-C3C161` → `VHC3C161`. Es:
+ *  - **alfanumérica pura** (muchos bancos rechazan `-` y símbolos en el concepto),
+ *  - de **ancho fijo** (`VH` + 6 hex) → ninguna referencia es subcadena de otra,
+ *    lo que hace seguro el casado por coincidencia del conciliador de Wise,
+ *  - **determinista**: web, correo, PDF y conciliador coinciden sin contador aparte.
+ */
+export function refFromNumero(numero: string): string {
+  return REF_PAGO_PREFIX + codigoProforma(numero);
+}
+
+/**
+ * Referencia que el cliente debe poner en la transferencia. Se usa `refPago` si
+ * está guardado; si no (facturas antiguas), se deriva del número de proforma, así
+ * que nunca cae a un número con guiones que algunos bancos rechazan.
  */
 export function transferRef(inv: Invoice): string {
-  return inv.refPago || inv.numero;
+  return inv.refPago || refFromNumero(inv.numero);
 }
 
 /** Redondea a 2 decimales evitando errores de coma flotante. */
@@ -307,13 +311,14 @@ export async function createInvoice(input: NewInvoiceInput): Promise<Invoice> {
   const vencimiento = new Date(now);
   vencimiento.setDate(vencimiento.getDate() + (input.vencimientoDias ?? 30));
 
+  // Nace como PROFORMA con número aleatorio; el número fiscal se asigna al pagar.
+  const numero = newProformaNumero(list, now.getFullYear());
   const invoice: Invoice = {
     id: randomUUID(),
-    // Nace como PROFORMA con número aleatorio; el número fiscal se asigna al pagar.
-    numero: newProformaNumero(list, now.getFullYear()),
+    numero,
     numeroFactura: null,
-    // Referencia corta de la transferencia, secuencial y única.
-    refPago: nextRefPago(list),
+    // Referencia de transferencia SIN símbolos, derivada del código: VHC3C161.
+    refPago: refFromNumero(numero),
     metodoPago: input.metodoPago ?? null,
     pago: null,
     userId: input.userId ?? null,
