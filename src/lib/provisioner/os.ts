@@ -35,10 +35,7 @@ export const OS_OPTIONS: readonly OsOption[] = [
   { slug: "debian-13", label: "Debian 13", familia: "linux", disponible: true, minDiscoGb: 0 },
   { slug: "rocky-9", label: "Rocky Linux 9", familia: "linux", disponible: true, minDiscoGb: 0 },
   { slug: "almalinux-9", label: "AlmaLinux 9", familia: "linux", disponible: true, minDiscoGb: 0 },
-  // AlmaLinux 8: pendiente de crear la plantilla cloud-init (VMID 9009) en el
-  // nodo y registrarla en el provisioner. Hasta entonces disponible:false para
-  // no encolar una provisión que el worker no sabría resolver.
-  { slug: "almalinux-8", label: "AlmaLinux 8", familia: "linux", disponible: false, minDiscoGb: 0 },
+  { slug: "almalinux-8", label: "AlmaLinux 8", familia: "linux", disponible: true, minDiscoGb: 0 },
   // Windows (BYOL: el cliente aporta su licencia). Oculto hasta que existan las
   // plantillas cloudbase-init en el nodo Proxmox; entonces pasar a disponible:true.
   // Win 11 exige 64 GB (MS) → no cabe en el plan Start (50 GB); mínimo Pro.
