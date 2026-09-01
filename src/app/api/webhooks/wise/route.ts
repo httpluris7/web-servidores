@@ -58,12 +58,15 @@ export async function POST(req: Request) {
 
   const type = String(evt.event_type ?? "");
 
-  // Solo un abono a una balance adelanta el conciliador; el resto se reconoce e ignora.
-  if (type.startsWith("balances#credit")) {
-    if (wise.enabled && wiseHasCreds(wise)) {
-      // Fire-and-forget: no bloquear la respuesta del webhook con el sondeo.
-      void comprobarWise();
-    }
+  // Cualquier evento de MOVIMIENTO de dinero adelanta el conciliador: un abono a la
+  // balance (`balances#credit`, el ideal para pagos entrantes) o un cambio de estado
+  // de transferencia (`transfers#state-change`). El disparo es idempotente y barato,
+  // así que aceptamos ambos sin miedo a pasarnos de sensibles; el resto se ignora.
+  const esMovimiento =
+    type.startsWith("balances#credit") || type.startsWith("transfers#state-change");
+  if (esMovimiento && wise.enabled && wiseHasCreds(wise)) {
+    // Fire-and-forget: no bloquear la respuesta del webhook con el sondeo.
+    void comprobarWise();
   }
 
   return NextResponse.json({ ok: true, type });
