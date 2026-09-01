@@ -131,7 +131,7 @@ export function OrderForm({
             {/* Transferencia con la referencia ya emitida (o el aviso de que llegará). */}
             <div className="mt-6">
               <BankTransfer
-                reference={refPago ?? numero ?? undefined}
+                reference={refPago ?? undefined}
                 amountLabel={numero ? eur(plan.price, 2) : undefined}
               />
             </div>

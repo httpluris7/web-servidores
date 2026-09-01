@@ -101,9 +101,9 @@ export function CartView({
           {t("cartView.allSet")}{user ? `, ${user.nombre.split(" ")[0]}` : ""}.
         </h2>
         <p className="mt-2 text-sm text-[var(--color-fg-muted)]">
-          {proforma?.numero
-            ? t("cartView.orderRegisteredWithProforma", { numero: proforma.numero })
-            : t("cartView.orderRegisteredText")}
+          {/* No se muestra el nº de proforma (PRO-…): la referencia que el cliente
+              necesita es el "Concepto" (VH…) del bloque de transferencia de abajo. */}
+          {t("cartView.orderRegisteredText")}
         </p>
         {payError && (
           <p role="alert" className="mt-3 text-sm text-[var(--color-danger)]">
@@ -113,7 +113,7 @@ export function CartView({
         {/* Transferencia con la referencia ya emitida (o el aviso de que llegará). */}
         <div className="mt-6">
           <BankTransfer
-            reference={proforma?.refPago ?? proforma?.numero ?? undefined}
+            reference={proforma?.refPago ?? undefined}
             amountLabel={proforma ? eur(proforma.total, 2) : undefined}
           />
         </div>

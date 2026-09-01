@@ -5,6 +5,7 @@ import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { getSession } from "@/lib/session";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
 import { findDuplicateOrder } from "@/lib/payments/duplicados";
+import { transferRef } from "@/lib/facturas";
 import { registrarIntent } from "@/lib/provisioner/intents";
 import { OS_DEFAULT, esOfertableParaDisco, discoGbDeTexto } from "@/lib/provisioner/os";
 
@@ -176,7 +177,9 @@ export async function POST(req: Request) {
     return NextResponse.json({
       ok: true,
       numero: invoice.numero,
-      refPago: invoice.refPago,
+      // Referencia de transferencia derivada (VH…), nunca vacía ni el nº PRO con
+      // guiones: es lo único que el cliente debe poner como concepto.
+      refPago: transferRef(invoice),
       paymentUrl,
     });
   } catch (err) {
