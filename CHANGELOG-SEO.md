@@ -61,6 +61,12 @@ Registro de cambios SEO/GEO. Rama `seo-geo-20260902` (desde `main` en `eccafc2`)
 
 ---
 
+### Frase de entidad + nombres de región (GEO/pulido)
+- `/sobre-nosotros`: párrafo de entidad "empresa US + infraestructura en la UE" (es/en/fr); retirado el aviso "datos provisionales".
+- Nombres de región localizados por idioma (`catalogo.json`, dato del servidor): es "Países Bajos/Ámsterdam", "Alemania"; fr "Pays-Bas", "Allemagne".
+
+---
+
 ## Pendiente (ver `PENDIENTES.md` y `PLAN-GEO.md §4`)
 - Más artículos de blog según nuevas keywords (opcional).
 - Reescritura de meta descriptions/títulos cortos (`/dominios`, `/red`, `/desplegar`).

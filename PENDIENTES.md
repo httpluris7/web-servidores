@@ -32,7 +32,7 @@ Convención: los datos sin confirmar que aparezcan en borradores van marcados co
 - **Meta descriptions/títulos cortos**: `/dominios` (desc 61 car.), `/red` (título 13 car.), `/desplegar`. — reescritura rápida.
 - **Core Web Vitals**: medir con PageSpeed Insights (campo real) home, `/es/vps`, `/es/hosting`; vigilar el JS de framer-motion/gsap. — requiere navegador/PSI.
 - **Blog** `/blog/` (FASE 5 restante): semilla de artículos HowTo/Article.
-- **Regiones**: los nombres en catálogo están en inglés ("Netherlands"); localizar a "Países Bajos"/"Alemania" mejora los breadcrumbs y textos.
+- ✅ **Regiones localizadas (2026-09-02):** nombres/ciudades por idioma en `catalogo.json` (es "Países Bajos/Ámsterdam", "Alemania"; fr "Pays-Bas", "Allemagne"). Cambio de datos del servidor (catalogo.json va fuera de git).
 
 ## D. Estado de despliegue y git (importante)
 
