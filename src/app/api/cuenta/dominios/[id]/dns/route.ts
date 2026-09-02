@@ -106,8 +106,8 @@ function validarRegistro(
   const prio = Number(o.prio);
   const rec: { type: string; name: string; content: string; ttl?: number; prio?: number } = {
     type,
-    // "@" o vacío = raíz del dominio.
-    name: name === "@" ? "" : name,
+    // Njalla quiere "@" para la raíz (una cadena vacía la rechaza).
+    name: name === "" ? "@" : name,
     content,
   };
   if (Number.isFinite(ttl) && ttl >= 60) rec.ttl = Math.floor(ttl);

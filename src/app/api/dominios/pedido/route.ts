@@ -126,6 +126,7 @@ export async function POST(req: Request) {
         userId: session?.uid ?? null,
         email,
         idioma,
+        renewal: false,
       });
     } catch (err) {
       console.error("[dominios] no se pudo registrar la intención de dominio", err);

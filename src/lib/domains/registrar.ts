@@ -1,7 +1,7 @@
 import "server-only";
 import { njallaCanRegister, readSettings } from "@/lib/ajustes";
 import { appendInvoiceNota } from "@/lib/facturas";
-import { getBalance, NjallaError, registerDomain } from "./njalla";
+import { getBalance, NjallaError, registerDomain, renewDomain } from "./njalla";
 import { intentsDeFactura, marcarRegistrado } from "./intents";
 
 /**
@@ -52,15 +52,21 @@ export async function registrarDominiosFacturaPagada(invoiceId: string): Promise
 
   const fallos: string[] = [];
   for (const it of pendientes) {
+    const verbo = it.renewal ? "renovado" : "registrado";
     try {
-      const r = await registerDomain(it.domain, it.years);
-      await marcarRegistrado(it.invoiceId, it.domain, r.name);
-      await nota(invoiceId, `Dominio registrado: ${it.domain} (${it.years} año${it.years > 1 ? "s" : ""})`);
-      console.info(`[dominios] registrado ${it.domain} · factura ${invoiceId}`);
+      if (it.renewal) {
+        await renewDomain(it.domain, it.years);
+        await marcarRegistrado(it.invoiceId, it.domain, it.domain);
+      } else {
+        const r = await registerDomain(it.domain, it.years);
+        await marcarRegistrado(it.invoiceId, it.domain, r.name);
+      }
+      await nota(invoiceId, `Dominio ${verbo}: ${it.domain} (${it.years} año${it.years > 1 ? "s" : ""})`);
+      console.info(`[dominios] ${verbo} ${it.domain} · factura ${invoiceId}`);
     } catch (err) {
       fallos.push(it.domain);
       console.error(
-        `[dominios] fallo registrando ${it.domain} · factura ${invoiceId}:`,
+        `[dominios] fallo ${it.renewal ? "renovando" : "registrando"} ${it.domain} · factura ${invoiceId}:`,
         err instanceof NjallaError ? `${err.reason} ${err.message}` : err,
       );
     }

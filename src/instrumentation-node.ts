@@ -1,6 +1,7 @@
 import { barrerAgentesCaidos } from "@/lib/servidores/avisos";
 import { comprobarBackupDiario } from "@/lib/backup/planificador";
 import { comprobarWise } from "@/lib/payments/wise-reconcile";
+import { comprobarDominios } from "@/lib/domains/monitor";
 
 /**
  * Único trabajo periódico de la aplicación: buscar agentes que han dejado de
@@ -34,6 +35,9 @@ const lanzar = () => {
   // entrega los VPS de las proformas cuyo ingreso ha llegado. No hace nada si
   // Wise está apagado o sin credenciales.
   void comprobarWise();
+  // Dominios: monitor de saldo del monedero Njalla + barrido de renovaciones
+  // (1×/día). No hace nada si Njalla está apagado o sin token.
+  void comprobarDominios();
 };
 
 // `unref` para que un temporizador pendiente no mantenga vivo el proceso

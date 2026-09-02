@@ -24,10 +24,12 @@ export type DomainIntent = {
   userId: string | null;
   email: string;
   idioma: "es" | "en";
+  /** true = renovación de un dominio existente; false = alta nueva. */
+  renewal: boolean;
   creadoAt: string;
-  /** ¿Ya se registró en Njalla? (idempotencia del CP3). */
+  /** ¿Ya se procesó en Njalla (registrado o renovado)? (idempotencia). */
   registered: boolean;
-  /** Nombre devuelto por Njalla al registrar (confirmación). */
+  /** Nombre devuelto por Njalla al procesar (confirmación). */
   njallaName: string | null;
 };
 
@@ -53,6 +55,7 @@ async function readAll(): Promise<DomainIntent[]> {
           userId: typeof d.userId === "string" ? d.userId : null,
           email: d.email ?? "",
           idioma: d.idioma === "es" ? "es" : "en",
+          renewal: d.renewal === true,
           creadoAt: d.creadoAt ?? "",
           registered: d.registered === true,
           njallaName: typeof d.njallaName === "string" ? d.njallaName : null,
@@ -116,6 +119,11 @@ export async function marcarRegistrado(
 export async function dominiosDeUsuario(userId: string): Promise<DomainIntent[]> {
   if (!userId) return [];
   return (await readAll()).filter((d) => d.userId === userId && d.registered);
+}
+
+/** Altas ya registradas (no renovaciones): las candidatas a renovar. */
+export async function altasRegistradas(): Promise<DomainIntent[]> {
+  return (await readAll()).filter((d) => d.registered && !d.renewal);
 }
 
 /**

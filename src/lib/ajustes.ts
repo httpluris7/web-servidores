@@ -169,6 +169,8 @@ export type NjallaSettings = {
   registerToken: string;
   /** Margen sobre el precio de Njalla, en % (precio_cliente = njalla × (1+m/100)). */
   margenPct: number;
+  /** Umbral de saldo del monedero (EUR): por debajo, se avisa al admin. */
+  saldoMinimo: number;
 };
 
 export type Settings = {
@@ -197,6 +199,7 @@ export const DEFAULT_NJALLA: NjallaSettings = {
   apiToken: "",
   registerToken: "",
   margenPct: 25,
+  saldoMinimo: 50,
 };
 
 /** Valores de partida de las copias de seguridad: a las 03:00, sin destinos. */
@@ -366,11 +369,13 @@ function njallaFromEnv(): NjallaSettings {
   const apiToken = (process.env.NJALLA_API_TOKEN ?? "").trim();
   const registerToken = (process.env.NJALLA_REGISTER_TOKEN ?? "").trim();
   const m = Number(process.env.NJALLA_MARGIN_PCT);
+  const min = Number(process.env.NJALLA_MIN_BALANCE);
   return {
     enabled: !!apiToken,
     apiToken,
     registerToken,
     margenPct: Number.isFinite(m) && m >= 0 ? m : DEFAULT_NJALLA.margenPct,
+    saldoMinimo: Number.isFinite(min) && min >= 0 ? min : DEFAULT_NJALLA.saldoMinimo,
   };
 }
 
@@ -379,11 +384,13 @@ function normalizeNjalla(raw: unknown, fallback: NjallaSettings): NjallaSettings
   const apiToken = typeof o.apiToken === "string" ? o.apiToken.trim() : "";
   const registerToken = typeof o.registerToken === "string" ? o.registerToken.trim() : "";
   const m = Number(o.margenPct);
+  const min = Number(o.saldoMinimo);
   return {
     enabled: o.enabled === true,
     apiToken: apiToken || fallback.apiToken,
     registerToken: registerToken || fallback.registerToken,
     margenPct: Number.isFinite(m) && m >= 0 ? m : fallback.margenPct,
+    saldoMinimo: Number.isFinite(min) && min >= 0 ? min : fallback.saldoMinimo,
   };
 }
 
@@ -607,12 +614,14 @@ export type NjallaPatch = {
   apiToken?: string | null;
   registerToken?: string | null;
   margenPct?: number;
+  saldoMinimo?: number;
 };
 
 export async function updateNjallaSettings(patch: NjallaPatch): Promise<Settings> {
   const current = await readSettings();
   const n = current.njalla;
   const margen = Number(patch.margenPct);
+  const min = Number(patch.saldoMinimo);
   const next: Settings = {
     ...current,
     njalla: {
@@ -620,6 +629,7 @@ export async function updateNjallaSettings(patch: NjallaPatch): Promise<Settings
       apiToken: pickSecret(patch.apiToken, n.apiToken),
       registerToken: pickSecret(patch.registerToken, n.registerToken),
       margenPct: Number.isFinite(margen) && margen >= 0 ? margen : n.margenPct,
+      saldoMinimo: Number.isFinite(min) && min >= 0 ? min : n.saldoMinimo,
     },
   };
   await writeSettings(next);
