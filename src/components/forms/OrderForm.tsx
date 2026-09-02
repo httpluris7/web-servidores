@@ -28,6 +28,7 @@ export function OrderForm({
   regions,
   stripeEnabled = false,
   user = null,
+  isHosting = false,
 }: {
   plan: Plan;
   lineTitle: string;
@@ -36,6 +37,8 @@ export function OrderForm({
   stripeEnabled?: boolean;
   /** Cliente autenticado (o null): contratar exige cuenta. */
   user?: { nombre: string; email: string } | null;
+  /** ¿Es un plan de hosting? Muestra el campo de dominio a alojar. */
+  isHosting?: boolean;
 }) {
   const t = useTranslations("products");
   const tc = useTranslations("common");
@@ -47,6 +50,7 @@ export function OrderForm({
     region: regions ? defaultVpsRegionSlug(regions) : "",
     os: OS_DEFAULT,
     hostname: "",
+    domain: "",
   });
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
@@ -253,6 +257,24 @@ export function OrderForm({
                     {t("orderForm.hostnameHint")}
                   </p>
                 </div>
+              </div>
+            )}
+
+            {isHosting && (
+              <div>
+                <Label htmlFor="domain">{t("orderForm.domainLabel")}</Label>
+                <Input
+                  id="domain"
+                  value={values.domain}
+                  onChange={(e) => setValues((v) => ({ ...v, domain: e.target.value }))}
+                  placeholder={t("orderForm.domainPlaceholder")}
+                  autoComplete="off"
+                  spellCheck={false}
+                  maxLength={253}
+                />
+                <p className="mt-1 font-mono text-[0.65rem] text-[var(--color-fg-dim)]">
+                  {t("orderForm.domainHint")}
+                </p>
               </div>
             )}
 

@@ -52,7 +52,9 @@ export async function aprovisionarHostingFacturaPagada(invoiceId: string): Promi
       continue;
     }
     const username = usuarioDeterminista(it.invoiceId, it.planId);
-    const domain = `${username}.${baseDomain}`;
+    // Dominio real que pidió el cliente, o temporal `<user>.<baseDomain>`.
+    const esTemporal = !it.requestedDomain;
+    const domain = it.requestedDomain || `${username}.${baseDomain}`;
     const password = generarPassword();
     try {
       const r = await createAccount({
@@ -86,6 +88,7 @@ export async function aprovisionarHostingFacturaPagada(invoiceId: string): Promi
           password,
           domain,
           panelHost,
+          esTemporal,
         });
       } catch (err) {
         console.error(`[hosting] no se pudieron enviar las credenciales de ${username}:`, err);

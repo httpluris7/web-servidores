@@ -28,7 +28,7 @@ export function CartView({
   const t = useTranslations("auth");
   const tc = useTranslations("common");
   const locale = useLocale();
-  const { lines, count, ready, setQty, setRegion, setOs, remove, clear } = useCart();
+  const { lines, count, ready, setQty, setRegion, setOs, setDomain, remove, clear } = useCart();
   // El usuario inicial llega del servidor (sin parpadeo). Si el checkout
   // responde 401 (sesión caducada) lo bajamos a null para mostrar el gate.
   const [user, setUser] = useState<InitialUser>(initialUser);
@@ -54,7 +54,13 @@ export function CartView({
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          items: lines.map((l) => ({ planId: l.planId, qty: l.qty, region: l.region, os: l.os })),
+          items: lines.map((l) => ({
+            planId: l.planId,
+            qty: l.qty,
+            region: l.region,
+            os: l.os,
+            domain: l.domain,
+          })),
           metodo,
           locale,
         }),
@@ -252,6 +258,28 @@ export function CartView({
                 {t("cartView.remove")}
               </button>
             </div>
+
+            {/* Dominio a alojar (solo hosting): opcional, vacío = temporal. */}
+            {l.isHosting && (
+              <div className="mt-4 border-t border-[var(--color-line)] pt-4">
+                <label className="block">
+                  <span className="mono-label text-[0.6rem]">{t("cartView.domainLabel")}</span>
+                  <input
+                    type="text"
+                    inputMode="url"
+                    autoComplete="off"
+                    spellCheck={false}
+                    value={l.domain ?? ""}
+                    onChange={(e) => setDomain(l.planId, e.target.value)}
+                    placeholder={t("cartView.domainPlaceholder")}
+                    className="mt-1.5 w-full rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-2 text-sm focus:border-[var(--color-accent)] focus:outline-none"
+                  />
+                  <span className="mt-1.5 block text-xs text-[var(--color-fg-dim)]">
+                    {t("cartView.domainHint")}
+                  </span>
+                </label>
+              </div>
+            )}
           </div>
         ))}
 

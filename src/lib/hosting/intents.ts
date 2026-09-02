@@ -27,6 +27,8 @@ export type HostingIntent = {
   email: string;
   nombre: string;
   idioma: "es" | "en";
+  /** Dominio que el cliente quiere alojar (ya normalizado); null = temporal. */
+  requestedDomain: string | null;
   creadoAt: string;
   /** ¿Ya se creó la cuenta en WHM? (idempotencia). */
   provisioned: boolean;
@@ -62,6 +64,7 @@ async function readAll(): Promise<HostingIntent[]> {
           email: d.email ?? "",
           nombre: d.nombre ?? "",
           idioma: d.idioma === "es" ? "es" : "en",
+          requestedDomain: typeof d.requestedDomain === "string" ? d.requestedDomain : null,
           creadoAt: d.creadoAt ?? "",
           provisioned: d.provisioned === true,
           cpanelUser: typeof d.cpanelUser === "string" ? d.cpanelUser : null,

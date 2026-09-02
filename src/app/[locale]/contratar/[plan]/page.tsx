@@ -53,6 +53,7 @@ export default async function OrderPage({ params }: { params: Promise<Params> })
 
   const t = await getTranslations("products");
   const isVps = located.lineTipo === "vps";
+  const isHosting = located.lineTipo === "hosting";
   const lineTitle = located.lineTitle;
 
   // Contratar exige cuenta: si no hay sesión, el formulario muestra el acceso.
@@ -81,6 +82,7 @@ export default async function OrderPage({ params }: { params: Promise<Params> })
           regions={isVps ? regionsForPlan(catalog, id) : undefined}
           stripeEnabled={await stripeIsReady()}
           user={user ? { nombre: user.nombre, email: user.email } : null}
+          isHosting={isHosting}
         />
 
         <p className="mt-10 text-sm text-[var(--color-fg-muted)]">

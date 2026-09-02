@@ -10,6 +10,7 @@ import { findDuplicateOrder } from "@/lib/payments/duplicados";
 import { registrarIntent } from "@/lib/provisioner/intents";
 import { registrarHostingIntent } from "@/lib/hosting/intents";
 import { paqueteDePlan } from "@/lib/hosting/paquetes";
+import { normalizarDominioHost } from "@/lib/hosting/dominio";
 import { OS_DEFAULT, discoGbDeTexto, esOfertableParaDisco } from "@/lib/provisioner/os";
 import { transferRef } from "@/lib/facturas";
 
@@ -19,7 +20,13 @@ export const dynamic = "force-dynamic";
 const MAX_QTY = 99;
 const MAX_ITEMS = 50;
 
-type IncomingItem = { planId?: unknown; qty?: unknown; region?: unknown; os?: unknown };
+type IncomingItem = {
+  planId?: unknown;
+  qty?: unknown;
+  region?: unknown;
+  os?: unknown;
+  domain?: unknown;
+};
 
 function clampQty(raw: unknown): number {
   const n = typeof raw === "number" ? raw : Number(raw);
@@ -70,6 +77,8 @@ export async function POST(req: Request) {
     lineTotal: number;
     region: string;
     osSlug: string;
+    /** Dominio a alojar (solo hosting; null = temporal). */
+    domain: string | null;
     line: string;
   }[] = [];
 
@@ -107,6 +116,9 @@ export async function POST(req: Request) {
       ? osRaw
       : OS_DEFAULT;
 
+    // Dominio a alojar (solo hosting): se normaliza/valida; inválido o vacío → temporal.
+    const domain = located.lineTipo === "hosting" ? normalizarDominioHost(item.domain) : null;
+
     validated.push({
       planId,
       planName: located.plan.name,
@@ -115,6 +127,7 @@ export async function POST(req: Request) {
       lineTotal: located.plan.price * qty,
       region,
       osSlug,
+      domain,
       line: located.lineTitle,
     });
   }
@@ -230,6 +243,7 @@ export async function POST(req: Request) {
           email: user.email,
           nombre: clienteNombre,
           idioma: locale?.startsWith("es") ? "es" : "en",
+          requestedDomain: v.domain,
         });
       } catch (err) {
         console.error("[checkout] no se pudo registrar la intención de hosting", v.planId, err);

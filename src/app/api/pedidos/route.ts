@@ -9,6 +9,7 @@ import { transferRef } from "@/lib/facturas";
 import { registrarIntent } from "@/lib/provisioner/intents";
 import { registrarHostingIntent } from "@/lib/hosting/intents";
 import { paqueteDePlan } from "@/lib/hosting/paquetes";
+import { normalizarDominioHost } from "@/lib/hosting/dominio";
 import { OS_DEFAULT, esOfertableParaDisco, discoGbDeTexto } from "@/lib/provisioner/os";
 
 /** Hostname url/DNS-safe a partir de lo que teclee el cliente (o null si no da nada). */
@@ -190,6 +191,7 @@ export async function POST(req: Request) {
             email,
             nombre: name,
             idioma: locale?.startsWith("es") ? "es" : "en",
+            requestedDomain: normalizarDominioHost(body.domain),
           });
         } catch (err) {
           console.error("[pedidos] no se pudo registrar la intención de hosting", err);

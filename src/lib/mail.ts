@@ -322,10 +322,12 @@ export type HostingWelcomeMail = {
   idioma: "es" | "en";
   username: string;
   password: string;
-  /** Dominio primario temporal de la cuenta (`<user>.cp.viahost.top`). */
+  /** Dominio primario de la cuenta (el real del cliente, o el temporal). */
   domain: string;
   /** Hostname del nodo cPanel para el panel/webmail (`web01.viahost.top`). */
   panelHost: string;
+  /** true = dominio temporal `<user>.cp…`; false = dominio real del cliente. */
+  esTemporal: boolean;
 };
 
 /**
@@ -350,6 +352,34 @@ export async function sendHostingWelcomeMail(m: HostingWelcomeMail): Promise<voi
     es ? "Tu hosting está listo — ViaHost" : "Your web hosting is ready — ViaHost",
   );
 
+  const dominioBloque = m.esTemporal
+    ? es
+      ? [
+          "Tu cuenta se ha creado con un dominio temporal para que puedas empezar",
+          "ya. Cuando quieras usar tu propio dominio, apúntalo a la IP del",
+          "servidor (163.5.85.212) y cámbialo como dominio principal en cPanel, o",
+          "respóndenos y te lo configuramos.",
+        ]
+      : [
+          "Your account was created with a temporary domain so you can start",
+          "right away. To use your own domain, point it to the server IP",
+          "(163.5.85.212) and set it as the primary domain in cPanel, or reply to",
+          "us and we'll set it up for you.",
+        ]
+    : es
+      ? [
+          `Tu cuenta usa tu dominio ${m.domain}. Para activarlo, apunta su DNS`,
+          "(registro A) a la IP del servidor: 163.5.85.212. Tu web estará",
+          "disponible en cuanto propague el DNS (suele tardar de minutos a unas",
+          "horas). Si necesitas ayuda, respóndenos.",
+        ]
+      : [
+          `Your account uses your domain ${m.domain}. To activate it, point its`,
+          "DNS (A record) to the server IP: 163.5.85.212. Your site will be live",
+          "once DNS propagates (usually minutes to a few hours). Reply to us if",
+          "you need a hand.",
+        ];
+
   const body = (
     es
       ? [
@@ -361,13 +391,10 @@ export async function sendHostingWelcomeMail(m: HostingWelcomeMail): Promise<voi
           `Usuario:         ${m.username}`,
           `Contraseña:      ${m.password}`,
           "",
-          `URL temporal del sitio:  ${siteUrl}`,
+          `${m.esTemporal ? "URL temporal del sitio" : "Tu sitio"}:  ${siteUrl}`,
           `Webmail:                 ${webmailUrl}`,
           "",
-          "Tu cuenta se ha creado con un dominio temporal para que puedas empezar",
-          "ya. Cuando quieras usar tu propio dominio, apúntalo a la IP del",
-          "servidor (163.5.85.212) y cámbialo como dominio principal en cPanel, o",
-          "respóndenos y te lo configuramos.",
+          ...dominioBloque,
           "",
           "Por seguridad, cambia la contraseña la primera vez que entres.",
           "",
@@ -384,13 +411,10 @@ export async function sendHostingWelcomeMail(m: HostingWelcomeMail): Promise<voi
           `Username:        ${m.username}`,
           `Password:        ${m.password}`,
           "",
-          `Temporary site URL:  ${siteUrl}`,
+          `${m.esTemporal ? "Temporary site URL" : "Your site"}:  ${siteUrl}`,
           `Webmail:             ${webmailUrl}`,
           "",
-          "Your account was created with a temporary domain so you can start",
-          "right away. To use your own domain, point it to the server IP",
-          "(163.5.85.212) and set it as the primary domain in cPanel, or reply to",
-          "us and we'll set it up for you.",
+          ...dominioBloque,
           "",
           "For your security, change the password the first time you log in.",
           "",

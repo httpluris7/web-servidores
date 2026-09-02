@@ -170,7 +170,10 @@
       "logIn": "Iniciar sesión",
       "hostnameLabel": "Hostname (opcional)",
       "hostnamePlaceholder": "mi-servidor",
-      "hostnameHint": "Solo letras, números y guiones. Si lo dejas vacío, se genera uno."
+      "hostnameHint": "Solo letras, números y guiones. Si lo dejas vacío, se genera uno.",
+      "domainLabel": "Dominio a alojar",
+      "domainPlaceholder": "tudominio.com (opcional)",
+      "domainHint": "Opcional. Si lo dejas en blanco, empiezas con un dominio temporal y luego apuntas el tuyo."
     }
   }
 }

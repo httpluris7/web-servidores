@@ -170,7 +170,10 @@
       "logIn": "Log in",
       "hostnameLabel": "Hostname (optional)",
       "hostnamePlaceholder": "my-server",
-      "hostnameHint": "Letters, numbers and hyphens only. Left empty, one is generated."
+      "hostnameHint": "Letters, numbers and hyphens only. Left empty, one is generated.",
+      "domainLabel": "Domain to host",
+      "domainPlaceholder": "yourdomain.com (optional)",
+      "domainHint": "Optional. Leave it blank to start on a temporary domain and point yours later."
     }
   }
 }

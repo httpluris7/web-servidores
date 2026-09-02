@@ -170,7 +170,10 @@
       "logIn": "Se connecter",
       "hostnameLabel": "Nom d’hôte (optionnel)",
       "hostnamePlaceholder": "mon-serveur",
-      "hostnameHint": "Lettres, chiffres et tirets uniquement. Laissé vide, il est généré."
+      "hostnameHint": "Lettres, chiffres et tirets uniquement. Laissé vide, il est généré.",
+      "domainLabel": "Domaine à héberger",
+      "domainPlaceholder": "votredomaine.com (facultatif)",
+      "domainHint": "Facultatif. Laissez vide pour démarrer sur un domaine temporaire et pointer le vôtre plus tard."
     }
   }
 }
