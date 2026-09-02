@@ -568,6 +568,183 @@ export const posts: BlogPost[] = [
       },
     },
   },
+  {
+    slug: "que-es-proxmox-kvm-vps",
+    date: "2026-07-23",
+    type: "article",
+    ctaHref: "/vps",
+    content: {
+      es: {
+        title: "Qué es Proxmox y KVM en un VPS",
+        description: "Proxmox y KVM explicados: qué son, qué significan para tu VPS y por qué importan la virtualización real y el aislamiento de recursos.",
+        intro: ["Cuando contratas un VPS, la tecnología de virtualización determina cómo se reparten los recursos. Proxmox sobre KVM ofrece virtualización real con recursos aislados."],
+        sections: [
+          { heading: "Qué es KVM", body: ["KVM es una tecnología de virtualización del kernel de Linux que crea máquinas virtuales con su propio sistema operativo y recursos aislados, como si fueran servidores físicos."] },
+          { heading: "Qué es Proxmox", body: ["Proxmox es una plataforma de gestión de máquinas virtuales sobre KVM. Permite crear, arrancar, apagar, hacer snapshots y administrar los VPS de forma robusta."] },
+          { heading: "Por qué importa la virtualización real", body: ["Con KVM tus recursos (vCPU, RAM, disco) están aislados y no se comparten con otros clientes como en las virtualizaciones de tipo contenedor. Eso da rendimiento estable y más libertad: kernel propio y cualquier sistema operativo."] },
+          { heading: "Proxmox en ViaHost", body: ["En ViaHost los VPS corren sobre Proxmox/KVM, con panel de gestión, consola noVNC y snapshots incluidos."] },
+        ],
+        faq: [
+          { q: "¿KVM es mejor que la virtualización por contenedores?", a: "Para un VPS, KVM da mejor aislamiento y libertad (kernel propio, cualquier SO). Los contenedores comparten kernel y son más limitados." },
+          { q: "¿Qué son los snapshots?", a: "Una copia del estado del VPS en un momento dado, a la que puedes volver si algo sale mal." },
+          { q: "¿Puedo instalar cualquier sistema operativo?", a: "Con KVM sí: Linux (Ubuntu, Debian, AlmaLinux…) o Windows Server." },
+        ],
+        cta: "Ver planes de VPS",
+      },
+      en: {
+        title: "What Proxmox and KVM are in a VPS",
+        description: "Proxmox and KVM explained: what they are, what they mean for your VPS and why real virtualization and resource isolation matter.",
+        intro: ["When you order a VPS, the virtualization technology determines how resources are shared. Proxmox on KVM offers real virtualization with isolated resources."],
+        sections: [
+          { heading: "What KVM is", body: ["KVM is a Linux kernel virtualization technology that creates virtual machines with their own operating system and isolated resources, as if they were physical servers."] },
+          { heading: "What Proxmox is", body: ["Proxmox is a management platform for virtual machines on KVM. It lets you create, start, stop, snapshot and administer VPSs robustly."] },
+          { heading: "Why real virtualization matters", body: ["With KVM your resources (vCPU, RAM, disk) are isolated and not shared with other customers like in container-type virtualization. That gives stable performance and more freedom: your own kernel and any operating system."] },
+          { heading: "Proxmox at ViaHost", body: ["At ViaHost, VPSs run on Proxmox/KVM, with a management panel, noVNC console and snapshots included."] },
+        ],
+        faq: [
+          { q: "Is KVM better than container virtualization?", a: "For a VPS, KVM gives better isolation and freedom (your own kernel, any OS). Containers share a kernel and are more limited." },
+          { q: "What are snapshots?", a: "A copy of the VPS state at a given moment, which you can roll back to if something goes wrong." },
+          { q: "Can I install any operating system?", a: "With KVM, yes: Linux (Ubuntu, Debian, AlmaLinux…) or Windows Server." },
+        ],
+        cta: "See the VPS plans",
+      },
+      fr: {
+        title: "Qu'est-ce que Proxmox et KVM dans un VPS",
+        description: "Proxmox et KVM expliqués : ce que c'est, ce que cela signifie pour votre VPS et pourquoi la virtualisation réelle et l'isolation des ressources comptent.",
+        intro: ["Quand vous commandez un VPS, la technologie de virtualisation détermine comment les ressources sont partagées. Proxmox sur KVM offre une virtualisation réelle avec des ressources isolées."],
+        sections: [
+          { heading: "Qu'est-ce que KVM", body: ["KVM est une technologie de virtualisation du noyau Linux qui crée des machines virtuelles avec leur propre système d'exploitation et des ressources isolées, comme des serveurs physiques."] },
+          { heading: "Qu'est-ce que Proxmox", body: ["Proxmox est une plateforme de gestion de machines virtuelles sur KVM. Elle permet de créer, démarrer, arrêter, faire des snapshots et administrer les VPS de façon robuste."] },
+          { heading: "Pourquoi la virtualisation réelle compte", body: ["Avec KVM, vos ressources (vCPU, RAM, disque) sont isolées et non partagées avec d'autres clients comme dans la virtualisation par conteneurs. Cela donne des performances stables et plus de liberté : votre propre noyau et n'importe quel système."] },
+          { heading: "Proxmox chez ViaHost", body: ["Chez ViaHost, les VPS tournent sur Proxmox/KVM, avec un panneau de gestion, une console noVNC et des snapshots inclus."] },
+        ],
+        faq: [
+          { q: "KVM est-il meilleur que la virtualisation par conteneurs ?", a: "Pour un VPS, KVM offre une meilleure isolation et liberté (votre propre noyau, n'importe quel OS). Les conteneurs partagent un noyau et sont plus limités." },
+          { q: "Que sont les snapshots ?", a: "Une copie de l'état du VPS à un instant donné, à laquelle vous pouvez revenir si quelque chose tourne mal." },
+          { q: "Puis-je installer n'importe quel système d'exploitation ?", a: "Avec KVM, oui : Linux (Ubuntu, Debian, AlmaLinux…) ou Windows Server." },
+        ],
+        cta: "Voir les formules VPS",
+      },
+    },
+  },
+  {
+    slug: "que-es-proteccion-ddos",
+    date: "2026-07-16",
+    type: "article",
+    ctaHref: "/proteccion-ddos",
+    content: {
+      es: {
+        title: "Qué es la protección DDoS y por qué la necesitas",
+        description: "Qué es un ataque DDoS, cómo funciona la mitigación y por qué conviene que venga incluida en tu VPS o hosting.",
+        intro: ["Un ataque DDoS intenta tumbar tu web saturándola con tráfico falso. La protección DDoS filtra ese tráfico antes de que llegue a tu servidor."],
+        sections: [
+          { heading: "Qué es un ataque DDoS", body: ["Un ataque de denegación de servicio distribuido (DDoS) envía una avalancha de peticiones desde muchos orígenes para saturar tu servidor y dejar tu web fuera de servicio."] },
+          { heading: "Cómo funciona la mitigación", body: ["La mitigación analiza el tráfico en el borde de la red y descarta el malicioso, dejando pasar solo el legítimo. Tu servidor no llega a recibir el ataque."] },
+          { heading: "Por qué conviene que venga incluida", body: ["Muchos proveedores cobran la protección aparte o por ataque. Incluida de serie, no tienes que configurar nada ni pagar extra cuando ocurre un ataque."] },
+          { heading: "DDoS incluido en ViaHost", body: ["En ViaHost la mitigación DDoS está siempre activa e incluida en VPS y hosting, sin coste ni límite por ataque."] },
+        ],
+        faq: [
+          { q: "¿La protección DDoS ralentiza mi web?", a: "No. El filtrado ocurre en el borde de la red y solo afecta al tráfico de ataque; el legítimo pasa con normalidad." },
+          { q: "¿Tengo que configurar algo?", a: "No. En ViaHost está activa de serie, sin configuración por tu parte." },
+          { q: "¿Cubre cualquier tamaño de ataque?", a: "La mitigación absorbe los ataques volumétricos habituales sin coste ni límite por ataque." },
+        ],
+        cta: "Ver la protección DDoS",
+      },
+      en: {
+        title: "What DDoS protection is and why you need it",
+        description: "What a DDoS attack is, how mitigation works and why it is best to have it included in your VPS or hosting.",
+        intro: ["A DDoS attack tries to take down your site by flooding it with fake traffic. DDoS protection filters that traffic before it reaches your server."],
+        sections: [
+          { heading: "What a DDoS attack is", body: ["A distributed denial-of-service (DDoS) attack sends a flood of requests from many sources to overload your server and take your site offline."] },
+          { heading: "How mitigation works", body: ["Mitigation analyzes traffic at the network edge and discards the malicious part, letting only legitimate traffic through. Your server never receives the attack."] },
+          { heading: "Why it should be included", body: ["Many providers charge for protection separately or per attack. Included by default, you do not have to configure anything or pay extra when an attack happens."] },
+          { heading: "DDoS included at ViaHost", body: ["At ViaHost, DDoS mitigation is always on and included in VPS and hosting, at no cost and with no per-attack limit."] },
+        ],
+        faq: [
+          { q: "Does DDoS protection slow down my site?", a: "No. Filtering happens at the network edge and only affects attack traffic; legitimate traffic passes normally." },
+          { q: "Do I have to configure anything?", a: "No. At ViaHost it is on by default, with nothing for you to set up." },
+          { q: "Does it cover any attack size?", a: "Mitigation absorbs the usual volumetric attacks at no cost and with no per-attack limit." },
+        ],
+        cta: "See DDoS protection",
+      },
+      fr: {
+        title: "Qu'est-ce que la protection DDoS et pourquoi en avez-vous besoin",
+        description: "Ce qu'est une attaque DDoS, comment fonctionne la mitigation et pourquoi il vaut mieux qu'elle soit incluse dans votre VPS ou hébergement.",
+        intro: ["Une attaque DDoS tente de faire tomber votre site en le saturant de faux trafic. La protection DDoS filtre ce trafic avant qu'il n'atteigne votre serveur."],
+        sections: [
+          { heading: "Qu'est-ce qu'une attaque DDoS", body: ["Une attaque par déni de service distribué (DDoS) envoie une avalanche de requêtes depuis de nombreuses sources pour surcharger votre serveur et mettre votre site hors service."] },
+          { heading: "Comment fonctionne la mitigation", body: ["La mitigation analyse le trafic en bordure de réseau et rejette la partie malveillante, ne laissant passer que le trafic légitime. Votre serveur ne reçoit jamais l'attaque."] },
+          { heading: "Pourquoi elle devrait être incluse", body: ["Beaucoup de fournisseurs facturent la protection séparément ou par attaque. Incluse d'office, vous n'avez rien à configurer ni à payer en plus quand une attaque survient."] },
+          { heading: "DDoS inclus chez ViaHost", body: ["Chez ViaHost, la mitigation DDoS est toujours active et incluse dans les VPS et l'hébergement, sans frais ni limite par attaque."] },
+        ],
+        faq: [
+          { q: "La protection DDoS ralentit-elle mon site ?", a: "Non. Le filtrage a lieu en bordure de réseau et n'affecte que le trafic d'attaque ; le trafic légitime passe normalement." },
+          { q: "Dois-je configurer quelque chose ?", a: "Non. Chez ViaHost, elle est active d'office, sans configuration de votre part." },
+          { q: "Couvre-t-elle n'importe quelle taille d'attaque ?", a: "La mitigation absorbe les attaques volumétriques habituelles sans frais ni limite par attaque." },
+        ],
+        cta: "Voir la protection DDoS",
+      },
+    },
+  },
+  {
+    slug: "apuntar-dominio-registro-a",
+    date: "2026-07-09",
+    type: "howto",
+    ctaHref: "/dominios",
+    content: {
+      es: {
+        title: "Cómo apuntar un dominio a un servidor (registro A)",
+        description: "Guía paso a paso para apuntar tu dominio a un servidor con un registro A: qué es, cómo se hace y cuánto tarda en propagar.",
+        intro: ["Para que tu dominio muestre tu web, tienes que apuntarlo a la IP de tu servidor con un registro A. Estos son los pasos."],
+        sections: [
+          { heading: "Consigue la IP de tu servidor", body: ["Anota la dirección IP de tu VPS o de tu hosting (la encuentras en el panel o en el correo de alta)."] },
+          { heading: "Entra en la gestión de DNS de tu dominio", body: ["Accede al editor de DNS de tu dominio, en el panel de tu registrador (en ViaHost, desde el área de cliente)."] },
+          { heading: "Crea o edita el registro A", body: ["Crea un registro de tipo A con nombre @ (el dominio raíz) apuntando a la IP de tu servidor. Repite con www si quieres cubrir también esa versión."] },
+          { heading: "Guarda y espera la propagación", body: ["Guarda los cambios. La propagación del DNS suele tardar de unos minutos a unas horas; a partir de ahí, tu dominio muestra tu web."] },
+        ],
+        faq: [
+          { q: "¿Qué es un registro A?", a: "Es el registro DNS que asocia un nombre de dominio con una dirección IPv4 (para IPv6 se usa el registro AAAA)." },
+          { q: "¿Cuánto tarda en propagar?", a: "Normalmente de minutos a unas horas, según el TTL configurado." },
+          { q: "¿Y el correo?", a: "El correo usa registros MX, no el A. Configúralos aparte según tu proveedor de correo." },
+        ],
+        cta: "Gestionar mi dominio",
+      },
+      en: {
+        title: "How to point a domain to a server (A record)",
+        description: "Step-by-step guide to point your domain to a server with an A record: what it is, how to do it and how long propagation takes.",
+        intro: ["For your domain to show your site, you have to point it to your server's IP with an A record. Here are the steps."],
+        sections: [
+          { heading: "Get your server's IP", body: ["Note the IP address of your VPS or hosting (you will find it in the panel or the welcome email)."] },
+          { heading: "Open your domain's DNS management", body: ["Access your domain's DNS editor in your registrar's panel (at ViaHost, from your account area)."] },
+          { heading: "Create or edit the A record", body: ["Create an A record with the name @ (the root domain) pointing to your server's IP. Repeat with www if you also want to cover that version."] },
+          { heading: "Save and wait for propagation", body: ["Save the changes. DNS propagation usually takes from a few minutes to a few hours; after that, your domain shows your site."] },
+        ],
+        faq: [
+          { q: "What is an A record?", a: "It is the DNS record that ties a domain name to an IPv4 address (for IPv6 you use the AAAA record)." },
+          { q: "How long does propagation take?", a: "Usually from minutes to a few hours, depending on the configured TTL." },
+          { q: "What about email?", a: "Email uses MX records, not the A record. Configure those separately according to your email provider." },
+        ],
+        cta: "Manage my domain",
+      },
+      fr: {
+        title: "Comment pointer un domaine vers un serveur (enregistrement A)",
+        description: "Guide étape par étape pour pointer votre domaine vers un serveur avec un enregistrement A : ce que c'est, comment le faire et le temps de propagation.",
+        intro: ["Pour que votre domaine affiche votre site, vous devez le pointer vers l'IP de votre serveur avec un enregistrement A. Voici les étapes."],
+        sections: [
+          { heading: "Récupérez l'IP de votre serveur", body: ["Notez l'adresse IP de votre VPS ou de votre hébergement (vous la trouvez dans le panneau ou dans l'email d'activation)."] },
+          { heading: "Ouvrez la gestion DNS de votre domaine", body: ["Accédez à l'éditeur DNS de votre domaine, dans le panneau de votre registrar (chez ViaHost, depuis votre espace client)."] },
+          { heading: "Créez ou modifiez l'enregistrement A", body: ["Créez un enregistrement de type A avec le nom @ (le domaine racine) pointant vers l'IP de votre serveur. Répétez avec www si vous voulez aussi couvrir cette version."] },
+          { heading: "Enregistrez et attendez la propagation", body: ["Enregistrez les changements. La propagation DNS prend généralement de quelques minutes à quelques heures ; ensuite, votre domaine affiche votre site."] },
+        ],
+        faq: [
+          { q: "Qu'est-ce qu'un enregistrement A ?", a: "C'est l'enregistrement DNS qui associe un nom de domaine à une adresse IPv4 (pour l'IPv6, on utilise l'enregistrement AAAA)." },
+          { q: "Combien de temps prend la propagation ?", a: "Généralement de quelques minutes à quelques heures, selon le TTL configuré." },
+          { q: "Et pour l'email ?", a: "L'email utilise les enregistrements MX, pas l'enregistrement A. Configurez-les séparément selon votre fournisseur d'email." },
+        ],
+        cta: "Gérer mon domaine",
+      },
+    },
+  },
 ];
 
 const byDateDesc = (a: BlogPost, b: BlogPost) => (a.date < b.date ? 1 : -1);
