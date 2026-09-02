@@ -77,7 +77,13 @@ export default async function ServidoresClientePage({
             {servidores.map(({ managed, remote }) => (
               <li key={managed.id}>
                 <Link
-                  href={`/cuenta/servidores/${managed.id}`}
+                  // Los VPS de nuestro Proxmox estrenan el panel nuevo; el resto
+                  // (v4vm, externos) sigue en el panel de siempre.
+                  href={
+                    managed.proveedor === "proxmox"
+                      ? `/panel/servicios/${managed.id}`
+                      : `/cuenta/servidores/${managed.id}`
+                  }
                   className="block min-w-0 rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-5 transition-colors hover:border-[var(--color-accent)]"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-4">
