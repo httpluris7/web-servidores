@@ -25,15 +25,25 @@ export class NjallaError extends Error {
   }
 }
 
-/** Llamada JSON-RPC autenticada. Lee el token de los ajustes (sin caché). */
+/**
+ * Llamada JSON-RPC autenticada. Lee el token de los ajustes (sin caché). Njalla
+ * acota los tokens por método: `write` elige el token de REGISTRO (register/
+ * renew); el resto usa el de lectura/DNS.
+ */
 async function call<T = unknown>(
   method: string,
   params: Record<string, unknown> = {},
-  timeoutMs = 15_000,
+  opts: { timeoutMs?: number; write?: boolean } = {},
 ): Promise<T> {
+  const timeoutMs = opts.timeoutMs ?? 15_000;
   const { njalla } = await readSettings();
-  const token = njalla.apiToken.trim();
-  if (!token) throw new NjallaError("Njalla sin token configurado", "unconfigured");
+  const token = (opts.write ? njalla.registerToken : njalla.apiToken).trim();
+  if (!token) {
+    throw new NjallaError(
+      opts.write ? "Njalla sin token de registro" : "Njalla sin token configurado",
+      "unconfigured",
+    );
+  }
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -132,13 +142,17 @@ export async function checkDomain(domain: string): Promise<DomainOffer | null> {
 
 /** Registra un dominio (descuenta del monedero). Idempotencia la pone quien llama. */
 export async function registerDomain(domain: string, years = 1): Promise<{ name: string }> {
-  const r = await call<{ name?: string; domain?: string }>("register-domain", { domain, years });
+  const r = await call<{ name?: string; domain?: string }>(
+    "register-domain",
+    { domain, years },
+    { write: true },
+  );
   return { name: String(r?.name ?? r?.domain ?? domain) };
 }
 
 /** Renueva un dominio por N años. */
 export async function renewDomain(domain: string, years = 1): Promise<void> {
-  await call("renew-domain", { domain, years });
+  await call("renew-domain", { domain, years }, { write: true });
 }
 
 /** Dominios de la cuenta (para renovaciones/panel). */

@@ -152,12 +152,21 @@ export type WiseSettings = {
   webhookPublicKey: string;
 };
 
-/** Registrador de dominios (Njalla). Revendedor con monedero, API JSON-RPC. */
+/**
+ * Registrador de dominios (Njalla). Revendedor con monedero, API JSON-RPC.
+ *
+ * Njalla acota cada token de API por método, así que se usan DOS: uno de
+ * lectura/DNS (buscar, saldo, list/get, registros DNS) y otro con permiso de
+ * REGISTRO (register/renew, que mueven dinero). Si solo hay uno con todos los
+ * permisos, se puede poner el mismo en ambos.
+ */
 export type NjallaSettings = {
   /** Interruptor: sin esto no se buscan ni registran dominios. */
   enabled: boolean;
-  /** Token de API de Njalla (secreto; viaja como `Authorization: Njalla …`). */
+  /** Token de lectura/DNS (secreto; `Authorization: Njalla …`). */
   apiToken: string;
+  /** Token con permiso de registro/renovación (secreto). Vacío = no se registra. */
+  registerToken: string;
   /** Margen sobre el precio de Njalla, en % (precio_cliente = njalla × (1+m/100)). */
   margenPct: number;
 };
@@ -182,10 +191,11 @@ export const DEFAULT_WISE: WiseSettings = {
   webhookPublicKey: "",
 };
 
-/** Njalla de partida: apagado, sin token, margen 25%. */
+/** Njalla de partida: apagado, sin tokens, margen 25%. */
 export const DEFAULT_NJALLA: NjallaSettings = {
   enabled: false,
   apiToken: "",
+  registerToken: "",
   margenPct: 25,
 };
 
@@ -354,10 +364,12 @@ function normalizeWise(raw: unknown, fallback: WiseSettings): WiseSettings {
 /** Njalla desde el entorno (respaldo si no hay fichero). */
 function njallaFromEnv(): NjallaSettings {
   const apiToken = (process.env.NJALLA_API_TOKEN ?? "").trim();
+  const registerToken = (process.env.NJALLA_REGISTER_TOKEN ?? "").trim();
   const m = Number(process.env.NJALLA_MARGIN_PCT);
   return {
     enabled: !!apiToken,
     apiToken,
+    registerToken,
     margenPct: Number.isFinite(m) && m >= 0 ? m : DEFAULT_NJALLA.margenPct,
   };
 }
@@ -365,10 +377,12 @@ function njallaFromEnv(): NjallaSettings {
 function normalizeNjalla(raw: unknown, fallback: NjallaSettings): NjallaSettings {
   const o = (raw ?? {}) as Partial<Record<keyof NjallaSettings, unknown>>;
   const apiToken = typeof o.apiToken === "string" ? o.apiToken.trim() : "";
+  const registerToken = typeof o.registerToken === "string" ? o.registerToken.trim() : "";
   const m = Number(o.margenPct);
   return {
     enabled: o.enabled === true,
     apiToken: apiToken || fallback.apiToken,
+    registerToken: registerToken || fallback.registerToken,
     margenPct: Number.isFinite(m) && m >= 0 ? m : fallback.margenPct,
   };
 }
@@ -587,10 +601,11 @@ export async function updateWiseSettings(patch: WisePatch): Promise<Settings> {
   return next;
 }
 
-/** Cambios parciales de Njalla. El token sigue la regla de los secretos. */
+/** Cambios parciales de Njalla. Los tokens siguen la regla de los secretos. */
 export type NjallaPatch = {
   enabled?: boolean;
   apiToken?: string | null;
+  registerToken?: string | null;
   margenPct?: number;
 };
 
@@ -603,6 +618,7 @@ export async function updateNjallaSettings(patch: NjallaPatch): Promise<Settings
     njalla: {
       enabled: patch.enabled ?? n.enabled,
       apiToken: pickSecret(patch.apiToken, n.apiToken),
+      registerToken: pickSecret(patch.registerToken, n.registerToken),
       margenPct: Number.isFinite(margen) && margen >= 0 ? margen : n.margenPct,
     },
   };
@@ -610,9 +626,14 @@ export async function updateNjallaSettings(patch: NjallaPatch): Promise<Settings
   return next;
 }
 
-/** ¿Njalla listo para operar? (encendido + token). */
+/** ¿Njalla listo para leer/buscar/DNS? (encendido + token de lectura). */
 export function njallaHasCreds(njalla: NjallaSettings): boolean {
   return njalla.enabled && njalla.apiToken.trim().length > 0;
+}
+
+/** ¿Puede REGISTRAR/renovar? (encendido + token de registro). */
+export function njallaCanRegister(njalla: NjallaSettings): boolean {
+  return njalla.enabled && njalla.registerToken.trim().length > 0;
 }
 
 /* --------------------------------- Ayudas --------------------------------- */

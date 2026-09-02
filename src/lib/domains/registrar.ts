@@ -1,5 +1,5 @@
 import "server-only";
-import { njallaHasCreds, readSettings } from "@/lib/ajustes";
+import { njallaCanRegister, readSettings } from "@/lib/ajustes";
 import { appendInvoiceNota } from "@/lib/facturas";
 import { getBalance, NjallaError, registerDomain } from "./njalla";
 import { intentsDeFactura, marcarRegistrado } from "./intents";
@@ -30,9 +30,9 @@ export async function registrarDominiosFacturaPagada(invoiceId: string): Promise
   if (pendientes.length === 0) return;
 
   const { njalla } = await readSettings();
-  if (!njallaHasCreds(njalla)) {
-    console.error("[dominios] ⚠ factura", invoiceId, "con dominios pero Njalla no está configurado");
-    await nota(invoiceId, `⚠ Registro de dominio pendiente (Njalla sin configurar): ${listar(pendientes)}`);
+  if (!njallaCanRegister(njalla)) {
+    console.error("[dominios] ⚠ factura", invoiceId, "con dominios pero Njalla sin token de registro");
+    await nota(invoiceId, `⚠ Registro de dominio pendiente (falta token de registro Njalla): ${listar(pendientes)}`);
     return;
   }
 
