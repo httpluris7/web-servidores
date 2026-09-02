@@ -322,10 +322,10 @@ export type HostingWelcomeMail = {
   idioma: "es" | "en";
   username: string;
   password: string;
-  /** Dominio primario temporal de la cuenta (`<user>.web01.viahost.top`). */
+  /** Dominio primario temporal de la cuenta (`<user>.cp.viahost.top`). */
   domain: string;
-  /** Dominio base del nodo (para la URL del panel: `https://<base>:2083`). */
-  baseDomain: string;
+  /** Hostname del nodo cPanel para el panel/webmail (`web01.viahost.top`). */
+  panelHost: string;
 };
 
 /**
@@ -342,9 +342,9 @@ export async function sendHostingWelcomeMail(m: HostingWelcomeMail): Promise<voi
     throw new Error("Invalid recipient address.");
   }
   const es = m.idioma === "es";
-  const panelUrl = `https://${headerSafe(m.baseDomain)}:2083`;
+  const panelUrl = `https://${headerSafe(m.panelHost)}:2083`;
   const siteUrl = `https://${headerSafe(m.domain)}`;
-  const webmailUrl = `https://${headerSafe(m.baseDomain)}:2096`;
+  const webmailUrl = `https://${headerSafe(m.panelHost)}:2096`;
 
   const subject = encodeHeader(
     es ? "Tu hosting está listo — ViaHost" : "Your web hosting is ready — ViaHost",

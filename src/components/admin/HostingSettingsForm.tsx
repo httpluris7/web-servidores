@@ -146,7 +146,7 @@ export function HostingSettingsForm({ initial }: { initial: HostingPublicSetting
                 spellCheck={false}
                 value={baseDomain}
                 onChange={(e) => setBaseDomain(e.target.value)}
-                placeholder="web01.viahost.top"
+                placeholder="cp.viahost.top"
               />
               <p className="mt-1.5 text-xs text-[var(--color-fg-dim)]">
                 Cada cuenta nace como <span className="font-mono">&lt;usuario&gt;.{baseDomain || "…"}</span>.

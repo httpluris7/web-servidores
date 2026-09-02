@@ -218,12 +218,16 @@ export const DEFAULT_NJALLA: NjallaSettings = {
   saldoMinimo: 50,
 };
 
-/** Hosting de partida: apagado, apuntando al nodo web01 por hostname. */
+/**
+ * Hosting de partida: apagado, WHM en el hostname del nodo (web01) y dominio
+ * temporal bajo `cp.viahost.top` (un subdominio SIN zona local: la zona del
+ * hostname `web01.viahost.top` existe y chocaría con `<user>.web01…`).
+ */
 export const DEFAULT_HOSTING: HostingSettings = {
   enabled: false,
   whmHost: "web01.viahost.top",
   whmToken: "",
-  baseDomain: "web01.viahost.top",
+  baseDomain: "cp.viahost.top",
 };
 
 /** Valores de partida de las copias de seguridad: a las 03:00, sin destinos. */

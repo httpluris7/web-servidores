@@ -20,9 +20,10 @@ import { intentsDeFactura, marcarProvisionado, type HostingIntent } from "./inte
  *    las ya marcadas. Es seguro llamarlo más de una vez para la misma factura.
  *
  * El dominio primario es TEMPORAL (`<user>.<baseDomain>`, p. ej.
- * `vhabc123.web01.viahost.top`): la cuenta queda operativa al instante por su
- * URL temporal y el cliente apunta su dominio real después (lo cambia en cPanel
- * o abre un ticket). Ver la nota del correo de bienvenida.
+ * `vhabc123.cp.viahost.top`): la cuenta queda operativa al instante por su URL
+ * temporal y el cliente apunta su dominio real después (lo cambia en cPanel o
+ * abre un ticket). La base es un subdominio SIN zona local en el nodo (la zona
+ * del hostname `web01.viahost.top` sí existe y chocaría). Ver la nota del correo.
  */
 export async function aprovisionarHostingFacturaPagada(invoiceId: string): Promise<void> {
   let intents: HostingIntent[];
@@ -41,7 +42,8 @@ export async function aprovisionarHostingFacturaPagada(invoiceId: string): Promi
     await nota(invoiceId, `⚠ Alta de hosting pendiente (WHM sin configurar): ${listar(pendientes)}`);
     return;
   }
-  const baseDomain = hosting.baseDomain.trim() || "web01.viahost.top";
+  const baseDomain = hosting.baseDomain.trim() || "cp.viahost.top";
+  const panelHost = hosting.whmHost.trim() || "web01.viahost.top";
 
   const fallos: string[] = [];
   for (const it of pendientes) {
@@ -83,7 +85,7 @@ export async function aprovisionarHostingFacturaPagada(invoiceId: string): Promi
           username,
           password,
           domain,
-          baseDomain,
+          panelHost,
         });
       } catch (err) {
         console.error(`[hosting] no se pudieron enviar las credenciales de ${username}:`, err);
