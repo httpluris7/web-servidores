@@ -27,11 +27,26 @@ Registro de cambios SEO/GEO. Rama `seo-geo-20260902` (desde `main` en `eccafc2`)
 ### `8925de7` — FAQPage (🟠 alto valor GEO)
 - `FaqSection` ahora emite `FAQPage` con las preguntas/respuestas ya traducidas (mismo contenido visible). Ilumina `/vps`, `/vps/[region]`, `/dedicados/[tipo]`.
 
+### `5befd9e` — Contenido `/hosting` y `/dominios` (FASE 5, 🔴 thin)
+- `FaqSection` acepta ahora un `namespace` (antes fijo a `products`).
+- `/hosting`: intro citable + **tabla HTML** de planes (componente `HostingPlansTable`, desde catálogo) + FAQ (6) → FAQPage. **328→510 palabras**.
+- `/dominios`: intro citable + FAQ (5) → FAQPage. **124→333 palabras** (sale de thin).
+- i18n es/en/fr. Solo datos verificables.
+
+### `4600e68` — Comparativa `alternativa-hetzner`
+- Página nueva con tabla comparativa, "cuándo elegir cada uno", FAQ→FAQPage, Breadcrumb, canonical/hreflang. En sitemap y enlazada desde `/vps`.
+
+### `6b3a3a7` — Comparativas `alternativa-contabo` y `mejor-hosting-cpanel` + plantilla
+- Componente reutilizable `ComparativaHeadToHead` (claves i18n genéricas). Hetzner migrado a él.
+- Dos comparativas nuevas (Contabo head-to-head; mejor-hosting-cPanel como guía honesta ViaHost vs sector). En sitemap; enlaces internos `/vps`→hetzner,contabo y `/hosting`→mejor-hosting.
+
 ---
 
-## Pendiente (no incluido en este bloque)
+## Pendiente (ver `PENDIENTES.md` y `PLAN-GEO.md §4`)
+- **Blog** `/blog/` (HowTo/Article): siguiente pieza de mayor ROI.
 - OG image en PNG 1200×630 (hoy SVG).
-- FAQ + enriquecimiento de contenido en `/hosting` y `/dominios` (thin) → FASE 5.
 - Reescritura de meta descriptions/títulos cortos (`/dominios`, `/red`, `/desplegar`).
+- Localizar nombres de región del catálogo ("Netherlands" → "Países Bajos").
 - Medición real de Core Web Vitals.
-- Confirmaciones de negocio en `PENDIENTES.md`.
+- **Confirmaciones de negocio** (Alemania operativa, PayPal/Crypto, reseñas, dedicados…) en `PENDIENTES.md`.
+- **Merge de `seo-geo-20260902` a `main` + push** (ya desplegado en producción; falta consolidar en git).
