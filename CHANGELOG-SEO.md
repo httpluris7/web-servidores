@@ -54,6 +54,11 @@ Registro de cambios SEO/GEO. Rama `seo-geo-20260902` (desde `main` en `eccafc2`)
 ### OG image PNG (🟠 resuelto)
 - `[locale]/opengraph-image.tsx`: genera el `og:image` como **PNG 1200×630** (marca + titular + diferenciadores + dominio), sustituyendo al `/og.svg` que muchas plataformas/LLMs no renderizaban. Se retiran las referencias al SVG del layout.
 
+### Títulos y descripciones cortos (🟡 resuelto)
+- `/red`: metaTitle 13→42 car. con keyword ("Red y peering: 10 Gbps en Europa").
+- `/dominios` (61→143) y `/desplegar` (70→156): descripciones reescritas con keyword + CTA; `/desplegar` ya no promete "servidor dedicado" (no se vende).
+- `/sobre-nosotros` y `/casos-de-uso`: descripciones de 166→≤160 car. i18n es/en/fr.
+
 ---
 
 ## Pendiente (ver `PENDIENTES.md` y `PLAN-GEO.md §4`)

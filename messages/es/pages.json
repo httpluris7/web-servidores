@@ -115,7 +115,7 @@
       "demoData": "Datos de demostración · pendiente de conexión con monitorización real."
     },
     "red": {
-      "metaTitle": "Red",
+      "metaTitle": "Red y peering: 10 Gbps en Europa",
       "metaDescription": "Infraestructura europea con rutas de baja latencia, uplinks de 10 Gbps y mitigación DDoS incluida.",
       "kickerSuffix": "conectividad europea",
       "titlePrefix": "Una red pensada para la ",
@@ -151,7 +151,7 @@
     },
     "casosDeUso": {
       "metaTitle": "Casos de uso",
-      "metaDescription": "Aplicaciones web, bases de datos, cargas empresariales y plataformas SaaS sobre la infraestructura de ViaHost: la misma red, la misma protección, distinta escala.",
+      "metaDescription": "Casos de uso de ViaHost: WordPress y tiendas, apps y APIs, correo, backups y proyectos que necesitan VPS o hosting con NVMe y DDoS incluido.",
       "kicker": "Casos de uso",
       "titlePrefix": "Una base. ",
       "titleAccent": "Muchas",
@@ -237,7 +237,7 @@
     },
     "desplegar": {
       "metaTitle": "Desplegar servidor",
-      "metaDescription": "Elige tu plan de VPS o servidor dedicado y despliégalo en 60 segundos.",
+      "metaDescription": "Elige tu plan de VPS o hosting web y despliégalo en 60 segundos, con NVMe, red de 10 Gbps y protección DDoS incluida. Aprovisionamiento automático al pagar.",
       "kicker": "Desplegar servidor",
       "titlePrefix": "Elige tu plan y ",
       "titleAccent": "despliégalo",
@@ -247,7 +247,7 @@
     },
     "sobreNosotros": {
       "metaTitle": "Sobre nosotros",
-      "metaDescription": "{brand} es un proveedor europeo de hosting con infraestructura propia, centrado en aprovisionamiento instantáneo, hardware sin overselling y mitigación DDoS incluida.",
+      "metaDescription": "ViaHost Networks, LLC: VPS, hosting cPanel y dominios sobre infraestructura europea (Ámsterdam y Alemania), con precio plano y soporte en español.",
       "kicker": "Sobre nosotros",
       "titlePrefix": "Infraestructura europea, ",
       "titleAccent": "sin letra pequeña",

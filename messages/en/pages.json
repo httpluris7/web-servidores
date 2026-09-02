@@ -115,7 +115,7 @@
       "demoData": "Demo data · pending connection to real monitoring."
     },
     "red": {
-      "metaTitle": "Network",
+      "metaTitle": "Network and peering: 10 Gbps in Europe",
       "metaDescription": "European infrastructure with low-latency routing, 10 Gbps uplinks and DDoS mitigation included.",
       "kickerSuffix": "European connectivity",
       "titlePrefix": "A network built for ",
@@ -151,7 +151,7 @@
     },
     "casosDeUso": {
       "metaTitle": "Use cases",
-      "metaDescription": "Web applications, databases, enterprise workloads and SaaS platforms on ViaHost infrastructure: same network, same protection, different scale.",
+      "metaDescription": "ViaHost use cases: WordPress and shops, apps and APIs, email, backups and projects that need a VPS or hosting with NVMe and DDoS included.",
       "kicker": "Use cases",
       "titlePrefix": "One foundation. ",
       "titleAccent": "Many",
@@ -237,7 +237,7 @@
     },
     "desplegar": {
       "metaTitle": "Deploy server",
-      "metaDescription": "Choose your VPS or dedicated server plan and deploy it in 60 seconds.",
+      "metaDescription": "Choose your VPS or web hosting plan and deploy it in 60 seconds, with NVMe, a 10 Gbps network and DDoS protection included. Automatic provisioning on payment.",
       "kicker": "Deploy server",
       "titlePrefix": "Choose your plan and ",
       "titleAccent": "deploy it",
@@ -247,7 +247,7 @@
     },
     "sobreNosotros": {
       "metaTitle": "About us",
-      "metaDescription": "{brand} is a European hosting provider with its own infrastructure, focused on instant provisioning, hardware with no overselling and DDoS mitigation included.",
+      "metaDescription": "ViaHost Networks, LLC: VPS, cPanel hosting and domains on European infrastructure (Amsterdam and Germany), with flat pricing and support in Spanish.",
       "kicker": "About us",
       "titlePrefix": "European infrastructure, ",
       "titleAccent": "no fine print",

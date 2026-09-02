@@ -115,7 +115,7 @@
       "demoData": "Données de démonstration · en attente de connexion à une supervision réelle."
     },
     "red": {
-      "metaTitle": "Réseau",
+      "metaTitle": "Réseau et peering : 10 Gbps en Europe",
       "metaDescription": "Infrastructure européenne avec un routage à faible latence, des uplinks 10 Gbps et une mitigation DDoS incluse.",
       "kickerSuffix": "connectivité européenne",
       "titlePrefix": "Un réseau pensé pour la ",
@@ -151,7 +151,7 @@
     },
     "casosDeUso": {
       "metaTitle": "Cas d'usage",
-      "metaDescription": "Applications web, bases de données, charges d'entreprise et plateformes SaaS sur l'infrastructure ViaHost : même réseau, même protection, autre échelle.",
+      "metaDescription": "Cas d'usage ViaHost : WordPress et boutiques, applications et API, email, sauvegardes et projets nécessitant un VPS ou un hébergement avec NVMe et DDoS inclus.",
       "kicker": "Cas d'usage",
       "titlePrefix": "Une base. ",
       "titleAccent": "De nombreuses",
@@ -237,7 +237,7 @@
     },
     "desplegar": {
       "metaTitle": "Déployer un serveur",
-      "metaDescription": "Choisissez votre plan VPS ou serveur dédié et déployez-le en 60 secondes.",
+      "metaDescription": "Choisissez votre formule VPS ou hébergement web et déployez-la en 60 secondes, avec NVMe, réseau 10 Gbps et protection DDoS incluse. Activation automatique au paiement.",
       "kicker": "Déployer un serveur",
       "titlePrefix": "Choisissez votre plan et ",
       "titleAccent": "déployez-le",
@@ -247,7 +247,7 @@
     },
     "sobreNosotros": {
       "metaTitle": "À propos",
-      "metaDescription": "{brand} est un hébergeur européen disposant de sa propre infrastructure, axé sur le provisionnement instantané, du matériel sans surréservation et la mitigation DDoS incluse.",
+      "metaDescription": "ViaHost Networks, LLC : VPS, hébergement cPanel et domaines sur infrastructure européenne (Amsterdam et Allemagne), à prix fixe et avec support en espagnol.",
       "kicker": "À propos",
       "titlePrefix": "Infrastructure européenne, ",
       "titleAccent": "sans petits caractères",
