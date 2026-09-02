@@ -122,6 +122,16 @@ export default async function VpsPage({
       </section>
 
       <FaqSection items={vpsFaq} tKey="vpsFaq" index="/04" />
+
+      <div className="container-edge pb-8">
+        <Link
+          href="/comparativas/alternativa-hetzner"
+          className="font-mono text-sm text-[var(--color-accent)] hover:underline"
+        >
+          {t("vps.compareHetzner")} →
+        </Link>
+      </div>
+
       <CtaBand />
     </>
   );

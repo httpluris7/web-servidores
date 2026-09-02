@@ -79,7 +79,8 @@
       "locationsKicker": "Emplacements",
       "locationsTitle": "Déployez au plus près de vos utilisateurs.",
       "locationsDescription": "Des régions européennes stratégiques. La même expérience, une latence plus faible.",
-      "from": "à partir de"
+      "from": "à partir de",
+      "compareHetzner": "Vous venez de Hetzner ? Voir le comparatif ViaHost vs Hetzner"
     },
     "vpsRegion": {
       "meta": {

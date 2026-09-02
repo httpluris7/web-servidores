@@ -1,0 +1,115 @@
+{
+  "comparativas": {
+    "hetzner": {
+      "metaTitle": "Hetzner alternative: European VPS with a panel and cPanel",
+      "metaDescription": "Looking for a Hetzner alternative after the 2026 price increases? We compare ViaHost and Hetzner with data: panel, cPanel, DDoS, locations and price.",
+      "kicker": "Comparison",
+      "titleA": "Alternative to",
+      "titleB": "Hetzner",
+      "description": "ViaHost vs Hetzner, with data and no hype: when each one makes sense.",
+      "intro": {
+        "p1": "Hetzner is one of the best VPS options for price and performance, but in 2026 it raised prices sharply (up to 176% on the CPX and CCX lines). If you are looking for a European alternative, that changes the math.",
+        "p2": "ViaHost does not compete on being the cheapest VPS per vCPU: it includes a managed panel with console and snapshots, DDoS protection, cPanel hosting and privacy domains, with flat pricing and support in Spanish. Below we compare both so you can decide."
+      },
+      "table": {
+        "title": "ViaHost vs Hetzner",
+        "caption": "ViaHost vs Hetzner VPS comparison: panel, cPanel, DDoS, locations and pricing model",
+        "feature": "Feature",
+        "viahost": "ViaHost",
+        "hetzner": "Hetzner",
+        "rows": [
+          {
+            "feature": "Entry price (VPS)",
+            "viahost": "From €8/mo",
+            "hetzner": "From ~€5.5/mo (CX23)"
+          },
+          {
+            "feature": "Pricing model",
+            "viahost": "Flat, no renewal increase",
+            "hetzner": "Raised in 2026 (up to +176% on CPX/CCX)"
+          },
+          {
+            "feature": "Control panel",
+            "viahost": "Proxmox + noVNC console + snapshots",
+            "hetzner": "Cloud Console + API"
+          },
+          {
+            "feature": "cPanel hosting",
+            "viahost": "Yes (separate hosting plan)",
+            "hetzner": "No"
+          },
+          {
+            "feature": "DDoS protection",
+            "viahost": "Included",
+            "hetzner": "Included"
+          },
+          {
+            "feature": "Locations",
+            "viahost": "Amsterdam (NL), Germany",
+            "hetzner": "Germany, Finland, USA"
+          },
+          {
+            "feature": "Privacy domains",
+            "viahost": "Yes, WHOIS included",
+            "hetzner": "No"
+          },
+          {
+            "feature": "Support",
+            "viahost": "In Spanish",
+            "hetzner": "In English/German"
+          },
+          {
+            "feature": "Virtualization",
+            "viahost": "Proxmox (KVM)",
+            "hetzner": "KVM"
+          }
+        ],
+        "priceNote": "Third-party prices are indicative (checked 2026-09); verify the current price on the providers site."
+      },
+      "whenHetzner": {
+        "title": "When to choose Hetzner",
+        "items": [
+          "You want the lowest price per vCPU and RAM on raw specs.",
+          "You manage the server yourself, with no hosting panel or cPanel.",
+          "You need its API and cloud ecosystem, or its locations (Finland, USA)."
+        ]
+      },
+      "whenViahost": {
+        "title": "When to choose ViaHost",
+        "items": [
+          "You want a managed panel with console and snapshots out of the box.",
+          "You need cPanel hosting and/or privacy domains from the same provider.",
+          "You prefer flat pricing and support in Spanish.",
+          "After Hetzner's 2026 increases, the price gap no longer justifies the extra management."
+        ]
+      },
+      "faq": {
+        "kicker": "FAQ",
+        "title": "ViaHost vs Hetzner"
+      },
+      "faqItems": [
+        {
+          "q": "Is ViaHost cheaper than Hetzner?",
+          "a": "Not on price per vCPU and RAM: Hetzner is still very competitive on raw specs. ViaHost includes a managed panel, console, DDoS and an optional cPanel, with flat pricing; after Hetzner's 2026 increases the gap has narrowed."
+        },
+        {
+          "q": "Does Hetzner include cPanel?",
+          "a": "No. Hetzner offers unmanaged VPS. ViaHost offers cPanel hosting as a separate product, provisioned automatically."
+        },
+        {
+          "q": "Why look for a Hetzner alternative in 2026?",
+          "a": "Because of the 2026 price increases (up to +176% on the CPX and CCX lines) and if you need a managed panel, cPanel or support in Spanish."
+        },
+        {
+          "q": "Where are ViaHost's servers?",
+          "a": "In Amsterdam (Netherlands) and Germany. Hetzner operates in Germany, Finland and the USA."
+        },
+        {
+          "q": "Can I migrate from Hetzner to ViaHost?",
+          "a": "Yes. For cPanel hosting the migration is free; on VPS you deploy your server and migrate your data over SSH."
+        }
+      ],
+      "cta": "Want to compare for your case? See the VPS plans"
+    }
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "comparativas": {
+    "hetzner": {
+      "metaTitle": "Alternative à Hetzner : VPS européen avec panneau et cPanel",
+      "metaDescription": "Vous cherchez une alternative à Hetzner après les hausses de prix de 2026 ? Nous comparons ViaHost et Hetzner : panneau, cPanel, DDoS, emplacements et prix.",
+      "kicker": "Comparatif",
+      "titleA": "Alternative à",
+      "titleB": "Hetzner",
+      "description": "ViaHost face à Hetzner, avec des données : quand chacun a du sens.",
+      "intro": {
+        "p1": "Hetzner est l'une des meilleures options VPS en prix et performances, mais en 2026 il a fortement augmenté ses tarifs (jusqu'à 176% sur les gammes CPX et CCX). Si vous cherchez une alternative européenne, cela change le calcul.",
+        "p2": "ViaHost ne cherche pas à être le VPS le moins cher par vCPU : il inclut un panneau géré avec console et snapshots, protection DDoS, hébergement cPanel et domaines avec confidentialité, à prix fixe et avec support en espagnol. Ci-dessous, nous comparons les deux."
+      },
+      "table": {
+        "title": "ViaHost vs Hetzner",
+        "caption": "Comparatif VPS ViaHost vs Hetzner : panneau, cPanel, DDoS, emplacements et modèle de prix",
+        "feature": "Caractéristique",
+        "viahost": "ViaHost",
+        "hetzner": "Hetzner",
+        "rows": [
+          {
+            "feature": "Prix d'entrée (VPS)",
+            "viahost": "À partir de 8 €/mois",
+            "hetzner": "À partir de ~5,5 €/mois (CX23)"
+          },
+          {
+            "feature": "Modèle de prix",
+            "viahost": "Fixe, sans hausse au renouvellement",
+            "hetzner": "Hausse en 2026 (jusqu'à +176% sur CPX/CCX)"
+          },
+          {
+            "feature": "Panneau de contrôle",
+            "viahost": "Proxmox + console noVNC + snapshots",
+            "hetzner": "Cloud Console + API"
+          },
+          {
+            "feature": "Hébergement cPanel",
+            "viahost": "Oui (formule d'hébergement séparée)",
+            "hetzner": "Non"
+          },
+          {
+            "feature": "Protection DDoS",
+            "viahost": "Incluse",
+            "hetzner": "Incluse"
+          },
+          {
+            "feature": "Emplacements",
+            "viahost": "Amsterdam (NL), Allemagne",
+            "hetzner": "Allemagne, Finlande, États-Unis"
+          },
+          {
+            "feature": "Domaines avec confidentialité",
+            "viahost": "Oui, WHOIS incluse",
+            "hetzner": "Non"
+          },
+          {
+            "feature": "Support",
+            "viahost": "En espagnol",
+            "hetzner": "En anglais/allemand"
+          },
+          {
+            "feature": "Virtualisation",
+            "viahost": "Proxmox (KVM)",
+            "hetzner": "KVM"
+          }
+        ],
+        "priceNote": "Prix tiers indicatifs (consultes 2026-09); verifiez le prix actuel sur le site du fournisseur."
+      },
+      "whenHetzner": {
+        "title": "Quand choisir Hetzner",
+        "items": [
+          "Vous voulez le prix le plus bas par vCPU et RAM en specs bruts.",
+          "Vous gérez le serveur vous-même, sans panneau d'hébergement ni cPanel.",
+          "Vous avez besoin de son API et de son écosystème cloud, ou de ses emplacements (Finlande, États-Unis)."
+        ]
+      },
+      "whenViahost": {
+        "title": "Quand choisir ViaHost",
+        "items": [
+          "Vous voulez un panneau géré avec console et snapshots, prêt à l'emploi.",
+          "Vous avez besoin d'hébergement cPanel et/ou de domaines avec confidentialité chez le même fournisseur.",
+          "Vous préférez un prix fixe et un support en espagnol.",
+          "Après les hausses de Hetzner en 2026, l'écart de prix ne justifie plus la gestion supplémentaire."
+        ]
+      },
+      "faq": {
+        "kicker": "FAQ",
+        "title": "ViaHost vs Hetzner"
+      },
+      "faqItems": [
+        {
+          "q": "ViaHost est-il moins cher que Hetzner ?",
+          "a": "Pas en prix par vCPU et RAM : Hetzner reste très compétitif en specs bruts. ViaHost inclut un panneau géré, console, DDoS et une option cPanel, à prix fixe ; après les hausses de Hetzner en 2026, l'écart s'est réduit."
+        },
+        {
+          "q": "Hetzner inclut-il cPanel ?",
+          "a": "Non. Hetzner propose du VPS non géré. ViaHost propose l'hébergement cPanel comme produit séparé, avec activation automatique."
+        },
+        {
+          "q": "Pourquoi chercher une alternative à Hetzner en 2026 ?",
+          "a": "À cause des hausses de prix de 2026 (jusqu'à +176% sur les gammes CPX et CCX) et si vous avez besoin d'un panneau géré, de cPanel ou d'un support en espagnol."
+        },
+        {
+          "q": "Où sont les serveurs de ViaHost ?",
+          "a": "À Amsterdam (Pays-Bas) et en Allemagne. Hetzner opère en Allemagne, Finlande et aux États-Unis."
+        },
+        {
+          "q": "Puis-je migrer de Hetzner vers ViaHost ?",
+          "a": "Oui. Pour l'hébergement cPanel la migration est gratuite ; sur VPS vous déployez votre serveur et migrez vos données via SSH."
+        }
+      ],
+      "cta": "On compare pour votre cas ? Voir les formules VPS"
+    }
+  }
+}
