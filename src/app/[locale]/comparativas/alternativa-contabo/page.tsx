@@ -5,8 +5,8 @@ import {
   comparativaMetadata,
 } from "@/components/comparativas/ComparativaHeadToHead";
 
-const NS = "hetzner";
-const PATH = "/comparativas/alternativa-hetzner";
+const NS = "contabo";
+const PATH = "/comparativas/alternativa-contabo";
 
 export function generateMetadata({
   params,

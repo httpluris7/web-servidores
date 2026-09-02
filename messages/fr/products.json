@@ -80,7 +80,8 @@
       "locationsTitle": "Déployez au plus près de vos utilisateurs.",
       "locationsDescription": "Des régions européennes stratégiques. La même expérience, une latence plus faible.",
       "from": "à partir de",
-      "compareHetzner": "Vous venez de Hetzner ? Voir le comparatif ViaHost vs Hetzner"
+      "compareHetzner": "Vous venez de Hetzner ? Voir le comparatif ViaHost vs Hetzner",
+      "compareContabo": "Vous venez de Contabo ? Voir le comparatif ViaHost vs Contabo"
     },
     "vpsRegion": {
       "meta": {

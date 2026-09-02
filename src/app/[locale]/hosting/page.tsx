@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { getHostingLine } from "@/data/products";
 import { site } from "@/data/site";
 import { jsonLdScript } from "@/lib/utils";
@@ -138,6 +139,15 @@ export default async function HostingPage({
       </section>
 
       <FaqSection items={hostingFaq} tKey="faqItems" namespace="hosting" index="/04" />
+
+      <div className="container-edge pb-8">
+        <Link
+          href="/comparativas/mejor-hosting-cpanel"
+          className="font-mono text-sm text-[var(--color-accent)] hover:underline"
+        >
+          {t("compareCpanel")} →
+        </Link>
+      </div>
 
       <CtaBand title={t("ctaTitle")} />
     </>

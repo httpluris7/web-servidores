@@ -123,12 +123,18 @@ export default async function VpsPage({
 
       <FaqSection items={vpsFaq} tKey="vpsFaq" index="/04" />
 
-      <div className="container-edge pb-8">
+      <div className="container-edge flex flex-col gap-2 pb-8">
         <Link
           href="/comparativas/alternativa-hetzner"
           className="font-mono text-sm text-[var(--color-accent)] hover:underline"
         >
           {t("vps.compareHetzner")} →
+        </Link>
+        <Link
+          href="/comparativas/alternativa-contabo"
+          className="font-mono text-sm text-[var(--color-accent)] hover:underline"
+        >
+          {t("vps.compareContabo")} →
         </Link>
       </div>
 

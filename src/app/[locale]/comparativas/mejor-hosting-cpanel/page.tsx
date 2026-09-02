@@ -5,8 +5,8 @@ import {
   comparativaMetadata,
 } from "@/components/comparativas/ComparativaHeadToHead";
 
-const NS = "hetzner";
-const PATH = "/comparativas/alternativa-hetzner";
+const NS = "mejor-hosting-cpanel";
+const PATH = "/comparativas/mejor-hosting-cpanel";
 
 export function generateMetadata({
   params,
@@ -19,5 +19,5 @@ export function generateMetadata({
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return <ComparativaHeadToHead locale={locale} nsKey={NS} path={PATH} ctaHref="/vps" />;
+  return <ComparativaHeadToHead locale={locale} nsKey={NS} path={PATH} ctaHref="/hosting" />;
 }

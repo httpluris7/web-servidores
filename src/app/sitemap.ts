@@ -21,6 +21,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/dominios",
     ...(dedicatedTypes.length > 0 ? ["/dedicados"] : []),
     "/comparativas/alternativa-hetzner",
+    "/comparativas/alternativa-contabo",
+    "/comparativas/mejor-hosting-cpanel",
     "/red",
     "/proteccion-ddos",
     "/casos-de-uso",
