@@ -7,6 +7,8 @@ import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
 import { findDuplicateOrder } from "@/lib/payments/duplicados";
 import { transferRef } from "@/lib/facturas";
 import { registrarIntent } from "@/lib/provisioner/intents";
+import { registrarHostingIntent } from "@/lib/hosting/intents";
+import { paqueteDePlan } from "@/lib/hosting/paquetes";
 import { OS_DEFAULT, esOfertableParaDisco, discoGbDeTexto } from "@/lib/provisioner/os";
 
 /** Hostname url/DNS-safe a partir de lo que teclee el cliente (o null si no da nada). */
@@ -171,6 +173,27 @@ export async function POST(req: Request) {
         });
       } catch (err) {
         console.error("[pedidos] no se pudo registrar la intención de aprovisionamiento", err);
+      }
+    }
+
+    // Money-path del hosting: si es un plan de hosting con paquete cPanel, se
+    // deja atada la intención de alta; al pagar se crea la cuenta. Best-effort.
+    if (located!.lineTipo === "hosting") {
+      const pkg = paqueteDePlan(planId);
+      if (pkg) {
+        try {
+          await registrarHostingIntent({
+            invoiceId: invoice.id,
+            planId,
+            cpanelPackage: pkg,
+            userId: session?.uid ?? null,
+            email,
+            nombre: name,
+            idioma: locale?.startsWith("es") ? "es" : "en",
+          });
+        } catch (err) {
+          console.error("[pedidos] no se pudo registrar la intención de hosting", err);
+        }
       }
     }
 

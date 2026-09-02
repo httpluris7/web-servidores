@@ -10,6 +10,7 @@ import {
   updateStripeSettings,
   updateWiseSettings,
   updateNjallaSettings,
+  updateHostingSettings,
   wiseHasCreds,
   njallaHasCreds,
   WEBHOOK_EVENTS,
@@ -20,6 +21,7 @@ import { emailRe } from "@/lib/leads";
 import { retrieveAccount, StripeError } from "@/lib/payments/stripe";
 import { probarWise, WiseError } from "@/lib/payments/wise";
 import { getBalance, NjallaError } from "@/lib/domains/njalla";
+import { pingWhm, hostingConfigured, WhmError } from "@/lib/hosting/whm";
 import { invalidateInventoryCache } from "@/lib/servidores/inventario";
 import { ProviderError, verifyToken } from "@/lib/servidores/v4vm";
 
@@ -31,7 +33,7 @@ export const dynamic = "force-dynamic";
  * versión enmascarada y si están puestos o no.
  */
 function publicView(settings: Settings) {
-  const { stripe, provider, alerts, wise, njalla } = settings;
+  const { stripe, provider, alerts, wise, njalla, hosting } = settings;
   return {
     // Los umbrales no son secretos: van tal cual, que el formulario los pinta.
     alerts,
@@ -69,6 +71,13 @@ function publicView(settings: Settings) {
       apiTokenMask: maskSecret(njalla.apiToken),
       hasRegisterToken: !!njalla.registerToken,
       registerTokenMask: maskSecret(njalla.registerToken),
+    },
+    hosting: {
+      enabled: hosting.enabled,
+      whmHost: hosting.whmHost,
+      baseDomain: hosting.baseDomain,
+      hasToken: !!hosting.whmToken,
+      tokenMask: maskSecret(hosting.whmToken),
     },
     webhookUrl: WEBHOOK_URL,
     webhookEvents: WEBHOOK_EVENTS,
@@ -252,6 +261,41 @@ async function putNjalla(body: Record<string, unknown>) {
   return NextResponse.json({ ok: true, warning, ...publicView(settings) });
 }
 
+/** Guarda la configuración del hosting web (WHM/cPanel del nodo web01). */
+async function putHosting(body: Record<string, unknown>) {
+  const readKey = (v: unknown): string | null | undefined => {
+    if (v === null) return null;
+    if (typeof v !== "string") return undefined;
+    return v.trim();
+  };
+
+  // El host y el dominio base se validan por forma: un host mal escrito manda
+  // el token de root a otro sitio, y un dominio base raro rompería las cuentas.
+  const nombreHost = /^[a-z0-9.-]+$/i;
+  const whmHost = typeof body.whmHost === "string" ? body.whmHost.trim() : "";
+  if (whmHost && !nombreHost.test(whmHost)) {
+    return NextResponse.json({ ok: false, error: "The WHM host is not a valid hostname." }, { status: 422 });
+  }
+  const baseDomain = typeof body.baseDomain === "string" ? body.baseDomain.trim() : "";
+  if (baseDomain && !nombreHost.test(baseDomain)) {
+    return NextResponse.json({ ok: false, error: "The base domain is not valid." }, { status: 422 });
+  }
+
+  const settings = await updateHostingSettings({
+    enabled: typeof body.enabled === "boolean" ? body.enabled : undefined,
+    whmHost: whmHost || undefined,
+    whmToken: readKey(body.whmToken),
+    baseDomain: baseDomain || undefined,
+  });
+
+  const warning =
+    settings.hosting.enabled && !settings.hosting.whmToken
+      ? "Hosting is enabled but there is no WHM API token yet."
+      : null;
+
+  return NextResponse.json({ ok: true, warning, ...publicView(settings) });
+}
+
 export async function PUT(req: Request) {
   if (!(await getAdminSession())) {
     return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 403 });
@@ -268,6 +312,7 @@ export async function PUT(req: Request) {
   if (body.section === "alerts") return putAlerts(body);
   if (body.section === "wise") return putWise(body);
   if (body.section === "njalla") return putNjalla(body);
+  if (body.section === "hosting") return putHosting(body);
 
   // `null` borra la clave guardada; ausente o cadena vacía la deja como está.
   const readKey = (v: unknown): string | null | undefined => {
@@ -348,6 +393,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true, balance });
     } catch (err) {
       const message = err instanceof NjallaError ? err.message : "Could not reach Njalla.";
+      return NextResponse.json({ ok: false, error: message }, { status: 502 });
+    }
+  }
+
+  if (target === "hosting") {
+    const { hosting } = await readSettings();
+    if (!hostingConfigured(hosting)) {
+      return NextResponse.json({ ok: false, error: "No WHM API token saved yet." }, { status: 422 });
+    }
+    try {
+      const accounts = await pingWhm();
+      return NextResponse.json({ ok: true, accounts });
+    } catch (err) {
+      const message = err instanceof WhmError ? err.message : "Could not reach WHM.";
       return NextResponse.json({ ok: false, error: message }, { status: 502 });
     }
   }

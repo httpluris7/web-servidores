@@ -12,6 +12,7 @@ import { ProviderSettingsForm } from "@/components/admin/ProviderSettingsForm";
 import { AlertSettingsForm } from "@/components/admin/AlertSettingsForm";
 import { WiseSettingsForm } from "@/components/admin/WiseSettingsForm";
 import { NjallaSettingsForm } from "@/components/admin/NjallaSettingsForm";
+import { HostingSettingsForm } from "@/components/admin/HostingSettingsForm";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +26,7 @@ export default async function ConfiguracionPage({
   const t = await getTranslations("admin");
 
   // Al cliente solo viaja la versión enmascarada: los secretos no salen de aquí.
-  const { stripe, provider, alerts, wise, njalla } = await readSettings();
+  const { stripe, provider, alerts, wise, njalla, hosting } = await readSettings();
   const initial = {
     enabled: stripe.enabled,
     hasSecretKey: !!stripe.secretKey,
@@ -61,6 +62,13 @@ export default async function ConfiguracionPage({
     hasRegisterToken: !!njalla.registerToken,
     registerTokenMask: maskSecret(njalla.registerToken),
   };
+  const initialHosting = {
+    enabled: hosting.enabled,
+    whmHost: hosting.whmHost,
+    baseDomain: hosting.baseDomain,
+    hasToken: !!hosting.whmToken,
+    tokenMask: maskSecret(hosting.whmToken),
+  };
 
   return (
     <div className="grid gap-6">
@@ -80,6 +88,8 @@ export default async function ConfiguracionPage({
       <WiseSettingsForm initial={initialWise} />
 
       <NjallaSettingsForm initial={initialNjalla} />
+
+      <HostingSettingsForm initial={initialHosting} />
 
       <AlertSettingsForm initial={alerts} />
     </div>

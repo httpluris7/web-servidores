@@ -8,6 +8,8 @@ import { getPublicUserById } from "@/lib/auth";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
 import { findDuplicateOrder } from "@/lib/payments/duplicados";
 import { registrarIntent } from "@/lib/provisioner/intents";
+import { registrarHostingIntent } from "@/lib/hosting/intents";
+import { paqueteDePlan } from "@/lib/hosting/paquetes";
 import { OS_DEFAULT, discoGbDeTexto, esOfertableParaDisco } from "@/lib/provisioner/os";
 import { transferRef } from "@/lib/facturas";
 
@@ -207,6 +209,30 @@ export async function POST(req: Request) {
         });
       } catch (err) {
         console.error("[checkout] no se pudo registrar la intención de aprovisionamiento", v.planId, err);
+      }
+    }
+
+    // Money-path del hosting: por cada línea de hosting dejamos atada a la
+    // factura la intención de alta en cPanel; al pasar a pagada se crea la
+    // cuenta (`aprovisionarHostingFacturaPagada`). Una cuenta por (factura,
+    // plan): un qty>1 solo crea una automáticamente. Best-effort.
+    for (const v of validated) {
+      const located = allPlans.find((p) => p.plan.id === v.planId);
+      if (located?.lineTipo !== "hosting") continue;
+      const pkg = paqueteDePlan(v.planId);
+      if (!pkg) continue; // plan de hosting sin paquete cPanel: alta manual
+      try {
+        await registrarHostingIntent({
+          invoiceId: invoice.id,
+          planId: v.planId,
+          cpanelPackage: pkg,
+          userId: user.id,
+          email: user.email,
+          nombre: clienteNombre,
+          idioma: locale?.startsWith("es") ? "es" : "en",
+        });
+      } catch (err) {
+        console.error("[checkout] no se pudo registrar la intención de hosting", v.planId, err);
       }
     }
 

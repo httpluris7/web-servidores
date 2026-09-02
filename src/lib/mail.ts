@@ -316,6 +316,104 @@ export async function sendPasswordResetMail(m: PasswordResetMail): Promise<void>
   await pipeSendmail(to, `${headers}\r\n\r\n${body}\n`);
 }
 
+export type HostingWelcomeMail = {
+  to: string;
+  nombre: string;
+  idioma: "es" | "en";
+  username: string;
+  password: string;
+  /** Dominio primario temporal de la cuenta (`<user>.web01.viahost.top`). */
+  domain: string;
+  /** Dominio base del nodo (para la URL del panel: `https://<base>:2083`). */
+  baseDomain: string;
+};
+
+/**
+ * Envía al cliente las credenciales de su hosting recién creado en cPanel.
+ *
+ * Va en el idioma del pedido (es/en): quien lo recibe acaba de comprar en la
+ * web. La contraseña viaja una sola vez y NO se guarda en claro en ningún sitio;
+ * si el correo se pierde, se resetea desde WHM. La URL temporal deja la cuenta
+ * usable al instante mientras el cliente apunta su dominio real.
+ */
+export async function sendHostingWelcomeMail(m: HostingWelcomeMail): Promise<void> {
+  const to = headerSafe(m.to);
+  if (!emailRe.test(to) || to.startsWith("-")) {
+    throw new Error("Invalid recipient address.");
+  }
+  const es = m.idioma === "es";
+  const panelUrl = `https://${headerSafe(m.baseDomain)}:2083`;
+  const siteUrl = `https://${headerSafe(m.domain)}`;
+  const webmailUrl = `https://${headerSafe(m.baseDomain)}:2096`;
+
+  const subject = encodeHeader(
+    es ? "Tu hosting está listo — ViaHost" : "Your web hosting is ready — ViaHost",
+  );
+
+  const body = (
+    es
+      ? [
+          `Hola ${headerSafe(m.nombre)},`,
+          "",
+          "Tu alojamiento web ya está activo. Estos son tus accesos a cPanel:",
+          "",
+          `Panel (cPanel):  ${panelUrl}`,
+          `Usuario:         ${m.username}`,
+          `Contraseña:      ${m.password}`,
+          "",
+          `URL temporal del sitio:  ${siteUrl}`,
+          `Webmail:                 ${webmailUrl}`,
+          "",
+          "Tu cuenta se ha creado con un dominio temporal para que puedas empezar",
+          "ya. Cuando quieras usar tu propio dominio, apúntalo a la IP del",
+          "servidor (163.5.85.212) y cámbialo como dominio principal en cPanel, o",
+          "respóndenos y te lo configuramos.",
+          "",
+          "Por seguridad, cambia la contraseña la primera vez que entres.",
+          "",
+          "—",
+          "ViaHost Networks, LLC",
+          BILLING_REPLY_TO,
+        ]
+      : [
+          `Hi ${headerSafe(m.nombre)},`,
+          "",
+          "Your web hosting is now active. Here are your cPanel credentials:",
+          "",
+          `Panel (cPanel):  ${panelUrl}`,
+          `Username:        ${m.username}`,
+          `Password:        ${m.password}`,
+          "",
+          `Temporary site URL:  ${siteUrl}`,
+          `Webmail:             ${webmailUrl}`,
+          "",
+          "Your account was created with a temporary domain so you can start",
+          "right away. To use your own domain, point it to the server IP",
+          "(163.5.85.212) and set it as the primary domain in cPanel, or reply to",
+          "us and we'll set it up for you.",
+          "",
+          "For your security, change the password the first time you log in.",
+          "",
+          "—",
+          "ViaHost Networks, LLC",
+          BILLING_REPLY_TO,
+        ]
+  ).join("\r\n");
+
+  const headers = [
+    `From: ViaHost <${FROM}>`,
+    `To: ${to}`,
+    `Reply-To: ${BILLING_REPLY_TO}`,
+    `Subject: ${subject}`,
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: 8bit",
+    "Auto-Submitted: auto-generated",
+  ].join("\r\n");
+
+  await pipeSendmail(to, `${headers}\r\n\r\n${body}\n`);
+}
+
 /* --------------------------------- Tickets -------------------------------- */
 
 /**

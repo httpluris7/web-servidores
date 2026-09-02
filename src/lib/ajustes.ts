@@ -173,6 +173,21 @@ export type NjallaSettings = {
   saldoMinimo: number;
 };
 
+/**
+ * Hosting web compartido (cPanel/WHM en el nodo web01). El alta de la cuenta se
+ * automatiza al pagar la factura llamando a la WHM API 1 del nodo por HTTPS.
+ */
+export type HostingSettings = {
+  /** Interruptor: sin esto no se crean cuentas de cPanel automáticamente. */
+  enabled: boolean;
+  /** Host del WHM (por hostname, para que valide el cert: `web01.viahost.top`). */
+  whmHost: string;
+  /** API token de root del WHM, ACL acotada (secreto). Vacío = no se aprovisiona. */
+  whmToken: string;
+  /** Dominio base para el dominio temporal de cada cuenta (`<user>.<base>`). */
+  baseDomain: string;
+};
+
 export type Settings = {
   stripe: StripeSettings;
   provider: ProviderSettings;
@@ -180,6 +195,7 @@ export type Settings = {
   backup: BackupSettings;
   wise: WiseSettings;
   njalla: NjallaSettings;
+  hosting: HostingSettings;
 };
 
 /** Valores de partida de Wise: apagado y en sandbox (pruebas sin dinero real). */
@@ -200,6 +216,14 @@ export const DEFAULT_NJALLA: NjallaSettings = {
   registerToken: "",
   margenPct: 25,
   saldoMinimo: 50,
+};
+
+/** Hosting de partida: apagado, apuntando al nodo web01 por hostname. */
+export const DEFAULT_HOSTING: HostingSettings = {
+  enabled: false,
+  whmHost: "web01.viahost.top",
+  whmToken: "",
+  baseDomain: "web01.viahost.top",
 };
 
 /** Valores de partida de las copias de seguridad: a las 03:00, sin destinos. */
@@ -394,12 +418,39 @@ function normalizeNjalla(raw: unknown, fallback: NjallaSettings): NjallaSettings
   };
 }
 
+/** Hosting desde el entorno (respaldo si no hay fichero). */
+function hostingFromEnv(): HostingSettings {
+  const whmToken = (process.env.WHM_API_TOKEN ?? "").trim();
+  const whmHost = (process.env.WHM_HOST ?? "").trim();
+  const baseDomain = (process.env.HOSTING_BASE_DOMAIN ?? "").trim();
+  return {
+    enabled: !!whmToken,
+    whmHost: whmHost || DEFAULT_HOSTING.whmHost,
+    whmToken,
+    baseDomain: baseDomain || DEFAULT_HOSTING.baseDomain,
+  };
+}
+
+function normalizeHosting(raw: unknown, fallback: HostingSettings): HostingSettings {
+  const o = (raw ?? {}) as Partial<Record<keyof HostingSettings, unknown>>;
+  const whmHost = typeof o.whmHost === "string" ? o.whmHost.trim() : "";
+  const whmToken = typeof o.whmToken === "string" ? o.whmToken.trim() : "";
+  const baseDomain = typeof o.baseDomain === "string" ? o.baseDomain.trim() : "";
+  return {
+    enabled: o.enabled === true,
+    whmHost: whmHost || fallback.whmHost,
+    whmToken: whmToken || fallback.whmToken,
+    baseDomain: baseDomain || fallback.baseDomain,
+  };
+}
+
 /** Ajustes efectivos (fichero sobre entorno). Nunca lanza: sin fichero, vacíos. */
 export async function readSettings(): Promise<Settings> {
   const env = fromEnv();
   const providerEnv = providerFromEnv();
   const wiseEnv = wiseFromEnv();
   const njallaEnv = njallaFromEnv();
+  const hostingEnv = hostingFromEnv();
   let parsed: unknown = null;
   try {
     parsed = JSON.parse(await readFile(FILE, "utf8"));
@@ -413,6 +464,7 @@ export async function readSettings(): Promise<Settings> {
       backup: { ...DEFAULT_BACKUP },
       wise: { ...wiseEnv },
       njalla: { ...njallaEnv },
+      hosting: { ...hostingEnv },
     };
   }
   const obj = (parsed ?? {}) as {
@@ -422,6 +474,7 @@ export async function readSettings(): Promise<Settings> {
     backup?: unknown;
     wise?: unknown;
     njalla?: unknown;
+    hosting?: unknown;
   };
   return {
     stripe: normalizeStripe(obj.stripe, env),
@@ -430,6 +483,7 @@ export async function readSettings(): Promise<Settings> {
     backup: normalizeBackup(obj.backup),
     wise: normalizeWise(obj.wise, wiseEnv),
     njalla: normalizeNjalla(obj.njalla, njallaEnv),
+    hosting: normalizeHosting(obj.hosting, hostingEnv),
   };
 }
 
@@ -639,6 +693,31 @@ export async function updateNjallaSettings(patch: NjallaPatch): Promise<Settings
 /** ¿Njalla listo para leer/buscar/DNS? (encendido + token de lectura). */
 export function njallaHasCreds(njalla: NjallaSettings): boolean {
   return njalla.enabled && njalla.apiToken.trim().length > 0;
+}
+
+export type HostingPatch = {
+  enabled?: boolean;
+  whmHost?: string;
+  whmToken?: string | null;
+  baseDomain?: string;
+};
+
+export async function updateHostingSettings(patch: HostingPatch): Promise<Settings> {
+  const current = await readSettings();
+  const h = current.hosting;
+  const whmHost = typeof patch.whmHost === "string" ? patch.whmHost.trim() : "";
+  const baseDomain = typeof patch.baseDomain === "string" ? patch.baseDomain.trim() : "";
+  const next: Settings = {
+    ...current,
+    hosting: {
+      enabled: patch.enabled ?? h.enabled,
+      whmHost: whmHost || h.whmHost,
+      whmToken: pickSecret(patch.whmToken, h.whmToken),
+      baseDomain: baseDomain || h.baseDomain,
+    },
+  };
+  await writeSettings(next);
+  return next;
 }
 
 /** ¿Puede REGISTRAR/renovar? (encendido + token de registro). */
