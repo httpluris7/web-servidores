@@ -14,8 +14,9 @@ export function ServiceHeader({ service }: { service: PanelService }) {
   const t = useTranslations("panel");
   const locale = useLocale();
 
+  const dash = <span className="text-[var(--color-fg-dim)]">—</span>;
   const facturacion: Array<{ label: string; value: React.ReactNode }> = [
-    { label: t("header.since"), value: formatDate(service.altaAt, locale) },
+    { label: t("header.since"), value: service.altaAt ? formatDate(service.altaAt, locale) : dash },
     {
       label: t("header.amount"),
       value: (
@@ -25,8 +26,11 @@ export function ServiceHeader({ service }: { service: PanelService }) {
         </>
       ),
     },
-    { label: t("header.nextDue"), value: formatDate(service.vencimientoAt, locale) },
-    { label: t("header.method"), value: service.metodoPago },
+    {
+      label: t("header.nextDue"),
+      value: service.vencimientoAt ? formatDate(service.vencimientoAt, locale) : dash,
+    },
+    { label: t("header.method"), value: service.metodoPago || dash },
   ];
 
   return (

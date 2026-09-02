@@ -70,6 +70,7 @@
       "nodo": "Node",
       "nombre": "Name",
       "password": "Password",
+      "passwordManaged": "Not stored. Use \"Change password\": a one-time link is emailed to you.",
       "uptime": "Uptime",
       "creado": "Created",
       "descripcion": "Description",
@@ -106,6 +107,10 @@
       "none": "No addresses assigned.",
       "v4": "IPv4",
       "v6": "IPv6"
+    },
+    "error": {
+      "title": "Couldn't load the service",
+      "body": "We couldn't reach the provisioning server. The service is still active; please try again in a few seconds."
     }
   }
 }

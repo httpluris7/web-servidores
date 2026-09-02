@@ -13,8 +13,14 @@ export function formatUptime(sec: number): string {
   return parts.join(" ");
 }
 
-/** Porcentaje de uso 0–100 de un `Usage`, acotado. */
+/** ¿Se puede dibujar una barra? (hay uso Y un total contra el que medir). */
+export function tieneBarra(u: Usage): boolean {
+  return u.usado !== null && u.total !== null && u.total > 0;
+}
+
+/** Porcentaje de uso 0–100 de un `Usage`, acotado. Asume `tieneBarra`. */
 export function usagePct(u: Usage): number {
+  if (u.usado === null) return 0;
   if (u.unidad === "pct") return clamp(u.usado);
   if (!u.total) return 0;
   return clamp((u.usado / u.total) * 100);
@@ -24,17 +30,24 @@ function clamp(n: number): number {
   return Math.max(0, Math.min(100, Math.round(n)));
 }
 
-/** Texto "usado / total" con la unidad, legible. */
+/** Texto "usado / total" con la unidad. Muestra "—" donde no hay dato. */
 export function usageText(u: Usage): string {
+  const dash = "—";
   switch (u.unidad) {
     case "pct":
-      return `${Math.round(u.usado)}%`;
+      return u.usado === null ? dash : `${Math.round(u.usado)}%`;
     case "mb":
-      return `${gb(u.usado)} / ${gb(u.total)} GB`;
+      if (u.usado === null && u.total === null) return dash;
+      if (u.total === null) return `${gb(u.usado!)} GB`;
+      return `${u.usado === null ? dash : gb(u.usado)} / ${gb(u.total)} GB`;
     case "gb":
-      return `${round1(u.usado)} / ${round1(u.total)} GB`;
+      if (u.usado === null && u.total === null) return dash;
+      if (u.total === null) return `${round1(u.usado!)} GB`;
+      return `${u.usado === null ? dash : round1(u.usado)} / ${round1(u.total)} GB`;
     case "mbps":
-      return `${u.usado} / ${u.total} Mbps`;
+      return u.usado === null && u.total === null
+        ? dash
+        : `${u.usado ?? dash}${u.total !== null ? ` / ${u.total}` : ""} Mbps`;
   }
 }
 

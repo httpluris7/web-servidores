@@ -138,6 +138,14 @@ export async function pendientesDeFicha(userId: string): Promise<ProvisionIntent
   );
 }
 
+/**
+ * Intención asociada a un pedido del provisioner (por su `provisionOrderId`).
+ * Sirve para remontar del VPS a su factura (la cabecera comercial del panel).
+ */
+export async function intentByProvisionOrderId(orderId: number): Promise<ProvisionIntent | null> {
+  return (await readAll()).find((d) => d.provisionOrderId === orderId) ?? null;
+}
+
 /** Marca que ya existe la ficha de servidor gestionado para esta intención. */
 export async function marcarFichaCreada(invoiceId: string, planSlug: string): Promise<void> {
   const list = await readAll();

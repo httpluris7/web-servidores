@@ -1,4 +1,5 @@
-import { CARD } from "./ui";
+import { useTranslations } from "next-intl";
+import { CARD, CARD_PAD } from "./ui";
 
 /** Barra gris que pulsa, del alto indicado. */
 function Bar({ w = "100%", h = "0.9rem" }: { w?: string; h?: string }) {
@@ -31,6 +32,54 @@ export function InfoSkeleton() {
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+/** Skeleton de la cabecera del servicio. */
+export function HeaderSkeleton() {
+  return (
+    <section className={CARD_PAD} aria-hidden="true">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+        <div className="space-y-3">
+          <Bar w="5rem" h="0.7rem" />
+          <Bar w="12rem" h="1.4rem" />
+          <Bar w="8rem" h="1.1rem" />
+        </div>
+        <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-4 lg:min-w-[26rem]">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="space-y-2">
+              <Bar w="4rem" h="0.6rem" />
+              <Bar w="5rem" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Skeleton del panel completo (cabecera + información + IPs). */
+export function PanelSkeleton() {
+  return (
+    <>
+      <HeaderSkeleton />
+      <InfoSkeleton />
+      <IpSkeleton />
+    </>
+  );
+}
+
+/**
+ * Aviso cuando el servidor de aprovisionamiento no responde: mejor decirlo que
+ * pintar una ficha a medias. El servicio existe; solo no se pudo leer ahora.
+ */
+export function PanelError() {
+  const t = useTranslations("panel");
+  return (
+    <section className={`${CARD_PAD} border-[var(--color-danger)]/30`}>
+      <h2 className="text-lg font-semibold text-[var(--color-danger)]">{t("error.title")}</h2>
+      <p className="mt-2 text-sm text-[var(--color-fg-muted)]">{t("error.body")}</p>
     </section>
   );
 }

@@ -70,6 +70,7 @@
       "nodo": "Nodo",
       "nombre": "Nombre",
       "password": "Contraseña",
+      "passwordManaged": "No se almacena. Usa «Cambiar contraseña»: se envía por email un enlace de un solo uso.",
       "uptime": "Tiempo activo",
       "creado": "Fecha de creación",
       "descripcion": "Descripción",
@@ -106,6 +107,10 @@
       "none": "Sin direcciones asignadas.",
       "v4": "IPv4",
       "v6": "IPv6"
+    },
+    "error": {
+      "title": "No se pudo cargar el servicio",
+      "body": "No hemos podido contactar con el servidor de aprovisionamiento. El servicio sigue activo; vuelve a intentarlo en unos segundos."
     }
   }
 }

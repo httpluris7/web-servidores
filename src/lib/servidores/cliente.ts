@@ -1,3 +1,4 @@
+import "server-only";
 import { providerConfig, providerServers } from "./inventario";
 import {
   assignServer,

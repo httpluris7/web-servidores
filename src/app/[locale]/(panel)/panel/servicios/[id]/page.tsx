@@ -1,15 +1,16 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getSession } from "@/lib/session";
-import { loadServiceInfo, loadServiceIps, mockService } from "@/lib/panel/mock";
+import { getManagedForUser } from "@/lib/servidores/cliente";
+import { getPanelServiceForUser, PanelUnavailableError } from "@/lib/panel/service";
 import { ServiceHeader } from "@/components/panel/ServiceHeader";
 import { PowerActions } from "@/components/panel/PowerActions";
 import { ManagementGrid } from "@/components/panel/ManagementGrid";
 import { InfoTable } from "@/components/panel/InfoTable";
 import { IpTable } from "@/components/panel/IpTable";
-import { InfoSkeleton, IpSkeleton } from "@/components/panel/Skeletons";
+import { PanelError, PanelSkeleton } from "@/components/panel/Skeletons";
 
 export const dynamic = "force-dynamic";
 
@@ -34,37 +35,50 @@ export default async function PanelServicioPage({
   const session = await getSession();
   if (!session) redirect("/acceder");
 
-  const t = await getTranslations("panel");
-  // Cabecera, acciones y gestión: datos inmediatos (sin retardo simulado).
-  const service = mockService(id);
+  // Pertenencia ANTES del stream: un servicio ajeno, inexistente o que no sea de
+  // nuestro Proxmox responde 404 con su status correcto (si se comprobara dentro
+  // del Suspense, el stream ya habría enviado un 200). No habla con el proveedor:
+  // solo lee nuestra propia ficha.
+  const managed = await getManagedForUser(id, session.uid);
+  if (!managed || managed.proveedor !== "proxmox") notFound();
 
+  // Un único Suspense para la carga pesada (provisioner + agente + factura):
+  // mientras llega, se muestra el skeleton completo.
   return (
-    <>
-      <p className="rounded-[var(--radius-md)] border border-dashed border-[var(--color-accent)]/40 bg-[var(--color-accent)]/5 px-4 py-2.5 text-xs text-[var(--color-fg-muted)]">
-        {t("mockNote")}
-      </p>
-
-      <ServiceHeader service={service} />
-      <PowerActions power={service.power} />
-      <ManagementGrid />
-
-      {/* Datos "cargados": Suspense con skeleton, sin spinner de página. */}
-      <Suspense fallback={<InfoSkeleton />}>
-        <InfoSection id={id} />
-      </Suspense>
-      <Suspense fallback={<IpSkeleton />}>
-        <IpsSection id={id} />
-      </Suspense>
-    </>
+    <Suspense fallback={<PanelSkeleton />}>
+      <PanelContent id={id} userId={session.uid} locale={locale} />
+    </Suspense>
   );
 }
 
-async function InfoSection({ id }: { id: string }) {
-  const service = await loadServiceInfo(id);
-  return <InfoTable service={service} />;
-}
+async function PanelContent({
+  id,
+  userId,
+  locale,
+}: {
+  id: string;
+  userId: string;
+  locale: string;
+}) {
+  let service;
+  try {
+    service = await getPanelServiceForUser(id, userId, locale);
+  } catch (err) {
+    // Provisioner caído: el servicio existe, pero no se pudo leer ahora.
+    if (err instanceof PanelUnavailableError) return <PanelError />;
+    throw err;
+  }
+  // Ya comprobamos pertenencia + proxmox en la página; null aquí sería una
+  // condición de carrera (ficha borrada entremedias): se trata como inexistente.
+  if (!service) notFound();
 
-async function IpsSection({ id }: { id: string }) {
-  const ips = await loadServiceIps(id);
-  return <IpTable ips={ips} />;
+  return (
+    <>
+      <ServiceHeader service={service} />
+      <PowerActions power={service.power} />
+      <ManagementGrid />
+      <InfoTable service={service} />
+      <IpTable ips={service.ips} />
+    </>
+  );
 }

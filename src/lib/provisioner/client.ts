@@ -13,6 +13,8 @@
  * de siempre) en vez de romper.
  */
 
+import "server-only";
+
 export class ProvisionerError extends Error {
   constructor(
     message: string,
@@ -287,4 +289,57 @@ export function deleteVpsSnapshot(vpsId: number, name: string): Promise<{ ok: bo
 /** Abre un proxy VNC en Proxmox y devuelve el ticket/puerto para noVNC. */
 export function vpsVncProxy(vpsId: number): Promise<VncProxyInfo & { ok: boolean }> {
   return request("POST", `/vps/${vpsId}/vncproxy`);
+}
+
+/**
+ * Ficha AMPLIADA de un VPS para el panel de cliente: base + estado en vivo del
+ * hipervisor (`live`, null si Proxmox no responde) + red (IP, gateway, prefijo,
+ * MAC) + plan con precio. El disco/uso dentro del guest NO viene de aquí (Proxmox
+ * no lo ve en QEMU): lo aporta el agente; ver el conciliador del panel.
+ */
+export type VpsDetalle = {
+  id: number;
+  vmid: number;
+  ip: string;
+  usuario: string;
+  estado: VpsInfo["estado"];
+  location_slug: string;
+  ubicacion: string;
+  node_nombre: string;
+  plan_slug: string | null;
+  os_slug: string | null;
+  hostname: string | null;
+  vcores: number | null;
+  ram_mb: number | null;
+  disco_gb: number | null;
+  precio_mes_eur: number | null;
+  order_id: number;
+  creado: string;
+  red: {
+    ip: string;
+    gateway: string | null;
+    cidr: number | null;
+    mac: string | null;
+    ipv6: string | null;
+  } | null;
+  live: {
+    status: string;
+    uptime_s: number | null;
+    cpu_pct: number | null;
+    cpus: number | null;
+    mem_bytes: number | null;
+    maxmem_bytes: number | null;
+    maxdisk_bytes: number | null;
+    netin_bytes: number | null;
+    netout_bytes: number | null;
+  } | null;
+  config: {
+    boot_order: string | null;
+    iso: string | null;
+    net_rate_mbps: number | null;
+  };
+};
+
+export function getVpsDetalle(vpsId: number): Promise<VpsDetalle> {
+  return request("GET", `/vps/${vpsId}/detalle`);
 }

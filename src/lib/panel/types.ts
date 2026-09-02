@@ -28,8 +28,10 @@ export type ServiceIp = {
 
 /** Un valor con su límite, para las barras "actual / límite". */
 export type Usage = {
-  usado: number;
-  total: number;
+  /** Consumo actual, o null si no se conoce (p. ej. disco sin agente instalado). */
+  usado: number | null;
+  /** Límite/total, o null si no aplica (p. ej. ancho de banda sin tope). */
+  total: number | null;
   /** Unidad para formatear (pct = %, mb, gb, mbps). */
   unidad: "pct" | "mb" | "gb" | "mbps";
 };
@@ -55,20 +57,25 @@ export type PanelService = {
   /* Información técnica */
   nodo: string;
   nombre: string; // hostname
-  password: string; // se muestra enmascarada, con botón copiar
+  /**
+   * Contraseña en claro SOLO si está disponible (maqueta). En los VPS reales no
+   * se almacena: es null y `passwordManaged` indica que se entrega por email.
+   */
+  password: string | null;
+  passwordManaged: boolean;
   uptimeSec: number;
   creadoAt: string; // ISO
   descripcion: string;
   cpu: Usage; // % sobre N cores
-  cores: number;
+  cores: number | null;
   memoria: Usage; // MB
-  swap: Usage; // MB
+  swap: Usage; // % (guest, vía agente)
   disco: Usage; // GB
-  backupsLimite: number;
-  tasaRedMbps: number;
+  backupsLimite: number | null;
+  tasaRedMbps: number | null;
   iso: string | null; // ISO montada, o null
   ordenArranque: string;
-  anchoBanda: Usage; // GB consumidos / total
+  anchoBanda: Usage; // GB consumidos (sin tope → total null)
 
   /* Red */
   ips: ServiceIp[];

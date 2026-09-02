@@ -49,6 +49,7 @@ export function mockService(id: string): PanelService {
     nodo: `blade6-${1 + (s % 3)}`,
     nombre: `vps-de-scale-${100 + (s % 40)}`,
     password: "S3rv3r·Demo·2026",
+    passwordManaged: false,
     uptimeSec: 60 * 60 * (12 + (s % 200)) + 37 * 60,
     creadoAt: "2026-05-14T10:22:31.000Z",
     descripcion: "Servidor de producción — web y API",

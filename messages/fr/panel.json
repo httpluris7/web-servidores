@@ -70,6 +70,7 @@
       "nodo": "Nœud",
       "nombre": "Nom",
       "password": "Mot de passe",
+      "passwordManaged": "Non stocké. Utilisez « Changer le mot de passe » : un lien à usage unique vous est envoyé par email.",
       "uptime": "Temps de fonctionnement",
       "creado": "Date de création",
       "descripcion": "Description",
@@ -106,6 +107,10 @@
       "none": "Aucune adresse attribuée.",
       "v4": "IPv4",
       "v6": "IPv6"
+    },
+    "error": {
+      "title": "Impossible de charger le service",
+      "body": "Nous n'avons pas pu joindre le serveur de provisionnement. Le service est toujours actif ; réessayez dans quelques secondes."
     }
   }
 }
