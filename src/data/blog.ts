@@ -376,6 +376,198 @@ export const posts: BlogPost[] = [
       },
     },
   },
+  {
+    slug: "instalar-wordpress-en-vps",
+    date: "2026-08-13",
+    type: "howto",
+    ctaHref: "/vps",
+    content: {
+      es: {
+        title: "Cómo instalar WordPress en un VPS",
+        description:
+          "Guía paso a paso para instalar WordPress en un VPS: del despliegue del servidor al dominio con SSL. Con el atajo si prefieres cPanel.",
+        intro: [
+          "Instalar WordPress en un VPS te da control total del servidor. Si prefieres el camino rápido, un hosting con cPanel lo instala en un clic con Softaculous; si quieres hacerlo tú en un VPS, estos son los pasos.",
+        ],
+        sections: [
+          { heading: "Despliega el VPS", body: ["Contrata un VPS y elige una imagen de Ubuntu o Debian. En cuanto se aprovisiona recibes la IP y el acceso root."] },
+          { heading: "Conéctate por SSH", body: ["Accede al servidor por SSH con el usuario root y la clave que recibiste. Actualiza el sistema antes de empezar."] },
+          { heading: "Instala el stack web", body: ["Instala un servidor web (Nginx o Apache), PHP y MariaDB. Como alternativa, instala un panel gratuito para gestionarlo desde una interfaz."] },
+          { heading: "Crea la base de datos", body: ["Crea una base de datos y un usuario para WordPress y anota sus credenciales."] },
+          { heading: "Instala WordPress", body: ["Descarga WordPress, colócalo en la carpeta del sitio y completa el asistente con los datos de la base de datos."] },
+          { heading: "Apunta el dominio y activa SSL", body: ["Apunta el registro A de tu dominio a la IP del VPS y emite un certificado SSL gratuito (Let's Encrypt). Tu WordPress queda accesible por HTTPS."] },
+        ],
+        faq: [
+          { q: "¿Es mejor WordPress en VPS o en hosting compartido?", a: "En hosting compartido con cPanel es más sencillo (instalación en un clic). En un VPS tienes control total y recursos dedicados, a cambio de administrarlo tú." },
+          { q: "¿Cuánta RAM necesita WordPress?", a: "Un WordPress con tráfico moderado funciona bien desde 2 GB de RAM; para tiendas o mucho tráfico conviene más." },
+          { q: "¿Necesito saber usar la terminal?", a: "Para instalarlo a mano en un VPS, sí. Si no quieres terminal, usa hosting cPanel con Softaculous." },
+        ],
+        cta: "Ver planes de VPS",
+      },
+      en: {
+        title: "How to install WordPress on a VPS",
+        description:
+          "Step-by-step guide to install WordPress on a VPS: from deploying the server to the domain with SSL. With the shortcut if you prefer cPanel.",
+        intro: [
+          "Installing WordPress on a VPS gives you full control of the server. If you prefer the fast path, cPanel hosting installs it in one click with Softaculous; if you want to do it yourself on a VPS, here are the steps.",
+        ],
+        sections: [
+          { heading: "Deploy the VPS", body: ["Order a VPS and choose an Ubuntu or Debian image. Once provisioned you get the IP and root access."] },
+          { heading: "Connect over SSH", body: ["Access the server over SSH with the root user and the key you received. Update the system before you start."] },
+          { heading: "Install the web stack", body: ["Install a web server (Nginx or Apache), PHP and MariaDB. Alternatively, install a free panel to manage it from a UI."] },
+          { heading: "Create the database", body: ["Create a database and a user for WordPress and note the credentials."] },
+          { heading: "Install WordPress", body: ["Download WordPress, place it in the site folder and complete the wizard with the database details."] },
+          { heading: "Point the domain and enable SSL", body: ["Point your domain's A record to the VPS IP and issue a free SSL certificate (Let's Encrypt). Your WordPress is now reachable over HTTPS."] },
+        ],
+        faq: [
+          { q: "Is WordPress better on a VPS or shared hosting?", a: "Shared hosting with cPanel is simpler (one-click install). On a VPS you get full control and dedicated resources, in exchange for managing it yourself." },
+          { q: "How much RAM does WordPress need?", a: "A WordPress site with moderate traffic runs fine from 2 GB of RAM; for shops or heavy traffic, more is better." },
+          { q: "Do I need to know how to use the terminal?", a: "To install it by hand on a VPS, yes. If you do not want the terminal, use cPanel hosting with Softaculous." },
+        ],
+        cta: "See the VPS plans",
+      },
+      fr: {
+        title: "Comment installer WordPress sur un VPS",
+        description:
+          "Guide étape par étape pour installer WordPress sur un VPS : du déploiement du serveur au domaine avec SSL. Avec le raccourci si vous préférez cPanel.",
+        intro: [
+          "Installer WordPress sur un VPS vous donne un contrôle total du serveur. Si vous préférez la voie rapide, un hébergement cPanel l'installe en un clic avec Softaculous ; si vous voulez le faire vous-même sur un VPS, voici les étapes.",
+        ],
+        sections: [
+          { heading: "Déployez le VPS", body: ["Commandez un VPS et choisissez une image Ubuntu ou Debian. Une fois provisionné, vous recevez l'IP et l'accès root."] },
+          { heading: "Connectez-vous en SSH", body: ["Accédez au serveur en SSH avec l'utilisateur root et la clé reçue. Mettez à jour le système avant de commencer."] },
+          { heading: "Installez la pile web", body: ["Installez un serveur web (Nginx ou Apache), PHP et MariaDB. Sinon, installez un panneau gratuit pour le gérer depuis une interface."] },
+          { heading: "Créez la base de données", body: ["Créez une base de données et un utilisateur pour WordPress et notez leurs identifiants."] },
+          { heading: "Installez WordPress", body: ["Téléchargez WordPress, placez-le dans le dossier du site et complétez l'assistant avec les informations de la base de données."] },
+          { heading: "Pointez le domaine et activez SSL", body: ["Pointez l'enregistrement A de votre domaine vers l'IP du VPS et émettez un certificat SSL gratuit (Let's Encrypt). Votre WordPress est accessible en HTTPS."] },
+        ],
+        faq: [
+          { q: "WordPress est-il meilleur sur un VPS ou en mutualisé ?", a: "Le mutualisé avec cPanel est plus simple (installation en un clic). Sur un VPS, vous avez un contrôle total et des ressources dédiées, en échange de la gestion." },
+          { q: "Combien de RAM faut-il pour WordPress ?", a: "Un WordPress à trafic modéré fonctionne bien à partir de 2 Go de RAM ; pour des boutiques ou beaucoup de trafic, davantage est préférable." },
+          { q: "Faut-il savoir utiliser le terminal ?", a: "Pour l'installer à la main sur un VPS, oui. Si vous ne voulez pas de terminal, utilisez l'hébergement cPanel avec Softaculous." },
+        ],
+        cta: "Voir les formules VPS",
+      },
+    },
+  },
+  {
+    slug: "que-es-cpanel",
+    date: "2026-08-06",
+    type: "article",
+    ctaHref: "/hosting",
+    content: {
+      es: {
+        title: "Qué es cPanel y para qué sirve",
+        description: "cPanel explicado en claro: qué es, qué puedes hacer con él y por qué es el panel de hosting más extendido.",
+        intro: ["cPanel es el panel de control de hosting más usado del mundo. Te permite gestionar tu alojamiento web desde una interfaz gráfica, sin tocar la terminal."],
+        sections: [
+          { heading: "Qué es cPanel", body: ["cPanel es un panel de control web que gestiona tu cuenta de hosting: dominios, correos, bases de datos, archivos y certificados SSL, todo desde el navegador."] },
+          { heading: "Qué puedes hacer con cPanel", body: ["Crear cuentas de correo, subir tu web por gestor de archivos o FTP, crear bases de datos, gestionar dominios y subdominios, activar SSL y ver estadísticas."] },
+          { heading: "cPanel y Softaculous", body: ["cPanel incluye instaladores como Softaculous, que montan WordPress y cientos de aplicaciones en un clic, sin configuración manual."] },
+          { heading: "Por qué elegir un hosting con cPanel", body: ["Porque es estándar, está muy documentado y facilita migrar entre proveedores que también usan cPanel. Es la opción más cómoda para la mayoría de webs."] },
+        ],
+        faq: [
+          { q: "¿cPanel es gratis?", a: "cPanel es una licencia de pago para el proveedor; para ti viene incluido en el plan de hosting." },
+          { q: "¿Puedo migrar entre proveedores con cPanel?", a: "Sí. Al ser estándar, la migración cPanel a cPanel es directa y en ViaHost es gratuita." },
+          { q: "¿cPanel sirve para WordPress?", a: "Sí, es ideal: instalas WordPress en un clic con Softaculous y gestionas todo desde el panel." },
+        ],
+        cta: "Ver planes de hosting",
+      },
+      en: {
+        title: "What cPanel is and what it is for",
+        description: "cPanel explained plainly: what it is, what you can do with it and why it is the most widely used hosting panel.",
+        intro: ["cPanel is the most used hosting control panel in the world. It lets you manage your web hosting from a graphical interface, without touching the terminal."],
+        sections: [
+          { heading: "What cPanel is", body: ["cPanel is a web control panel that manages your hosting account: domains, email, databases, files and SSL certificates, all from the browser."] },
+          { heading: "What you can do with cPanel", body: ["Create email accounts, upload your site via file manager or FTP, create databases, manage domains and subdomains, enable SSL and view statistics."] },
+          { heading: "cPanel and Softaculous", body: ["cPanel includes installers like Softaculous, which set up WordPress and hundreds of apps in one click, with no manual configuration."] },
+          { heading: "Why choose hosting with cPanel", body: ["Because it is standard, very well documented and makes it easy to migrate between providers that also use cPanel. It is the most convenient option for most sites."] },
+        ],
+        faq: [
+          { q: "Is cPanel free?", a: "cPanel is a paid license for the provider; for you it is included in the hosting plan." },
+          { q: "Can I migrate between providers with cPanel?", a: "Yes. Being standard, cPanel-to-cPanel migration is direct, and at ViaHost it is free." },
+          { q: "Is cPanel good for WordPress?", a: "Yes, it is ideal: you install WordPress in one click with Softaculous and manage everything from the panel." },
+        ],
+        cta: "See the hosting plans",
+      },
+      fr: {
+        title: "Qu'est-ce que cPanel et à quoi ça sert",
+        description: "cPanel expliqué clairement : ce que c'est, ce que vous pouvez en faire et pourquoi c'est le panneau d'hébergement le plus répandu.",
+        intro: ["cPanel est le panneau de contrôle d'hébergement le plus utilisé au monde. Il vous permet de gérer votre hébergement depuis une interface graphique, sans toucher au terminal."],
+        sections: [
+          { heading: "Qu'est-ce que cPanel", body: ["cPanel est un panneau web qui gère votre compte d'hébergement : domaines, emails, bases de données, fichiers et certificats SSL, le tout depuis le navigateur."] },
+          { heading: "Ce que vous pouvez faire avec cPanel", body: ["Créer des comptes email, envoyer votre site via gestionnaire de fichiers ou FTP, créer des bases de données, gérer domaines et sous-domaines, activer SSL et voir des statistiques."] },
+          { heading: "cPanel et Softaculous", body: ["cPanel inclut des installateurs comme Softaculous, qui installent WordPress et des centaines d'applications en un clic, sans configuration manuelle."] },
+          { heading: "Pourquoi choisir un hébergement avec cPanel", body: ["Parce qu'il est standard, très bien documenté et facilite la migration entre fournisseurs qui utilisent aussi cPanel. C'est l'option la plus pratique pour la plupart des sites."] },
+        ],
+        faq: [
+          { q: "cPanel est-il gratuit ?", a: "cPanel est une licence payante pour le fournisseur ; pour vous, il est inclus dans la formule d'hébergement." },
+          { q: "Puis-je migrer entre fournisseurs avec cPanel ?", a: "Oui. Étant standard, la migration cPanel vers cPanel est directe, et chez ViaHost elle est gratuite." },
+          { q: "cPanel convient-il à WordPress ?", a: "Oui, c'est idéal : vous installez WordPress en un clic avec Softaculous et gérez tout depuis le panneau." },
+        ],
+        cta: "Voir les formules d'hébergement",
+      },
+    },
+  },
+  {
+    slug: "privacidad-whois-que-es",
+    date: "2026-07-30",
+    type: "article",
+    ctaHref: "/dominios",
+    content: {
+      es: {
+        title: "Qué es la privacidad WHOIS y por qué importa",
+        description: "Qué es el WHOIS, qué datos tuyos expone al registrar un dominio y cómo la privacidad WHOIS protege tu información.",
+        intro: ["Cuando registras un dominio, tus datos personales pueden acabar en una base de datos pública llamada WHOIS. La privacidad WHOIS evita que aparezcan."],
+        sections: [
+          { heading: "Qué es el WHOIS", body: ["El WHOIS es un directorio público que asocia cada dominio con los datos de su titular: nombre, dirección, email y teléfono."] },
+          { heading: "Qué riesgo tiene exponer tus datos", body: ["Sin privacidad, cualquiera puede consultar tus datos personales en el WHOIS, lo que suele traducirse en spam, llamadas comerciales e intentos de suplantación."] },
+          { heading: "Cómo funciona la privacidad WHOIS", body: ["Con la privacidad activada, en el registro público aparecen datos de protección en lugar de los tuyos; tú sigues siendo el titular real del dominio."] },
+          { heading: "Privacidad incluida en ViaHost", body: ["En ViaHost la privacidad WHOIS viene incluida sin coste en cada dominio: tus datos personales nunca aparecen en el registro público."] },
+        ],
+        faq: [
+          { q: "¿La privacidad WHOIS es legal?", a: "Sí. Es un servicio estándar y legítimo que protege tus datos personales sin cambiar la titularidad del dominio." },
+          { q: "¿Sigo siendo el dueño del dominio?", a: "Sí. La privacidad solo oculta tus datos en el WHOIS público; el dominio es tuyo." },
+          { q: "¿Tiene coste en ViaHost?", a: "No. La privacidad WHOIS viene incluida sin coste en todos los dominios." },
+        ],
+        cta: "Registrar un dominio con privacidad",
+      },
+      en: {
+        title: "What WHOIS privacy is and why it matters",
+        description: "What WHOIS is, which of your data it exposes when you register a domain, and how WHOIS privacy protects your information.",
+        intro: ["When you register a domain, your personal data can end up in a public database called WHOIS. WHOIS privacy keeps it from appearing."],
+        sections: [
+          { heading: "What WHOIS is", body: ["WHOIS is a public directory that ties each domain to its owner's data: name, address, email and phone."] },
+          { heading: "The risk of exposing your data", body: ["Without privacy, anyone can look up your personal data in WHOIS, which usually means spam, sales calls and impersonation attempts."] },
+          { heading: "How WHOIS privacy works", body: ["With privacy enabled, the public record shows protection data instead of yours; you remain the real owner of the domain."] },
+          { heading: "Privacy included at ViaHost", body: ["At ViaHost, WHOIS privacy is included at no cost on every domain: your personal data never appears in the public registry."] },
+        ],
+        faq: [
+          { q: "Is WHOIS privacy legal?", a: "Yes. It is a standard, legitimate service that protects your personal data without changing domain ownership." },
+          { q: "Am I still the domain owner?", a: "Yes. Privacy only hides your data in the public WHOIS; the domain is yours." },
+          { q: "Does it cost anything at ViaHost?", a: "No. WHOIS privacy is included at no cost on all domains." },
+        ],
+        cta: "Register a domain with privacy",
+      },
+      fr: {
+        title: "Qu'est-ce que la confidentialité WHOIS et pourquoi c'est important",
+        description: "Ce qu'est le WHOIS, quelles données il expose lors de l'enregistrement d'un domaine et comment la confidentialité WHOIS protège vos informations.",
+        intro: ["Lorsque vous enregistrez un domaine, vos données personnelles peuvent se retrouver dans une base publique appelée WHOIS. La confidentialité WHOIS évite qu'elles apparaissent."],
+        sections: [
+          { heading: "Qu'est-ce que le WHOIS", body: ["Le WHOIS est un annuaire public qui associe chaque domaine aux données de son titulaire : nom, adresse, email et téléphone."] },
+          { heading: "Le risque d'exposer vos données", body: ["Sans confidentialité, n'importe qui peut consulter vos données personnelles dans le WHOIS, ce qui se traduit souvent par du spam, des appels commerciaux et des tentatives d'usurpation."] },
+          { heading: "Comment fonctionne la confidentialité WHOIS", body: ["Avec la confidentialité activée, le registre public affiche des données de protection à la place des vôtres ; vous restez le véritable titulaire du domaine."] },
+          { heading: "Confidentialité incluse chez ViaHost", body: ["Chez ViaHost, la confidentialité WHOIS est incluse sans frais sur chaque domaine : vos données personnelles n'apparaissent jamais dans le registre public."] },
+        ],
+        faq: [
+          { q: "La confidentialité WHOIS est-elle légale ?", a: "Oui. C'est un service standard et légitime qui protège vos données personnelles sans changer la propriété du domaine." },
+          { q: "Suis-je toujours le propriétaire du domaine ?", a: "Oui. La confidentialité masque seulement vos données dans le WHOIS public ; le domaine est le vôtre." },
+          { q: "Est-ce payant chez ViaHost ?", a: "Non. La confidentialité WHOIS est incluse sans frais sur tous les domaines." },
+        ],
+        cta: "Enregistrer un domaine avec confidentialité",
+      },
+    },
+  },
 ];
 
 const byDateDesc = (a: BlogPost, b: BlogPost) => (a.date < b.date ? 1 : -1);
