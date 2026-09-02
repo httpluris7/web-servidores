@@ -48,9 +48,16 @@ Registro de cambios SEO/GEO. Rama `seo-geo-20260902` (desde `main` en `eccafc2`)
 
 ---
 
+### `c8bf60a`→`b860483` — Blog completo (8 artículos)
+- 8 posts trilingües con Article/HowTo + FAQPage + Breadcrumb cubriendo VPS, hosting, dominios y DDoS.
+
+### OG image PNG (🟠 resuelto)
+- `[locale]/opengraph-image.tsx`: genera el `og:image` como **PNG 1200×630** (marca + titular + diferenciadores + dominio), sustituyendo al `/og.svg` que muchas plataformas/LLMs no renderizaban. Se retiran las referencias al SVG del layout.
+
+---
+
 ## Pendiente (ver `PENDIENTES.md` y `PLAN-GEO.md §4`)
-- Más artículos de blog (instalar WordPress en VPS, qué es cPanel/Proxmox/WHOIS…).
-- OG image en PNG 1200×630 (hoy SVG).
+- Más artículos de blog según nuevas keywords (opcional).
 - Reescritura de meta descriptions/títulos cortos (`/dominios`, `/red`, `/desplegar`).
 - Localizar nombres de región del catálogo ("Netherlands" → "Países Bajos").
 - Medición real de Core Web Vitals.
