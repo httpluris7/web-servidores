@@ -25,12 +25,18 @@ export const dynamic = "force-dynamic";
 
 export default async function DominiosPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ q?: string }>;
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("dominios");
+
+  // Término del banner del home (?q=…): la búsqueda se ejecuta sola al cargar.
+  const { q } = await searchParams;
+  const initialQuery = typeof q === "string" ? q.slice(0, 63) : "";
 
   const session = await getSession();
   const user = session ? await getPublicUserById(session.uid) : null;
@@ -51,7 +57,10 @@ export default async function DominiosPage({
 
       <section className="container-edge max-w-5xl py-16 md:py-20">
         <div className="mx-auto max-w-3xl">
-          <DomainSearch user={user ? { nombre: user.nombre, email: user.email } : null} />
+          <DomainSearch
+            user={user ? { nombre: user.nombre, email: user.email } : null}
+            initialQuery={initialQuery}
+          />
           <p className="mt-8 text-xs text-[var(--color-fg-dim)]">{t("privacyNote")}</p>
         </div>
 

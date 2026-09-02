@@ -42,6 +42,11 @@
       "renewal": "Renovación",
       "note": "Precios por año, con privacidad WHOIS incluida sin coste. La renovación es al mismo precio que el alta."
     },
+    "banner": {
+      "kicker": "Dominios",
+      "title": "Registra tu dominio con privacidad",
+      "subtitle": "Búscalo aquí mismo. WHOIS privado incluido, sin coste."
+    },
     "mis": {
       "metaTitle": "Mis dominios",
       "kicker": "Mis dominios",

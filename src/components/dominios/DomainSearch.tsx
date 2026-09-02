@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Price } from "@/components/ui/Price";
@@ -17,26 +17,25 @@ type User = { nombre: string; email: string } | null;
  * servidor; al contratar, un formulario en línea (años + datos + método) emite la
  * proforma con el motor de pago de siempre. El registro real ocurre al pagar (CP3).
  */
-export function DomainSearch({ user }: { user: User }) {
+export function DomainSearch({ user, initialQuery = "" }: { user: User; initialQuery?: string }) {
   const t = useTranslations("dominios");
   const locale = useLocale();
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(initialQuery);
   const [estado, setEstado] = useState<"idle" | "buscando" | "ok" | "error" | "vacio" | "off">("idle");
   const [resultados, setResultados] = useState<Resultado[]>([]);
 
   const [elegido, setElegido] = useState<Elegido | null>(null);
   const [confirmacion, setConfirmacion] = useState<Confirmacion | null>(null);
 
-  async function buscar(e: React.FormEvent) {
-    e.preventDefault();
-    const termino = q.trim();
-    if (!termino) return;
+  async function ejecutar(termino: string) {
+    const t2 = termino.trim();
+    if (!t2) return;
     setEstado("buscando");
     setResultados([]);
     setElegido(null);
     setConfirmacion(null);
     try {
-      const res = await fetch(`/api/dominios/buscar?q=${encodeURIComponent(termino)}`);
+      const res = await fetch(`/api/dominios/buscar?q=${encodeURIComponent(t2)}`);
       const j = await res.json().catch(() => null);
       if (res.status === 503) return setEstado("off");
       if (!res.ok || !j?.ok) return setEstado("error");
@@ -46,6 +45,18 @@ export function DomainSearch({ user }: { user: User }) {
       setEstado("error");
     }
   }
+
+  function buscar(e: React.FormEvent) {
+    e.preventDefault();
+    void ejecutar(q);
+  }
+
+  // Si se llega con ?q=… (banner del home), busca automáticamente al montar.
+  useEffect(() => {
+    if (initialQuery.trim()) void ejecutar(initialQuery);
+    // Solo al montar: la búsqueda manual se dispara desde el formulario.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const input =
     "min-w-0 flex-1 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-4 py-3 text-sm placeholder:text-[var(--color-fg-dim)] focus:border-[var(--color-accent)] focus:outline-none";

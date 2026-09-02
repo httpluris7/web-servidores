@@ -42,6 +42,11 @@
       "renewal": "Renouvellement",
       "note": "Prix par an, confidentialité WHOIS incluse sans frais. Le renouvellement est au même prix que l'enregistrement."
     },
+    "banner": {
+      "kicker": "Domaines",
+      "title": "Enregistrez votre domaine en toute confidentialité",
+      "subtitle": "Cherchez ici même. WHOIS privé inclus, sans frais."
+    },
     "mis": {
       "metaTitle": "Mes domaines",
       "kicker": "Mes domaines",

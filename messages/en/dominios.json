@@ -42,6 +42,11 @@
       "renewal": "Renewal",
       "note": "Prices per year, with WHOIS privacy included at no cost. Renewal is at the same price as registration."
     },
+    "banner": {
+      "kicker": "Domains",
+      "title": "Register your domain with privacy",
+      "subtitle": "Search right here. Private WHOIS included, at no cost."
+    },
     "mis": {
       "metaTitle": "My domains",
       "kicker": "My domains",

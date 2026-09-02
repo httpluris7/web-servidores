@@ -1,4 +1,5 @@
 import { Hero } from "@/components/home/Hero";
+import { DomainSearchBanner } from "@/components/home/DomainSearchBanner";
 import { CredibilityStats } from "@/components/home/CredibilityStats";
 import { ProvisionTerminal } from "@/components/home/ProvisionTerminal";
 import { HardwareCounters } from "@/components/home/HardwareCounters";
@@ -21,6 +22,7 @@ export default async function HomePage({
   return (
     <>
       <Hero />
+      <DomainSearchBanner />
       <CredibilityStats />
       <ProvisionTerminal />
       <HardwareCounters />
