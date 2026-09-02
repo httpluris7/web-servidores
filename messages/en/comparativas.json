@@ -1,0 +1,330 @@
+{
+  "comparativas": {
+    "hetzner": {
+      "metaTitle": "Hetzner alternative: European VPS with a panel and cPanel",
+      "metaDescription": "Looking for a Hetzner alternative after the 2026 price increases? We compare ViaHost and Hetzner with data: panel, cPanel, DDoS, locations and price.",
+      "kicker": "Comparison",
+      "titleA": "Alternative to",
+      "titleB": "Hetzner",
+      "description": "ViaHost vs Hetzner, with data and no hype: when each one makes sense.",
+      "intro": {
+        "p1": "Hetzner is one of the best VPS options for price and performance, but in 2026 it raised prices sharply (up to 176% on the CPX and CCX lines). If you are looking for a European alternative, that changes the math.",
+        "p2": "ViaHost does not compete on being the cheapest VPS per vCPU: it includes a managed panel with console and snapshots, DDoS protection, cPanel hosting and privacy domains, with flat pricing and support in Spanish. Below we compare both."
+      },
+      "table": {
+        "title": "ViaHost vs Hetzner",
+        "caption": "ViaHost vs Hetzner VPS comparison: panel, cPanel, DDoS, locations and pricing model",
+        "feature": "Feature",
+        "viahost": "ViaHost",
+        "competitor": "Hetzner",
+        "priceNote": "Third-party prices are indicative (checked 2026-09); verify the current price on the provider's site.",
+        "rows": [
+          {
+            "feature": "Entry price (VPS)",
+            "viahost": "From €8/mo",
+            "competitor": "From ~€5.5/mo (CX23)"
+          },
+          {
+            "feature": "Pricing model",
+            "viahost": "Flat, no renewal increase",
+            "competitor": "Raised in 2026 (up to +176% on CPX/CCX)"
+          },
+          {
+            "feature": "Control panel",
+            "viahost": "Proxmox + noVNC console + snapshots",
+            "competitor": "Cloud Console + API"
+          },
+          {
+            "feature": "cPanel hosting",
+            "viahost": "Yes (separate hosting plan)",
+            "competitor": "No"
+          },
+          {
+            "feature": "DDoS protection",
+            "viahost": "Included",
+            "competitor": "Included"
+          },
+          {
+            "feature": "Locations",
+            "viahost": "Amsterdam (NL), Germany",
+            "competitor": "Germany, Finland, USA"
+          },
+          {
+            "feature": "Privacy domains",
+            "viahost": "Yes, WHOIS included",
+            "competitor": "No"
+          },
+          {
+            "feature": "Support",
+            "viahost": "In Spanish",
+            "competitor": "In English/German"
+          },
+          {
+            "feature": "Virtualization",
+            "viahost": "Proxmox (KVM)",
+            "competitor": "KVM"
+          }
+        ]
+      },
+      "whenViahost": {
+        "title": "When to choose ViaHost",
+        "items": [
+          "You want a managed panel with console and snapshots out of the box.",
+          "You need cPanel hosting and/or privacy domains from the same provider.",
+          "You prefer flat pricing and support in Spanish.",
+          "After Hetzner's 2026 increases, the price gap no longer justifies the extra management."
+        ]
+      },
+      "whenCompetitor": {
+        "title": "When to choose Hetzner",
+        "items": [
+          "You want the lowest price per vCPU and RAM on raw specs.",
+          "You manage the server yourself, with no hosting panel or cPanel.",
+          "You need its API and cloud ecosystem, or its locations (Finland, USA)."
+        ]
+      },
+      "faq": {
+        "kicker": "FAQ",
+        "title": "ViaHost vs Hetzner"
+      },
+      "faqItems": [
+        {
+          "q": "Is ViaHost cheaper than Hetzner?",
+          "a": "Not on price per vCPU and RAM: Hetzner is still very competitive on raw specs. ViaHost includes a managed panel, console, DDoS and an optional cPanel, with flat pricing; after Hetzner's 2026 increases the gap has narrowed."
+        },
+        {
+          "q": "Does Hetzner include cPanel?",
+          "a": "No. Hetzner offers unmanaged VPS. ViaHost offers cPanel hosting as a separate product, provisioned automatically."
+        },
+        {
+          "q": "Why look for a Hetzner alternative in 2026?",
+          "a": "Because of the 2026 price increases (up to +176% on the CPX and CCX lines) and if you need a managed panel, cPanel or support in Spanish."
+        },
+        {
+          "q": "Where are ViaHost's servers?",
+          "a": "In Amsterdam (Netherlands) and Germany. Hetzner operates in Germany, Finland and the USA."
+        },
+        {
+          "q": "Can I migrate from Hetzner to ViaHost?",
+          "a": "Yes. For cPanel hosting the migration is free; on VPS you deploy your server and migrate your data over SSH."
+        }
+      ],
+      "cta": "Want to compare for your case? See the VPS plans"
+    },
+    "contabo": {
+      "metaTitle": "Contabo alternative: VPS with a managed panel and support",
+      "metaDescription": "Looking for a Contabo alternative with a better panel and support? We compare ViaHost and Contabo: price, RAM, panel, cPanel, DDoS, support and locations.",
+      "kicker": "Comparison",
+      "titleA": "Alternative to",
+      "titleB": "Contabo",
+      "description": "ViaHost vs Contabo: where each one wins, honestly.",
+      "intro": {
+        "p1": "Contabo is known for lots of cheap RAM: it is hard to beat on price per raw spec. Its usual weak point is support and the control panel.",
+        "p2": "ViaHost costs more per spec, but includes a Proxmox panel with noVNC console and snapshots, DDoS protection by default, cPanel hosting and privacy domains, and support in Spanish. Here we compare both."
+      },
+      "table": {
+        "title": "ViaHost vs Contabo",
+        "caption": "ViaHost vs Contabo VPS comparison: price, RAM, panel, cPanel, DDoS, support and locations",
+        "feature": "Feature",
+        "viahost": "ViaHost",
+        "competitor": "Contabo",
+        "priceNote": "Third-party prices are indicative (checked 2026-09); verify the current price on the provider's site.",
+        "rows": [
+          {
+            "feature": "Entry price (VPS)",
+            "viahost": "From €8/mo",
+            "competitor": "From ~€4.5/mo (4 vCPU/8 GB)"
+          },
+          {
+            "feature": "RAM per euro",
+            "viahost": "Tight",
+            "competitor": "Very high (lots of cheap RAM)"
+          },
+          {
+            "feature": "Pricing model",
+            "viahost": "Flat",
+            "competitor": "Flat"
+          },
+          {
+            "feature": "Control panel",
+            "viahost": "Proxmox + noVNC console + snapshots",
+            "competitor": "Own panel"
+          },
+          {
+            "feature": "cPanel hosting",
+            "viahost": "Yes (separate hosting plan)",
+            "competitor": "Optional (paid license)"
+          },
+          {
+            "feature": "DDoS protection",
+            "viahost": "Included",
+            "competitor": "Basic mitigation"
+          },
+          {
+            "feature": "Support",
+            "viahost": "In Spanish, fast",
+            "competitor": "In English, variable times"
+          },
+          {
+            "feature": "Locations",
+            "viahost": "Amsterdam (NL), Germany",
+            "competitor": "Germany, USA, Asia"
+          }
+        ]
+      },
+      "whenViahost": {
+        "title": "When to choose ViaHost",
+        "items": [
+          "You want a managed panel with console and snapshots, out of the box.",
+          "You value fast support in Spanish.",
+          "You need integrated cPanel and privacy domains.",
+          "You want DDoS protection included by default."
+        ]
+      },
+      "whenCompetitor": {
+        "title": "When to choose Contabo",
+        "items": [
+          "You want the most RAM per euro.",
+          "You manage things yourself and slower support is fine.",
+          "You want locations outside the EU (USA, Asia)."
+        ]
+      },
+      "faq": {
+        "kicker": "FAQ",
+        "title": "ViaHost vs Contabo"
+      },
+      "faqItems": [
+        {
+          "q": "Is Contabo cheaper than ViaHost?",
+          "a": "Yes on price per RAM: Contabo stands out for lots of cheap RAM. ViaHost costs more per spec but includes a managed panel, console, DDoS, an optional cPanel and support in Spanish."
+        },
+        {
+          "q": "Does Contabo have good support?",
+          "a": "Its usual weak point is support and the panel. If you value fast answers in Spanish, ViaHost is a better fit."
+        },
+        {
+          "q": "Can I have cPanel on Contabo?",
+          "a": "Yes, with a separate paid license. On ViaHost cPanel hosting is a product provisioned automatically on payment."
+        },
+        {
+          "q": "Where are the servers?",
+          "a": "ViaHost: Amsterdam and Germany (EU). Contabo: Germany, USA and Asia."
+        },
+        {
+          "q": "Does ViaHost include DDoS protection?",
+          "a": "Yes, included in every plan at no cost and with no reconfiguration."
+        }
+      ],
+      "cta": "Want to compare for your case? See the VPS plans"
+    },
+    "mejor-hosting-cpanel": {
+      "metaTitle": "Best cPanel hosting in Spain: no renewal price hike",
+      "metaDescription": "Guide to choosing the best cPanel hosting in Spain: what to look for (NVMe, SSL, migration, price) and why flat pricing matters. ViaHost vs the market.",
+      "kicker": "Guide",
+      "titleA": "Best cPanel",
+      "titleB": "hosting",
+      "description": "What to look for in cPanel hosting in Spain and why flat pricing makes the difference.",
+      "intro": {
+        "p1": "When choosing cPanel hosting in Spain most people look at the first-year price, but the number that matters most over time is renewal: many providers advertise a low teaser price and then charge much more (for example €3.95/mo becoming €9.95/mo).",
+        "p2": "Beyond price, look at: NVMe disks, free SSL, daily backups, free migration, fast setup and DDoS protection. ViaHost bets on flat pricing (€2.95/mo that does not go up) and automatic setup. Below, ViaHost vs what the market typically offers."
+      },
+      "table": {
+        "title": "ViaHost vs typical cPanel hosting",
+        "caption": "What ViaHost offers vs typical cPanel hosting in Spain: price, NVMe, SSL, backups, migration and setup",
+        "feature": "Criterion",
+        "viahost": "ViaHost",
+        "competitor": "Typical market (ES)",
+        "priceNote": "Third-party prices are indicative (checked 2026-09); verify the current price on the provider's site.",
+        "rows": [
+          {
+            "feature": "Price",
+            "viahost": "€2.95/mo flat",
+            "competitor": "Low teaser that rises on renewal (e.g. €3.95→€9.95)"
+          },
+          {
+            "feature": "Panel",
+            "viahost": "cPanel + Softaculous",
+            "competitor": "cPanel (common)"
+          },
+          {
+            "feature": "Disks",
+            "viahost": "NVMe",
+            "competitor": "SSD/NVMe depending on provider"
+          },
+          {
+            "feature": "SSL",
+            "viahost": "Free Let's Encrypt",
+            "competitor": "Free (common)"
+          },
+          {
+            "feature": "Backups",
+            "viahost": "Daily, one-click restore",
+            "competitor": "Variable"
+          },
+          {
+            "feature": "Migration",
+            "viahost": "Free",
+            "competitor": "Free or paid depending on provider"
+          },
+          {
+            "feature": "Setup",
+            "viahost": "Automatic on payment",
+            "competitor": "Manual/hours depending on provider"
+          },
+          {
+            "feature": "DDoS protection",
+            "viahost": "Included",
+            "competitor": "Variable"
+          },
+          {
+            "feature": "Location",
+            "viahost": "Amsterdam (NL), Germany",
+            "competitor": "Spain (various)"
+          }
+        ]
+      },
+      "whenViahost": {
+        "title": "When ViaHost fits",
+        "items": [
+          "You want flat pricing, no surprises on renewal.",
+          "You value automatic setup and included DDoS protection.",
+          "You want domains (with privacy) and VPS from the same provider."
+        ]
+      },
+      "whenCompetitor": {
+        "title": "When to look elsewhere",
+        "items": [
+          "You need the datacenter physically in Spain (for latency or legal requirements).",
+          "You want a brand with years of reviews and local phone support."
+        ]
+      },
+      "faq": {
+        "kicker": "FAQ",
+        "title": "cPanel hosting in Spain"
+      },
+      "faqItems": [
+        {
+          "q": "What is the best cPanel hosting in Spain?",
+          "a": "It depends on your priorities: if you value flat pricing with no hikes and automatic setup, ViaHost fits; if you need the datacenter physically in Spain or a brand with years of reviews, providers like Webempresa or Raiola exist."
+        },
+        {
+          "q": "Why does hosting price go up on renewal?",
+          "a": "Many providers advertise a promotional price for the first term and charge much more on renewal. ViaHost uses flat pricing: what you see is what you pay."
+        },
+        {
+          "q": "Is ViaHost cPanel hosting in Spain?",
+          "a": "No; it is in Europe (Amsterdam and Germany), with low latency to Spain (about 20–30 ms)."
+        },
+        {
+          "q": "Does it include SSL, backups and migration?",
+          "a": "Yes: automatic Let's Encrypt SSL, daily backups with one-click restore and free migration."
+        },
+        {
+          "q": "How long until it is active?",
+          "a": "It is automatic on payment: the cPanel account is created in seconds and the credentials are emailed to you."
+        }
+      ],
+      "cta": "See the hosting plans"
+    }
+  }
+}

@@ -79,7 +79,9 @@
       "locationsKicker": "Ubicaciones",
       "locationsTitle": "Despliega cerca de tus usuarios.",
       "locationsDescription": "Regiones europeas estratégicas. La misma experiencia, menor latencia.",
-      "from": "desde"
+      "from": "desde",
+      "compareHetzner": "¿Vienes de Hetzner? Mira la comparativa ViaHost vs Hetzner",
+      "compareContabo": "¿Vienes de Contabo? Mira la comparativa ViaHost vs Contabo"
     },
     "vpsRegion": {
       "meta": {

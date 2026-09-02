@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { alternatesFor, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getCatalog, getRegion, getRegions, vpsPlansForRegion } from "@/data/products";
 import { vpsFaq } from "@/data/faq";
 import { site } from "@/data/site";
@@ -37,6 +39,7 @@ export async function generateMetadata({
   if (!region) return {};
   const t = await getTranslations({ locale, namespace: "products" });
   return {
+    alternates: alternatesFor(locale, `/vps/${slug}`),
     title: t("vpsRegion.meta.title", { name: region.name, city: region.city }),
     description: t("vpsRegion.meta.description", {
       name: region.name,
@@ -87,6 +90,12 @@ export default async function RegionPage({ params }: { params: Promise<Params> }
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(productJsonLd) }}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd(locale, [
+          { name: "Cloud VPS", path: "/vps" },
+          { name: region.name, path: `/vps/${slug}` },
+        ])}
       />
       <PageHero
         index="/ VPS"

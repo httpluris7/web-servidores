@@ -55,3 +55,22 @@ export const dedicatedFaq: FAQItem[] = [
     a: "Yes. The same always-on mitigation protects VPS and dedicated servers alike, at no additional cost and with no reconfiguration on your part.",
   },
 ];
+
+/** FAQ de hosting web (el texto real se traduce en el namespace `hosting`). */
+export const hostingFaq: FAQItem[] = [
+  { q: "Does hosting include cPanel?", a: "Yes." },
+  { q: "Does the price go up on renewal?", a: "No." },
+  { q: "Can I migrate my site from another host?", a: "Yes." },
+  { q: "How long until it is active?", a: "Automatic on payment." },
+  { q: "Does it include SSL and backups?", a: "Yes." },
+  { q: "Where are the servers?", a: "Amsterdam and Germany." },
+];
+
+/** FAQ de dominios (el texto real se traduce en el namespace `dominios`). */
+export const dominiosFaq: FAQItem[] = [
+  { q: "Is WHOIS privacy free?", a: "Yes." },
+  { q: "Can I manage DNS?", a: "Yes." },
+  { q: "Does renewal cost the same as registration?", a: "Yes." },
+  { q: "Which extensions can I register?", a: "Common TLDs." },
+  { q: "Can I use the domain with ViaHost hosting?", a: "Yes." },
+];

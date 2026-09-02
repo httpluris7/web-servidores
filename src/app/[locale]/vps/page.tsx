@@ -12,6 +12,8 @@ import { FaqSection } from "@/components/ui/FaqSection";
 import { CtaBand } from "@/components/ui/CtaBand";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { alternatesFor, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export async function generateMetadata({
   params,
@@ -22,6 +24,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "products" });
   const { vps } = await getCatalog(locale);
   return {
+    alternates: alternatesFor(locale, "/vps"),
     title: t("vps.meta.title"),
     description: t("vps.meta.description", {
       price: eurPrecio(precioDesde(vps.plans)),
@@ -61,6 +64,7 @@ export default async function VpsPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(productJsonLd) }}
       />
+      <JsonLd data={breadcrumbJsonLd(locale, [{ name: vps.title, path: "/vps" }])} />
       <PageHero
         index="/01"
         kicker={t("vps.kicker")}
@@ -118,6 +122,22 @@ export default async function VpsPage({
       </section>
 
       <FaqSection items={vpsFaq} tKey="vpsFaq" index="/04" />
+
+      <div className="container-edge flex flex-col gap-2 pb-8">
+        <Link
+          href="/comparativas/alternativa-hetzner"
+          className="font-mono text-sm text-[var(--color-accent)] hover:underline"
+        >
+          {t("vps.compareHetzner")} →
+        </Link>
+        <Link
+          href="/comparativas/alternativa-contabo"
+          className="font-mono text-sm text-[var(--color-accent)] hover:underline"
+        >
+          {t("vps.compareContabo")} →
+        </Link>
+      </div>
+
       <CtaBand />
     </>
   );

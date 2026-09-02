@@ -73,6 +73,36 @@
       "errorProvider": "Impossible de terminer l'opération. Réessayez.",
       "invalid": "Données d'enregistrement non valides."
     },
-    "privacyNote": "Chaque domaine inclut la confidentialité WHOIS sans frais : vos données personnelles n'apparaissent jamais dans le registre public."
+    "privacyNote": "Chaque domaine inclut la confidentialité WHOIS sans frais : vos données personnelles n'apparaissent jamais dans le registre public.",
+    "intro": {
+      "p1": "Chez ViaHost, vous enregistrez votre domaine avec la confidentialité WHOIS incluse sans frais : vos données personnelles (nom, adresse, email et téléphone) n'apparaissent jamais dans le registre public.",
+      "p2": "Vous gérez vos domaines et leurs enregistrements DNS depuis votre espace client, et le renouvellement est au même prix que l'enregistrement. Vous pouvez aussi les pointer vers votre hébergement ou VPS ViaHost."
+    },
+    "faq": {
+      "kicker": "FAQ",
+      "title": "Questions sur les domaines"
+    },
+    "faqItems": [
+      {
+        "q": "La confidentialité WHOIS est-elle gratuite ?",
+        "a": "Oui. Chaque domaine inclut la confidentialité WHOIS sans frais : vos données personnelles n'apparaissent jamais dans le registre public."
+      },
+      {
+        "q": "Puis-je gérer les DNS ?",
+        "a": "Oui. Depuis votre espace client, vous disposez d'un éditeur d'enregistrements DNS (A, AAAA, CNAME, MX, TXT et plus)."
+      },
+      {
+        "q": "Le renouvellement coûte-t-il le même prix que l'enregistrement ?",
+        "a": "Oui, le renouvellement est au même prix que l'enregistrement, sans augmentation."
+      },
+      {
+        "q": "Quelles extensions puis-je enregistrer ?",
+        "a": "Les plus courantes (.com, .es, .org, .net, .io, .dev et plus), avec le prix annuel affiché avant la commande."
+      },
+      {
+        "q": "Puis-je utiliser le domaine avec l'hébergement ViaHost ?",
+        "a": "Oui. Vous pouvez enregistrer le domaine et le pointer vers votre hébergement ou VPS ViaHost depuis le même panneau."
+      }
+    ]
   }
 }

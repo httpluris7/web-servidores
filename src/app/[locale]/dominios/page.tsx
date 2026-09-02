@@ -7,6 +7,10 @@ import { TldGrid } from "@/components/dominios/TldGrid";
 import { tarifasPopulares } from "@/lib/domains/tarifas";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
+import { alternatesFor, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { FaqSection } from "@/components/ui/FaqSection";
+import { dominiosFaq } from "@/data/faq";
 
 export async function generateMetadata({
   params,
@@ -16,6 +20,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "dominios" });
   return {
+    alternates: alternatesFor(locale, "/dominios"),
     title: t("metaTitle"),
     description: t("metaDescription", { brand: site.brand }),
   };
@@ -44,6 +49,7 @@ export default async function DominiosPage({
 
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd(locale, [{ name: t("kicker"), path: "/dominios" }])} />
       <PageHero
         index="/04"
         kicker={t("kicker")}
@@ -55,7 +61,14 @@ export default async function DominiosPage({
         description={t("description")}
       />
 
-      <section className="container-edge max-w-5xl py-16 md:py-20">
+      <section className="container-edge max-w-3xl pt-8 md:pt-10">
+        <div className="space-y-4 text-[var(--color-fg-muted)]">
+          <p>{t("intro.p1")}</p>
+          <p>{t("intro.p2")}</p>
+        </div>
+      </section>
+
+      <section className="container-edge max-w-5xl py-12 md:py-16">
         <div className="mx-auto max-w-3xl">
           <DomainSearch
             user={user ? { nombre: user.nombre, email: user.email } : null}
@@ -66,6 +79,8 @@ export default async function DominiosPage({
 
         <TldGrid tarifas={tarifas} />
       </section>
+
+      <FaqSection items={dominiosFaq} tKey="faqItems" namespace="dominios" index="/05" />
     </>
   );
 }

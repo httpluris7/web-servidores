@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { site } from "@/data/site";
 import { PageHero } from "@/components/ui/PageHero";
 import { ContactForm } from "@/components/forms/ContactForm";
+import { alternatesFor } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -13,6 +14,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "pages" });
   return {
+    alternates: alternatesFor(locale, "/contacto"),
     title: t("contacto.metaTitle"),
     description: t("contacto.metaDescription", { brand: site.brand }),
   };

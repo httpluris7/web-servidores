@@ -73,6 +73,36 @@
       "errorProvider": "No se pudo completar la operación. Inténtalo de nuevo.",
       "invalid": "Datos del registro no válidos."
     },
-    "privacyNote": "Todos los dominios incluyen privacidad WHOIS sin coste: tus datos personales nunca aparecen en el registro público."
+    "privacyNote": "Todos los dominios incluyen privacidad WHOIS sin coste: tus datos personales nunca aparecen en el registro público.",
+    "intro": {
+      "p1": "En ViaHost registras tu dominio con privacidad WHOIS incluida sin coste: tus datos personales (nombre, dirección, email y teléfono) nunca aparecen en el registro público.",
+      "p2": "Gestionas tus dominios y sus registros DNS desde el área de cliente, y la renovación es al mismo precio que el alta. También puedes apuntarlos a tu hosting o VPS de ViaHost."
+    },
+    "faq": {
+      "kicker": "Preguntas frecuentes",
+      "title": "Dudas sobre los dominios"
+    },
+    "faqItems": [
+      {
+        "q": "¿La privacidad WHOIS tiene coste?",
+        "a": "No. Todos los dominios incluyen privacidad WHOIS sin coste: tus datos personales nunca aparecen en el registro público."
+      },
+      {
+        "q": "¿Puedo gestionar los DNS?",
+        "a": "Sí. Desde el área de cliente tienes un editor de registros DNS (A, AAAA, CNAME, MX, TXT y más)."
+      },
+      {
+        "q": "¿La renovación cuesta lo mismo que el alta?",
+        "a": "Sí, la renovación es al mismo precio que el registro, sin subidas."
+      },
+      {
+        "q": "¿Qué extensiones puedo registrar?",
+        "a": "Las más comunes (.com, .es, .org, .net, .io, .dev y más), con el precio por año visible antes de contratar."
+      },
+      {
+        "q": "¿Puedo usar el dominio con el hosting de ViaHost?",
+        "a": "Sí. Puedes registrar el dominio y apuntarlo a tu hosting o VPS de ViaHost desde el mismo panel."
+      }
+    ]
   }
 }

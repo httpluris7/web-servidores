@@ -7,6 +7,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { Accordion } from "@/components/ui/Accordion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
+import { alternatesFor } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -16,6 +17,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "pages" });
   return {
+    alternates: alternatesFor(locale, "/soporte"),
     title: t("soporte.metaTitle"),
     description: t("soporte.metaDescription", { brand: site.brand }),
   };

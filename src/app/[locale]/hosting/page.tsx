@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { getHostingLine } from "@/data/products";
 import { site } from "@/data/site";
 import { jsonLdScript } from "@/lib/utils";
@@ -9,6 +10,11 @@ import { PlanGrid } from "@/components/product/PlanGrid";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { CtaBand } from "@/components/ui/CtaBand";
+import { alternatesFor, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { HostingPlansTable } from "@/components/hosting/HostingPlansTable";
+import { FaqSection } from "@/components/ui/FaqSection";
+import { hostingFaq } from "@/data/faq";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +28,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "hosting" });
   return {
+    alternates: alternatesFor(locale, "/hosting"),
     title: t("metaTitle"),
     description: t("metaDescription", { brand: site.brand }),
   };
@@ -70,6 +77,7 @@ export default async function HostingPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(productJsonLd) }}
       />
+      <JsonLd data={breadcrumbJsonLd(locale, [{ name: line.title, path: "/hosting" }])} />
       <PageHero
         index="/ Hosting"
         kicker={t("kicker")}
@@ -81,6 +89,13 @@ export default async function HostingPage({
         description={t("description")}
       />
 
+      <section className="container-edge max-w-3xl py-10 md:py-14">
+        <div className="space-y-4 text-[var(--color-fg-muted)]">
+          <p>{t("intro.p1")}</p>
+          <p>{t("intro.p2")}</p>
+        </div>
+      </section>
+
       <PlanGrid
         index="/01"
         kicker={t("plansKicker")}
@@ -90,8 +105,27 @@ export default async function HostingPage({
         specLabels={specLabels}
       />
 
+      <section className="container-edge py-6 md:py-10">
+        <SectionHeader index="/02" title={t("table.title")} />
+        <div className="mt-8">
+          <HostingPlansTable
+            plans={line.plans}
+            labels={{
+              plan: t("table.plan"),
+              sites: t("spec.sites"),
+              storage: t("spec.storage"),
+              email: t("spec.email"),
+              databases: t("spec.databases"),
+              price: t("table.price"),
+            }}
+            perMonth={t("table.perMonth")}
+            caption={t("table.caption")}
+          />
+        </div>
+      </section>
+
       <section className="container-edge py-14 md:py-24">
-        <SectionHeader index="/02" kicker={t("featuresKicker")} title={t("featuresTitle")} />
+        <SectionHeader index="/03" kicker={t("featuresKicker")} title={t("featuresTitle")} />
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((k, i) => (
             <Reveal key={k} delay={i} as="article">
@@ -103,6 +137,17 @@ export default async function HostingPage({
           ))}
         </div>
       </section>
+
+      <FaqSection items={hostingFaq} tKey="faqItems" namespace="hosting" index="/04" />
+
+      <div className="container-edge pb-8">
+        <Link
+          href="/comparativas/mejor-hosting-cpanel"
+          className="font-mono text-sm text-[var(--color-accent)] hover:underline"
+        >
+          {t("compareCpanel")} →
+        </Link>
+      </div>
 
       <CtaBand title={t("ctaTitle")} />
     </>

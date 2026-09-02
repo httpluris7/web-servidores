@@ -77,6 +77,48 @@
       "cta": "See hosting plans",
       "from": "From",
       "perMonth": "/mo"
-    }
+    },
+    "intro": {
+      "p1": "ViaHost web hosting is managed shared hosting with cPanel on NVMe disks and a 10 Gbps network, in European datacenters (Amsterdam and Germany). It includes SSL, daily backups, free migration and DDoS protection.",
+      "p2": "Pricing is flat: what you see at signup is what you pay on every renewal, with no increases and no fine print. The cPanel account is created automatically once payment is confirmed."
+    },
+    "table": {
+      "title": "Web hosting plans comparison",
+      "caption": "ViaHost web hosting plans with specs and monthly price",
+      "plan": "Plan",
+      "price": "Price",
+      "perMonth": "/mo"
+    },
+    "faq": {
+      "kicker": "FAQ",
+      "title": "Web hosting questions"
+    },
+    "faqItems": [
+      {
+        "q": "Does hosting include cPanel?",
+        "a": "Yes. Every plan includes cPanel with Softaculous to install WordPress and 400+ apps in one click."
+      },
+      {
+        "q": "Does the price go up on renewal?",
+        "a": "No. Pricing is flat: you pay the same at signup and on every renewal, with no fine print."
+      },
+      {
+        "q": "Can I migrate my site from another host?",
+        "a": "Yes, migration is free: we move your site and mailboxes from your current host."
+      },
+      {
+        "q": "How long until it is active?",
+        "a": "Setup is automatic on payment: your cPanel account is created in seconds and the credentials are emailed to you."
+      },
+      {
+        "q": "Does it include SSL and backups?",
+        "a": "Yes. Automatic Let's Encrypt SSL for every domain and daily backups with one-click restore."
+      },
+      {
+        "q": "Where are the servers?",
+        "a": "In Europe (Amsterdam and Germany), on NVMe disks with DDoS protection included."
+      }
+    ],
+    "compareCpanel": "Looking for the best cPanel hosting? Read our comparison"
   }
 }

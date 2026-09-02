@@ -6,6 +6,7 @@ import { Price } from "@/components/ui/Price";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { alternatesFor } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -15,6 +16,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "pages" });
   return {
+    alternates: alternatesFor(locale, "/desplegar"),
     title: t("desplegar.metaTitle"),
     description: t("desplegar.metaDescription"),
   };

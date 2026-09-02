@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LegalLayout } from "@/components/legal/LegalLayout";
+import { alternatesFor } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -10,6 +11,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "legal" });
   return {
+    alternates: alternatesFor(locale, "/legal/cookies"),
     title: t("cookies.metaTitle"),
     description: t("cookies.metaDescription"),
     robots: { index: true, follow: true },
