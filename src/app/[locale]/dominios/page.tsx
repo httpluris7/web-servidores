@@ -7,7 +7,8 @@ import { TldGrid } from "@/components/dominios/TldGrid";
 import { tarifasPopulares } from "@/lib/domains/tarifas";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
-import { alternatesFor } from "@/lib/seo";
+import { alternatesFor, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export async function generateMetadata({
   params,
@@ -46,6 +47,7 @@ export default async function DominiosPage({
 
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd(locale, [{ name: t("kicker"), path: "/dominios" }])} />
       <PageHero
         index="/04"
         kicker={t("kicker")}

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { alternatesFor } from "@/lib/seo";
+import { alternatesFor, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getDedicatedType, getDedicatedTypes } from "@/data/products";
 import { dedicatedFaq } from "@/data/faq";
 import { site } from "@/data/site";
@@ -62,6 +63,12 @@ export default async function DedicatedTypePage({ params }: { params: Promise<Pa
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(productJsonLd) }}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd(locale, [
+          { name: "Servidores dedicados", path: "/dedicados" },
+          { name: line.title, path: `/dedicados/${tipo}` },
+        ])}
       />
       <PageHero
         index="/ Dedicated"

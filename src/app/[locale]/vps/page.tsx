@@ -12,7 +12,8 @@ import { FaqSection } from "@/components/ui/FaqSection";
 import { CtaBand } from "@/components/ui/CtaBand";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { alternatesFor } from "@/lib/seo";
+import { alternatesFor, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export async function generateMetadata({
   params,
@@ -63,6 +64,7 @@ export default async function VpsPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(productJsonLd) }}
       />
+      <JsonLd data={breadcrumbJsonLd(locale, [{ name: vps.title, path: "/vps" }])} />
       <PageHero
         index="/01"
         kicker={t("vps.kicker")}

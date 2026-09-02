@@ -9,7 +9,8 @@ import { PlanGrid } from "@/components/product/PlanGrid";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { CtaBand } from "@/components/ui/CtaBand";
-import { alternatesFor } from "@/lib/seo";
+import { alternatesFor, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export const dynamic = "force-dynamic";
 
@@ -72,6 +73,7 @@ export default async function HostingPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(productJsonLd) }}
       />
+      <JsonLd data={breadcrumbJsonLd(locale, [{ name: line.title, path: "/hosting" }])} />
       <PageHero
         index="/ Hosting"
         kicker={t("kicker")}

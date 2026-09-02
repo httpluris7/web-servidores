@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { alternatesFor } from "@/lib/seo";
+import { alternatesFor, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getCatalog, getRegion, getRegions, vpsPlansForRegion } from "@/data/products";
 import { vpsFaq } from "@/data/faq";
 import { site } from "@/data/site";
@@ -89,6 +90,12 @@ export default async function RegionPage({ params }: { params: Promise<Params> }
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(productJsonLd) }}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd(locale, [
+          { name: "Cloud VPS", path: "/vps" },
+          { name: region.name, path: `/vps/${slug}` },
+        ])}
       />
       <PageHero
         index="/ VPS"

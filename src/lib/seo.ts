@@ -1,5 +1,33 @@
 import type { Metadata } from "next";
 import { routing } from "@/i18n/routing";
+import { site } from "@/data/site";
+
+/** Ruta localizada (respeta `as-needed`): "/vps" → "/vps" (en) o "/es/vps" (es). */
+function localizedPath(locale: string, path: string): string {
+  if (path === "/") return locale === routing.defaultLocale ? "/" : `/${locale}`;
+  return locale === routing.defaultLocale ? path : `/${locale}${path}`;
+}
+
+const HOME_LABEL: Record<string, string> = { es: "Inicio", fr: "Accueil", en: "Home" };
+
+/**
+ * Construye el JSON-LD de `BreadcrumbList`. Se antepone "Inicio" automáticamente;
+ * `trail` son los niveles siguientes con su ruta LÓGICA (sin idioma): las URLs
+ * finales se localizan al idioma activo.
+ */
+export function breadcrumbJsonLd(locale: string, trail: { name: string; path: string }[]) {
+  const items = [{ name: HOME_LABEL[locale] ?? "Home", path: "/" }, ...trail];
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: it.name,
+      item: `${site.url}${localizedPath(locale, it.path)}`,
+    })),
+  };
+}
 
 /**
  * Construye `alternates` (canonical + hreflang) CORRECTOS para una ruta.
