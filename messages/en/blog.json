@@ -1,0 +1,12 @@
+{
+  "blog": {
+    "metaTitle": "Blog",
+    "kicker": "Blog",
+    "title": "Guides, tutorials and comparisons",
+    "description": "Guides and tutorials on VPS, web hosting and domains, with honest comparisons.",
+    "readMore": "Read",
+    "backToBlog": "← Back to the blog",
+    "publishedOn": "Published on",
+    "faqTitle": "FAQ"
+  }
+}

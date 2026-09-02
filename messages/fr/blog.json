@@ -1,0 +1,12 @@
+{
+  "blog": {
+    "metaTitle": "Blog",
+    "kicker": "Blog",
+    "title": "Guides, tutoriels et comparatifs",
+    "description": "Guides et tutoriels sur les VPS, l'hébergement web et les domaines, avec des comparatifs honnêtes.",
+    "readMore": "Lire",
+    "backToBlog": "← Retour au blog",
+    "publishedOn": "Publié le",
+    "faqTitle": "FAQ"
+  }
+}

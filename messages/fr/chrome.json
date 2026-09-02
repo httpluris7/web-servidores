@@ -75,7 +75,8 @@
     "terms": "Conditions",
     "cookies": "Cookies",
     "payment": "Paiement",
-    "webHosting": "Hébergement web"
+    "webHosting": "Hébergement web",
+    "blog": "Blog"
   },
   "account": {
     "myAccount": "Mon compte",

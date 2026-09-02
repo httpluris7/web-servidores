@@ -29,6 +29,7 @@ export function Footer({ nav }: { nav: NavCatalog }) {
     {
       title: t("resources"),
       links: [
+        { href: "/blog", label: t("blog") },
         { href: "/estado", label: t("serviceStatus") },
         { href: "/soporte", label: t("supportCenter") },
         { href: "/red", label: t("backbonePeering") },

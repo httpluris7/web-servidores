@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { site } from "@/data/site";
 import { getCatalog } from "@/data/products";
 import { routing } from "@/i18n/routing";
+import { allPosts } from "@/data/blog";
 
 /**
  * Sitemap con las páginas indexables y sus variantes por idioma (hreflang).
@@ -23,6 +24,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/comparativas/alternativa-hetzner",
     "/comparativas/alternativa-contabo",
     "/comparativas/mejor-hosting-cpanel",
+    "/blog",
+    ...allPosts().map((p) => `/blog/${p.slug}`),
     "/red",
     "/proteccion-ddos",
     "/casos-de-uso",
