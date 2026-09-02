@@ -14,7 +14,7 @@ import path from "node:path";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 
-export type LeadKind = "contacto" | "pedido";
+export type LeadKind = "contacto" | "pedido" | "dominio";
 
 export async function saveLead(kind: LeadKind, payload: Record<string, unknown>): Promise<void> {
   const record = {
