@@ -8,7 +8,7 @@ import type { NavCatalog } from "@/data/products";
  * componente async, así que el catálogo entra como prop desde el layout.
  */
 export function Footer({ nav }: { nav: NavCatalog }) {
-  const { regions, lines: dedicatedTypes } = nav;
+  const { regions, lines: dedicatedTypes, hosting } = nav;
   const t = useTranslations("footer");
   const tMeta = useTranslations("meta");
 
@@ -17,6 +17,7 @@ export function Footer({ nav }: { nav: NavCatalog }) {
       title: t("products"),
       links: [
         { href: "/vps", label: t("cloudVps") },
+        ...(hosting ? [{ href: `/${hosting.slug}`, label: t("webHosting") }] : []),
         ...dedicatedTypes.map((d) => ({ href: `/dedicados/${d.slug}`, label: d.title })),
         { href: "/proteccion-ddos", label: t("ddosProtection") },
       ],
