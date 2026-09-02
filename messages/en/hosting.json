@@ -25,6 +25,21 @@
       "migration": { "t": "Free migration", "d": "We move your site and mailboxes from your current host." },
       "ddos": { "t": "NVMe + anti-DDoS", "d": "NVMe disks and DDoS protection included by default." }
     },
-    "ctaTitle": "Ready to move your site to fast, private hosting?"
+    "ctaTitle": "Ready to move your site to fast, private hosting?",
+    "mis": {
+      "metaTitle": "My hosting services",
+      "kicker": "My hosting",
+      "title": "Your web hosting",
+      "description": "Access cPanel and manage your hosted sites.",
+      "backToAccount": "← Back to my account",
+      "empty": "You don't have any hosting services yet.",
+      "domainLabel": "Temporary domain",
+      "userLabel": "cPanel user",
+      "planLabel": "Plan",
+      "createdLabel": "Since",
+      "openPanel": "Open cPanel",
+      "viewSite": "View site",
+      "credsNote": "Your login credentials were emailed to you when you signed up. If you lost them, open a support ticket and we'll help."
+    }
   }
 }

@@ -25,6 +25,21 @@
       "migration": { "t": "Migración gratuita", "d": "Traemos tu web y tus correos desde tu proveedor actual." },
       "ddos": { "t": "NVMe + anti-DDoS", "d": "Discos NVMe y protección DDoS incluida de serie." }
     },
-    "ctaTitle": "¿Listo para llevar tu web a un hosting rápido y privado?"
+    "ctaTitle": "¿Listo para llevar tu web a un hosting rápido y privado?",
+    "mis": {
+      "metaTitle": "Mis servicios de hosting",
+      "kicker": "Mi hosting",
+      "title": "Tu hosting web",
+      "description": "Accede a cPanel y gestiona tus sitios alojados.",
+      "backToAccount": "← Volver a mi cuenta",
+      "empty": "Aún no tienes servicios de hosting.",
+      "domainLabel": "Dominio temporal",
+      "userLabel": "Usuario cPanel",
+      "planLabel": "Plan",
+      "createdLabel": "Alta",
+      "openPanel": "Abrir cPanel",
+      "viewSite": "Ver sitio",
+      "credsNote": "Tus credenciales de acceso te llegaron por correo al contratar. Si las has perdido, abre un ticket de soporte y te ayudamos."
+    }
   }
 }

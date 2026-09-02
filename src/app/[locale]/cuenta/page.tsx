@@ -10,6 +10,7 @@ import { getPublicUserById } from "@/lib/auth";
 import { listInvoicesByUser } from "@/lib/facturas";
 import { listServersForUser } from "@/lib/servidores/cliente";
 import { dominiosDeUsuario } from "@/lib/domains/intents";
+import { hostingDeUsuario } from "@/lib/hosting/intents";
 import { listTicketsByUser, ticketsAbiertos } from "@/lib/tickets";
 import { desplieguesDeUsuario } from "@/lib/provisioner/despliegues";
 import { getOrder } from "@/lib/provisioner/client";
@@ -67,6 +68,8 @@ export default async function CuentaPage({
   const servidores = await listServersForUser(user.id).catch(() => []);
   const dominios = await dominiosDeUsuario(user.id).catch(() => []);
   const td = await getTranslations("dominios");
+  const hosting = await hostingDeUsuario(user.id).catch(() => []);
+  const th = await getTranslations("hosting");
 
   // Despliegues aún en marcha (VPS recién pagado que se está creando): se leen
   // del provisioner para poder enlazar al seguimiento en vivo. Best-effort.
@@ -181,6 +184,20 @@ export default async function CuentaPage({
               className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-6 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
             >
               {td("mis.title")} ({dominios.length})
+            </Link>
+          </section>
+        )}
+
+        {/* Hosting: solo aparece si el cliente tiene algún servicio de hosting. */}
+        {hosting.length > 0 && (
+          <section className="mt-12 border-t border-[var(--color-line)] pt-10">
+            <h2 className="mono-label mb-1">{th("mis.kicker")}</h2>
+            <p className="mb-5 text-sm text-[var(--color-fg-muted)]">{th("mis.description")}</p>
+            <Link
+              href="/cuenta/hosting"
+              className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-6 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+            >
+              {th("mis.title")} ({hosting.length})
             </Link>
           </section>
         )}

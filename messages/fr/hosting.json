@@ -25,6 +25,21 @@
       "migration": { "t": "Migration gratuite", "d": "Nous transférons votre site et vos emails depuis votre hébergeur actuel." },
       "ddos": { "t": "NVMe + anti-DDoS", "d": "Disques NVMe et protection DDoS incluse d'office." }
     },
-    "ctaTitle": "Prêt à migrer votre site vers un hébergement rapide et privé ?"
+    "ctaTitle": "Prêt à migrer votre site vers un hébergement rapide et privé ?",
+    "mis": {
+      "metaTitle": "Mes services d'hébergement",
+      "kicker": "Mon hébergement",
+      "title": "Votre hébergement web",
+      "description": "Accédez à cPanel et gérez vos sites hébergés.",
+      "backToAccount": "← Retour à mon compte",
+      "empty": "Vous n'avez pas encore de services d'hébergement.",
+      "domainLabel": "Domaine temporaire",
+      "userLabel": "Utilisateur cPanel",
+      "planLabel": "Formule",
+      "createdLabel": "Depuis",
+      "openPanel": "Ouvrir cPanel",
+      "viewSite": "Voir le site",
+      "credsNote": "Vos identifiants vous ont été envoyés par email lors de la commande. Si vous les avez perdus, ouvrez un ticket et nous vous aiderons."
+    }
   }
 }
