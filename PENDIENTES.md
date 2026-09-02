@@ -22,8 +22,8 @@ Convención: los datos sin confirmar que aparezcan en borradores van marcados co
 | # | Tema | Recomendación |
 |---|---|---|
 | B1 | **Idioma por defecto** | La web arranca en **inglés** (raíz) con `/es` y `/fr` con prefijo. Recomiendo **no** cambiar el idioma por defecto (evita 301 masivos) e **invertir en `/es`** como target España. El canonical ya está arreglado y `/es` es indexable. |
-| B2 | **Relato de entidad** | Confirmar que se expone **ViaHost Networks, LLC (Wyoming/Orlando FL, US)** con datacenters en la UE. Añadiré una frase clara "empresa US, infraestructura en la UE" en `/sobre-nosotros` (pendiente de tu OK). |
-| B3 | **Marca/dominio** | Doy por definitivo **ViaHost / viahost.top** (el comentario "marca inventada" en `site.ts` está obsoleto). Si cambia, hay que rehacer schema/footer/legales. |
+| B2 | **Relato de entidad** | ✅ **RESUELTO (2026-09-02):** frase de entidad "empresa US, infraestructura en la UE (Ámsterdam y Alemania)" publicada en `/sobre-nosotros` (es/en/fr). Retirado el aviso "datos provisionales". |
+| B3 | **Marca/dominio** | ✅ **CONFIRMADO: ViaHost / viahost.top definitivos.** |
 | B4 | **Precios de terceros** | En las comparativas van marcados como orientativos (2026-09). Decidir cada cuánto revisarlos (recomiendo trimestral). |
 
 ## C. Técnicos menores pendientes (no requieren datos tuyos)

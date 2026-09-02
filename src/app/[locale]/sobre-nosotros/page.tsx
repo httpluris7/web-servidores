@@ -49,7 +49,14 @@ export default async function AboutPage({
         description={t("sobreNosotros.description", { brand: site.brand })}
       />
 
-      {/* TODO: sustituir por la historia real de la empresa, hitos y equipo. */}
+      {/* Frase de entidad (GEO): empresa US con infraestructura en la UE. */}
+      <section className="container-edge max-w-3xl pt-10 md:pt-14">
+        <div className="space-y-4 text-[var(--color-fg-muted)]">
+          <p>{t("sobreNosotros.entity.p1")}</p>
+          <p>{t("sobreNosotros.entity.p2")}</p>
+        </div>
+      </section>
+
       <section className="container-edge py-14 md:py-28">
         <SectionHeader index="/02" kicker={t("sobreNosotros.principlesKicker")} title={t("sobreNosotros.principlesTitle")} />
         <div className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-2">
@@ -84,10 +91,6 @@ export default async function AboutPage({
                 <dd className="mt-1">{site.legal.address}</dd>
               </div>
             </dl>
-            <p className="mt-6 text-xs text-[var(--color-fg-dim)]">
-              {/* TODO: confirmar todos los datos legales con el cliente antes de publicar. */}
-              {t("sobreNosotros.provisionalData")}
-            </p>
           </div>
         </Reveal>
       </section>

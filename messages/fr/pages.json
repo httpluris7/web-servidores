@@ -279,8 +279,11 @@
       "taxId": "EIN / N° fiscal",
       "autonomousSystem": "Système autonome",
       "registeredAddress": "Adresse du siège",
-      "provisionalData": "Données provisoires en attente de confirmation du client.",
-      "ctaTitle": "Rejoignez ceux qui déploient déjà avec nous"
+      "ctaTitle": "Rejoignez ceux qui déploient déjà avec nous",
+      "entity": {
+        "p1": "ViaHost est la marque de ViaHost Networks, LLC, une société constituée aux États-Unis (Wyoming). Nous exploitons notre propre infrastructure en Europe, avec des datacenters à Amsterdam (Pays-Bas) et en Allemagne.",
+        "p2": "Cette combinaison — une société américaine avec des serveurs dans l'Union européenne — nous permet d'offrir des VPS, de l'hébergement cPanel et des domaines avec protection DDoS incluse et prix fixe, avec un support en espagnol."
+      }
     },
     "contactForm": {
       "errorName": "Saisissez votre nom.",
