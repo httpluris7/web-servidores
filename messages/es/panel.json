@@ -1,0 +1,111 @@
+{
+  "panel": {
+    "metaTitle": "Panel del servicio",
+    "backTo": "Mis servicios",
+    "mockNote": "Datos de ejemplo — maqueta (Fase 1). Aún no conectada al servidor real.",
+    "sidebar": {
+      "groups": {
+        "overview": "Resumen",
+        "acciones": "Acciones",
+        "gestion": "Gestión"
+      },
+      "items": {
+        "resumen": "Resumen",
+        "informacion": "Información",
+        "ips": "Direcciones IP",
+        "plantillas": "Plantillas",
+        "energia": "Energía",
+        "plan": "Ampliar / Reducir plan",
+        "backups": "Copias de seguridad",
+        "backupsSchedule": "Programación de copias",
+        "discos": "Discos",
+        "firewall": "Cortafuegos",
+        "firewallOptions": "Opciones del cortafuegos",
+        "graficas": "Gráficas",
+        "red": "Red",
+        "consola": "Consola noVNC",
+        "reinstalar": "Reinstalación",
+        "notificaciones": "Notificaciones de recursos",
+        "monitorizacion": "Monitorización",
+        "snapshots": "Instantáneas",
+        "historial": "Historial de tareas",
+        "tareasEnergia": "Tareas de energía"
+      }
+    },
+    "header": {
+      "plan": "Plan",
+      "since": "Fecha de alta",
+      "amount": "Importe",
+      "nextDue": "Próximo vencimiento",
+      "method": "Método de pago",
+      "status": {
+        "activo": "Activo",
+        "suspendido": "Suspendido",
+        "cancelado": "Cancelado"
+      },
+      "cycles": {
+        "mensual": "mes",
+        "trimestral": "trimestre",
+        "anual": "año"
+      }
+    },
+    "power": {
+      "heading": "Acciones del servicio",
+      "intro": "Energía y operaciones frecuentes. Cada acción se activa según el estado actual del servidor.",
+      "start": "Arrancar",
+      "restart": "Reiniciar",
+      "stop": "Parar",
+      "shutdown": "Apagar",
+      "reconfigNetwork": "Reconfigurar red",
+      "changePassword": "Cambiar contraseña"
+    },
+    "management": {
+      "heading": "Gestión del servicio",
+      "intro": "Herramientas avanzadas de administración de tu servidor.",
+      "soon": "Pronto"
+    },
+    "info": {
+      "heading": "Información",
+      "estado": "Estado",
+      "nodo": "Nodo",
+      "nombre": "Nombre",
+      "password": "Contraseña",
+      "uptime": "Tiempo activo",
+      "creado": "Fecha de creación",
+      "descripcion": "Descripción",
+      "cpu": "CPU",
+      "cores": "núcleos",
+      "memoria": "Memoria",
+      "swap": "Swap",
+      "disco": "Disco",
+      "backupsLimite": "Límite de copias",
+      "tasaRed": "Tasa de red",
+      "numIps": "Nº de IPs",
+      "iso": "ISO montada",
+      "ordenArranque": "Orden de arranque",
+      "anchoBanda": "Ancho de banda consumido",
+      "none": "Ninguna",
+      "editHint": "editable",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "reveal": "Mostrar",
+      "hide": "Ocultar",
+      "powerState": {
+        "encendido": "Encendido",
+        "apagado": "Apagado",
+        "suspendido": "Suspendido"
+      }
+    },
+    "ips": {
+      "heading": "Direcciones IP",
+      "version": "Versión",
+      "address": "Dirección",
+      "mac": "MAC",
+      "netmask": "Máscara",
+      "gateway": "Puerta de enlace",
+      "none": "Sin direcciones asignadas.",
+      "v4": "IPv4",
+      "v6": "IPv6"
+    }
+  }
+}

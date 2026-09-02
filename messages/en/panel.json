@@ -1,0 +1,111 @@
+{
+  "panel": {
+    "metaTitle": "Service panel",
+    "backTo": "My services",
+    "mockNote": "Sample data — mockup (Phase 1). Not yet wired to the real server.",
+    "sidebar": {
+      "groups": {
+        "overview": "Overview",
+        "acciones": "Actions",
+        "gestion": "Management"
+      },
+      "items": {
+        "resumen": "Overview",
+        "informacion": "Information",
+        "ips": "IP addresses",
+        "plantillas": "Templates",
+        "energia": "Power",
+        "plan": "Upgrade / Downgrade plan",
+        "backups": "Backups",
+        "backupsSchedule": "Backup schedule",
+        "discos": "Disks",
+        "firewall": "Firewall",
+        "firewallOptions": "Firewall options",
+        "graficas": "Graphs",
+        "red": "Network",
+        "consola": "noVNC console",
+        "reinstalar": "Reinstall",
+        "notificaciones": "Resource notifications",
+        "monitorizacion": "Monitoring",
+        "snapshots": "Snapshots",
+        "historial": "Task history",
+        "tareasEnergia": "Power tasks"
+      }
+    },
+    "header": {
+      "plan": "Plan",
+      "since": "Start date",
+      "amount": "Amount",
+      "nextDue": "Next due date",
+      "method": "Payment method",
+      "status": {
+        "activo": "Active",
+        "suspendido": "Suspended",
+        "cancelado": "Cancelled"
+      },
+      "cycles": {
+        "mensual": "month",
+        "trimestral": "quarter",
+        "anual": "year"
+      }
+    },
+    "power": {
+      "heading": "Service actions",
+      "intro": "Power and common operations. Each action is enabled based on the server's current state.",
+      "start": "Start",
+      "restart": "Restart",
+      "stop": "Stop",
+      "shutdown": "Shut down",
+      "reconfigNetwork": "Reconfigure network",
+      "changePassword": "Change password"
+    },
+    "management": {
+      "heading": "Service management",
+      "intro": "Advanced tools to administer your server.",
+      "soon": "Soon"
+    },
+    "info": {
+      "heading": "Information",
+      "estado": "Status",
+      "nodo": "Node",
+      "nombre": "Name",
+      "password": "Password",
+      "uptime": "Uptime",
+      "creado": "Created",
+      "descripcion": "Description",
+      "cpu": "CPU",
+      "cores": "cores",
+      "memoria": "Memory",
+      "swap": "Swap",
+      "disco": "Disk",
+      "backupsLimite": "Backup limit",
+      "tasaRed": "Network rate",
+      "numIps": "IP count",
+      "iso": "Mounted ISO",
+      "ordenArranque": "Boot order",
+      "anchoBanda": "Bandwidth used",
+      "none": "None",
+      "editHint": "editable",
+      "copy": "Copy",
+      "copied": "Copied",
+      "reveal": "Show",
+      "hide": "Hide",
+      "powerState": {
+        "encendido": "Running",
+        "apagado": "Stopped",
+        "suspendido": "Suspended"
+      }
+    },
+    "ips": {
+      "heading": "IP addresses",
+      "version": "Version",
+      "address": "Address",
+      "mac": "MAC",
+      "netmask": "Netmask",
+      "gateway": "Gateway",
+      "none": "No addresses assigned.",
+      "v4": "IPv4",
+      "v6": "IPv6"
+    }
+  }
+}

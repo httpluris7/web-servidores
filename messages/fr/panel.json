@@ -1,0 +1,111 @@
+{
+  "panel": {
+    "metaTitle": "Panneau du service",
+    "backTo": "Mes services",
+    "mockNote": "Données d'exemple — maquette (Phase 1). Pas encore reliée au serveur réel.",
+    "sidebar": {
+      "groups": {
+        "overview": "Aperçu",
+        "acciones": "Actions",
+        "gestion": "Gestion"
+      },
+      "items": {
+        "resumen": "Aperçu",
+        "informacion": "Informations",
+        "ips": "Adresses IP",
+        "plantillas": "Modèles",
+        "energia": "Alimentation",
+        "plan": "Augmenter / Réduire le forfait",
+        "backups": "Sauvegardes",
+        "backupsSchedule": "Planification des sauvegardes",
+        "discos": "Disques",
+        "firewall": "Pare-feu",
+        "firewallOptions": "Options du pare-feu",
+        "graficas": "Graphiques",
+        "red": "Réseau",
+        "consola": "Console noVNC",
+        "reinstalar": "Réinstallation",
+        "notificaciones": "Notifications de ressources",
+        "monitorizacion": "Supervision",
+        "snapshots": "Instantanés",
+        "historial": "Historique des tâches",
+        "tareasEnergia": "Tâches d'alimentation"
+      }
+    },
+    "header": {
+      "plan": "Forfait",
+      "since": "Date de début",
+      "amount": "Montant",
+      "nextDue": "Prochaine échéance",
+      "method": "Moyen de paiement",
+      "status": {
+        "activo": "Actif",
+        "suspendido": "Suspendu",
+        "cancelado": "Annulé"
+      },
+      "cycles": {
+        "mensual": "mois",
+        "trimestral": "trimestre",
+        "anual": "an"
+      }
+    },
+    "power": {
+      "heading": "Actions du service",
+      "intro": "Alimentation et opérations courantes. Chaque action est activée selon l'état actuel du serveur.",
+      "start": "Démarrer",
+      "restart": "Redémarrer",
+      "stop": "Arrêter",
+      "shutdown": "Éteindre",
+      "reconfigNetwork": "Reconfigurer le réseau",
+      "changePassword": "Changer le mot de passe"
+    },
+    "management": {
+      "heading": "Gestion du service",
+      "intro": "Outils avancés pour administrer votre serveur.",
+      "soon": "Bientôt"
+    },
+    "info": {
+      "heading": "Informations",
+      "estado": "État",
+      "nodo": "Nœud",
+      "nombre": "Nom",
+      "password": "Mot de passe",
+      "uptime": "Temps de fonctionnement",
+      "creado": "Date de création",
+      "descripcion": "Description",
+      "cpu": "CPU",
+      "cores": "cœurs",
+      "memoria": "Mémoire",
+      "swap": "Swap",
+      "disco": "Disque",
+      "backupsLimite": "Limite de sauvegardes",
+      "tasaRed": "Débit réseau",
+      "numIps": "Nombre d'IP",
+      "iso": "ISO montée",
+      "ordenArranque": "Ordre de démarrage",
+      "anchoBanda": "Bande passante consommée",
+      "none": "Aucune",
+      "editHint": "modifiable",
+      "copy": "Copier",
+      "copied": "Copié",
+      "reveal": "Afficher",
+      "hide": "Masquer",
+      "powerState": {
+        "encendido": "En marche",
+        "apagado": "Arrêté",
+        "suspendido": "Suspendu"
+      }
+    },
+    "ips": {
+      "heading": "Adresses IP",
+      "version": "Version",
+      "address": "Adresse",
+      "mac": "MAC",
+      "netmask": "Masque",
+      "gateway": "Passerelle",
+      "none": "Aucune adresse attribuée.",
+      "v4": "IPv4",
+      "v6": "IPv6"
+    }
+  }
+}
