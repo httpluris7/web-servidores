@@ -1,0 +1,21 @@
+{
+  "dominios": {
+    "metaTitle": "Domaines avec confidentialité",
+    "metaDescription": "Enregistrez votre domaine avec la confidentialité WHOIS incluse chez {brand}.",
+    "kicker": "Domaines",
+    "titleA": "Votre domaine, avec la",
+    "titleB": "confidentialité d'origine",
+    "description": "Recherchez et enregistrez votre domaine avec la confidentialité WHOIS incluse sans frais. Vos données personnelles ne sont jamais exposées.",
+    "placeholder": "votre-domaine",
+    "searchButton": "Rechercher",
+    "searching": "Recherche…",
+    "taken": "Indisponible",
+    "addToCart": "Ajouter",
+    "soon": "Commande disponible bientôt",
+    "perYear": "/an",
+    "noResults": "Aucun résultat. Essayez un autre nom.",
+    "errorProvider": "Impossible de vérifier la disponibilité pour le moment. Réessayez.",
+    "unconfigured": "La recherche de domaines n'est pas encore activée.",
+    "privacyNote": "Chaque domaine inclut la confidentialité WHOIS sans frais : vos données personnelles n'apparaissent jamais dans le registre public."
+  }
+}

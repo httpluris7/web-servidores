@@ -1,0 +1,21 @@
+{
+  "dominios": {
+    "metaTitle": "Dominios con privacidad",
+    "metaDescription": "Registra tu dominio con privacidad WHOIS incluida en {brand}.",
+    "kicker": "Dominios",
+    "titleA": "Tu dominio, con",
+    "titleB": "privacidad de serie",
+    "description": "Busca y registra tu dominio con la privacidad WHOIS incluida sin coste. Sin exponer tus datos personales.",
+    "placeholder": "tu-dominio",
+    "searchButton": "Buscar",
+    "searching": "Buscando…",
+    "taken": "No disponible",
+    "addToCart": "Añadir",
+    "soon": "Contratación disponible en breve",
+    "perYear": "/año",
+    "noResults": "No hemos encontrado resultados. Prueba con otro nombre.",
+    "errorProvider": "No se pudo consultar la disponibilidad ahora mismo. Inténtalo de nuevo.",
+    "unconfigured": "La búsqueda de dominios aún no está activada.",
+    "privacyNote": "Todos los dominios incluyen privacidad WHOIS sin coste: tus datos personales nunca aparecen en el registro público."
+  }
+}

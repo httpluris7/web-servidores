@@ -1,0 +1,21 @@
+{
+  "dominios": {
+    "metaTitle": "Private domains",
+    "metaDescription": "Register your domain with WHOIS privacy included at {brand}.",
+    "kicker": "Domains",
+    "titleA": "Your domain, with",
+    "titleB": "privacy built in",
+    "description": "Search and register your domain with WHOIS privacy included at no cost. Your personal data is never exposed.",
+    "placeholder": "your-domain",
+    "searchButton": "Search",
+    "searching": "Searching…",
+    "taken": "Unavailable",
+    "addToCart": "Add",
+    "soon": "Checkout available soon",
+    "perYear": "/year",
+    "noResults": "No results found. Try a different name.",
+    "errorProvider": "Couldn't check availability right now. Please try again.",
+    "unconfigured": "Domain search isn't enabled yet.",
+    "privacyNote": "Every domain includes WHOIS privacy at no cost: your personal data never appears in the public registry."
+  }
+}

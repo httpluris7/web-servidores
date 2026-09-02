@@ -152,12 +152,23 @@ export type WiseSettings = {
   webhookPublicKey: string;
 };
 
+/** Registrador de dominios (Njalla). Revendedor con monedero, API JSON-RPC. */
+export type NjallaSettings = {
+  /** Interruptor: sin esto no se buscan ni registran dominios. */
+  enabled: boolean;
+  /** Token de API de Njalla (secreto; viaja como `Authorization: Njalla …`). */
+  apiToken: string;
+  /** Margen sobre el precio de Njalla, en % (precio_cliente = njalla × (1+m/100)). */
+  margenPct: number;
+};
+
 export type Settings = {
   stripe: StripeSettings;
   provider: ProviderSettings;
   alerts: AlertSettings;
   backup: BackupSettings;
   wise: WiseSettings;
+  njalla: NjallaSettings;
 };
 
 /** Valores de partida de Wise: apagado y en sandbox (pruebas sin dinero real). */
@@ -169,6 +180,13 @@ export const DEFAULT_WISE: WiseSettings = {
   balanceId: "",
   privateKey: "",
   webhookPublicKey: "",
+};
+
+/** Njalla de partida: apagado, sin token, margen 25%. */
+export const DEFAULT_NJALLA: NjallaSettings = {
+  enabled: false,
+  apiToken: "",
+  margenPct: 25,
 };
 
 /** Valores de partida de las copias de seguridad: a las 03:00, sin destinos. */
@@ -333,11 +351,34 @@ function normalizeWise(raw: unknown, fallback: WiseSettings): WiseSettings {
   };
 }
 
+/** Njalla desde el entorno (respaldo si no hay fichero). */
+function njallaFromEnv(): NjallaSettings {
+  const apiToken = (process.env.NJALLA_API_TOKEN ?? "").trim();
+  const m = Number(process.env.NJALLA_MARGIN_PCT);
+  return {
+    enabled: !!apiToken,
+    apiToken,
+    margenPct: Number.isFinite(m) && m >= 0 ? m : DEFAULT_NJALLA.margenPct,
+  };
+}
+
+function normalizeNjalla(raw: unknown, fallback: NjallaSettings): NjallaSettings {
+  const o = (raw ?? {}) as Partial<Record<keyof NjallaSettings, unknown>>;
+  const apiToken = typeof o.apiToken === "string" ? o.apiToken.trim() : "";
+  const m = Number(o.margenPct);
+  return {
+    enabled: o.enabled === true,
+    apiToken: apiToken || fallback.apiToken,
+    margenPct: Number.isFinite(m) && m >= 0 ? m : fallback.margenPct,
+  };
+}
+
 /** Ajustes efectivos (fichero sobre entorno). Nunca lanza: sin fichero, vacíos. */
 export async function readSettings(): Promise<Settings> {
   const env = fromEnv();
   const providerEnv = providerFromEnv();
   const wiseEnv = wiseFromEnv();
+  const njallaEnv = njallaFromEnv();
   let parsed: unknown = null;
   try {
     parsed = JSON.parse(await readFile(FILE, "utf8"));
@@ -350,6 +391,7 @@ export async function readSettings(): Promise<Settings> {
       alerts: { ...DEFAULT_ALERTS },
       backup: { ...DEFAULT_BACKUP },
       wise: { ...wiseEnv },
+      njalla: { ...njallaEnv },
     };
   }
   const obj = (parsed ?? {}) as {
@@ -358,6 +400,7 @@ export async function readSettings(): Promise<Settings> {
     alerts?: unknown;
     backup?: unknown;
     wise?: unknown;
+    njalla?: unknown;
   };
   return {
     stripe: normalizeStripe(obj.stripe, env),
@@ -365,6 +408,7 @@ export async function readSettings(): Promise<Settings> {
     alerts: normalizeAlerts(obj.alerts),
     backup: normalizeBackup(obj.backup),
     wise: normalizeWise(obj.wise, wiseEnv),
+    njalla: normalizeNjalla(obj.njalla, njallaEnv),
   };
 }
 
@@ -541,6 +585,34 @@ export async function updateWiseSettings(patch: WisePatch): Promise<Settings> {
   };
   await writeSettings(next);
   return next;
+}
+
+/** Cambios parciales de Njalla. El token sigue la regla de los secretos. */
+export type NjallaPatch = {
+  enabled?: boolean;
+  apiToken?: string | null;
+  margenPct?: number;
+};
+
+export async function updateNjallaSettings(patch: NjallaPatch): Promise<Settings> {
+  const current = await readSettings();
+  const n = current.njalla;
+  const margen = Number(patch.margenPct);
+  const next: Settings = {
+    ...current,
+    njalla: {
+      enabled: patch.enabled ?? n.enabled,
+      apiToken: pickSecret(patch.apiToken, n.apiToken),
+      margenPct: Number.isFinite(margen) && margen >= 0 ? margen : n.margenPct,
+    },
+  };
+  await writeSettings(next);
+  return next;
+}
+
+/** ¿Njalla listo para operar? (encendido + token). */
+export function njallaHasCreds(njalla: NjallaSettings): boolean {
+  return njalla.enabled && njalla.apiToken.trim().length > 0;
 }
 
 /* --------------------------------- Ayudas --------------------------------- */
