@@ -7,6 +7,7 @@ import { getSession } from "@/lib/session";
 import { hostingDeUsuario } from "@/lib/hosting/intents";
 import { getCatalog } from "@/data/products";
 import { readSettings } from "@/lib/ajustes";
+import { HostingPasswordReset } from "@/components/hosting/HostingPasswordReset";
 
 export async function generateMetadata({
   params,
@@ -118,6 +119,8 @@ export default async function MisHostingPage({
                       </a>
                     )}
                   </div>
+
+                  {s.cpanelUser && <HostingPasswordReset cpanelUser={s.cpanelUser} />}
                 </li>
               ))}
             </ul>

@@ -18,12 +18,30 @@
     "featuresKicker": "Incluido en todos los planes",
     "featuresTitle": "Todo lo que necesitas para publicar",
     "features": {
-      "ssl": { "t": "SSL gratis", "d": "Certificados Let's Encrypt automáticos para cada dominio." },
-      "cpanel": { "t": "cPanel + Softaculous", "d": "Instala WordPress y 400+ apps en un clic desde el panel." },
-      "transfer": { "t": "Transferencia sin límites", "d": "Tráfico ilimitado sobre red de 10 Gbps." },
-      "backups": { "t": "Copias diarias", "d": "Respaldos automáticos y restauración a un clic." },
-      "migration": { "t": "Migración gratuita", "d": "Traemos tu web y tus correos desde tu proveedor actual." },
-      "ddos": { "t": "NVMe + anti-DDoS", "d": "Discos NVMe y protección DDoS incluida de serie." }
+      "ssl": {
+        "t": "SSL gratis",
+        "d": "Certificados Let's Encrypt automáticos para cada dominio."
+      },
+      "cpanel": {
+        "t": "cPanel + Softaculous",
+        "d": "Instala WordPress y 400+ apps en un clic desde el panel."
+      },
+      "transfer": {
+        "t": "Transferencia sin límites",
+        "d": "Tráfico ilimitado sobre red de 10 Gbps."
+      },
+      "backups": {
+        "t": "Copias diarias",
+        "d": "Respaldos automáticos y restauración a un clic."
+      },
+      "migration": {
+        "t": "Migración gratuita",
+        "d": "Traemos tu web y tus correos desde tu proveedor actual."
+      },
+      "ddos": {
+        "t": "NVMe + anti-DDoS",
+        "d": "Discos NVMe y protección DDoS incluida de serie."
+      }
     },
     "ctaTitle": "¿Listo para llevar tu web a un hosting rápido y privado?",
     "mis": {
@@ -39,7 +57,18 @@
       "createdLabel": "Alta",
       "openPanel": "Abrir cPanel",
       "viewSite": "Ver sitio",
-      "credsNote": "Tus credenciales de acceso te llegaron por correo al contratar. Si las has perdido, abre un ticket de soporte y te ayudamos."
+      "credsNote": "Tus credenciales de acceso te llegaron por correo al contratar. Si las has perdido, abre un ticket de soporte y te ayudamos.",
+      "resetPassword": "Resetear contraseña de cPanel",
+      "resetConfirm": "Se cambiará tu contraseña de acceso a cPanel.",
+      "resetConfirmYes": "Sí, resetear",
+      "resetCancel": "Cancelar",
+      "resetting": "Reseteando…",
+      "resetDoneTitle": "Nueva contraseña",
+      "resetDoneNote": "Guárdala ahora: no volveremos a mostrarla. Puedes cambiarla desde cPanel cuando entres.",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "resetError": "No se pudo resetear la contraseña. Inténtalo de nuevo.",
+      "resetTooMany": "Demasiados intentos. Espera un poco e inténtalo de nuevo."
     }
   }
 }

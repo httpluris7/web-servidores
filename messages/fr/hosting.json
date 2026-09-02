@@ -18,12 +18,30 @@
     "featuresKicker": "Inclus dans toutes les formules",
     "featuresTitle": "Tout ce qu'il faut pour publier",
     "features": {
-      "ssl": { "t": "SSL gratuit", "d": "Certificats Let's Encrypt automatiques pour chaque domaine." },
-      "cpanel": { "t": "cPanel + Softaculous", "d": "Installez WordPress et 400+ applications en un clic." },
-      "transfer": { "t": "Transfert illimité", "d": "Trafic illimité sur un réseau 10 Gbps." },
-      "backups": { "t": "Sauvegardes quotidiennes", "d": "Sauvegardes automatiques et restauration en un clic." },
-      "migration": { "t": "Migration gratuite", "d": "Nous transférons votre site et vos emails depuis votre hébergeur actuel." },
-      "ddos": { "t": "NVMe + anti-DDoS", "d": "Disques NVMe et protection DDoS incluse d'office." }
+      "ssl": {
+        "t": "SSL gratuit",
+        "d": "Certificats Let's Encrypt automatiques pour chaque domaine."
+      },
+      "cpanel": {
+        "t": "cPanel + Softaculous",
+        "d": "Installez WordPress et 400+ applications en un clic."
+      },
+      "transfer": {
+        "t": "Transfert illimité",
+        "d": "Trafic illimité sur un réseau 10 Gbps."
+      },
+      "backups": {
+        "t": "Sauvegardes quotidiennes",
+        "d": "Sauvegardes automatiques et restauration en un clic."
+      },
+      "migration": {
+        "t": "Migration gratuite",
+        "d": "Nous transférons votre site et vos emails depuis votre hébergeur actuel."
+      },
+      "ddos": {
+        "t": "NVMe + anti-DDoS",
+        "d": "Disques NVMe et protection DDoS incluse d'office."
+      }
     },
     "ctaTitle": "Prêt à migrer votre site vers un hébergement rapide et privé ?",
     "mis": {
@@ -39,7 +57,18 @@
       "createdLabel": "Depuis",
       "openPanel": "Ouvrir cPanel",
       "viewSite": "Voir le site",
-      "credsNote": "Vos identifiants vous ont été envoyés par email lors de la commande. Si vous les avez perdus, ouvrez un ticket et nous vous aiderons."
+      "credsNote": "Vos identifiants vous ont été envoyés par email lors de la commande. Si vous les avez perdus, ouvrez un ticket et nous vous aiderons.",
+      "resetPassword": "Réinitialiser le mot de passe cPanel",
+      "resetConfirm": "Cela changera votre mot de passe d’accès à cPanel.",
+      "resetConfirmYes": "Oui, réinitialiser",
+      "resetCancel": "Annuler",
+      "resetting": "Réinitialisation…",
+      "resetDoneTitle": "Nouveau mot de passe",
+      "resetDoneNote": "Enregistrez-le maintenant : nous ne l’afficherons plus. Vous pourrez le changer depuis cPanel une fois connecté.",
+      "copy": "Copier",
+      "copied": "Copié",
+      "resetError": "Impossible de réinitialiser le mot de passe. Réessayez.",
+      "resetTooMany": "Trop de tentatives. Patientez un instant et réessayez."
     }
   }
 }

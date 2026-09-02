@@ -131,3 +131,14 @@ export async function hostingDeUsuario(userId: string): Promise<HostingIntent[]>
   if (!userId) return [];
   return (await readAll()).filter((d) => d.userId === userId && d.provisioned);
 }
+
+/**
+ * ¿Es esta cuenta de cPanel (usuario) de este usuario? Punto ÚNICO de
+ * comprobación de propiedad para acciones sobre la cuenta (p. ej. resetear la
+ * contraseña), como `usuarioTieneDominio` con el DNS. Una cuenta ajena se trata
+ * como inexistente (404).
+ */
+export async function usuarioTieneHosting(userId: string, cpanelUser: string): Promise<boolean> {
+  if (!userId || !cpanelUser) return false;
+  return (await hostingDeUsuario(userId)).some((d) => d.cpanelUser === cpanelUser);
+}

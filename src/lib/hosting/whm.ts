@@ -127,6 +127,18 @@ export async function createAccount(
   }
 }
 
+/**
+ * Cambia la contraseña de acceso de una cuenta de cPanel (ACL `passwd`).
+ *
+ * No toca las contraseñas de las bases de datos (`db_pass_update=0`) para no
+ * romper sitios ya conectados; solo cambia el acceso a cPanel/FTP/webmail.
+ */
+export async function changeAccountPassword(username: string, password: string): Promise<void> {
+  const cfg = await config();
+  if (!cfg) throw new WhmError("unconfigured", "Hosting/WHM sin configurar");
+  await call("passwd", { user: username, password, db_pass_update: 0 }, cfg);
+}
+
 /** ¿El hosting está configurado y encendido? (para decidir si se aprovisiona). */
 export function hostingConfigured(hosting: HostingSettings): boolean {
   return hostingConfig(hosting) != null;

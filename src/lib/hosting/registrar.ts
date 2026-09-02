@@ -1,9 +1,10 @@
 import "server-only";
-import { createHash, randomInt } from "node:crypto";
+import { createHash } from "node:crypto";
 import { readSettings } from "@/lib/ajustes";
 import { appendInvoiceNota } from "@/lib/facturas";
 import { sendHostingWelcomeMail } from "@/lib/mail";
 import { createAccount, hostingConfigured, WhmError } from "./whm";
+import { generarPasswordCpanel } from "./password";
 import { intentsDeFactura, marcarProvisionado, type HostingIntent } from "./intents";
 
 /**
@@ -55,7 +56,7 @@ export async function aprovisionarHostingFacturaPagada(invoiceId: string): Promi
     // Dominio real que pidió el cliente, o temporal `<user>.<baseDomain>`.
     const esTemporal = !it.requestedDomain;
     const domain = it.requestedDomain || `${username}.${baseDomain}`;
-    const password = generarPassword();
+    const password = generarPasswordCpanel();
     try {
       const r = await createAccount({
         username,
@@ -113,27 +114,6 @@ export async function aprovisionarHostingFacturaPagada(invoiceId: string): Promi
 function usuarioDeterminista(invoiceId: string, planId: string): string {
   const h = createHash("sha1").update(`${invoiceId}:${planId}`).digest("hex").slice(0, 6);
   return `vh${h}`;
-}
-
-/**
- * Contraseña fuerte para cPanel: 20 caracteres con las 4 clases (mayús, minús,
- * dígito, símbolo), garantizando al menos una de cada y barajando el resto.
- */
-function generarPassword(): string {
-  const U = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-  const L = "abcdefghijkmnpqrstuvwxyz";
-  const D = "23456789";
-  const S = "!@#%^*-_=+";
-  const todos = U + L + D + S;
-  const pick = (set: string) => set[randomInt(set.length)];
-  const chars = [pick(U), pick(L), pick(D), pick(S)];
-  while (chars.length < 20) chars.push(pick(todos));
-  // Barajado Fisher-Yates con aleatoriedad criptográfica.
-  for (let i = chars.length - 1; i > 0; i--) {
-    const j = randomInt(i + 1);
-    [chars[i], chars[j]] = [chars[j], chars[i]];
-  }
-  return chars.join("");
 }
 
 function listar(pend: Array<{ planId: string }>): string {

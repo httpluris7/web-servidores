@@ -18,12 +18,30 @@
     "featuresKicker": "Included in every plan",
     "featuresTitle": "Everything you need to go live",
     "features": {
-      "ssl": { "t": "Free SSL", "d": "Automatic Let's Encrypt certificates for every domain." },
-      "cpanel": { "t": "cPanel + Softaculous", "d": "Install WordPress and 400+ apps in one click." },
-      "transfer": { "t": "Unmetered transfer", "d": "Unlimited traffic over a 10 Gbps network." },
-      "backups": { "t": "Daily backups", "d": "Automatic backups with one-click restore." },
-      "migration": { "t": "Free migration", "d": "We move your site and mailboxes from your current host." },
-      "ddos": { "t": "NVMe + anti-DDoS", "d": "NVMe disks and DDoS protection included by default." }
+      "ssl": {
+        "t": "Free SSL",
+        "d": "Automatic Let's Encrypt certificates for every domain."
+      },
+      "cpanel": {
+        "t": "cPanel + Softaculous",
+        "d": "Install WordPress and 400+ apps in one click."
+      },
+      "transfer": {
+        "t": "Unmetered transfer",
+        "d": "Unlimited traffic over a 10 Gbps network."
+      },
+      "backups": {
+        "t": "Daily backups",
+        "d": "Automatic backups with one-click restore."
+      },
+      "migration": {
+        "t": "Free migration",
+        "d": "We move your site and mailboxes from your current host."
+      },
+      "ddos": {
+        "t": "NVMe + anti-DDoS",
+        "d": "NVMe disks and DDoS protection included by default."
+      }
     },
     "ctaTitle": "Ready to move your site to fast, private hosting?",
     "mis": {
@@ -39,7 +57,18 @@
       "createdLabel": "Since",
       "openPanel": "Open cPanel",
       "viewSite": "View site",
-      "credsNote": "Your login credentials were emailed to you when you signed up. If you lost them, open a support ticket and we'll help."
+      "credsNote": "Your login credentials were emailed to you when you signed up. If you lost them, open a support ticket and we'll help.",
+      "resetPassword": "Reset cPanel password",
+      "resetConfirm": "This will change your cPanel login password.",
+      "resetConfirmYes": "Yes, reset",
+      "resetCancel": "Cancel",
+      "resetting": "Resetting…",
+      "resetDoneTitle": "New password",
+      "resetDoneNote": "Save it now: we won’t show it again. You can change it from cPanel once you log in.",
+      "copy": "Copy",
+      "copied": "Copied",
+      "resetError": "Couldn’t reset the password. Please try again.",
+      "resetTooMany": "Too many attempts. Wait a moment and try again."
     }
   }
 }
