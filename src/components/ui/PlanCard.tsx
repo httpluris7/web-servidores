@@ -12,7 +12,17 @@ const specRows: { key: keyof Plan; labelKey: string }[] = [
   { key: "bandwidth", labelKey: "planCard.specNetwork" },
 ];
 
-export async function PlanCard({ plan }: { plan: Plan }) {
+/** Etiquetas de las filas de specs, ya traducidas, para reetiquetar el card
+ *  (hosting reutiliza los 4 campos del plan con otros nombres). */
+export type SpecLabels = Partial<Record<"cpu" | "ram" | "storage" | "bandwidth", string>>;
+
+export async function PlanCard({
+  plan,
+  specLabels,
+}: {
+  plan: Plan;
+  specLabels?: SpecLabels;
+}) {
   const t = await getTranslations("products");
   return (
     <div
@@ -41,7 +51,7 @@ export async function PlanCard({ plan }: { plan: Plan }) {
       <dl className="mt-6 space-y-2.5 border-t border-[var(--color-line)] pt-6 text-sm">
         {specRows.map((row) => (
           <div key={row.key} className="flex items-start justify-between gap-4">
-            <dt className="mono-label text-[0.65rem]">{t(row.labelKey)}</dt>
+            <dt className="mono-label text-[0.65rem]">{specLabels?.[row.key as keyof SpecLabels] ?? t(row.labelKey)}</dt>
             <dd className="text-right text-[var(--color-fg)]">{plan[row.key] as string}</dd>
           </div>
         ))}

@@ -1,0 +1,30 @@
+{
+  "hosting": {
+    "metaTitle": "Hébergement Web avec cPanel",
+    "metaDescription": "Hébergement web cPanel sur NVMe chez {brand} : SSL, sauvegardes et migration gratuits, avec protection DDoS incluse.",
+    "kicker": "Hébergement Web",
+    "titleA": "Votre site, avec",
+    "titleB": "cPanel sur NVMe",
+    "description": "Hébergement géré avec cPanel, disques NVMe et réseau 10 Gbps. SSL, sauvegardes quotidiennes et migration gratuits. Sans survente et protection DDoS incluse.",
+    "plansKicker": "Formules",
+    "plansTitle": "Choisissez votre formule d'hébergement",
+    "plansDescription": "Prix par mois, sans engagement et renouvellement au même prix. TVA non incluse.",
+    "spec": {
+      "sites": "Sites web",
+      "storage": "Stockage",
+      "email": "Comptes email",
+      "databases": "Bases de données"
+    },
+    "featuresKicker": "Inclus dans toutes les formules",
+    "featuresTitle": "Tout ce qu'il faut pour publier",
+    "features": {
+      "ssl": { "t": "SSL gratuit", "d": "Certificats Let's Encrypt automatiques pour chaque domaine." },
+      "cpanel": { "t": "cPanel + Softaculous", "d": "Installez WordPress et 400+ applications en un clic." },
+      "transfer": { "t": "Transfert illimité", "d": "Trafic illimité sur un réseau 10 Gbps." },
+      "backups": { "t": "Sauvegardes quotidiennes", "d": "Sauvegardes automatiques et restauration en un clic." },
+      "migration": { "t": "Migration gratuite", "d": "Nous transférons votre site et vos emails depuis votre hébergeur actuel." },
+      "ddos": { "t": "NVMe + anti-DDoS", "d": "Disques NVMe et protection DDoS incluse d'office." }
+    },
+    "ctaTitle": "Prêt à migrer votre site vers un hébergement rapide et privé ?"
+  }
+}

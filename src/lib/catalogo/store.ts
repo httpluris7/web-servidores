@@ -38,11 +38,11 @@ export type CatalogLocale = (typeof CATALOG_LOCALES)[number];
 /** Texto en los tres idiomas del sitio. */
 export type Texto = Record<CatalogLocale, string>;
 
-export type CategoriaTipo = "vps" | "dedicados";
+export type CategoriaTipo = "vps" | "dedicados" | "hosting";
 
 export type Categoria = {
   id: string;
-  /** Determina la ruta pública: `vps` → `/vps`, `dedicados` → `/dedicados/<slug>`. */
+  /** Ruta pública: `vps` → `/vps`, `hosting` → `/hosting`, `dedicados` → `/dedicados/<slug>`. */
   tipo: CategoriaTipo;
   slug: string;
   nombre: Texto;
@@ -280,10 +280,11 @@ export async function actualizarCategoria(
   const nombre = comoTexto(datos.nombre, 120);
   if (!nombre.en) return err("datos");
 
-  // El slug de la familia VPS no se toca: `/vps` no es una ruta paramétrica.
+  // El slug de VPS y Hosting no se toca: `/vps` y `/hosting` no son rutas
+  // paramétricas (solo `/dedicados/<slug>` lo es).
   const usados = new Set(catalogo.categorias.filter((c) => c.id !== id).map((c) => c.slug));
   const slug =
-    actual.tipo === "vps"
+    actual.tipo === "vps" || actual.tipo === "hosting"
       ? actual.slug
       : slugLibre(slugify(comoLinea(datos.slug) || nombre.en) || actual.slug, usados);
 
@@ -309,7 +310,8 @@ export async function borrarCategoria(id: string): Promise<Resultado<null>> {
   const catalogo = await readCatalogo();
   const actual = catalogo.categorias.find((c) => c.id === id);
   if (!actual) return err("no-encontrado");
-  if (actual.tipo === "vps") return err("categoria-vps-protegida");
+  // VPS y Hosting son familias únicas con ruta fija (`/vps`, `/hosting`): no se borran.
+  if (actual.tipo === "vps" || actual.tipo === "hosting") return err("categoria-vps-protegida");
   // Borrar la categoría dejaría sus planes fuera de toda página pero seguirían
   // contratables por URL: se exige vaciarla antes, que además es reversible.
   if (catalogo.productos.some((p) => p.categoriaId === id)) return err("categoria-con-productos");
@@ -332,7 +334,8 @@ export async function crearProducto(datos: Record<string, unknown>): Promise<Res
   // El planId se deriva del nombre y se prefija con la categoría para que dos
   // planes iguales en países distintos no colisionen (`ded-fr-…`/`ded-nl-…`).
   const usados = new Set(catalogo.productos.map((p) => p.planId));
-  const prefijo = categoria.tipo === "vps" ? "vps" : `ded-${categoria.slug}`;
+  const prefijo =
+    categoria.tipo === "vps" ? "vps" : categoria.tipo === "hosting" ? "host" : `ded-${categoria.slug}`;
   const base = slugify(`${prefijo}-${nombre}`) || "plan";
   const momento = ahora();
 

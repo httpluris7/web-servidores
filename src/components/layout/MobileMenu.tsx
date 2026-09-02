@@ -20,7 +20,7 @@ const directLinks = [
 type Me = { id: string; nombre: string; email: string } | null;
 
 export function MobileMenu({ nav }: { nav: NavCatalog }) {
-  const { regions, lines: dedicatedTypes } = nav;
+  const { regions, lines: dedicatedTypes, hosting } = nav;
   const t = useTranslations("nav");
   const tc = useTranslations("common");
   const ta = useTranslations("account");
@@ -229,6 +229,20 @@ export function MobileMenu({ nav }: { nav: NavCatalog }) {
                   </div>
                 );
               })}
+
+              {/* Hosting web: bajo las categorías VPS/Dedicados */}
+              {hosting && (
+                <Link
+                  href={`/${hosting.slug}`}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-between border-b border-[var(--color-line)] py-4 text-lg"
+                >
+                  {t("hosting")}
+                  <span className="font-mono text-xs text-[var(--color-fg-muted)]">
+                    {tc("from")} <Price value={hosting.priceFrom} />
+                  </span>
+                </Link>
+              )}
 
               {directLinks.map((l) => (
                 <Link

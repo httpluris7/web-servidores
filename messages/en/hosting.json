@@ -1,0 +1,30 @@
+{
+  "hosting": {
+    "metaTitle": "Web Hosting with cPanel",
+    "metaDescription": "cPanel web hosting on NVMe at {brand}: free SSL, backups and migration, with DDoS protection included.",
+    "kicker": "Web Hosting",
+    "titleA": "Your site, with",
+    "titleB": "cPanel on NVMe",
+    "description": "Managed hosting with cPanel, NVMe disks and a 10 Gbps network. Free SSL, daily backups and migration. No overselling, DDoS protection included.",
+    "plansKicker": "Plans",
+    "plansTitle": "Choose your hosting plan",
+    "plansDescription": "Prices per month, no lock-in and renewal at the same price. VAT not included.",
+    "spec": {
+      "sites": "Websites",
+      "storage": "Storage",
+      "email": "Email accounts",
+      "databases": "Databases"
+    },
+    "featuresKicker": "Included in every plan",
+    "featuresTitle": "Everything you need to go live",
+    "features": {
+      "ssl": { "t": "Free SSL", "d": "Automatic Let's Encrypt certificates for every domain." },
+      "cpanel": { "t": "cPanel + Softaculous", "d": "Install WordPress and 400+ apps in one click." },
+      "transfer": { "t": "Unmetered transfer", "d": "Unlimited traffic over a 10 Gbps network." },
+      "backups": { "t": "Daily backups", "d": "Automatic backups with one-click restore." },
+      "migration": { "t": "Free migration", "d": "We move your site and mailboxes from your current host." },
+      "ddos": { "t": "NVMe + anti-DDoS", "d": "NVMe disks and DDoS protection included by default." }
+    },
+    "ctaTitle": "Ready to move your site to fast, private hosting?"
+  }
+}

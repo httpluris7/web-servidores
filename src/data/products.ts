@@ -73,14 +73,16 @@ export type LocatedPlan = {
   plan: Plan;
   lineSlug: string;
   lineTitle: string;
-  /** `vps` admite región de despliegue; `dedicados` no. */
-  lineTipo: "vps" | "dedicados";
+  /** `vps` admite región de despliegue; `hosting` y `dedicados` no. */
+  lineTipo: "vps" | "dedicados" | "hosting";
 };
 
 /** El catálogo público completo, ya resuelto a un idioma. */
 export type Catalog = {
   regions: Region[];
   vps: ProductLine;
+  /** Familia única de Hosting Web (cPanel); `null` si no está en el catálogo. */
+  hosting: ProductLine | null;
   dedicatedTypes: DedicatedType[];
   allPlans: LocatedPlan[];
 };
@@ -166,6 +168,20 @@ export async function getCatalog(locale = "en"): Promise<Catalog> {
       }
     : { ...LINEA_VPS_VACIA, regions };
 
+  // Hosting Web: familia única (como VPS), sin regiones. Se publica en `/hosting`.
+  const catHosting = publicas.find((c) => c.tipo === "hosting");
+  const hostingPlanes = catHosting
+    ? visibles.filter((p) => p.categoriaId === catHosting.id).map(aPlan)
+    : [];
+  const hosting: ProductLine | null = catHosting
+    ? {
+        slug: catHosting.slug,
+        title: texto(catHosting.nombre, locale),
+        tagline: texto(catHosting.descripcion, locale),
+        plans: hostingPlanes,
+      }
+    : null;
+
   const dedicatedTypes: DedicatedType[] = publicas
     .filter((c) => c.tipo === "dedicados")
     .map((c) => ({
@@ -183,6 +199,14 @@ export async function getCatalog(locale = "en"): Promise<Catalog> {
       lineTitle: vps.title,
       lineTipo: "vps" as const,
     })),
+    ...(hosting
+      ? hosting.plans.map((plan) => ({
+          plan,
+          lineSlug: hosting.slug,
+          lineTitle: hosting.title,
+          lineTipo: "hosting" as const,
+        }))
+      : []),
     ...dedicatedTypes.flatMap((d) =>
       d.plans.map((plan) => ({
         plan,
@@ -193,7 +217,12 @@ export async function getCatalog(locale = "en"): Promise<Catalog> {
     ),
   ];
 
-  return { regions, vps, dedicatedTypes, allPlans };
+  return { regions, vps, hosting, dedicatedTypes, allPlans };
+}
+
+/** La familia de Hosting Web resuelta a un idioma (o `null` si no está publicada). */
+export async function getHostingLine(locale = "en"): Promise<ProductLine | null> {
+  return (await getCatalog(locale)).hosting;
 }
 
 export async function getRegions(locale = "en"): Promise<Region[]> {
@@ -300,10 +329,12 @@ export async function getInvoiceCatalog(locale = "en"): Promise<InvoiceProduct[]
 export type NavCatalog = {
   regions: { slug: string; flag: string; name: string; priceFrom: number }[];
   lines: { slug: string; title: string; highlight: string }[];
+  /** Familia Hosting Web para el menú (o `null` si no hay planes publicados). */
+  hosting: { slug: string; title: string; priceFrom: number } | null;
 };
 
 export async function getNavCatalog(locale = "en"): Promise<NavCatalog> {
-  const { regions, dedicatedTypes } = await getCatalog(locale);
+  const { regions, dedicatedTypes, hosting } = await getCatalog(locale);
   return {
     regions: regions.map((r) => ({
       slug: r.slug,
@@ -316,6 +347,14 @@ export async function getNavCatalog(locale = "en"): Promise<NavCatalog> {
       title: d.title,
       highlight: d.highlight,
     })),
+    hosting:
+      hosting && hosting.plans.length
+        ? {
+            slug: hosting.slug,
+            title: hosting.title,
+            priceFrom: Math.min(...hosting.plans.map((p) => p.price)),
+          }
+        : null,
   };
 }
 

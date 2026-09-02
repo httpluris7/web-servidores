@@ -126,7 +126,8 @@ export function CatalogoManager({ catalogo }: { catalogo: Catalogo }) {
         <ul className="grid gap-3">
           {categorias.map((c) => {
             const productos = productosDe(c.id);
-            const ruta = c.tipo === "vps" ? "/vps" : `/dedicados/${c.slug}`;
+            const ruta =
+              c.tipo === "vps" ? "/vps" : c.tipo === "hosting" ? "/hosting" : `/dedicados/${c.slug}`;
             return (
               <li
                 key={c.id}
@@ -153,7 +154,7 @@ export function CatalogoManager({ catalogo }: { catalogo: Catalogo }) {
                     </BotonMenor>
                     <BotonMenor
                       peligro
-                      disabled={busy || c.tipo === "vps"}
+                      disabled={busy || c.tipo === "vps" || c.tipo === "hosting"}
                       onClick={() => borrar("categoria", c.id, t("catalog.categories.confirmDelete"))}
                     >
                       {t("catalog.delete")}
@@ -363,7 +364,8 @@ function CategoriaForm({ categoria, busy, onCancel, onSave }: FormProps & { cate
   const [visible, setVisible] = useState(categoria?.visible ?? true);
   const [orden, setOrden] = useState(String(categoria?.orden ?? 0));
 
-  const esVps = categoria?.tipo === "vps";
+  // VPS y Hosting tienen ruta fija (`/vps`, `/hosting`): su slug no se edita.
+  const esVps = categoria?.tipo === "vps" || categoria?.tipo === "hosting";
 
   return (
     <Panel>

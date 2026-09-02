@@ -54,7 +54,9 @@
     "registerDomain": "Register a domain",
     "registerDomainSub": "Domains with privacy included",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "hosting": "Web hosting",
+    "hostingSub": "cPanel hosting on NVMe"
   },
   "footer": {
     "products": "Products",

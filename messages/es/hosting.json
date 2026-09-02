@@ -1,0 +1,30 @@
+{
+  "hosting": {
+    "metaTitle": "Hosting Web con cPanel",
+    "metaDescription": "Alojamiento web cPanel sobre NVMe en {brand}: SSL, copias y migración gratis, con protección DDoS incluida.",
+    "kicker": "Hosting Web",
+    "titleA": "Tu web, con",
+    "titleB": "cPanel sobre NVMe",
+    "description": "Alojamiento gestionado con cPanel, discos NVMe y red de 10 Gbps. SSL, copias diarias y migración gratis. Sin overselling y con protección DDoS incluida.",
+    "plansKicker": "Planes",
+    "plansTitle": "Elige tu plan de hosting",
+    "plansDescription": "Precios por mes, sin permanencia y con renovación al mismo precio. IVA no incluido.",
+    "spec": {
+      "sites": "Sitios web",
+      "storage": "Almacenamiento",
+      "email": "Cuentas de correo",
+      "databases": "Bases de datos"
+    },
+    "featuresKicker": "Incluido en todos los planes",
+    "featuresTitle": "Todo lo que necesitas para publicar",
+    "features": {
+      "ssl": { "t": "SSL gratis", "d": "Certificados Let's Encrypt automáticos para cada dominio." },
+      "cpanel": { "t": "cPanel + Softaculous", "d": "Instala WordPress y 400+ apps en un clic desde el panel." },
+      "transfer": { "t": "Transferencia sin límites", "d": "Tráfico ilimitado sobre red de 10 Gbps." },
+      "backups": { "t": "Copias diarias", "d": "Respaldos automáticos y restauración a un clic." },
+      "migration": { "t": "Migración gratuita", "d": "Traemos tu web y tus correos desde tu proveedor actual." },
+      "ddos": { "t": "NVMe + anti-DDoS", "d": "Discos NVMe y protección DDoS incluida de serie." }
+    },
+    "ctaTitle": "¿Listo para llevar tu web a un hosting rápido y privado?"
+  }
+}

@@ -54,7 +54,9 @@
     "registerDomain": "Enregistrer un domaine",
     "registerDomainSub": "Domaines avec confidentialité incluse",
     "openMenu": "Ouvrir le menu",
-    "closeMenu": "Fermer le menu"
+    "closeMenu": "Fermer le menu",
+    "hosting": "Hébergement web",
+    "hostingSub": "Hébergement cPanel sur NVMe"
   },
   "footer": {
     "products": "Produits",
