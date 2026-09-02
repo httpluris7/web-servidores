@@ -164,6 +164,10 @@
       "payByTransfer": "Payer par virement",
       "cardUnavailable": "Le paiement par carte n'est pas disponible pour le moment. Vous pouvez payer par virement avec les coordonnées ci-dessous.",
       "osLabel": "Système d’exploitation",
+      "accountNeededTitle": "Connectez-vous pour commander",
+      "accountNeeded": "Vous avez besoin d'un compte pour commander ce plan. Créez-en un ou connectez-vous et vous reviendrez ici.",
+      "createAccount": "Créer un compte",
+      "logIn": "Se connecter",
       "hostnameLabel": "Nom d’hôte (optionnel)",
       "hostnamePlaceholder": "mon-serveur",
       "hostnameHint": "Lettres, chiffres et tirets uniquement. Laissé vide, il est généré."

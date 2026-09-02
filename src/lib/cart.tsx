@@ -22,17 +22,20 @@ import {
   useState,
 } from "react";
 import type { CartCatalog, LocatedPlan, Plan } from "@/data/products";
+import { OS_DEFAULT } from "@/lib/provisioner/os";
 
 const STORAGE_KEY = "vh_cart";
 const MAX_QTY = 99;
 
-export type CartLine = { planId: string; qty: number; region?: string };
+export type CartLine = { planId: string; qty: number; region?: string; os?: string };
 
 /** Línea del carrito resuelta contra el catálogo, lista para pintar. */
 export type ResolvedLine = {
   planId: string;
   qty: number;
   region?: string;
+  /** SO elegido (solo VPS; por defecto OS_DEFAULT). */
+  os?: string;
   plan: Plan;
   lineTitle: string;
   lineSlug: string;
@@ -55,6 +58,7 @@ type CartContextValue = {
   remove: (planId: string) => void;
   setQty: (planId: string, qty: number) => void;
   setRegion: (planId: string, region: string) => void;
+  setOs: (planId: string, os: string) => void;
   clear: () => void;
 };
 
@@ -100,7 +104,8 @@ export function CartProvider({
       if (out.some((l) => l.planId === planId)) continue; // una línea por plan
       const region =
         typeof (it as CartLine).region === "string" ? (it as CartLine).region : undefined;
-      out.push({ planId, qty: clampQty((it as CartLine).qty), region });
+      const os = typeof (it as CartLine).os === "string" ? (it as CartLine).os : undefined;
+      out.push({ planId, qty: clampQty((it as CartLine).qty), region, os });
     }
     return out;
   }, []);
@@ -150,12 +155,14 @@ export function CartProvider({
         ? // un plan con gama por región se preselecciona en la suya; el resto, en la global.
           (located.plan.ubicacionSlug || defaultRegionRef.current) ?? undefined
         : undefined);
+    // Los VPS nacen con el SO por defecto; el cliente lo cambia en el carrito.
+    const os = located.lineTipo === "vps" ? OS_DEFAULT : undefined;
     setItems((prev) => {
       const existing = prev.find((l) => l.planId === planId);
       if (existing) {
         return prev.map((l) => (l.planId === planId ? { ...l, qty: clampQty(l.qty + addQty) } : l));
       }
-      return [...prev, { planId, qty: addQty, region }];
+      return [...prev, { planId, qty: addQty, region, os }];
     });
   }, []);
 
@@ -171,6 +178,10 @@ export function CartProvider({
     setItems((prev) => prev.map((l) => (l.planId === planId ? { ...l, region } : l)));
   }, []);
 
+  const setOs = useCallback<CartContextValue["setOs"]>((planId, os) => {
+    setItems((prev) => prev.map((l) => (l.planId === planId ? { ...l, os } : l)));
+  }, []);
+
   const clear = useCallback(() => setItems([]), []);
 
   const value = useMemo<CartContextValue>(() => {
@@ -183,6 +194,7 @@ export function CartProvider({
           planId: l.planId,
           qty: l.qty,
           region: isVps ? l.region : undefined,
+          os: isVps ? l.os || OS_DEFAULT : undefined,
           plan: located.plan,
           lineTitle: located.lineTitle,
           lineSlug: located.lineSlug,
@@ -201,9 +213,10 @@ export function CartProvider({
       remove,
       setQty,
       setRegion,
+      setOs,
       clear,
     };
-  }, [items, porId, ready, add, remove, setQty, setRegion, clear]);
+  }, [items, porId, ready, add, remove, setQty, setRegion, setOs, clear]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

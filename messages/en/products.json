@@ -164,6 +164,10 @@
       "payByTransfer": "Pay by bank transfer",
       "cardUnavailable": "Card payment is not available right now. You can pay by bank transfer using the details below.",
       "osLabel": "Operating system",
+      "accountNeededTitle": "Log in to order",
+      "accountNeeded": "You need an account to order this plan. Create one or log in and you'll come back here.",
+      "createAccount": "Create account",
+      "logIn": "Log in",
       "hostnameLabel": "Hostname (optional)",
       "hostnamePlaceholder": "my-server",
       "hostnameHint": "Letters, numbers and hyphens only. Left empty, one is generated."

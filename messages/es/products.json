@@ -164,6 +164,10 @@
       "payByTransfer": "Pagar por transferencia",
       "cardUnavailable": "El pago con tarjeta no está disponible ahora mismo. Puedes pagar por transferencia con los datos de abajo.",
       "osLabel": "Sistema operativo",
+      "accountNeededTitle": "Inicia sesión para contratar",
+      "accountNeeded": "Necesitas una cuenta para contratar este plan. Crea una o inicia sesión y volverás aquí.",
+      "createAccount": "Crear cuenta",
+      "logIn": "Iniciar sesión",
       "hostnameLabel": "Hostname (opcional)",
       "hostnamePlaceholder": "mi-servidor",
       "hostnameHint": "Solo letras, números y guiones. Si lo dejas vacío, se genera uno."

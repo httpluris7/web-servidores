@@ -27,19 +27,22 @@ export function OrderForm({
   lineTitle,
   regions,
   stripeEnabled = false,
+  user = null,
 }: {
   plan: Plan;
   lineTitle: string;
   regions?: Region[];
   /** ¿Hay pasarela configurada? Sin ella solo se ofrece la transferencia. */
   stripeEnabled?: boolean;
+  /** Cliente autenticado (o null): contratar exige cuenta. */
+  user?: { nombre: string; email: string } | null;
 }) {
   const t = useTranslations("products");
   const tc = useTranslations("common");
   const locale = useLocale();
   const [values, setValues] = useState({
-    name: "",
-    email: "",
+    name: user?.nombre ?? "",
+    email: user?.email ?? "",
     // Región provisionable por defecto (nunca una sin Proxmox: ver `regions.ts`).
     region: regions ? defaultVpsRegionSlug(regions) : "",
     os: OS_DEFAULT,
@@ -145,6 +148,25 @@ export function OrderForm({
             <p className="mt-4 font-mono text-xs text-[var(--color-fg-dim)]">
               {t("orderForm.provisioningNote")}
             </p>
+          </div>
+        ) : !user ? (
+          <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-8">
+            <h2 className="text-xl font-semibold">{t("orderForm.accountNeededTitle")}</h2>
+            <p className="mt-2 text-sm text-[var(--color-fg-muted)]">{t("orderForm.accountNeeded")}</p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href={`/registro?next=/contratar/${plan.id}`}
+                className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
+              >
+                {t("orderForm.createAccount")}
+              </Link>
+              <Link
+                href={`/acceder?next=/contratar/${plan.id}`}
+                className="inline-flex items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-6 py-3.5 text-sm transition-colors hover:border-[var(--color-accent)]"
+              >
+                {t("orderForm.logIn")}
+              </Link>
+            </div>
           </div>
         ) : (
           <form

@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { useCart } from "@/lib/cart";
 import type { Region } from "@/data/products";
 import { defaultVpsRegionSlug } from "@/lib/regions";
+import { ofertablesParaDisco, discoGbDeTexto } from "@/lib/provisioner/os";
 import { site } from "@/data/site";
 import { eur } from "@/lib/utils";
 import { Price, PriceSum } from "@/components/ui/Price";
@@ -27,7 +28,7 @@ export function CartView({
   const t = useTranslations("auth");
   const tc = useTranslations("common");
   const locale = useLocale();
-  const { lines, count, ready, setQty, setRegion, remove, clear } = useCart();
+  const { lines, count, ready, setQty, setRegion, setOs, remove, clear } = useCart();
   // El usuario inicial llega del servidor (sin parpadeo). Si el checkout
   // responde 401 (sesión caducada) lo bajamos a null para mostrar el gate.
   const [user, setUser] = useState<InitialUser>(initialUser);
@@ -53,7 +54,7 @@ export function CartView({
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          items: lines.map((l) => ({ planId: l.planId, qty: l.qty, region: l.region })),
+          items: lines.map((l) => ({ planId: l.planId, qty: l.qty, region: l.region, os: l.os })),
           metodo,
           locale,
         }),
@@ -219,6 +220,24 @@ export function CartView({
                     {regions.map((r) => (
                       <option key={r.slug} value={r.slug}>
                         {r.name} — {r.city}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+
+              {/* Sistema operativo (solo VPS): los que caben en el disco del plan */}
+              {l.isVps && (
+                <label className="flex items-center gap-2 text-sm">
+                  <span className="mono-label text-[0.6rem]">{t("cartView.os")}</span>
+                  <select
+                    value={l.os}
+                    onChange={(e) => setOs(l.planId, e.target.value)}
+                    className="appearance-none rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-1.5 text-sm focus:border-[var(--color-accent)] focus:outline-none"
+                  >
+                    {ofertablesParaDisco(discoGbDeTexto(l.plan.storage)).map((o) => (
+                      <option key={o.slug} value={o.slug}>
+                        {o.label}
                       </option>
                     ))}
                   </select>

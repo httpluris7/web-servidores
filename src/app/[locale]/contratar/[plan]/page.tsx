@@ -6,6 +6,8 @@ import { getAllPlans, getCatalog, regionsForPlan } from "@/data/products";
 import { PageHero } from "@/components/ui/PageHero";
 import { OrderForm } from "@/components/forms/OrderForm";
 import { stripeIsReady } from "@/lib/ajustes";
+import { getSession } from "@/lib/session";
+import { getPublicUserById } from "@/lib/auth";
 
 type Params = { locale: string; plan: string };
 
@@ -53,6 +55,10 @@ export default async function OrderPage({ params }: { params: Promise<Params> })
   const isVps = located.lineTipo === "vps";
   const lineTitle = located.lineTitle;
 
+  // Contratar exige cuenta: si no hay sesión, el formulario muestra el acceso.
+  const session = await getSession();
+  const user = session ? await getPublicUserById(session.uid) : null;
+
   return (
     <>
       <PageHero
@@ -74,6 +80,7 @@ export default async function OrderPage({ params }: { params: Promise<Params> })
           lineTitle={lineTitle}
           regions={isVps ? regionsForPlan(catalog, id) : undefined}
           stripeEnabled={await stripeIsReady()}
+          user={user ? { nombre: user.nombre, email: user.email } : null}
         />
 
         <p className="mt-10 text-sm text-[var(--color-fg-muted)]">

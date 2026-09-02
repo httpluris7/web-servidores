@@ -8,7 +8,8 @@ import { getPublicUserById } from "@/lib/auth";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
 import { findDuplicateOrder } from "@/lib/payments/duplicados";
 import { registrarIntent } from "@/lib/provisioner/intents";
-import { OS_DEFAULT } from "@/lib/provisioner/os";
+import { OS_DEFAULT, discoGbDeTexto, esOfertableParaDisco } from "@/lib/provisioner/os";
+import { transferRef } from "@/lib/facturas";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,7 +17,7 @@ export const dynamic = "force-dynamic";
 const MAX_QTY = 99;
 const MAX_ITEMS = 50;
 
-type IncomingItem = { planId?: unknown; qty?: unknown; region?: unknown };
+type IncomingItem = { planId?: unknown; qty?: unknown; region?: unknown; os?: unknown };
 
 function clampQty(raw: unknown): number {
   const n = typeof raw === "number" ? raw : Number(raw);
@@ -66,6 +67,7 @@ export async function POST(req: Request) {
     qty: number;
     lineTotal: number;
     region: string;
+    osSlug: string;
     line: string;
   }[] = [];
 
@@ -96,6 +98,13 @@ export async function POST(req: Request) {
           ? defaultVpsRegionSlug(permitidas)
           : "";
 
+    // SO elegido en el carrito: se acota a los ofertables que caben en el disco
+    // del plan (un slug raro o que no cabe cae al de por defecto, como en /api/pedidos).
+    const osRaw = clean(item.os, 40);
+    const osSlug = isVps && esOfertableParaDisco(osRaw, discoGbDeTexto(located.plan.storage))
+      ? osRaw
+      : OS_DEFAULT;
+
     validated.push({
       planId,
       planName: located.plan.name,
@@ -103,6 +112,7 @@ export async function POST(req: Request) {
       qty,
       lineTotal: located.plan.price * qty,
       region,
+      osSlug,
       line: located.lineTitle,
     });
   }
@@ -171,8 +181,8 @@ export async function POST(req: Request) {
     // Money-path (igual que /api/pedidos): por cada línea VPS en una región
     // conectada a un Proxmox dejamos atada a la factura la intención de
     // aprovisionar; el webhook (tarjeta) o el panel (transferencia) la ejecutan
-    // al pasar a pagada. El carrito no pide SO/hostname: SO por defecto y el
-    // provisioner genera el hostname. Best-effort: no romper el checkout.
+    // al pasar a pagada. El SO es el elegido en el carrito; el hostname lo genera
+    // el provisioner. Best-effort: no romper el checkout.
     for (const v of validated) {
       const located = allPlans.find((p) => p.plan.id === v.planId);
       if (located?.lineTipo !== "vps" || !v.region) continue;
@@ -191,7 +201,7 @@ export async function POST(req: Request) {
           userId: user.id,
           email: user.email,
           locationSlug,
-          osSlug: OS_DEFAULT,
+          osSlug: v.osSlug,
           hostname: null,
           idioma: locale?.startsWith("es") ? "es" : "en",
         });
@@ -205,6 +215,7 @@ export async function POST(req: Request) {
       orderId,
       total,
       numero: invoice.numero,
+      refPago: transferRef(invoice),
       paymentUrl,
     });
   } catch (err) {
