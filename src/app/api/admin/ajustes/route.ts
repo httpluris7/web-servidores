@@ -9,7 +9,9 @@ import {
   updateProviderSettings,
   updateStripeSettings,
   updateWiseSettings,
+  updateNjallaSettings,
   wiseHasCreds,
+  njallaHasCreds,
   WEBHOOK_EVENTS,
   WEBHOOK_URL,
   type Settings,
@@ -17,6 +19,7 @@ import {
 import { emailRe } from "@/lib/leads";
 import { retrieveAccount, StripeError } from "@/lib/payments/stripe";
 import { probarWise, WiseError } from "@/lib/payments/wise";
+import { getBalance, NjallaError } from "@/lib/domains/njalla";
 import { invalidateInventoryCache } from "@/lib/servidores/inventario";
 import { ProviderError, verifyToken } from "@/lib/servidores/v4vm";
 
@@ -28,7 +31,7 @@ export const dynamic = "force-dynamic";
  * versión enmascarada y si están puestos o no.
  */
 function publicView(settings: Settings) {
-  const { stripe, provider, alerts, wise } = settings;
+  const { stripe, provider, alerts, wise, njalla } = settings;
   return {
     // Los umbrales no son secretos: van tal cual, que el formulario los pinta.
     alerts,
@@ -57,6 +60,15 @@ function publicView(settings: Settings) {
       hasApiToken: !!wise.apiToken,
       apiTokenMask: maskSecret(wise.apiToken),
       hasPrivateKey: !!wise.privateKey,
+    },
+    njalla: {
+      enabled: njalla.enabled,
+      margenPct: njalla.margenPct,
+      saldoMinimo: njalla.saldoMinimo,
+      hasApiToken: !!njalla.apiToken,
+      apiTokenMask: maskSecret(njalla.apiToken),
+      hasRegisterToken: !!njalla.registerToken,
+      registerTokenMask: maskSecret(njalla.registerToken),
     },
     webhookUrl: WEBHOOK_URL,
     webhookEvents: WEBHOOK_EVENTS,
@@ -207,6 +219,39 @@ async function putWise(body: Record<string, unknown>) {
   return NextResponse.json({ ok: true, warning, ...publicView(settings) });
 }
 
+/** Guarda la configuración del registrador de dominios (Njalla). */
+async function putNjalla(body: Record<string, unknown>) {
+  const readKey = (v: unknown): string | null | undefined => {
+    if (v === null) return null;
+    if (typeof v !== "string") return undefined;
+    return v.trim();
+  };
+  const num = (v: unknown): number | undefined =>
+    typeof v === "number" && Number.isFinite(v) ? v : undefined;
+
+  const margen = num(body.margenPct);
+  if (margen !== undefined && (margen < 0 || margen > 1000)) {
+    return NextResponse.json({ ok: false, error: "Margin must be between 0 and 1000." }, { status: 422 });
+  }
+
+  const settings = await updateNjallaSettings({
+    enabled: typeof body.enabled === "boolean" ? body.enabled : undefined,
+    apiToken: readKey(body.apiToken),
+    registerToken: readKey(body.registerToken),
+    margenPct: margen,
+    saldoMinimo: num(body.saldoMinimo),
+  });
+
+  const warning =
+    settings.njalla.enabled && !njallaHasCreds(settings.njalla)
+      ? "Domains are enabled but there is no read/DNS token yet."
+      : settings.njalla.enabled && !settings.njalla.registerToken
+        ? "There is no register token: search and DNS work, but domains can't be registered."
+        : null;
+
+  return NextResponse.json({ ok: true, warning, ...publicView(settings) });
+}
+
 export async function PUT(req: Request) {
   if (!(await getAdminSession())) {
     return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 403 });
@@ -222,6 +267,7 @@ export async function PUT(req: Request) {
   if (body.section === "provider") return putProvider(body);
   if (body.section === "alerts") return putAlerts(body);
   if (body.section === "wise") return putWise(body);
+  if (body.section === "njalla") return putNjalla(body);
 
   // `null` borra la clave guardada; ausente o cadena vacía la deja como está.
   const readKey = (v: unknown): string | null | undefined => {
@@ -288,6 +334,20 @@ export async function POST(req: Request) {
       });
     } catch (err) {
       const message = err instanceof WiseError ? err.message : "Could not reach Wise.";
+      return NextResponse.json({ ok: false, error: message }, { status: 502 });
+    }
+  }
+
+  if (target === "njalla") {
+    const { njalla } = await readSettings();
+    if (!njallaHasCreds(njalla)) {
+      return NextResponse.json({ ok: false, error: "No Njalla token saved yet." }, { status: 422 });
+    }
+    try {
+      const balance = await getBalance();
+      return NextResponse.json({ ok: true, balance });
+    } catch (err) {
+      const message = err instanceof NjallaError ? err.message : "Could not reach Njalla.";
       return NextResponse.json({ ok: false, error: message }, { status: 502 });
     }
   }

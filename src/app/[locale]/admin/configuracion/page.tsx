@@ -11,6 +11,7 @@ import { StripeSettingsForm } from "@/components/admin/StripeSettingsForm";
 import { ProviderSettingsForm } from "@/components/admin/ProviderSettingsForm";
 import { AlertSettingsForm } from "@/components/admin/AlertSettingsForm";
 import { WiseSettingsForm } from "@/components/admin/WiseSettingsForm";
+import { NjallaSettingsForm } from "@/components/admin/NjallaSettingsForm";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +25,7 @@ export default async function ConfiguracionPage({
   const t = await getTranslations("admin");
 
   // Al cliente solo viaja la versión enmascarada: los secretos no salen de aquí.
-  const { stripe, provider, alerts, wise } = await readSettings();
+  const { stripe, provider, alerts, wise, njalla } = await readSettings();
   const initial = {
     enabled: stripe.enabled,
     hasSecretKey: !!stripe.secretKey,
@@ -51,6 +52,15 @@ export default async function ConfiguracionPage({
     apiTokenMask: maskSecret(wise.apiToken),
     hasPrivateKey: !!wise.privateKey,
   };
+  const initialNjalla = {
+    enabled: njalla.enabled,
+    margenPct: njalla.margenPct,
+    saldoMinimo: njalla.saldoMinimo,
+    hasApiToken: !!njalla.apiToken,
+    apiTokenMask: maskSecret(njalla.apiToken),
+    hasRegisterToken: !!njalla.registerToken,
+    registerTokenMask: maskSecret(njalla.registerToken),
+  };
 
   return (
     <div className="grid gap-6">
@@ -68,6 +78,8 @@ export default async function ConfiguracionPage({
       <ProviderSettingsForm initial={initialProvider} />
 
       <WiseSettingsForm initial={initialWise} />
+
+      <NjallaSettingsForm initial={initialNjalla} />
 
       <AlertSettingsForm initial={alerts} />
     </div>
