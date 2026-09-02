@@ -62,7 +62,8 @@ export const site = {
   },
 
   // Métodos de pago mostrados en el footer (texto estilizado, sin logos con licencia).
-  paymentMethods: ["Bank transfer", "SEPA", "Visa", "Mastercard", "PayPal", "Crypto"], // TODO: confirmar
+  // Activos y confirmados: transferencia/SEPA + tarjeta (Stripe: Visa/Mastercard).
+  paymentMethods: ["Bank transfer", "SEPA", "Visa", "Mastercard"],
 
   // Mitigación DDoS. Sin cifras inventadas (capacidad Tbps, ataques absorbidos):
   // solo el dato veraz y conceptual: al servidor no llega ningún paquete de ataque.

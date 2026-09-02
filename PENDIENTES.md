@@ -10,12 +10,12 @@ Convención: los datos sin confirmar que aparezcan en borradores van marcados co
 
 | # | Tema | Qué necesito | Qué desbloquea |
 |---|---|---|---|
-| A1 | **Alemania operativa** | ¿La región de Alemania (Frankfurt) está **100% operativa** hoy? En notas internas la red figuraba pendiente del proveedor. | Si no lo está, la marco como "próximamente" en catálogo, sitemap, `/llms.txt` y comparativas. Ahora mismo se anuncia como disponible. |
-| A2 | **Métodos de pago** | El footer lista `PayPal` y `Crypto` como `TODO`. ¿Se ofrecen de verdad? (Confirmado y activo: **tarjeta vía Stripe** + **transferencia/SEPA**.) | Quitar PayPal/Crypto del footer y del `/llms.txt`, o mantenerlos si son reales. |
+| A1 | **Alemania operativa** | ✅ **RESUELTO (2026-09-02): Alemania está operativa.** Se mantiene como región disponible en catálogo, sitemap, `/llms.txt` y comparativas. | — |
+| A2 | **Métodos de pago** | ✅ **RESUELTO (2026-09-02): quitados PayPal y Crypto.** Activos: **tarjeta (Stripe: Visa/Mastercard)** + **transferencia/SEPA**. Footer y `/llms.txt` ya solo reflejan eso. | — |
 | A3 | **Reseñas reales** | ¿Hay **Trustpilot** u otras reseñas reales? URL. | Habilita `AggregateRating` en schema y el badge de Trustpilot. Sin esto, **no** pongo ratings (no inventar). |
 | A4 | **Redes sociales** | Handles **reales** de X, LinkedIn, GitHub (los actuales en `site.ts` son placeholder). | Reañadir `sameAs` al schema de entidad (lo retiré por ser falso). |
 | A5 | **Cifras verificables** | ¿Datos medidos de **uptime %**, **IOPS NVMe**, **latencia** a España, capacidad de red? | Convertir afirmaciones cualitativas en cifras citables (alto valor GEO). Sin confirmar, se quedan como conceptos. |
-| A6 | **Servidores dedicados** | `/dedicados` responde **404** (las categorías están ocultas). ¿Se venden dedicados? | Si sí: publicar categorías + keywords. Si no: retirar `/dedicados` de toda referencia. |
+| A6 | **Servidores dedicados** | ✅ **RESUELTO (2026-09-02): no se venden por el momento.** Las categorías siguen `visible:false`, así que no se renderiza ningún enlace público, no están en sitemap/`llms.txt` y `/dedicados` da 404 (correcto). Si en el futuro se venden, se publican las categorías. | — |
 
 ## B. Decisiones estratégicas
 
@@ -46,10 +46,7 @@ Convención: los datos sin confirmar que aparezcan en borradores van marcados co
 
 ---
 
-### Lo mínimo que necesito de ti para seguir sin fricción
-1. **A1** (Alemania sí/no operativa).
-2. **A2** (PayPal/Crypto sí/no).
-3. **A6** (¿se venden dedicados?).
-4. **B2/B3** (OK a entidad US y marca ViaHost definitiva).
+### Estado
+✅ Resueltos: **A1** (Alemania operativa), **A2** (PayPal/Crypto quitados), **A6** (dedicados no se venden, ya oculto).
 
-Con eso puedo escribir el blog y ajustar footer/entidad sin marcar nada como pendiente.
+Quedan para afinar (no bloquean el blog): **A3** (reseñas), **A4** (redes reales), **A5** (cifras medidas), **B2/B3** (OK explícito a entidad US + marca definitiva) y los técnicos del bloque C.
