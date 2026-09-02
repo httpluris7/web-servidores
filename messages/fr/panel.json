@@ -146,6 +146,51 @@
       "empty": "Aucune sauvegarde pour l'instant.",
       "delete": "Supprimer"
     },
+    "red": {
+      "heading": "Réseau",
+      "model": "Modèle d'interface",
+      "bridge": "Pont (bridge)",
+      "rate": "Limite de débit",
+      "noLimit": "Sans limite",
+      "nicFirewall": "Pare-feu sur l'interface",
+      "on": "Actif",
+      "off": "Inactif"
+    },
+    "notif": {
+      "heading": "Notifications de ressources",
+      "intro": "Nous vous prévenons par email si le CPU dépasse {cpu} %, la mémoire {mem} % ou le disque {disco} % de façon soutenue, ou si l'agent ne répond plus.",
+      "allOk": "Tout est dans les limites.",
+      "noAgent": "Installez l'agent de métriques pour surveiller les ressources et recevoir des alertes.",
+      "error": "Impossible de lire les notifications pour le moment.",
+      "since": "depuis",
+      "reglas": { "cpu": "CPU élevé", "memoria": "Mémoire élevée", "disco": "Disque plein", "agente": "Agent ne répond pas" }
+    },
+    "reinstalar": {
+      "heading": "Réinstallation",
+      "intro": "Réinstalle le système d'exploitation à zéro. Efface TOUT le disque : sauvegardez avant si vous devez conserver des données.",
+      "open": "Réinstaller le système",
+      "os": "Système d'exploitation",
+      "confirmBody": "Tout le disque sera effacé. Pour confirmer, saisissez le nom du serveur :",
+      "confirm": "Réinstaller (tout effacer)",
+      "started": "Réinstallation mise en file. Suivez la progression dans l'historique des tâches.",
+      "invalidOs": "Ce système n'est pas disponible ou ne tient pas sur le disque."
+    },
+    "firewall": {
+      "heading": "Pare-feu",
+      "intro": "Filtrez le trafic de votre serveur. Nécessite que le pare-feu du datacenter soit activé.",
+      "enable": "Activer",
+      "disable": "Désactiver",
+      "stateOn": "Actif",
+      "stateOff": "Inactif",
+      "policyIn": "Politique d'entrée",
+      "policyOut": "Politique de sortie",
+      "lockoutWarning": "Avec la politique d'entrée sur DROP et aucune règle autorisant votre accès (SSH/RDP), vous serez bloqué. Ajoutez d'abord une règle autorisant votre connexion.",
+      "rulesHeading": "Règles",
+      "rulesEmpty": "Aucune règle.",
+      "addRule": "Ajouter une règle",
+      "delete": "Supprimer",
+      "col": { "dir": "Direction", "action": "Action", "proto": "Protocole", "dport": "Port", "source": "Source" }
+    },
     "management": {
       "heading": "Gestion du service",
       "intro": "Outils avancés pour administrer votre serveur.",

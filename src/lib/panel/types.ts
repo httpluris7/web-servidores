@@ -79,6 +79,10 @@ export type PanelService = {
 
   /* Red */
   ips: ServiceIp[];
+  /** Interfaz de red (para la sección "Red", informativa). */
+  nicModel: string | null;
+  nicBridge: string | null;
+  nicFirewall: boolean;
 
   /** ¿Hay un agente de métricas activo? Decide gráficas de agente vs RRD. */
   agenteActivo: boolean;

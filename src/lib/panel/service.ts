@@ -199,6 +199,9 @@ function construir(
     ordenArranque: d.config.boot_order ?? "—",
     anchoBanda,
     ips,
+    nicModel: d.red?.model ?? null,
+    nicBridge: d.red?.bridge ?? null,
+    nicFirewall: d.red?.firewall ?? false,
     agenteActivo: m.agenteTokenHash !== null,
   };
 }

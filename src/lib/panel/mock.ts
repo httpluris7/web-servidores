@@ -80,6 +80,9 @@ export function mockService(id: string): PanelService {
         gateway: "2a11:c8c0:9::1",
       },
     ],
+    nicModel: "virtio",
+    nicBridge: "vmbr0",
+    nicFirewall: s % 3 === 0,
     agenteActivo: s % 2 === 0,
   };
 }

@@ -146,6 +146,51 @@
       "empty": "Sin copias todavía.",
       "delete": "Borrar"
     },
+    "red": {
+      "heading": "Red",
+      "model": "Modelo de interfaz",
+      "bridge": "Puente (bridge)",
+      "rate": "Límite de tasa",
+      "noLimit": "Sin límite",
+      "nicFirewall": "Cortafuegos en la interfaz",
+      "on": "Activo",
+      "off": "Inactivo"
+    },
+    "notif": {
+      "heading": "Notificaciones de recursos",
+      "intro": "Te avisamos por email si la CPU supera el {cpu}%, la memoria el {mem}% o el disco el {disco}% de forma sostenida, o si el agente deja de responder.",
+      "allOk": "Todo dentro de los límites.",
+      "noAgent": "Instala el agente de métricas para vigilar los recursos y recibir avisos.",
+      "error": "No se pudieron leer las notificaciones ahora mismo.",
+      "since": "desde",
+      "reglas": { "cpu": "CPU alta", "memoria": "Memoria alta", "disco": "Disco lleno", "agente": "Agente sin responder" }
+    },
+    "reinstalar": {
+      "heading": "Reinstalación",
+      "intro": "Reinstala el sistema operativo desde cero. Borra TODO el disco: haz una copia antes si necesitas conservar datos.",
+      "open": "Reinstalar el sistema",
+      "os": "Sistema operativo",
+      "confirmBody": "Se borrará todo el disco. Para confirmar, escribe el nombre del servidor:",
+      "confirm": "Reinstalar (borra todo)",
+      "started": "Reinstalación encolada. Sigue el progreso en el historial de tareas.",
+      "invalidOs": "Ese sistema no está disponible o no cabe en el disco."
+    },
+    "firewall": {
+      "heading": "Cortafuegos",
+      "intro": "Filtra el tráfico de tu servidor. Requiere el cortafuegos del centro de datos activo.",
+      "enable": "Activar",
+      "disable": "Desactivar",
+      "stateOn": "Activo",
+      "stateOff": "Inactivo",
+      "policyIn": "Política de entrada",
+      "policyOut": "Política de salida",
+      "lockoutWarning": "Con la política de entrada en DROP y sin una regla que permita tu acceso (SSH/RDP), te quedarás fuera. Añade primero una regla que permita tu conexión.",
+      "rulesHeading": "Reglas",
+      "rulesEmpty": "Sin reglas.",
+      "addRule": "Añadir regla",
+      "delete": "Borrar",
+      "col": { "dir": "Dirección", "action": "Acción", "proto": "Protocolo", "dport": "Puerto", "source": "Origen" }
+    },
     "management": {
       "heading": "Gestión del servicio",
       "intro": "Herramientas avanzadas de administración de tu servidor.",

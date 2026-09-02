@@ -321,6 +321,9 @@ export type VpsDetalle = {
     cidr: number | null;
     mac: string | null;
     ipv6: string | null;
+    model: string | null;
+    bridge: string | null;
+    firewall: boolean;
   } | null;
   live: {
     status: string;
@@ -426,4 +429,43 @@ export function createVpsBackup(vpsId: number): Promise<{ ok: boolean; upid: str
 /** Borra un fichero de copia (volid) de la VM. */
 export function deleteVpsBackup(vpsId: number, volid: string): Promise<{ ok: boolean }> {
   return request("DELETE", `/vps/${vpsId}/backups?volid=${encodeURIComponent(volid)}`);
+}
+
+/* -------------------------------- Firewall -------------------------------- */
+
+export type VpsFirewallOptions = { enable: number; policy_in: string; policy_out: string };
+export type VpsFirewallRule = {
+  pos: number | null;
+  type: string | null;
+  action: string | null;
+  proto: string | null;
+  dport: string | null;
+  source: string | null;
+  dest: string | null;
+  enable: number;
+  comment: string | null;
+};
+
+export function vpsFirewall(
+  vpsId: number,
+): Promise<{ ok: boolean; options: VpsFirewallOptions; rules: VpsFirewallRule[] }> {
+  return request("GET", `/vps/${vpsId}/firewall`);
+}
+
+export function setVpsFirewallOptions(
+  vpsId: number,
+  opts: { enable?: 0 | 1; policy_in?: string; policy_out?: string },
+): Promise<{ ok: boolean }> {
+  return request("PUT", `/vps/${vpsId}/firewall/options`, opts);
+}
+
+export function addVpsFirewallRule(
+  vpsId: number,
+  rule: { type: string; action: string; proto?: string; dport?: string; source?: string; comment?: string },
+): Promise<{ ok: boolean }> {
+  return request("POST", `/vps/${vpsId}/firewall/rules`, rule);
+}
+
+export function deleteVpsFirewallRule(vpsId: number, pos: number): Promise<{ ok: boolean }> {
+  return request("DELETE", `/vps/${vpsId}/firewall/rules?pos=${pos}`);
 }

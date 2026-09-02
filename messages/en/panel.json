@@ -146,6 +146,51 @@
       "empty": "No backups yet.",
       "delete": "Delete"
     },
+    "red": {
+      "heading": "Network",
+      "model": "Interface model",
+      "bridge": "Bridge",
+      "rate": "Rate limit",
+      "noLimit": "No limit",
+      "nicFirewall": "Firewall on interface",
+      "on": "On",
+      "off": "Off"
+    },
+    "notif": {
+      "heading": "Resource notifications",
+      "intro": "We email you if CPU stays above {cpu}%, memory above {mem}% or disk above {disco}% for a sustained period, or if the agent stops responding.",
+      "allOk": "Everything within limits.",
+      "noAgent": "Install the metrics agent to monitor resources and get alerts.",
+      "error": "Couldn't read notifications right now.",
+      "since": "since",
+      "reglas": { "cpu": "High CPU", "memoria": "High memory", "disco": "Disk full", "agente": "Agent not responding" }
+    },
+    "reinstalar": {
+      "heading": "Reinstall",
+      "intro": "Reinstall the operating system from scratch. This wipes the ENTIRE disk: back up first if you need to keep data.",
+      "open": "Reinstall the system",
+      "os": "Operating system",
+      "confirmBody": "The whole disk will be erased. To confirm, type the server name:",
+      "confirm": "Reinstall (wipes everything)",
+      "started": "Reinstall queued. Follow the progress in the task history.",
+      "invalidOs": "That system isn't available or doesn't fit on the disk."
+    },
+    "firewall": {
+      "heading": "Firewall",
+      "intro": "Filter your server's traffic. Requires the datacenter firewall to be enabled.",
+      "enable": "Enable",
+      "disable": "Disable",
+      "stateOn": "On",
+      "stateOff": "Off",
+      "policyIn": "Inbound policy",
+      "policyOut": "Outbound policy",
+      "lockoutWarning": "With the inbound policy set to DROP and no rule allowing your access (SSH/RDP), you'll lock yourself out. Add a rule allowing your connection first.",
+      "rulesHeading": "Rules",
+      "rulesEmpty": "No rules.",
+      "addRule": "Add rule",
+      "delete": "Delete",
+      "col": { "dir": "Direction", "action": "Action", "proto": "Protocol", "dport": "Port", "source": "Source" }
+    },
     "management": {
       "heading": "Service management",
       "intro": "Advanced tools to administer your server.",

@@ -10,10 +10,14 @@ import { ServiceActions } from "@/components/panel/ServiceActions";
 import { ManagementGrid } from "@/components/panel/ManagementGrid";
 import { InfoTable } from "@/components/panel/InfoTable";
 import { IpTable } from "@/components/panel/IpTable";
+import { RedSection } from "@/components/panel/RedSection";
 import { GraficasSection } from "@/components/panel/GraficasSection";
+import { NotificacionesSection } from "@/components/panel/NotificacionesSection";
 import { SnapshotsSection } from "@/components/panel/SnapshotsSection";
 import { BackupsSection } from "@/components/panel/BackupsSection";
+import { FirewallSection } from "@/components/panel/FirewallSection";
 import { ConsolaSection } from "@/components/panel/ConsolaSection";
+import { ReinstalarSection } from "@/components/panel/ReinstalarSection";
 import { TaskHistory } from "@/components/panel/TaskHistory";
 import { PanelError, PanelSkeleton } from "@/components/panel/Skeletons";
 
@@ -84,10 +88,14 @@ async function PanelContent({
       <ManagementGrid />
       <InfoTable service={service} />
       <IpTable ips={service.ips} />
+      <RedSection service={service} />
       <GraficasSection id={service.id} agenteActivo={service.agenteActivo} />
+      <NotificacionesSection id={service.id} />
       <SnapshotsSection id={service.id} nombre={service.nombre} />
       <BackupsSection id={service.id} />
+      <FirewallSection id={service.id} />
       <ConsolaSection id={service.id} />
+      <ReinstalarSection id={service.id} nombre={service.nombre} diskGb={service.disco.total} />
       <TaskHistory id={service.id} />
     </>
   );
