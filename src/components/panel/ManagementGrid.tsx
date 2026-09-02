@@ -21,19 +21,31 @@ export function ManagementGrid() {
       <p className="mt-1 mb-5 text-sm text-[var(--color-fg-muted)]">{t("management.intro")}</p>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {MANAGEMENT_TOOLS.map((tool) => (
-          <button key={tool.key} type="button" className={ACTION_TILE} disabled={tool.soon}>
-            <span className="flex w-full items-center justify-between">
-              <Icon name={tool.icon} size={20} />
-              {tool.soon && (
-                <span className="rounded-full border border-[var(--color-line-strong)] px-2 py-0.5 text-[0.6rem] uppercase tracking-wide text-[var(--color-fg-dim)]">
-                  {t("management.soon")}
-                </span>
-              )}
-            </span>
-            <span className="text-sm font-medium">{t(`sidebar.items.${tool.key}`)}</span>
-          </button>
-        ))}
+        {MANAGEMENT_TOOLS.map((tool) => {
+          const cabecera = (
+            <>
+              <span className="flex w-full items-center justify-between">
+                <Icon name={tool.icon} size={20} />
+                {tool.soon && (
+                  <span className="rounded-full border border-[var(--color-line-strong)] px-2 py-0.5 text-[0.6rem] uppercase tracking-wide text-[var(--color-fg-dim)]">
+                    {t("management.soon")}
+                  </span>
+                )}
+              </span>
+              <span className="text-sm font-medium">{t(`sidebar.items.${tool.key}`)}</span>
+            </>
+          );
+          // Herramienta ya disponible: enlace que salta a su sección. Pendiente: tarjeta inerte.
+          return tool.soon ? (
+            <button key={tool.key} type="button" className={ACTION_TILE} disabled>
+              {cabecera}
+            </button>
+          ) : (
+            <a key={tool.key} href={`#${tool.anchor}`} className={ACTION_TILE}>
+              {cabecera}
+            </a>
+          );
+        })}
       </div>
     </section>
   );

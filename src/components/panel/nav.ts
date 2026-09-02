@@ -58,8 +58,8 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: "notificaciones", anchor: "gestion", icon: "bell", soon: true },
       { key: "monitorizacion", anchor: "gestion", icon: "activity", soon: true },
       { key: "snapshots", anchor: "gestion", icon: "camera", soon: true },
-      { key: "historial", anchor: "gestion", icon: "history", soon: true },
-      { key: "tareasEnergia", anchor: "gestion", icon: "power", soon: true },
+      { key: "historial", anchor: "historial", icon: "history" },
+      { key: "tareasEnergia", anchor: "historial", icon: "power" },
     ],
   },
 ];
@@ -69,7 +69,14 @@ export const MANAGEMENT_TOOLS: NavItem[] =
   NAV_GROUPS.find((g) => g.key === "gestion")!.items;
 
 /** Secciones con ancla real en la página (para el scroll-spy de la barra). */
-export const PAGE_SECTIONS = ["resumen", "acciones", "gestion", "informacion", "ips"] as const;
+export const PAGE_SECTIONS = [
+  "resumen",
+  "acciones",
+  "gestion",
+  "informacion",
+  "ips",
+  "historial",
+] as const;
 
 /** Acciones de energía de la rejilla "Acciones del servicio". */
 export type PowerAction = {

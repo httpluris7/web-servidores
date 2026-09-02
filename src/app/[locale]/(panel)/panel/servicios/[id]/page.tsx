@@ -6,10 +6,11 @@ import { getSession } from "@/lib/session";
 import { getManagedForUser } from "@/lib/servidores/cliente";
 import { getPanelServiceForUser, PanelUnavailableError } from "@/lib/panel/service";
 import { ServiceHeader } from "@/components/panel/ServiceHeader";
-import { PowerActions } from "@/components/panel/PowerActions";
+import { ServiceActions } from "@/components/panel/ServiceActions";
 import { ManagementGrid } from "@/components/panel/ManagementGrid";
 import { InfoTable } from "@/components/panel/InfoTable";
 import { IpTable } from "@/components/panel/IpTable";
+import { TaskHistory } from "@/components/panel/TaskHistory";
 import { PanelError, PanelSkeleton } from "@/components/panel/Skeletons";
 
 export const dynamic = "force-dynamic";
@@ -75,10 +76,11 @@ async function PanelContent({
   return (
     <>
       <ServiceHeader service={service} />
-      <PowerActions power={service.power} />
+      <ServiceActions id={service.id} power={service.power} nombre={service.nombre} />
       <ManagementGrid />
       <InfoTable service={service} />
       <IpTable ips={service.ips} />
+      <TaskHistory id={service.id} />
     </>
   );
 }

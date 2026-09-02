@@ -343,3 +343,39 @@ export type VpsDetalle = {
 export function getVpsDetalle(vpsId: number): Promise<VpsDetalle> {
   return request("GET", `/vps/${vpsId}/detalle`);
 }
+
+/* --------------------------- Acciones asíncronas -------------------------- */
+
+/** Una tarea de Proxmox tal como la lista el historial. */
+export type VpsTask = {
+  upid: string;
+  type: string;
+  starttime: number | null;
+  endtime: number | null;
+  running: boolean;
+  exitstatus: string | null;
+};
+
+/**
+ * Dispara una acción de energía y devuelve el UPID SIN esperar a que termine.
+ * El panel sondea `vpsTaskStatus` para el progreso; no bloquea la UI.
+ */
+export function vpsActionAsync(
+  vpsId: number,
+  action: VpsAction,
+): Promise<{ ok: boolean; upid: string; estado: string }> {
+  return request("POST", `/vps/${vpsId}/actions-async`, { action });
+}
+
+/** Estado de una tarea concreta (para el polling). */
+export function vpsTaskStatus(
+  vpsId: number,
+  upid: string,
+): Promise<{ ok: boolean; status: string; exitstatus: string | null; done: boolean; okResult: boolean | null }> {
+  return request("GET", `/vps/${vpsId}/tasks/${encodeURIComponent(upid)}`);
+}
+
+/** Historial reciente de tareas de la VM. */
+export function vpsTasks(vpsId: number): Promise<{ ok: boolean; tasks: VpsTask[] }> {
+  return request("GET", `/vps/${vpsId}/tasks`);
+}
