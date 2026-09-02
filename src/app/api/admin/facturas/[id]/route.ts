@@ -3,6 +3,7 @@ import { getAdminSession } from "@/lib/admin";
 import { deleteInvoice, setInvoiceStatus, type InvoiceStatus } from "@/lib/facturas";
 import { emailInvoiceDocument } from "@/lib/invoice-notify";
 import { aprovisionarFacturaPagada } from "@/lib/provisioner/aprovisionar";
+import { registrarDominiosFacturaPagada } from "@/lib/domains/registrar";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -48,6 +49,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     // Pago por transferencia confirmado a mano: dispara el aprovisionamiento
     // igual que el webhook de tarjeta. Best-effort (no lanza).
     await aprovisionarFacturaPagada(result.invoice.id);
+    // …y el registro de dominios de la factura (CP3). Best-effort e idempotente.
+    await registrarDominiosFacturaPagada(result.invoice.id);
   }
 
   return NextResponse.json({ ok: true, factura: result.invoice, emailSent });
