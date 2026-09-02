@@ -106,6 +106,42 @@
         "agent": "Agent"
       }
     },
+    "graficas": {
+      "heading": "Graphiques",
+      "introRrd": "Utilisation CPU, mémoire et réseau depuis l'hyperviseur. Installez l'agent pour voir aussi le disque et le swap dans le système.",
+      "error": "Impossible de charger les graphiques.",
+      "empty": "Pas encore assez de données.",
+      "peak": "pic",
+      "rangeLabel": "Plage de temps",
+      "cpu": "CPU",
+      "mem": "Mémoire",
+      "net": "Réseau",
+      "netin": "Entrée",
+      "netout": "Sortie",
+      "tf": { "hour": "1 h", "day": "1 j", "week": "1 sem", "month": "1 mois" }
+    },
+    "snapshots": {
+      "heading": "Instantanés",
+      "intro": "Enregistrez l'état du disque pour pouvoir y revenir. Les instantanés ne remplacent pas les sauvegardes.",
+      "namePlaceholder": "Nom (facultatif)",
+      "create": "Créer un instantané",
+      "empty": "Aucun instantané.",
+      "revert": "Restaurer",
+      "delete": "Supprimer",
+      "revertTitle": "Restaurer l'instantané",
+      "revertBody": "Le disque reviendra à l'état de « {snapshot} ». Tout ce qui suit est perdu. Pour confirmer, saisissez le nom du serveur."
+    },
+    "backups": {
+      "heading": "Sauvegardes",
+      "intro": "Sauvegardes complètes de la machine (vzdump) stockées sur le nœud. Réalisées à chaud, sans éteindre le serveur.",
+      "noStorage": "Ce nœud n'a pas encore de stockage de sauvegarde configuré.",
+      "create": "Sauvegarder maintenant",
+      "creating": "Création de la sauvegarde… cela peut prendre quelques minutes.",
+      "done": "Sauvegarde terminée.",
+      "failed": "La sauvegarde s'est terminée en erreur. Consultez l'historique des tâches.",
+      "empty": "Aucune sauvegarde pour l'instant.",
+      "delete": "Supprimer"
+    },
     "management": {
       "heading": "Gestion du service",
       "intro": "Outils avancés pour administrer votre serveur.",

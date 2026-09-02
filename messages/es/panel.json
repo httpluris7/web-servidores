@@ -106,6 +106,42 @@
         "agent": "Agente"
       }
     },
+    "graficas": {
+      "heading": "Gráficas",
+      "introRrd": "Uso de CPU, memoria y red del hipervisor. Instala el agente para ver también disco y swap dentro del sistema.",
+      "error": "No se pudieron cargar las gráficas.",
+      "empty": "Aún no hay datos suficientes.",
+      "peak": "pico",
+      "rangeLabel": "Rango de tiempo",
+      "cpu": "CPU",
+      "mem": "Memoria",
+      "net": "Red",
+      "netin": "Entrada",
+      "netout": "Salida",
+      "tf": { "hour": "1 h", "day": "1 día", "week": "1 sem", "month": "1 mes" }
+    },
+    "snapshots": {
+      "heading": "Instantáneas",
+      "intro": "Guarda el estado del disco para poder volver a él. No sustituyen a las copias de seguridad.",
+      "namePlaceholder": "Nombre (opcional)",
+      "create": "Crear instantánea",
+      "empty": "Sin instantáneas.",
+      "revert": "Revertir",
+      "delete": "Borrar",
+      "revertTitle": "Revertir instantánea",
+      "revertBody": "El disco volverá al estado de «{snapshot}». Se pierde todo lo posterior. Para confirmar, escribe el nombre del servidor."
+    },
+    "backups": {
+      "heading": "Copias de seguridad",
+      "intro": "Copias completas de la máquina (vzdump) guardadas en el nodo. Se hacen en caliente, sin apagar el servidor.",
+      "noStorage": "Este nodo aún no tiene un almacén de copias configurado.",
+      "create": "Crear copia ahora",
+      "creating": "Creando la copia… puede tardar unos minutos.",
+      "done": "Copia completada.",
+      "failed": "La copia terminó con error. Revisa el historial de tareas.",
+      "empty": "Sin copias todavía.",
+      "delete": "Borrar"
+    },
     "management": {
       "heading": "Gestión del servicio",
       "intro": "Herramientas avanzadas de administración de tu servidor.",

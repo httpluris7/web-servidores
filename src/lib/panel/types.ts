@@ -79,4 +79,7 @@ export type PanelService = {
 
   /* Red */
   ips: ServiceIp[];
+
+  /** ¿Hay un agente de métricas activo? Decide gráficas de agente vs RRD. */
+  agenteActivo: boolean;
 };

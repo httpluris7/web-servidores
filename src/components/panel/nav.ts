@@ -46,18 +46,18 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     key: "gestion",
     items: [
-      { key: "backups", anchor: "gestion", icon: "archive", soon: true },
+      { key: "backups", anchor: "backups", icon: "archive" },
       { key: "backupsSchedule", anchor: "gestion", icon: "clock", soon: true },
       { key: "discos", anchor: "gestion", icon: "disk", soon: true },
       { key: "firewall", anchor: "gestion", icon: "shield", soon: true },
       { key: "firewallOptions", anchor: "gestion", icon: "shieldGear", soon: true },
-      { key: "graficas", anchor: "gestion", icon: "chart", soon: true },
+      { key: "graficas", anchor: "graficas", icon: "chart" },
       { key: "red", anchor: "gestion", icon: "network", soon: true },
       { key: "consola", anchor: "gestion", icon: "terminal", soon: true },
       { key: "reinstalar", anchor: "gestion", icon: "refresh", soon: true },
       { key: "notificaciones", anchor: "gestion", icon: "bell", soon: true },
-      { key: "monitorizacion", anchor: "gestion", icon: "activity", soon: true },
-      { key: "snapshots", anchor: "gestion", icon: "camera", soon: true },
+      { key: "monitorizacion", anchor: "graficas", icon: "activity" },
+      { key: "snapshots", anchor: "snapshots", icon: "camera" },
       { key: "historial", anchor: "historial", icon: "history" },
       { key: "tareasEnergia", anchor: "historial", icon: "power" },
     ],
@@ -75,6 +75,9 @@ export const PAGE_SECTIONS = [
   "gestion",
   "informacion",
   "ips",
+  "graficas",
+  "snapshots",
+  "backups",
   "historial",
 ] as const;
 

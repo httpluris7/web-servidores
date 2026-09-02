@@ -106,6 +106,42 @@
         "agent": "Agent"
       }
     },
+    "graficas": {
+      "heading": "Graphs",
+      "introRrd": "CPU, memory and network usage from the hypervisor. Install the agent to also see disk and swap inside the system.",
+      "error": "Couldn't load the graphs.",
+      "empty": "Not enough data yet.",
+      "peak": "peak",
+      "rangeLabel": "Time range",
+      "cpu": "CPU",
+      "mem": "Memory",
+      "net": "Network",
+      "netin": "In",
+      "netout": "Out",
+      "tf": { "hour": "1 h", "day": "1 day", "week": "1 wk", "month": "1 mo" }
+    },
+    "snapshots": {
+      "heading": "Snapshots",
+      "intro": "Save the disk state so you can roll back to it. Snapshots are not a replacement for backups.",
+      "namePlaceholder": "Name (optional)",
+      "create": "Create snapshot",
+      "empty": "No snapshots.",
+      "revert": "Roll back",
+      "delete": "Delete",
+      "revertTitle": "Roll back snapshot",
+      "revertBody": "The disk will return to the state of \"{snapshot}\". Everything after it is lost. To confirm, type the server name."
+    },
+    "backups": {
+      "heading": "Backups",
+      "intro": "Full machine backups (vzdump) stored on the node. Taken live, without shutting the server down.",
+      "noStorage": "This node doesn't have a backup storage configured yet.",
+      "create": "Back up now",
+      "creating": "Creating the backup… this may take a few minutes.",
+      "done": "Backup completed.",
+      "failed": "The backup ended with an error. Check the task history.",
+      "empty": "No backups yet.",
+      "delete": "Delete"
+    },
     "management": {
       "heading": "Service management",
       "intro": "Advanced tools to administer your server.",

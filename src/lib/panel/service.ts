@@ -199,6 +199,7 @@ function construir(
     ordenArranque: d.config.boot_order ?? "—",
     anchoBanda,
     ips,
+    agenteActivo: m.agenteTokenHash !== null,
   };
 }
 

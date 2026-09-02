@@ -379,3 +379,51 @@ export function vpsTaskStatus(
 export function vpsTasks(vpsId: number): Promise<{ ok: boolean; tasks: VpsTask[] }> {
   return request("GET", `/vps/${vpsId}/tasks`);
 }
+
+/* ---------------------------------- RRD ----------------------------------- */
+
+export type RrdPoint = {
+  time: number | null;
+  cpu: number | null;
+  mem: number | null;
+  maxmem: number | null;
+  netin: number | null;
+  netout: number | null;
+};
+
+export type RrdTimeframe = "hour" | "day" | "week" | "month";
+
+/** Series RRD de Proxmox para las gráficas (cuando no hay agente en el guest). */
+export function vpsRrd(
+  vpsId: number,
+  timeframe: RrdTimeframe,
+): Promise<{ ok: boolean; timeframe: RrdTimeframe; points: RrdPoint[] }> {
+  return request("GET", `/vps/${vpsId}/rrd?timeframe=${timeframe}`);
+}
+
+/* -------------------------------- Backups --------------------------------- */
+
+export type VpsBackup = {
+  volid: string;
+  size: number | null;
+  ctime: number | null;
+  format: string | null;
+  notes: string | null;
+};
+
+/** Copias de la VM. `storage` es null si el nodo no tiene almacén de backup. */
+export function vpsBackups(
+  vpsId: number,
+): Promise<{ ok: boolean; storage: string | null; backups: VpsBackup[] }> {
+  return request("GET", `/vps/${vpsId}/backups`);
+}
+
+/** Lanza una copia (vzdump) y devuelve el UPID para sondear la tarea. */
+export function createVpsBackup(vpsId: number): Promise<{ ok: boolean; upid: string; storage: string }> {
+  return request("POST", `/vps/${vpsId}/backups`);
+}
+
+/** Borra un fichero de copia (volid) de la VM. */
+export function deleteVpsBackup(vpsId: number, volid: string): Promise<{ ok: boolean }> {
+  return request("DELETE", `/vps/${vpsId}/backups?volid=${encodeURIComponent(volid)}`);
+}
