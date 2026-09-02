@@ -131,6 +131,10 @@
       "revertTitle": "Roll back snapshot",
       "revertBody": "The disk will return to the state of \"{snapshot}\". Everything after it is lost. To confirm, type the server name."
     },
+    "consola": {
+      "heading": "noVNC console",
+      "intro": "Access the server's screen as if you were in front of it. Handy when you can't get in over SSH/RDP."
+    },
     "backups": {
       "heading": "Backups",
       "intro": "Full machine backups (vzdump) stored on the node. Taken live, without shutting the server down.",

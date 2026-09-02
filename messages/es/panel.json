@@ -131,6 +131,10 @@
       "revertTitle": "Revertir instantánea",
       "revertBody": "El disco volverá al estado de «{snapshot}». Se pierde todo lo posterior. Para confirmar, escribe el nombre del servidor."
     },
+    "consola": {
+      "heading": "Consola noVNC",
+      "intro": "Acceso a la pantalla del servidor como si estuvieras delante. Útil cuando no puedes entrar por SSH/RDP."
+    },
     "backups": {
       "heading": "Copias de seguridad",
       "intro": "Copias completas de la máquina (vzdump) guardadas en el nodo. Se hacen en caliente, sin apagar el servidor.",

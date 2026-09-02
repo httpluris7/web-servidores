@@ -53,7 +53,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: "firewallOptions", anchor: "gestion", icon: "shieldGear", soon: true },
       { key: "graficas", anchor: "graficas", icon: "chart" },
       { key: "red", anchor: "gestion", icon: "network", soon: true },
-      { key: "consola", anchor: "gestion", icon: "terminal", soon: true },
+      { key: "consola", anchor: "consola", icon: "terminal" },
       { key: "reinstalar", anchor: "gestion", icon: "refresh", soon: true },
       { key: "notificaciones", anchor: "gestion", icon: "bell", soon: true },
       { key: "monitorizacion", anchor: "graficas", icon: "activity" },
@@ -78,6 +78,7 @@ export const PAGE_SECTIONS = [
   "graficas",
   "snapshots",
   "backups",
+  "consola",
   "historial",
 ] as const;
 

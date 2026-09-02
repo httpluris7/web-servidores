@@ -131,6 +131,10 @@
       "revertTitle": "Restaurer l'instantané",
       "revertBody": "Le disque reviendra à l'état de « {snapshot} ». Tout ce qui suit est perdu. Pour confirmer, saisissez le nom du serveur."
     },
+    "consola": {
+      "heading": "Console noVNC",
+      "intro": "Accédez à l'écran du serveur comme si vous étiez devant. Pratique quand SSH/RDP n'est pas accessible."
+    },
     "backups": {
       "heading": "Sauvegardes",
       "intro": "Sauvegardes complètes de la machine (vzdump) stockées sur le nœud. Réalisées à chaud, sans éteindre le serveur.",
