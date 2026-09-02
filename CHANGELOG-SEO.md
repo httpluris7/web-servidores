@@ -40,10 +40,16 @@ Registro de cambios SEO/GEO. Rama `seo-geo-20260902` (desde `main` en `eccafc2`)
 - Componente reutilizable `ComparativaHeadToHead` (claves i18n genéricas). Hetzner migrado a él.
 - Dos comparativas nuevas (Contabo head-to-head; mejor-hosting-cPanel como guía honesta ViaHost vs sector). En sitemap; enlaces internos `/vps`→hetzner,contabo y `/hosting`→mejor-hosting.
 
+### `d64a03f` — Métodos de pago + confirmaciones de negocio
+- `site.ts`: fuera PayPal/Crypto (activos: transferencia/SEPA + tarjeta Stripe). Alemania confirmada operativa; dedicados no se venden (ya oculto). `PENDIENTES.md` A1/A2/A6 resueltos.
+
+### `c8bf60a` — Blog `/blog/` (FASE 5)
+- Modelo `src/data/blog.ts` (contenido trilingüe por post). `/blog` (índice) + `/blog/[slug]` con **Article** o **HowTo** + **FAQPage** + **BreadcrumbList** + canonical/hreflang. Semilla: "VPS vs hosting compartido" (Article) y "Cómo migrar tu hosting cPanel gratis" (HowTo). En sitemap y footer.
+
 ---
 
 ## Pendiente (ver `PENDIENTES.md` y `PLAN-GEO.md §4`)
-- **Blog** `/blog/` (HowTo/Article): siguiente pieza de mayor ROI.
+- Más artículos de blog (instalar WordPress en VPS, qué es cPanel/Proxmox/WHOIS…).
 - OG image en PNG 1200×630 (hoy SVG).
 - Reescritura de meta descriptions/títulos cortos (`/dominios`, `/red`, `/desplegar`).
 - Localizar nombres de región del catálogo ("Netherlands" → "Países Bajos").
