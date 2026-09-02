@@ -83,20 +83,45 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   const nav = await getNavCatalog(locale);
   const cartCatalog = await getCartCatalog(locale);
 
-  const organizationJsonLd = {
+  // Grafo de entidad: Organization + WebSite enlazados por @id. Sin `sameAs`
+  // (los perfiles sociales aún no son reales: enlazarlos sería una señal de
+  // entidad falsa) y sin SearchAction (no hay buscador general del sitio; el
+  // buscador de /dominios es específico de producto). Añadir cuando existan.
+  const orgId = `${site.url}/#organization`;
+  const jsonLdGraph = {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    name: site.brand,
-    legalName: site.legal.companyName,
-    url: site.url,
-    description: tMeta("description"),
-    email: site.contact.support,
-    sameAs: [site.social.x, site.social.github, site.social.linkedin],
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: site.legal.address,
-      addressCountry: site.legal.addressCountry,
-    },
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": orgId,
+        name: site.brand,
+        legalName: site.legal.companyName,
+        url: site.url,
+        description: tMeta("description"),
+        email: site.contact.support,
+        logo: `${site.url}/favicon.svg`,
+        areaServed: "Europe",
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "customer support",
+          email: site.contact.support,
+          availableLanguage: ["es", "en", "fr"],
+        },
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: site.legal.address,
+          addressCountry: site.legal.addressCountry,
+        },
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${site.url}/#website`,
+        name: site.brand,
+        url: site.url,
+        inLanguage: locale,
+        publisher: { "@id": orgId },
+      },
+    ],
   };
 
   return (
@@ -106,7 +131,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <script dangerouslySetInnerHTML={{ __html: CURRENCY_INIT_SCRIPT }} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: jsonLdScript(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLdGraph) }}
         />
         <a
           href="#contenido"
