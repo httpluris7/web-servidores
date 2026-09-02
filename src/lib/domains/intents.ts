@@ -117,3 +117,14 @@ export async function dominiosDeUsuario(userId: string): Promise<DomainIntent[]>
   if (!userId) return [];
   return (await readAll()).filter((d) => d.userId === userId && d.registered);
 }
+
+/**
+ * ¿Es este dominio, ya registrado, de este usuario? Punto ÚNICO de comprobación
+ * de propiedad para el editor de DNS (como `getManagedForUser` con los VPS). Un
+ * dominio ajeno se trata como inexistente (404).
+ */
+export async function usuarioTieneDominio(userId: string, domain: string): Promise<boolean> {
+  if (!userId || !domain) return false;
+  const d = domain.toLowerCase();
+  return (await dominiosDeUsuario(userId)).some((x) => x.domain.toLowerCase() === d);
+}

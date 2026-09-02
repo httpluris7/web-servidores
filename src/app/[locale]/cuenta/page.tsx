@@ -9,6 +9,7 @@ import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
 import { listInvoicesByUser } from "@/lib/facturas";
 import { listServersForUser } from "@/lib/servidores/cliente";
+import { dominiosDeUsuario } from "@/lib/domains/intents";
 import { listTicketsByUser, ticketsAbiertos } from "@/lib/tickets";
 import { desplieguesDeUsuario } from "@/lib/provisioner/despliegues";
 import { getOrder } from "@/lib/provisioner/client";
@@ -64,6 +65,8 @@ export default async function CuentaPage({
   // Un fallo del proveedor no debe tumbar la portada de la cuenta: sin
   // servidores legibles, simplemente no se muestra la sección.
   const servidores = await listServersForUser(user.id).catch(() => []);
+  const dominios = await dominiosDeUsuario(user.id).catch(() => []);
+  const td = await getTranslations("dominios");
 
   // Despliegues aún en marcha (VPS recién pagado que se está creando): se leen
   // del provisioner para poder enlazar al seguimiento en vivo. Best-effort.
@@ -164,6 +167,20 @@ export default async function CuentaPage({
               className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-6 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
             >
               {t("account.serversLink")} ({servidores.length})
+            </Link>
+          </section>
+        )}
+
+        {/* Dominios: solo aparece si el cliente tiene alguno registrado. */}
+        {dominios.length > 0 && (
+          <section className="mt-12 border-t border-[var(--color-line)] pt-10">
+            <h2 className="mono-label mb-1">{td("mis.kicker")}</h2>
+            <p className="mb-5 text-sm text-[var(--color-fg-muted)]">{td("mis.description")}</p>
+            <Link
+              href="/cuenta/dominios"
+              className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-6 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+            >
+              {td("mis.title")} ({dominios.length})
             </Link>
           </section>
         )}

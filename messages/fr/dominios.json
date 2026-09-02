@@ -34,6 +34,32 @@
     "backToSearch": "Chercher un autre domaine",
     "orderError": "Impossible d'émettre la proforma. Réessayez.",
     "orderUnavailable": "Ce domaine n'est plus disponible.",
+    "mis": {
+      "metaTitle": "Mes domaines",
+      "kicker": "Mes domaines",
+      "title": "Vos domaines",
+      "description": "Gérez vos domaines et leurs enregistrements DNS.",
+      "backToAccount": "← Retour à mon compte",
+      "empty": "Vous n'avez pas encore de domaines.",
+      "manage": "Gérer le DNS",
+      "expiry": "Expire"
+    },
+    "dns": {
+      "intro": "Gérez les enregistrements DNS de votre domaine.",
+      "back": "← Mes domaines",
+      "add": "Ajouter un enregistrement",
+      "type": "Type",
+      "name": "Nom",
+      "content": "Valeur",
+      "ttl": "TTL",
+      "priority": "Priorité",
+      "addButton": "Ajouter",
+      "records": "Enregistrements",
+      "noRecords": "Aucun enregistrement.",
+      "delete": "Supprimer",
+      "errorProvider": "Impossible de terminer l'opération. Réessayez.",
+      "invalid": "Données d'enregistrement non valides."
+    },
     "privacyNote": "Chaque domaine inclut la confidentialité WHOIS sans frais : vos données personnelles n'apparaissent jamais dans le registre public."
   }
 }

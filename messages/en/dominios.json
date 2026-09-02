@@ -34,6 +34,32 @@
     "backToSearch": "Search another domain",
     "orderError": "Couldn't create the proforma. Please try again.",
     "orderUnavailable": "That domain is no longer available.",
+    "mis": {
+      "metaTitle": "My domains",
+      "kicker": "My domains",
+      "title": "Your domains",
+      "description": "Manage your domains and their DNS records.",
+      "backToAccount": "← Back to my account",
+      "empty": "You don't have any domains yet.",
+      "manage": "Manage DNS",
+      "expiry": "Expires"
+    },
+    "dns": {
+      "intro": "Manage your domain's DNS records.",
+      "back": "← My domains",
+      "add": "Add record",
+      "type": "Type",
+      "name": "Name",
+      "content": "Value",
+      "ttl": "TTL",
+      "priority": "Priority",
+      "addButton": "Add",
+      "records": "Records",
+      "noRecords": "No records.",
+      "delete": "Delete",
+      "errorProvider": "Couldn't complete the operation. Please try again.",
+      "invalid": "Invalid record data."
+    },
     "privacyNote": "Every domain includes WHOIS privacy at no cost: your personal data never appears in the public registry."
   }
 }
