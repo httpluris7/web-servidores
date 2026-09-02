@@ -44,15 +44,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     description,
     applicationName: site.brand,
     authors: [{ name: site.brand }],
-    alternates: {
-      canonical: locale === routing.defaultLocale ? "/" : `/${locale}`,
-      languages: {
-        en: "/",
-        es: "/es",
-        fr: "/fr",
-        "x-default": "/",
-      },
-    },
+    // OJO: el canonical/hreflang NO se fija aquí. Si se pusiera en el layout se
+    // heredaría en TODAS las páginas apuntando a la home (era el bug). Cada
+    // página declara su propia ruta con `alternatesFor(locale, path)` (ver
+    // `src/lib/seo.ts`); la home lo hace en su propio `generateMetadata`.
     openGraph: {
       type: "website",
       locale: locale === "es" ? "es_ES" : locale === "fr" ? "fr_FR" : "en_US",

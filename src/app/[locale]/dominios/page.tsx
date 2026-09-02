@@ -7,6 +7,7 @@ import { TldGrid } from "@/components/dominios/TldGrid";
 import { tarifasPopulares } from "@/lib/domains/tarifas";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
+import { alternatesFor } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -16,6 +17,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "dominios" });
   return {
+    alternates: alternatesFor(locale, "/dominios"),
     title: t("metaTitle"),
     description: t("metaDescription", { brand: site.brand }),
   };

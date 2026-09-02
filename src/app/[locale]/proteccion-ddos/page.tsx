@@ -6,6 +6,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { CtaBand } from "@/components/ui/CtaBand";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { alternatesFor } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -15,6 +16,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "pages" });
   return {
+    alternates: alternatesFor(locale, "/proteccion-ddos"),
     title: t("proteccionDdos.metaTitle"),
     description: t("proteccionDdos.metaDescription"),
   };

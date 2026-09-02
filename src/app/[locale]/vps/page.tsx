@@ -12,6 +12,7 @@ import { FaqSection } from "@/components/ui/FaqSection";
 import { CtaBand } from "@/components/ui/CtaBand";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { alternatesFor } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -22,6 +23,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "products" });
   const { vps } = await getCatalog(locale);
   return {
+    alternates: alternatesFor(locale, "/vps"),
     title: t("vps.meta.title"),
     description: t("vps.meta.description", {
       price: eurPrecio(precioDesde(vps.plans)),

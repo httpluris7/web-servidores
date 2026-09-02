@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { alternatesFor } from "@/lib/seo";
 import { getCatalog, getRegion, getRegions, vpsPlansForRegion } from "@/data/products";
 import { vpsFaq } from "@/data/faq";
 import { site } from "@/data/site";
@@ -37,6 +38,7 @@ export async function generateMetadata({
   if (!region) return {};
   const t = await getTranslations({ locale, namespace: "products" });
   return {
+    alternates: alternatesFor(locale, `/vps/${slug}`),
     title: t("vpsRegion.meta.title", { name: region.name, city: region.city }),
     description: t("vpsRegion.meta.description", {
       name: region.name,

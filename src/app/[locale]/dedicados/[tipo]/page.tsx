@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { alternatesFor } from "@/lib/seo";
 import { getDedicatedType, getDedicatedTypes } from "@/data/products";
 import { dedicatedFaq } from "@/data/faq";
 import { site } from "@/data/site";
@@ -24,7 +25,11 @@ export async function generateMetadata({
   const { locale, tipo } = await params;
   const line = await getDedicatedType(tipo, locale);
   if (!line) return {};
-  return { title: line.title, description: line.tagline };
+  return {
+    alternates: alternatesFor(locale, `/dedicados/${tipo}`),
+    title: line.title,
+    description: line.tagline,
+  };
 }
 
 export default async function DedicatedTypePage({ params }: { params: Promise<Params> }) {

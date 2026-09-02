@@ -9,6 +9,7 @@ import { PlanGrid } from "@/components/product/PlanGrid";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { CtaBand } from "@/components/ui/CtaBand";
+import { alternatesFor } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "hosting" });
   return {
+    alternates: alternatesFor(locale, "/hosting"),
     title: t("metaTitle"),
     description: t("metaDescription", { brand: site.brand }),
   };

@@ -13,6 +13,7 @@ import {
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LiveTimestamp } from "@/components/status/LiveTimestamp";
+import { alternatesFor } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -22,6 +23,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "pages" });
   return {
+    alternates: alternatesFor(locale, "/estado"),
     title: t("estado.metaTitle"),
     description: t("estado.metaDescription", { brand: site.brand }),
   };
