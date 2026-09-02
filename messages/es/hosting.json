@@ -69,6 +69,14 @@
       "copied": "Copiado",
       "resetError": "No se pudo resetear la contraseña. Inténtalo de nuevo.",
       "resetTooMany": "Demasiados intentos. Espera un poco e inténtalo de nuevo."
+    },
+    "banner": {
+      "kicker": "Novedad · Hosting Web",
+      "title": "Aloja tu web con cPanel",
+      "subtitle": "Discos NVMe, SSL, copias y migración gratis. Protección DDoS incluida.",
+      "cta": "Ver planes de hosting",
+      "from": "Desde",
+      "perMonth": "/mes"
     }
   }
 }

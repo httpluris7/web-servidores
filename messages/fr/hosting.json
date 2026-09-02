@@ -69,6 +69,14 @@
       "copied": "Copié",
       "resetError": "Impossible de réinitialiser le mot de passe. Réessayez.",
       "resetTooMany": "Trop de tentatives. Patientez un instant et réessayez."
+    },
+    "banner": {
+      "kicker": "Nouveau · Hébergement Web",
+      "title": "Hébergez votre site avec cPanel",
+      "subtitle": "Disques NVMe, SSL, sauvegardes et migration gratuits. Protection DDoS incluse.",
+      "cta": "Voir les formules d’hébergement",
+      "from": "À partir de",
+      "perMonth": "/mois"
     }
   }
 }

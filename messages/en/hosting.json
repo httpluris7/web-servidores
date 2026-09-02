@@ -69,6 +69,14 @@
       "copied": "Copied",
       "resetError": "Couldn’t reset the password. Please try again.",
       "resetTooMany": "Too many attempts. Wait a moment and try again."
+    },
+    "banner": {
+      "kicker": "New · Web Hosting",
+      "title": "Host your site with cPanel",
+      "subtitle": "NVMe disks, free SSL, backups and migration. DDoS protection included.",
+      "cta": "See hosting plans",
+      "from": "From",
+      "perMonth": "/mo"
     }
   }
 }

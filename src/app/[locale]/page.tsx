@@ -1,5 +1,6 @@
 import { Hero } from "@/components/home/Hero";
 import { DomainSearchBanner } from "@/components/home/DomainSearchBanner";
+import { HostingBanner } from "@/components/home/HostingBanner";
 import { CredibilityStats } from "@/components/home/CredibilityStats";
 import { ProvisionTerminal } from "@/components/home/ProvisionTerminal";
 import { HardwareCounters } from "@/components/home/HardwareCounters";
@@ -23,6 +24,7 @@ export default async function HomePage({
     <>
       <Hero />
       <DomainSearchBanner />
+      <HostingBanner />
       <CredibilityStats />
       <ProvisionTerminal />
       <HardwareCounters />
