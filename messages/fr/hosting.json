@@ -77,6 +77,47 @@
       "cta": "Voir les formules d’hébergement",
       "from": "À partir de",
       "perMonth": "/mois"
-    }
+    },
+    "intro": {
+      "p1": "L'hébergement web ViaHost est un hébergement mutualisé géré avec cPanel sur disques NVMe et réseau 10 Gbps, dans des datacenters européens (Amsterdam et Allemagne). Il inclut SSL, sauvegardes quotidiennes, migration gratuite et protection DDoS.",
+      "p2": "Le prix est fixe : ce que vous voyez à la souscription est ce que vous payez à chaque renouvellement, sans augmentation. Le compte cPanel est créé automatiquement dès le paiement confirmé."
+    },
+    "table": {
+      "title": "Comparatif des formules d'hébergement",
+      "caption": "Formules d'hébergement web ViaHost avec specs et prix mensuel",
+      "plan": "Formule",
+      "price": "Prix",
+      "perMonth": "/mois"
+    },
+    "faq": {
+      "kicker": "FAQ",
+      "title": "Questions sur l'hébergement web"
+    },
+    "faqItems": [
+      {
+        "q": "L'hébergement inclut-il cPanel ?",
+        "a": "Oui. Chaque formule inclut cPanel avec Softaculous pour installer WordPress et plus de 400 applications en un clic."
+      },
+      {
+        "q": "Le prix augmente-t-il au renouvellement ?",
+        "a": "Non. Le prix est fixe : vous payez le même montant à la souscription et à chaque renouvellement."
+      },
+      {
+        "q": "Puis-je migrer mon site depuis un autre hébergeur ?",
+        "a": "Oui, la migration est gratuite : nous transférons votre site et vos emails depuis votre hébergeur actuel."
+      },
+      {
+        "q": "Combien de temps pour l'activation ?",
+        "a": "L'activation est automatique au paiement : le compte cPanel est créé en quelques secondes et les identifiants envoyés par email."
+      },
+      {
+        "q": "SSL et sauvegardes inclus ?",
+        "a": "Oui. SSL Let's Encrypt automatique pour chaque domaine et sauvegardes quotidiennes avec restauration en un clic."
+      },
+      {
+        "q": "Où sont les serveurs ?",
+        "a": "En Europe (Amsterdam et Allemagne), sur disques NVMe avec protection DDoS incluse."
+      }
+    ]
   }
 }

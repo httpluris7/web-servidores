@@ -77,6 +77,47 @@
       "cta": "Ver planes de hosting",
       "from": "Desde",
       "perMonth": "/mes"
-    }
+    },
+    "intro": {
+      "p1": "El hosting web de ViaHost es alojamiento compartido gestionado con cPanel sobre discos NVMe y red de 10 Gbps, en datacenters europeos (Ámsterdam y Alemania). Incluye SSL, copias diarias, migración gratis y protección DDoS.",
+      "p2": "El precio es plano: lo que ves al contratar es lo que pagas en cada renovación, sin subidas ni letra pequeña. La cuenta cPanel se crea automáticamente al confirmar el pago."
+    },
+    "table": {
+      "title": "Comparativa de planes de hosting",
+      "caption": "Planes de hosting web de ViaHost con sus specs y precio mensual",
+      "plan": "Plan",
+      "price": "Precio",
+      "perMonth": "/mes"
+    },
+    "faq": {
+      "kicker": "Preguntas frecuentes",
+      "title": "Dudas sobre el hosting web"
+    },
+    "faqItems": [
+      {
+        "q": "¿El hosting incluye cPanel?",
+        "a": "Sí. Todos los planes incluyen cPanel con Softaculous para instalar WordPress y más de 400 aplicaciones en un clic."
+      },
+      {
+        "q": "¿El precio sube al renovar?",
+        "a": "No. El precio es plano: pagas lo mismo el primer mes y en cada renovación, sin subidas ni letra pequeña."
+      },
+      {
+        "q": "¿Puedo migrar mi web desde otro proveedor?",
+        "a": "Sí, la migración es gratuita: traemos tu web y tus correos desde tu hosting actual."
+      },
+      {
+        "q": "¿Cuánto tarda en activarse?",
+        "a": "El alta es automática al confirmar el pago: la cuenta cPanel se crea en segundos y recibes las credenciales por correo."
+      },
+      {
+        "q": "¿Incluye SSL y copias de seguridad?",
+        "a": "Sí. SSL Let's Encrypt automático para cada dominio y copias diarias con restauración a un clic."
+      },
+      {
+        "q": "¿Dónde están los servidores?",
+        "a": "En Europa (Ámsterdam y Alemania), con discos NVMe y protección DDoS incluida."
+      }
+    ]
   }
 }

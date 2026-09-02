@@ -11,6 +11,9 @@ import { Reveal } from "@/components/ui/Reveal";
 import { CtaBand } from "@/components/ui/CtaBand";
 import { alternatesFor, breadcrumbJsonLd } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { HostingPlansTable } from "@/components/hosting/HostingPlansTable";
+import { FaqSection } from "@/components/ui/FaqSection";
+import { hostingFaq } from "@/data/faq";
 
 export const dynamic = "force-dynamic";
 
@@ -85,6 +88,13 @@ export default async function HostingPage({
         description={t("description")}
       />
 
+      <section className="container-edge max-w-3xl py-10 md:py-14">
+        <div className="space-y-4 text-[var(--color-fg-muted)]">
+          <p>{t("intro.p1")}</p>
+          <p>{t("intro.p2")}</p>
+        </div>
+      </section>
+
       <PlanGrid
         index="/01"
         kicker={t("plansKicker")}
@@ -94,8 +104,27 @@ export default async function HostingPage({
         specLabels={specLabels}
       />
 
+      <section className="container-edge py-6 md:py-10">
+        <SectionHeader index="/02" title={t("table.title")} />
+        <div className="mt-8">
+          <HostingPlansTable
+            plans={line.plans}
+            labels={{
+              plan: t("table.plan"),
+              sites: t("spec.sites"),
+              storage: t("spec.storage"),
+              email: t("spec.email"),
+              databases: t("spec.databases"),
+              price: t("table.price"),
+            }}
+            perMonth={t("table.perMonth")}
+            caption={t("table.caption")}
+          />
+        </div>
+      </section>
+
       <section className="container-edge py-14 md:py-24">
-        <SectionHeader index="/02" kicker={t("featuresKicker")} title={t("featuresTitle")} />
+        <SectionHeader index="/03" kicker={t("featuresKicker")} title={t("featuresTitle")} />
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((k, i) => (
             <Reveal key={k} delay={i} as="article">
@@ -107,6 +136,8 @@ export default async function HostingPage({
           ))}
         </div>
       </section>
+
+      <FaqSection items={hostingFaq} tKey="faqItems" namespace="hosting" index="/04" />
 
       <CtaBand title={t("ctaTitle")} />
     </>

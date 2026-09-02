@@ -9,6 +9,8 @@ import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
 import { alternatesFor, breadcrumbJsonLd } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { FaqSection } from "@/components/ui/FaqSection";
+import { dominiosFaq } from "@/data/faq";
 
 export async function generateMetadata({
   params,
@@ -59,7 +61,14 @@ export default async function DominiosPage({
         description={t("description")}
       />
 
-      <section className="container-edge max-w-5xl py-16 md:py-20">
+      <section className="container-edge max-w-3xl pt-8 md:pt-10">
+        <div className="space-y-4 text-[var(--color-fg-muted)]">
+          <p>{t("intro.p1")}</p>
+          <p>{t("intro.p2")}</p>
+        </div>
+      </section>
+
+      <section className="container-edge max-w-5xl py-12 md:py-16">
         <div className="mx-auto max-w-3xl">
           <DomainSearch
             user={user ? { nombre: user.nombre, email: user.email } : null}
@@ -70,6 +79,8 @@ export default async function DominiosPage({
 
         <TldGrid tarifas={tarifas} />
       </section>
+
+      <FaqSection items={dominiosFaq} tKey="faqItems" namespace="dominios" index="/05" />
     </>
   );
 }

@@ -7,14 +7,17 @@ import { JsonLd } from "@/components/seo/JsonLd";
 export async function FaqSection({
   items,
   tKey,
+  namespace = "products",
   index = "/0X",
 }: {
   items: FAQItem[];
-  /** Clave de namespace "products" para traducir las preguntas/respuestas por índice. */
-  tKey: "vpsFaq" | "dedicatedFaq";
+  /** Clave base para traducir las preguntas/respuestas por índice (`${tKey}.${i}.q`). */
+  tKey: string;
+  /** Namespace i18n donde viven las FAQ y `faq.kicker`/`faq.title` (por defecto "products"). */
+  namespace?: string;
   index?: string;
 }) {
-  const t = await getTranslations("products");
+  const t = await getTranslations(namespace);
   const translated: FAQItem[] = items.map((_, i) => ({
     q: t(`${tKey}.${i}.q`),
     a: t(`${tKey}.${i}.a`),

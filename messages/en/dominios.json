@@ -73,6 +73,36 @@
       "errorProvider": "Couldn't complete the operation. Please try again.",
       "invalid": "Invalid record data."
     },
-    "privacyNote": "Every domain includes WHOIS privacy at no cost: your personal data never appears in the public registry."
+    "privacyNote": "Every domain includes WHOIS privacy at no cost: your personal data never appears in the public registry.",
+    "intro": {
+      "p1": "At ViaHost you register your domain with WHOIS privacy included at no cost: your personal data (name, address, email and phone) never appears in the public registry.",
+      "p2": "You manage your domains and their DNS records from your account, and renewal is at the same price as registration. You can also point them to your ViaHost hosting or VPS."
+    },
+    "faq": {
+      "kicker": "FAQ",
+      "title": "Domain questions"
+    },
+    "faqItems": [
+      {
+        "q": "Is WHOIS privacy free?",
+        "a": "Yes. Every domain includes WHOIS privacy at no cost: your personal data never appears in the public registry."
+      },
+      {
+        "q": "Can I manage DNS?",
+        "a": "Yes. From your account you get a DNS record editor (A, AAAA, CNAME, MX, TXT and more)."
+      },
+      {
+        "q": "Does renewal cost the same as registration?",
+        "a": "Yes, renewal is at the same price as registration, with no increases."
+      },
+      {
+        "q": "Which extensions can I register?",
+        "a": "The most common ones (.com, .es, .org, .net, .io, .dev and more), with the yearly price shown before you order."
+      },
+      {
+        "q": "Can I use the domain with ViaHost hosting?",
+        "a": "Yes. You can register the domain and point it to your ViaHost hosting or VPS from the same panel."
+      }
+    ]
   }
 }
