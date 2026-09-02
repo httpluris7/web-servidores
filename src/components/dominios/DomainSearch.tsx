@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { Price } from "@/components/ui/Price";
 import { BankTransfer } from "@/components/ui/BankTransfer";
 import { eurPrecio } from "@/lib/utils";
@@ -9,13 +10,14 @@ import { eurPrecio } from "@/lib/utils";
 type Resultado = { name: string; tld: string; disponible: boolean; precioEur: number | null };
 type Elegido = { name: string; precioEur: number };
 type Confirmacion = { numero: string | null; refPago: string | null; total: number };
+type User = { nombre: string; email: string } | null;
 
 /**
  * Buscador + contratación de dominios (Fase 2). La búsqueda aplica el margen en
  * servidor; al contratar, un formulario en línea (años + datos + método) emite la
  * proforma con el motor de pago de siempre. El registro real ocurre al pagar (CP3).
  */
-export function DomainSearch() {
+export function DomainSearch({ user }: { user: User }) {
   const t = useTranslations("dominios");
   const locale = useLocale();
   const [q, setQ] = useState("");
@@ -87,6 +89,7 @@ export function DomainSearch() {
       <OrderForm
         elegido={elegido}
         locale={locale}
+        user={user}
         onCancel={() => setElegido(null)}
         onDone={(c) => setConfirmacion(c)}
         onCardRedirect={(url) => (window.location.href = url)}
@@ -160,20 +163,22 @@ export function DomainSearch() {
 function OrderForm({
   elegido,
   locale,
+  user,
   onCancel,
   onDone,
   onCardRedirect,
 }: {
   elegido: Elegido;
   locale: string;
+  user: User;
   onCancel: () => void;
   onDone: (c: Confirmacion) => void;
   onCardRedirect: (url: string) => void;
 }) {
   const t = useTranslations("dominios");
   const [years, setYears] = useState(1);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState(user?.nombre ?? "");
+  const [email, setEmail] = useState(user?.email ?? "");
   const [metodo, setMetodo] = useState<"transferencia" | "tarjeta">("transferencia");
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -204,6 +209,42 @@ function OrderForm({
 
   const field =
     "w-full min-w-0 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-2.5 text-sm focus:border-[var(--color-accent)] focus:outline-none";
+
+  // Contratar exige cuenta (como los VPS): sin sesión, acceso/registro.
+  if (!user) {
+    return (
+      <div className="grid gap-5 rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-6">
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <h2 className="font-mono text-lg break-all text-[var(--color-fg)]">{elegido.name}</h2>
+          <span className="text-sm text-[var(--color-fg-muted)]">
+            <Price value={elegido.precioEur} /> {t("perYear")}
+          </span>
+        </div>
+        <p className="text-sm text-[var(--color-fg-muted)]">{t("accountNeeded")}</p>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="/registro?next=/dominios"
+            className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)]"
+          >
+            {t("createAccount")}
+          </Link>
+          <Link
+            href="/acceder?next=/dominios"
+            className="inline-flex items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-6 py-3 text-sm transition-colors hover:border-[var(--color-accent)]"
+          >
+            {t("logIn")}
+          </Link>
+        </div>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="justify-self-start text-sm text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-fg)]"
+        >
+          {t("cancel")}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={enviar} className="grid gap-5 rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-6">

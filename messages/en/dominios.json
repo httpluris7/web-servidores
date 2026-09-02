@@ -34,6 +34,14 @@
     "backToSearch": "Search another domain",
     "orderError": "Couldn't create the proforma. Please try again.",
     "orderUnavailable": "That domain is no longer available.",
+    "accountNeeded": "You need an account to register the domain. Create one or log in and you'll come back here.",
+    "createAccount": "Create account",
+    "logIn": "Log in",
+    "pricing": {
+      "heading": "How much a domain costs",
+      "renewal": "Renewal",
+      "note": "Prices per year, with WHOIS privacy included at no cost. Renewal is at the same price as registration."
+    },
     "mis": {
       "metaTitle": "My domains",
       "kicker": "My domains",

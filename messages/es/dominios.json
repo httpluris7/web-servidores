@@ -34,6 +34,14 @@
     "backToSearch": "Buscar otro dominio",
     "orderError": "No se pudo emitir la proforma. Inténtalo de nuevo.",
     "orderUnavailable": "Ese dominio ya no está disponible.",
+    "accountNeeded": "Necesitas una cuenta para registrar el dominio. Crea una o inicia sesión y volverás aquí.",
+    "createAccount": "Crear cuenta",
+    "logIn": "Iniciar sesión",
+    "pricing": {
+      "heading": "Cuánto cuesta un dominio",
+      "renewal": "Renovación",
+      "note": "Precios por año, con privacidad WHOIS incluida sin coste. La renovación es al mismo precio que el alta."
+    },
     "mis": {
       "metaTitle": "Mis dominios",
       "kicker": "Mis dominios",

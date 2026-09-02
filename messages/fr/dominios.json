@@ -34,6 +34,14 @@
     "backToSearch": "Chercher un autre domaine",
     "orderError": "Impossible d'émettre la proforma. Réessayez.",
     "orderUnavailable": "Ce domaine n'est plus disponible.",
+    "accountNeeded": "Vous avez besoin d'un compte pour enregistrer le domaine. Créez-en un ou connectez-vous et vous reviendrez ici.",
+    "createAccount": "Créer un compte",
+    "logIn": "Se connecter",
+    "pricing": {
+      "heading": "Combien coûte un domaine",
+      "renewal": "Renouvellement",
+      "note": "Prix par an, confidentialité WHOIS incluse sans frais. Le renouvellement est au même prix que l'enregistrement."
+    },
     "mis": {
       "metaTitle": "Mes domaines",
       "kicker": "Mes domaines",

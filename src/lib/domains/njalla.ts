@@ -124,8 +124,12 @@ export async function getBalance(): Promise<number> {
 }
 
 /** Busca disponibilidad + precio por TLD para un término. */
-export async function findDomains(query: string): Promise<DomainOffer[]> {
-  const r = await call<{ domains?: Array<Record<string, unknown>> }>("find-domains", { query });
+export async function findDomains(query: string, timeoutMs?: number): Promise<DomainOffer[]> {
+  const r = await call<{ domains?: Array<Record<string, unknown>> }>(
+    "find-domains",
+    { query },
+    timeoutMs ? { timeoutMs } : {},
+  );
   const rows = r?.domains ?? [];
   return rows.map((d) => ({
     name: String(d.name ?? d.domain ?? ""),

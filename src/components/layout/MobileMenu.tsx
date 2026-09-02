@@ -177,6 +177,16 @@ export function MobileMenu({ nav }: { nav: NavCatalog }) {
                 </div>
               )}
 
+              {/* Registrar dominio: arriba de las categorías */}
+              <Link
+                href="/dominios"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-between border-b border-[var(--color-line)] py-4 text-lg text-[var(--color-accent)]"
+              >
+                {t("registerDomain")}
+                <span aria-hidden="true">→</span>
+              </Link>
+
               {groups.map((g) => {
                 const isOpen = section === g.label;
                 return (

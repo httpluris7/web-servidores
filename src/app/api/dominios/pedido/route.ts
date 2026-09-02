@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { clean, emailRe, saveLead } from "@/lib/leads";
+import { clean, saveLead } from "@/lib/leads";
 import { getSession } from "@/lib/session";
+import { getPublicUserById } from "@/lib/auth";
 import { njallaHasCreds, readSettings } from "@/lib/ajustes";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
 import { transferRef } from "@/lib/facturas";
@@ -30,6 +31,16 @@ export async function POST(req: Request) {
     );
   }
 
+  // Contratar exige cuenta (igual que los VPS): sin sesión, 401 y la UI lleva al acceso.
+  const session = await getSession();
+  const user = session ? await getPublicUserById(session.uid) : null;
+  if (!user) {
+    return NextResponse.json(
+      { ok: false, error: "You need to be logged in to complete the order." },
+      { status: 401 },
+    );
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await req.json();
@@ -37,19 +48,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Invalid JSON." }, { status: 400 });
   }
 
-  const name = clean(body.name, 120);
-  const email = clean(body.email, 200);
+  // El nombre y el email salen de la cuenta, no del cliente: así el pedido no se
+  // puede emitir a nombre de otro.
+  const name = `${user.nombre} ${user.apellidos}`.trim() || user.nombre;
+  const email = user.email;
   const domain = clean(body.domain, 80).toLowerCase();
   const years = Math.min(10, Math.max(1, Math.floor(Number(body.years) || 1)));
   const metodo: CheckoutMethod = body.metodo === "tarjeta" ? "tarjeta" : "transferencia";
   const locale = clean(body.locale, 5) || undefined;
 
-  const errors: Record<string, string> = {};
-  if (name.length < 2) errors.name = "Enter your name or company.";
-  if (!emailRe.test(email)) errors.email = "Enter a valid email.";
-  if (!DOMINIO_RE.test(domain)) errors.domain = "Invalid domain.";
-  if (Object.keys(errors).length > 0) {
-    return NextResponse.json({ ok: false, errors }, { status: 422 });
+  if (!DOMINIO_RE.test(domain)) {
+    return NextResponse.json({ ok: false, errors: { domain: "Invalid domain." } }, { status: 422 });
   }
 
   const { njalla } = await readSettings();
@@ -71,7 +80,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "provider" }, { status: 502 });
   }
 
-  const session = await getSession();
   const idioma: "es" | "en" = locale?.startsWith("es") ? "es" : "en";
 
   const lineas = [
@@ -97,18 +105,9 @@ export async function POST(req: Request) {
     );
   }
 
-  // Anti-spam del correo de proforma para pedidos anónimos (mismo criterio que VPS).
-  if (!session) {
-    const porDest = rateLimit(`proforma-mail:${email.toLowerCase()}`, { limit: 3, windowMs: 60 * 60_000 });
-    const conjunto = rateLimit("proforma-anon", { limit: 30, windowMs: 60 * 60_000 });
-    if (!porDest.ok || !conjunto.ok) {
-      return NextResponse.json({ ok: true, numero: null, paymentUrl: null });
-    }
-  }
-
   try {
     const { invoice, paymentUrl } = await checkoutOrder({
-      userId: session?.uid ?? null,
+      userId: user.id,
       clienteNombre: name,
       clienteEmail: email,
       lineas,
@@ -123,7 +122,7 @@ export async function POST(req: Request) {
         invoiceId: invoice.id,
         domain,
         years,
-        userId: session?.uid ?? null,
+        userId: user.id,
         email,
         idioma,
         renewal: false,
