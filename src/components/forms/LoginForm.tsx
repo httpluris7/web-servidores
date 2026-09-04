@@ -15,6 +15,10 @@ export function LoginForm({ next }: { next?: string }) {
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending">("idle");
   const [formError, setFormError] = useState<string | null>(null);
+  // Segundo paso (TOTP): tras la contraseña, si la cuenta tiene 2FA, el servidor
+  // deja un reto de 5 min y aquí se pide el código de la app (o uno de recuperación).
+  const [step, setStep] = useState<"credentials" | "code">("credentials");
+  const [code, setCode] = useState("");
 
   function validate(): boolean {
     const e: Errors = {};
@@ -43,12 +47,99 @@ export function LoginForm({ next }: { next?: string }) {
         setStatus("idle");
         return;
       }
+      const data = await res.json().catch(() => null);
+      if (data?.mfa) {
+        setStatus("idle");
+        setStep("code");
+        return;
+      }
       router.push(next || "/cuenta");
       router.refresh();
     } catch {
       setFormError(t("loginForm.errorConnection"));
       setStatus("idle");
     }
+  }
+
+  async function onSubmitCode(ev: React.FormEvent) {
+    ev.preventDefault();
+    setFormError(null);
+    if (!code.trim()) {
+      setFormError(t("loginForm.mfaErrorCode"));
+      return;
+    }
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/login/2fa", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        if (data?.error === "expired") {
+          // El reto caducó: vuelta a la contraseña.
+          setStep("credentials");
+          setCode("");
+          setFormError(t("loginForm.mfaErrorExpired"));
+        } else if (data?.error === "code") {
+          setFormError(t("loginForm.mfaErrorCode"));
+        } else {
+          setFormError(data?.error ?? t("loginForm.errorGeneric"));
+        }
+        setStatus("idle");
+        return;
+      }
+      router.push(next || "/cuenta");
+      router.refresh();
+    } catch {
+      setFormError(t("loginForm.errorConnection"));
+      setStatus("idle");
+    }
+  }
+
+  if (step === "code") {
+    return (
+      <form onSubmit={onSubmitCode} noValidate className="space-y-5">
+        <div>
+          <p className="mono-label mb-2">{t("loginForm.mfaTitle")}</p>
+          <p className="text-sm text-[var(--color-fg-muted)]">{t("loginForm.mfaHint")}</p>
+        </div>
+        <div>
+          <Label htmlFor="mfaCode" required>{t("loginForm.mfaCodeLabel")}</Label>
+          <Input
+            id="mfaCode"
+            type="text"
+            inputMode="numeric"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder={t("loginForm.mfaCodePlaceholder")}
+            autoComplete="one-time-code"
+            autoFocus
+            maxLength={20}
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={status === "sending"}
+          className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)] px-6 py-3.5 text-sm font-medium text-black transition-colors hover:bg-[var(--color-accent-dim)] disabled:opacity-60 sm:w-auto"
+        >
+          {status === "sending" ? t("loginForm.submitting") : t("loginForm.mfaSubmit")}
+        </button>
+        {formError && (
+          <p role="alert" className="text-sm text-[var(--color-danger)]">{formError}</p>
+        )}
+        <p className="text-sm">
+          <button
+            type="button"
+            onClick={() => { setStep("credentials"); setCode(""); setFormError(null); }}
+            className="text-[var(--color-accent)] underline"
+          >
+            {t("loginForm.mfaBack")}
+          </button>
+        </p>
+      </form>
+    );
   }
 
   return (

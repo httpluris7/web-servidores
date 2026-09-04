@@ -5,6 +5,9 @@ import { site } from "@/data/site";
 import { PageHero } from "@/components/ui/PageHero";
 import { LogoutButton } from "@/components/forms/LogoutButton";
 import { ChangePasswordForm } from "@/components/forms/ChangePasswordForm";
+import { MfaSettings } from "@/components/forms/MfaSettings";
+import { estadoMfa } from "@/lib/mfa";
+import { isAdminEmail } from "@/lib/admin";
 import { getSession } from "@/lib/session";
 import { getPublicUserById } from "@/lib/auth";
 import { listInvoicesByUser } from "@/lib/facturas";
@@ -47,10 +50,13 @@ const fieldKeys = [
 
 export default async function CuentaPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ admin2fa?: string }>;
 }) {
   const { locale } = await params;
+  const admin2fa = (await searchParams).admin2fa === "1";
   setRequestLocale(locale);
   const t = await getTranslations("auth");
 
@@ -224,6 +230,15 @@ export default async function CuentaPage({
             {t("account.securityIntro")}
           </p>
           <ChangePasswordForm />
+        </section>
+
+        <section id="2fa" className="mt-12 scroll-mt-24 border-t border-[var(--color-line)] pt-10">
+          <h2 className="mono-label mb-1">{t("mfa.heading")}</h2>
+          <p className="mb-6 text-sm text-[var(--color-fg-muted)]">{t("mfa.intro")}</p>
+          <MfaSettings
+            initial={await estadoMfa(user.id)}
+            forced={admin2fa || (isAdminEmail(user.email) && !(await estadoMfa(user.id)).enabled)}
+          />
         </section>
 
         <div className="mt-8">

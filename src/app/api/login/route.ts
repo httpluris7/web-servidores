@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { clean } from "@/lib/leads";
 import { emailRe } from "@/lib/password";
 import { burnPasswordTime, findUserByEmail, verifyPassword } from "@/lib/auth";
-import { createSession } from "@/lib/session";
+import { createMfaChallenge, createSession } from "@/lib/session";
+import { isMfaEnabled } from "@/lib/mfa";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
@@ -50,6 +51,13 @@ export async function POST(req: Request) {
   }
   if (!verifyPassword(password, user.passwordHash)) {
     return NextResponse.json({ ok: false, error: "Invalid credentials." }, { status: 401 });
+  }
+
+  // Con 2FA activo la contraseña no abre sesión: deja un reto de 5 min y el
+  // cliente pide el código a /api/login/2fa. Sin 2FA, sesión directa.
+  if (await isMfaEnabled(user.id)) {
+    await createMfaChallenge({ id: user.id, email: user.email });
+    return NextResponse.json({ ok: true, mfa: true });
   }
 
   await createSession({ id: user.id, email: user.email });

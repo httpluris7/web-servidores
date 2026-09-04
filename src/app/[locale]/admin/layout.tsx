@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link, redirect } from "@/i18n/navigation";
 import { site } from "@/data/site";
 import { getSession } from "@/lib/session";
-import { isAdminEmail } from "@/lib/admin";
+import { adminMfaOk, isAdminEmail } from "@/lib/admin";
 import { AdminNav } from "@/components/admin/AdminNav";
 
 export async function generateMetadata({
@@ -43,6 +43,13 @@ export default async function AdminLayout({
     return null; // inalcanzable (redirect lanza), pero permite a TS estrechar `session`.
   }
   if (!isAdminEmail(session.email)) notFound();
+  // 2FA obligatorio para admins: sin darlo de alta, al apartado de seguridad
+  // de la cuenta (fuera de /admin, así no hay bucle). Una sesión sin el código
+  // superado no llega aquí: getSession la invalida cuando el 2FA está activo.
+  if (!(await adminMfaOk(session))) {
+    redirect({ href: "/cuenta?admin2fa=1#2fa", locale });
+    return null;
+  }
 
   return (
     <div className="container-edge py-10 md:py-14">

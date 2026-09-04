@@ -76,7 +76,7 @@ export async function POST(req: Request) {
   // El cambio invalida toda cookie emitida con la huella anterior (resto de
   // dispositivos). Re-emitimos la del dispositivo actual con la nueva huella
   // para no cerrar la sesión desde la que se hizo el cambio.
-  await createSession({ id: user.id, email: user.email });
+  await createSession({ id: user.id, email: user.email }, { mfa: session.mfa === true });
 
   return NextResponse.json({ ok: true });
 }

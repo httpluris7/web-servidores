@@ -1,4 +1,5 @@
 import { getSession, type SessionData } from "./session";
+import { isMfaEnabled } from "./mfa";
 
 /**
  * Autorización de administrador.
@@ -27,12 +28,22 @@ export function isAdminEmail(email: string): boolean {
 }
 
 /**
- * Devuelve la sesión SOLO si es de un administrador; en cualquier otro caso
- * (anónimo o usuario normal) devuelve null. Es el único guard que necesitan
- * tanto las páginas `/admin` como las rutas `/api/admin`.
+ * Devuelve la sesión SOLO si es de un administrador CON el segundo factor
+ * superado; en cualquier otro caso (anónimo, usuario normal, admin sin 2FA
+ * dado de alta o con sesión sin código) devuelve null. Es el único guard que
+ * necesitan tanto las páginas `/admin` como las rutas `/api/admin`.
+ *
+ * El 2FA es obligatorio para admins: un admin sin darlo de alta no puede usar
+ * el panel ni su API hasta activarlo en /cuenta (el layout le redirige allí).
  */
 export async function getAdminSession(): Promise<SessionData | null> {
   const session = await getSession();
   if (!session || !isAdminEmail(session.email)) return null;
+  if (session.mfa !== true || !(await isMfaEnabled(session.uid))) return null;
   return session;
+}
+
+/** Estado del segundo factor de un admin, para que el layout decida a dónde mandarlo. */
+export async function adminMfaOk(session: SessionData): Promise<boolean> {
+  return session.mfa === true && (await isMfaEnabled(session.uid));
 }
