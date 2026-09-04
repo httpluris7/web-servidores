@@ -10,7 +10,14 @@ import { createZip, type ZipEntry } from "@/lib/zip";
  * otro servidor):
  *   - todo `data/` (JSONL de pedidos/usuarios/facturas/servidores, catálogo,
  *     métricas, avisos, ajustes.json con los secretos del panel…),
- *   - el `.env` de la raíz (claves de sesión, ADMIN_EMAILS, tokens de arranque).
+ *   - el `.env` de la raíz (claves de sesión, ADMIN_EMAILS, tokens de arranque),
+ *   - los VOLCADOS del host que deja `/usr/local/sbin/viahost-dumps` (root, cada
+ *     hora por systemd) en `/var/backups/viahost-dumps/`: MariaDB completo
+ *     (mailserver+roundcube), Postgres del provisioner y el Maildir de Dovecot.
+ *     La app corre como `viahost` sin privilegios y no puede leer nada de eso
+ *     directamente; el script root lo deja legible (0640 root:viahost) en una
+ *     carpeta donde la app NO puede escribir. Van dentro del zip como `dumps/…`.
+ *     (Hallazgo 7-01 de la auditoría 2026-09-03.)
  *
  * Qué NO entra:
  *   - el código (está en git: `git clone` + `npm run deploy` lo reponen),
@@ -27,6 +34,10 @@ import { createZip, type ZipEntry } from "@/lib/zip";
 const RAIZ = process.cwd();
 const DATA_DIR = path.join(RAIZ, "data");
 const ENV_FILE = path.join(RAIZ, ".env");
+/** Carpeta con los volcados del host (la deja root; ver cabecera). */
+export const DUMPS_DIR = process.env.BACKUP_DUMPS_DIR || "/var/backups/viahost-dumps";
+/** Ficheros de volcado que se esperan; el resto de la carpeta se ignora. */
+const DUMPS_ESPERADOS = ["mariadb-all.sql.gz", "provisioner-pg.sql.gz", "maildir.tar.gz", "dumps-info.json"];
 
 /** Subcarpeta de `data/` donde se guardan las copias locales; se excluye. */
 export const LOCAL_BACKUP_DIRNAME = "backups";
@@ -69,6 +80,53 @@ async function recogerData(): Promise<{ entries: ZipEntry[]; ficheros: string[] 
   return { entries, ficheros };
 }
 
+export type ResumenDumps = {
+  /** Ficheros de volcado incluidos (nombres dentro de `dumps/`). */
+  ficheros: string[];
+  /** Ficheros esperados que faltan (p.ej. el timer aún no corrió o falló). */
+  faltan: string[];
+  /** Antigüedad del volcado más viejo incluido, en minutos (null si no hay). */
+  edadMin: number | null;
+  /** Contenido de `dumps-info.json` (estado por volcado según el script root). */
+  info: Record<string, unknown> | null;
+};
+
+/**
+ * Recoge los volcados del host. Nunca lanza: si la carpeta no existe (otro
+ * servidor, entorno de desarrollo) el backup sale sin ellos y el resumen lo
+ * deja claro en `faltan`, para que el panel lo avise en vez de fingir.
+ */
+async function recogerDumps(): Promise<{ entries: ZipEntry[]; resumen: ResumenDumps }> {
+  const entries: ZipEntry[] = [];
+  const ficheros: string[] = [];
+  let masViejo: number | null = null;
+  let info: Record<string, unknown> | null = null;
+  for (const nombre of DUMPS_ESPERADOS) {
+    const abs = path.join(DUMPS_DIR, nombre);
+    try {
+      const st = await stat(abs);
+      if (!st.isFile()) continue;
+      const data = await readFile(abs);
+      entries.push({ name: `dumps/${nombre}`, data, date: st.mtime });
+      ficheros.push(nombre);
+      if (nombre.endsWith(".json")) {
+        try {
+          info = JSON.parse(data.toString("utf8")) as Record<string, unknown>;
+        } catch {
+          info = null;
+        }
+      } else if (masViejo === null || st.mtimeMs < masViejo) {
+        masViejo = st.mtimeMs;
+      }
+    } catch {
+      // no está: se refleja en `faltan`
+    }
+  }
+  const faltan = DUMPS_ESPERADOS.filter((n) => !ficheros.includes(n) && !n.endsWith(".json"));
+  const edadMin = masViejo === null ? null : Math.max(0, Math.round((Date.now() - masViejo) / 60000));
+  return { entries, resumen: { ficheros, faltan, edadMin, info } };
+}
+
 export type BackupManifest = {
   /** Formato del manifiesto, por si cambia. */
   version: number;
@@ -82,6 +140,8 @@ export type BackupManifest = {
   files: string[];
   /** Tamaño total del contenido sin comprimir, en bytes. */
   bytes: number;
+  /** Volcados del host incluidos (MariaDB/Postgres/Maildir) y su antigüedad. */
+  dumps: ResumenDumps;
 };
 
 async function appVersion(): Promise<string> {
@@ -100,6 +160,11 @@ async function appVersion(): Promise<string> {
 export async function construirBackup(): Promise<{ zip: Buffer; manifest: BackupManifest }> {
   const { entries, ficheros } = await recogerData();
 
+  // Volcados del host (BBDD + correo), si root los ha dejado.
+  const dumps = await recogerDumps();
+  entries.push(...dumps.entries);
+  ficheros.push(...dumps.resumen.ficheros.map((n) => `dumps/${n}`));
+
   // El `.env` de la raíz, si existe, como `env/.env` dentro del zip.
   let envIncluido = false;
   try {
@@ -115,12 +180,13 @@ export async function construirBackup(): Promise<{ zip: Buffer; manifest: Backup
 
   const bytes = entries.reduce((n, e) => n + e.data.length, 0);
   const manifest: BackupManifest = {
-    version: 1,
+    version: 2,
     createdAt: new Date().toISOString(),
     host: hostname(),
     appVersion: await appVersion(),
     files: ficheros,
     bytes,
+    dumps: dumps.resumen,
   };
 
   // El manifiesto va el primero para poder inspeccionarlo sin descomprimir todo.

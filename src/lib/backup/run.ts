@@ -55,6 +55,7 @@ export type ResultadoBackup = {
   nombre: string;
   bytes: number;
   destinos: EntradaHistorial["destinos"];
+  dumps?: EntradaHistorial["dumps"];
   error?: string;
 };
 
@@ -83,9 +84,15 @@ export async function ejecutarBackup(origen: "manual" | "programado"): Promise<R
 
   // 1) Construir y cifrar.
   let cifrado: Buffer;
+  let dumps: EntradaHistorial["dumps"];
   try {
-    const { zip } = await construirBackup();
+    const { zip, manifest } = await construirBackup();
     cifrado = cifrar(zip, backup.passphrase);
+    dumps = {
+      ficheros: manifest.dumps.ficheros.filter((n) => !n.endsWith(".json")).length,
+      faltan: manifest.dumps.faltan,
+      edadMin: manifest.dumps.edadMin,
+    };
   } catch (e) {
     const error = `No se pudo generar el backup: ${mensaje(e)}`;
     await registrar({ t: new Date().toISOString(), nombre, bytes: 0, origen, destinos: {}, ok: false, error });
@@ -126,8 +133,8 @@ export async function ejecutarBackup(origen: "manual" | "programado"): Promise<R
   }
 
   const ok = Object.values(destinos).some((d) => d?.ok);
-  await registrar({ t: new Date().toISOString(), nombre, bytes, origen, destinos, ok });
-  return { ok, nombre, bytes, destinos };
+  await registrar({ t: new Date().toISOString(), nombre, bytes, origen, destinos, ok, dumps });
+  return { ok, nombre, bytes, destinos, dumps };
 }
 
 async function enviar(fn: () => Promise<void>): Promise<ResultadoDestino> {

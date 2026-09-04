@@ -42,6 +42,7 @@ type Entrada = {
   destinos: Destinos;
   ok: boolean;
   error?: string;
+  dumps?: { ficheros: number; faltan: string[]; edadMin: number | null };
 };
 type Local = { nombre: string; bytes: number; mtime: string };
 
@@ -533,6 +534,7 @@ export function BackupSettingsForm({
                   <th className="pb-2 pr-4 font-medium">Origen</th>
                   <th className="pb-2 pr-4 font-medium">Tamaño</th>
                   <th className="pb-2 pr-4 font-medium">Destinos</th>
+                  <th className="pb-2 pr-4 font-medium">BBDD+correo</th>
                   <th className="pb-2 font-medium">Estado</th>
                 </tr>
               </thead>
@@ -555,6 +557,19 @@ export function BackupSettingsForm({
                             {d?.ok ? "✓" : "✗"} {k}
                           </span>
                         ))
+                      )}
+                    </td>
+                    <td className="py-2 pr-4">
+                      {!e.dumps ? (
+                        <span className="text-[var(--color-fg-dim)]" title="Copia anterior a la inclusión de volcados">—</span>
+                      ) : e.dumps.faltan.length > 0 ? (
+                        <span className="text-amber-300" title={`Faltan: ${e.dumps.faltan.join(", ")}`}>
+                          {e.dumps.ficheros}/3 incompleto
+                        </span>
+                      ) : (
+                        <span className="text-emerald-300" title="MariaDB + Postgres del provisioner + Maildir">
+                          ✓ 3/3{e.dumps.edadMin !== null ? ` (${e.dumps.edadMin} min)` : ""}
+                        </span>
                       )}
                     </td>
                     <td className="py-2">
@@ -590,11 +605,16 @@ node scripts/restaurar.mjs --dropbox --dropbox-refresh R --dropbox-key K --dropb
 node scripts/restaurar.mjs --sftp --sftp-host H --sftp-user U --sftp-key ./id_backup
 
 # después:
-npm ci && npm run deploy`}
+npm ci && npm run deploy
+
+# y, como root, las BBDD y el correo (revisa lo que va a hacer antes de --yes):
+sudo bash scripts/restaurar-dumps.sh ./restaurar-dumps --yes`}
         </pre>
         <p className="mt-3 text-xs text-[var(--color-fg-dim)]">
-          El restaurador repone <code>data/</code> y <code>.env</code>. La frase de cifrado se pide
-          si no se pasa por <code>--passphrase</code> o <code>BACKUP_PASSPHRASE</code>.
+          El restaurador repone <code>data/</code> y <code>.env</code> y deja los volcados de
+          MariaDB, Postgres del provisioner y Maildir en <code>restaurar-dumps/</code> para cargarlos con
+          <code>scripts/restaurar-dumps.sh</code>. La frase de cifrado se pide si no se pasa por{" "}
+          <code>--passphrase</code> o <code>BACKUP_PASSPHRASE</code>.
         </p>
       </section>
     </div>

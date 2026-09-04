@@ -35,6 +35,8 @@ export type EntradaHistorial = {
   ok: boolean;
   /** Error global (p.ej. no se pudo ni generar el zip). */
   error?: string;
+  /** Volcados del host (MariaDB/Postgres/Maildir) que entraron en la copia. */
+  dumps?: { ficheros: number; faltan: string[]; edadMin: number | null };
 };
 
 /* ------------------------------ Copia local ------------------------------ */

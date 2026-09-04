@@ -10,8 +10,9 @@
  *
  *   Receta de recuperación completa en un servidor nuevo:
  *     git clone <repo> web-servidores && cd web-servidores
- *     node scripts/restaurar.mjs <fuente>            # repone data/ y .env
+ *     node scripts/restaurar.mjs <fuente>            # repone data/ y .env (+ restaurar-dumps/)
  *     npm ci && npm run deploy                       # levanta la app
+ *     sudo bash scripts/restaurar-dumps.sh ./restaurar-dumps --yes   # BBDD + correo (como root)
  *
  * Fuentes admitidas:
  *   - Un fichero local:   node scripts/restaurar.mjs ./viahost-backup-….vhbk
@@ -224,7 +225,7 @@ function escribir(entradas, destino, force) {
   if (existsSync(dataDir) && readdirSync(dataDir).length > 0 && !force) {
     morir(`Ya existe un data/ con contenido en ${destino}. Usa --force para sobrescribirlo.`);
   }
-  let nData = 0, env = false, manifest = null;
+  let nData = 0, env = false, manifest = null, nDumps = 0;
   for (const { nombre, datos } of entradas) {
     if (nombre === "manifest.json") {
       try { manifest = JSON.parse(datos.toString("utf8")); } catch {}
@@ -233,6 +234,12 @@ function escribir(entradas, destino, force) {
     let salida;
     if (nombre.startsWith("data/")) { salida = path.join(destino, nombre); nData++; }
     else if (nombre === "env/.env") { salida = path.join(destino, ".env"); env = true; }
+    else if (nombre.startsWith("dumps/")) {
+      // Volcados del host (MariaDB/Postgres/Maildir): se dejan aparte para que
+      // root los cargue con scripts/restaurar-dumps.sh; NO se aplican solos.
+      salida = path.join(destino, "restaurar-dumps", nombre.slice("dumps/".length));
+      nDumps++;
+    }
     else continue; // rutas inesperadas: se ignoran por seguridad
     // Nunca escribir fuera de `destino` (defensa ante nombres con ../).
     const abs = path.resolve(salida);
@@ -241,7 +248,7 @@ function escribir(entradas, destino, force) {
     writeFileSync(abs, datos, { mode: 0o600 });
     chmodSync(abs, 0o600);
   }
-  return { nData, env, manifest };
+  return { nData, env, manifest, nDumps };
 }
 
 /* ------------------------------ frase paso ------------------------------- */
@@ -268,14 +275,20 @@ async function main() {
   console.log("▸ Descomprimiendo…");
   const entradas = descomprimir(zip);
   console.log(`▸ Escribiendo en ${destino}…`);
-  const { nData, env, manifest } = escribir(entradas, destino, !!args.force);
+  const { nData, env, manifest, nDumps } = escribir(entradas, destino, !!args.force);
   console.log(`\n✓ Restauración completada.`);
   console.log(`  · ${nData} ficheros en data/`);
   console.log(`  · .env: ${env ? "restaurado" : "no incluido en la copia"}`);
+  console.log(`  · volcados BBDD/correo: ${nDumps ? `${nDumps} ficheros en restaurar-dumps/` : "no incluidos en la copia"}`);
+  if (manifest && manifest.dumps && manifest.dumps.faltan && manifest.dumps.faltan.length) {
+    console.log(`    ⚠ en la copia faltaban: ${manifest.dumps.faltan.join(", ")}`);
+  }
   if (manifest) {
     console.log(`  · copia del ${manifest.createdAt} (host ${manifest.host}, app ${manifest.appVersion})`);
   }
-  console.log(`\n  Siguiente paso:  npm ci && npm run deploy\n`);
+  console.log(`\n  Siguiente paso:  npm ci && npm run deploy`);
+  if (nDumps) console.log(`  BBDD y correo:   sudo bash scripts/restaurar-dumps.sh ${path.join(destino, "restaurar-dumps")} --yes`);
+  console.log("");
 }
 
 main().catch((e) => morir(e && e.message ? e.message : String(e)));

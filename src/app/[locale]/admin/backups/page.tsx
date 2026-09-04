@@ -48,7 +48,8 @@ export default async function BackupsPage({
       <header>
         <h1 className="text-2xl font-semibold">Copias de seguridad</h1>
         <p className="mt-1 text-sm text-[var(--color-fg-muted)]">
-          Copias cifradas de los datos y secretos del servicio, con envío a Dropbox/SFTP y
+          Copias cifradas de los datos y secretos del servicio, más los volcados horarios de
+          MariaDB, Postgres del provisioner y el correo (Maildir), con envío a Dropbox/SFTP y
           restauración en otro servidor con un solo comando.
         </p>
       </header>
