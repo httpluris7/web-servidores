@@ -24,6 +24,25 @@ const securityHeaders = [
   // Fuerza HTTPS en este host durante 1 año (sin includeSubDomains/preload para
   // no comprometer subdominios como panel./mail. que se gestionan aparte).
   { key: "Strict-Transport-Security", value: "max-age=31536000" },
+  // CSP estricta en modo SOLO-REPORTE: no bloquea, registra violaciones en la
+  // consola del navegador. Contempla Stripe. Tras validarla (y añadir lo que
+  // reporte Cloudflare/Bot Fight), promoverla a "Content-Security-Policy".
+  {
+    key: "Content-Security-Policy-Report-Only",
+    value: [
+      "default-src 'self'",
+      "base-uri 'self'",
+      "object-src 'none'",
+      "frame-ancestors 'none'",
+      "img-src 'self' data: https:",
+      "font-src 'self' data:",
+      "style-src 'self' 'unsafe-inline'",
+      "script-src 'self' 'unsafe-inline' https://js.stripe.com",
+      "connect-src 'self' https://api.stripe.com",
+      "frame-src https://js.stripe.com https://hooks.stripe.com",
+      "form-action 'self'",
+    ].join("; "),
+  },
 ];
 
 const nextConfig: NextConfig = {
