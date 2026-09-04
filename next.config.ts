@@ -21,9 +21,11 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   // Desactiva APIs sensibles del navegador que la web no usa.
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
-  // Fuerza HTTPS en este host durante 1 año (sin includeSubDomains/preload para
-  // no comprometer subdominios como panel./mail. que se gestionan aparte).
-  { key: "Strict-Transport-Security", value: "max-age=31536000" },
+  // Fuerza HTTPS durante 1 año en el dominio y TODOS sus subdominios (mail.,
+  // panel., web01., *.cp. sirven ya HTTPS; nginx manda la misma cabecera en
+  // mail. y panel.). `preload` deja el dominio listo para hstspreload.org
+  // (la inclusión en la lista es un paso aparte y voluntario). Auditoría 3-02.
+  { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains; preload" },
   // CSP estricta en modo SOLO-REPORTE: no bloquea, registra violaciones en la
   // consola del navegador. Contempla Stripe. Tras validarla (y añadir lo que
   // reporte Cloudflare/Bot Fight), promoverla a "Content-Security-Policy".
