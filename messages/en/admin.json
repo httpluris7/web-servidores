@@ -91,6 +91,20 @@
         "no-encontrado": "That entry no longer exists. Reload the page.",
         "categoria-con-productos": "Delete or move its products first.",
         "categoria-vps-protegida": "The VPS family cannot be deleted: /vps depends on it."
+      },
+      "sync": {
+        "button": "Sync with provisioner",
+        "running": "Syncing…",
+        "help": "Pushes disk, RAM, vCores and price of the VPS plans to the provisioner (the website is the source of truth).",
+        "title": "Provisioner",
+        "close": "Close",
+        "failed": "Could not sync with the provisioner:",
+        "unconfigured": "The provisioner is not configured in this environment; nothing was synced.",
+        "unchanged": "{count, plural, one {# plan was already in sync} other {# plans were already in sync}}.",
+        "unknown": "Plans unknown to the provisioner (create them with seed:plans):",
+        "unparsable": "Specs that could not be parsed (check the CPU, RAM, disk or price text):",
+        "disk": "Disk (GB)",
+        "priceCents": "Price (cents)"
       }
     },
     "dashboard": {

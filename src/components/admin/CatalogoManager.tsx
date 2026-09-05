@@ -2,6 +2,7 @@
 
 import { cloneElement, useId, useState } from "react";
 import { useTranslations } from "next-intl";
+import type { InformeSync } from "@/lib/provisioner/planes";
 import { useRouter } from "@/i18n/navigation";
 import { Input, Label, Select, Textarea } from "@/components/forms/Field";
 import { eurPrecio } from "@/lib/utils";
@@ -48,6 +49,8 @@ export function CatalogoManager({ catalogo }: { catalogo: Catalogo }) {
   const [abierto, setAbierto] = useState<Abierto>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sync, setSync] = useState<InformeSync | null>(null);
+  const [syncBusy, setSyncBusy] = useState(false);
 
   const categorias = [...catalogo.categorias].sort((a, b) => a.orden - b.orden);
   const ubicaciones = [...catalogo.ubicaciones].sort((a, b) => a.orden - b.orden);
@@ -71,6 +74,7 @@ export function CatalogoManager({ catalogo }: { catalogo: Catalogo }) {
         setError(t(`catalog.errors.${ERRORES.includes(codigo) ? codigo : "generico"}`));
         return false;
       }
+      if (json.provisioner) setSync(json.provisioner as InformeSync);
       setAbierto(null);
       router.refresh();
       return true;
@@ -87,15 +91,42 @@ export function CatalogoManager({ catalogo }: { catalogo: Catalogo }) {
     await enviar({ entidad, accion: "borrar", id });
   }
 
+  async function sincronizar() {
+    setSyncBusy(true);
+    setSync(null);
+    try {
+      const res = await fetch("/api/admin/catalogo/sincronizar", { method: "POST" });
+      const json = (await res.json().catch(() => null)) as InformeSync | null;
+      setSync(json ?? { ok: false, resultado: null, noInterpretables: [], error: t("catalog.errors.conexion") });
+    } catch {
+      setSync({ ok: false, resultado: null, noInterpretables: [], error: t("catalog.errors.conexion") });
+    } finally {
+      setSyncBusy(false);
+    }
+  }
+
   const esteAbierto = (tipo: string, id: string | null) =>
     abierto?.tipo === tipo && abierto.id === id;
 
   return (
     <div className="grid gap-10">
-      <header>
-        <h1 className="text-2xl font-semibold">{t("catalog.title")}</h1>
-        <p className="mt-1 text-sm text-[var(--color-fg-muted)]">{t("catalog.subtitle")}</p>
+      <header className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold">{t("catalog.title")}</h1>
+          <p className="mt-1 text-sm text-[var(--color-fg-muted)]">{t("catalog.subtitle")}</p>
+        </div>
+        <button
+          type="button"
+          onClick={sincronizar}
+          disabled={syncBusy}
+          title={t("catalog.sync.help")}
+          className="rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-4 py-2 text-sm transition-colors hover:bg-white/5 disabled:opacity-60"
+        >
+          {syncBusy ? t("catalog.sync.running") : t("catalog.sync.button")}
+        </button>
       </header>
+
+      {sync && <InformeProvisioner informe={sync} onClose={() => setSync(null)} />}
 
       {error && (
         <p role="alert" className="text-sm text-[var(--color-danger)]">
@@ -847,5 +878,63 @@ function Etiqueta({ children }: { children: React.ReactNode }) {
     <span className="rounded border border-[var(--color-line-strong)] px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-wider text-[var(--color-fg-muted)]">
       {children}
     </span>
+  );
+}
+
+
+/** Resultado de la sincronización con el provisioner (tras guardar o con el botón). */
+function InformeProvisioner({ informe, onClose }: { informe: InformeSync; onClose: () => void }) {
+  const t = useTranslations("admin");
+  const r = informe.resultado;
+  const problema = !informe.ok || informe.noInterpretables.length > 0 || (r?.desconocidos.length ?? 0) > 0;
+  const etiqueta: Record<string, string> = {
+    vcores: "vCores",
+    ramMb: "RAM (MB)",
+    discoGb: t("catalog.sync.disk"),
+    precioMesEur: t("catalog.sync.priceCents"),
+  };
+  return (
+    <div
+      role="status"
+      className={
+        "rounded-[var(--radius-md)] border p-4 text-sm " +
+        (problema ? "border-[var(--color-danger)]/50 bg-[var(--color-danger)]/10" : "border-[var(--color-accent)]/40 bg-[var(--color-accent)]/10")
+      }
+    >
+      <div className="flex items-start justify-between gap-4">
+        <p className="font-medium">{t("catalog.sync.title")}</p>
+        <button type="button" onClick={onClose} className="text-xs text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">
+          {t("catalog.sync.close")}
+        </button>
+      </div>
+      {!informe.ok && <p className="mt-2">{t("catalog.sync.failed")} {informe.error}</p>}
+      {informe.ok && r === null && <p className="mt-2">{t("catalog.sync.unconfigured")}</p>}
+      {r && (
+        <ul className="mt-2 space-y-1">
+          {r.actualizados.map((a) => (
+            <li key={a.slug}>
+              <span className="font-mono">{a.slug}</span>:{" "}
+              {Object.entries(a.cambios)
+                .map(([campo, [antes, despues]]) => `${etiqueta[campo] ?? campo} ${antes} → ${despues}`)
+                .join(", ")}
+            </li>
+          ))}
+          {r.sinCambios.length > 0 && (
+            <li className="text-[var(--color-fg-muted)]">{t("catalog.sync.unchanged", { count: r.sinCambios.length })}</li>
+          )}
+          {r.desconocidos.length > 0 && (
+            <li>
+              {t("catalog.sync.unknown")} <span className="font-mono">{r.desconocidos.join(", ")}</span>
+            </li>
+          )}
+        </ul>
+      )}
+      {informe.noInterpretables.length > 0 && (
+        <p className="mt-2">
+          {t("catalog.sync.unparsable")}{" "}
+          <span className="font-mono">{informe.noInterpretables.map((n) => `${n.planId} (${n.motivo})`).join(", ")}</span>
+        </p>
+      )}
+    </div>
   );
 }

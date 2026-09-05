@@ -14,7 +14,9 @@ import {
   esIdCatalogo,
   type ErrorCatalogo,
   type Resultado,
+  readCatalogo,
 } from "@/lib/catalogo/store";
+import { sincronizarConProvisioner, type InformeSync } from "@/lib/provisioner/planes";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -89,7 +91,16 @@ export async function POST(req: Request) {
   // así que se invalida el layout entero en vez de ir ruta por ruta.
   revalidatePath("/", "layout");
 
-  return NextResponse.json({ ok: true, valor: resultado.valor });
+  // Manda la web: al guardar un producto VPS se empuja su definición (disco,
+  // RAM, vCores, precio) al provisioner. Es best-effort: el catálogo ya está
+  // guardado y, si falla, el admin lo ve y puede repetirlo desde el botón.
+  let provisioner: InformeSync | null = null;
+  if (entidad === "producto" && accion !== "borrar") {
+    const planId = (resultado.valor as { planId?: string }).planId;
+    if (planId) provisioner = await sincronizarConProvisioner(await readCatalogo(), [planId]);
+  }
+
+  return NextResponse.json({ ok: true, valor: resultado.valor, provisioner });
 }
 
 function ejecutar(

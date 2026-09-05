@@ -91,6 +91,20 @@
         "no-encontrado": "Cet élément n'existe plus. Rechargez la page.",
         "categoria-con-productos": "Supprimez ou déplacez d'abord ses produits.",
         "categoria-vps-protegida": "La famille VPS ne peut pas être supprimée : /vps en dépend."
+      },
+      "sync": {
+        "button": "Synchroniser avec le provisioner",
+        "running": "Synchronisation…",
+        "help": "Envoie disque, RAM, vCores et prix des plans VPS au provisioner (le site fait foi).",
+        "title": "Provisioner",
+        "close": "Fermer",
+        "failed": "Synchronisation avec le provisioner impossible :",
+        "unconfigured": "Le provisioner n’est pas configuré dans cet environnement ; rien n’a été synchronisé.",
+        "unchanged": "{count, plural, one {# plan était déjà à jour} other {# plans étaient déjà à jour}}.",
+        "unknown": "Plans inconnus du provisioner (créez-les avec seed:plans) :",
+        "unparsable": "Caractéristiques non interprétables (vérifiez le texte CPU, RAM, disque ou prix) :",
+        "disk": "Disque (Go)",
+        "priceCents": "Prix (centimes)"
       }
     },
     "dashboard": {

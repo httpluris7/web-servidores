@@ -91,6 +91,20 @@
         "no-encontrado": "Ese elemento ya no existe. Recarga la página.",
         "categoria-con-productos": "Elimina o mueve antes sus productos.",
         "categoria-vps-protegida": "La familia VPS no se puede eliminar: /vps depende de ella."
+      },
+      "sync": {
+        "button": "Sincronizar con el provisioner",
+        "running": "Sincronizando…",
+        "help": "Empuja disco, RAM, vCores y precio de los planes VPS al provisioner (manda la web).",
+        "title": "Provisioner",
+        "close": "Cerrar",
+        "failed": "No se pudo sincronizar con el provisioner:",
+        "unconfigured": "El provisioner no está configurado en este entorno; no se ha sincronizado nada.",
+        "unchanged": "{count, plural, one {# plan ya estaba igual} other {# planes ya estaban iguales}}.",
+        "unknown": "Planes que el provisioner no conoce (créalos con seed:plans):",
+        "unparsable": "Specs no interpretables (revisa el texto de CPU, RAM, disco o precio):",
+        "disk": "Disco (GB)",
+        "priceCents": "Precio (céntimos)"
       }
     },
     "dashboard": {

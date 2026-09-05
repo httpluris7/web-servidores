@@ -469,3 +469,32 @@ export function addVpsFirewallRule(
 export function deleteVpsFirewallRule(vpsId: number, pos: number): Promise<{ ok: boolean }> {
   return request("DELETE", `/vps/${vpsId}/firewall/rules?pos=${pos}`);
 }
+
+/* ------------------------------- Planes ----------------------------------- */
+
+/** Plan tal y como lo conoce el provisioner (specs en unidades de Proxmox, precio en céntimos). */
+export type PlanProvisioner = {
+  slug: string;
+  vcores: number;
+  ramMb: number;
+  discoGb: number;
+  precioMesEur: number;
+};
+
+export type PlanSyncResult = {
+  ok: boolean;
+  /** Planes cuya definición cambió, con [antes, después] por campo. */
+  actualizados: Array<{ slug: string; cambios: Partial<Record<"vcores" | "ramMb" | "discoGb" | "precioMesEur", [number, number]>> }>;
+  sinCambios: string[];
+  /** Slugs que la web ofrece pero el provisioner no conoce (se crean con `seed:plans`). */
+  desconocidos: string[];
+};
+
+export function getPlans(): Promise<{ plans: PlanProvisioner[] }> {
+  return request("GET", "/plans");
+}
+
+/** Empuja la definición de los planes (solo actualiza los que ya existen). */
+export function syncPlans(planes: PlanProvisioner[]): Promise<PlanSyncResult> {
+  return request("PUT", "/plans/sync", { plans: planes });
+}
