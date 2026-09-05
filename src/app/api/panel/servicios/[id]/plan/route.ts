@@ -124,7 +124,7 @@ export async function POST(req: Request, ctx: Ctx) {
           descripcion: `Server ${nombreServidor} · monthly price difference (${precioActual.toFixed(2)} € → ${elegido.precio.toFixed(2)} €)`,
           cantidad: 1,
           precioUnitario: importe,
-          productId: elegido.slug,
+          productId: `plan-change:${elegido.slug}`,
         },
       ],
       metodoPago: "transferencia",

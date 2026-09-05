@@ -292,7 +292,9 @@ async function emitirRenovacion(v: Vencimiento): Promise<RenovacionVps> {
         descripcion: `Service period ${fecha(desde)} → ${fecha(hasta)} (monthly)`,
         cantidad: 1,
         precioUnitario: info.precio,
-        productId: info.planSlug,
+        // Prefijo como en dominios (`domain:`): que la red de seguridad del alta no
+        // confunda una renovación con una compra de VPS sin aprovisionar.
+        productId: `renewal:${info.planSlug}`,
       },
     ],
     metodo: "transferencia",
