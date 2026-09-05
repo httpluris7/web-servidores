@@ -11,6 +11,7 @@ import { StripeSettingsForm } from "@/components/admin/StripeSettingsForm";
 import { ProviderSettingsForm } from "@/components/admin/ProviderSettingsForm";
 import { AlertSettingsForm } from "@/components/admin/AlertSettingsForm";
 import { WiseSettingsForm } from "@/components/admin/WiseSettingsForm";
+import { RenovacionesSettingsForm } from "@/components/admin/RenovacionesSettingsForm";
 import { NjallaSettingsForm } from "@/components/admin/NjallaSettingsForm";
 import { HostingSettingsForm } from "@/components/admin/HostingSettingsForm";
 
@@ -26,7 +27,7 @@ export default async function ConfiguracionPage({
   const t = await getTranslations("admin");
 
   // Al cliente solo viaja la versión enmascarada: los secretos no salen de aquí.
-  const { stripe, provider, alerts, wise, njalla, hosting } = await readSettings();
+  const { stripe, provider, alerts, wise, njalla, hosting, renovaciones } = await readSettings();
   const initial = {
     enabled: stripe.enabled,
     hasSecretKey: !!stripe.secretKey,
@@ -90,6 +91,8 @@ export default async function ConfiguracionPage({
       <NjallaSettingsForm initial={initialNjalla} />
 
       <HostingSettingsForm initial={initialHosting} />
+
+      <RenovacionesSettingsForm initial={{ enabled: renovaciones.enabled, diasAviso: renovaciones.diasAviso }} />
 
       <AlertSettingsForm initial={alerts} />
     </div>

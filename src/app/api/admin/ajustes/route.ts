@@ -11,6 +11,7 @@ import {
   updateWiseSettings,
   updateNjallaSettings,
   updateHostingSettings,
+  updateRenovacionesSettings,
   wiseHasCreds,
   njallaHasCreds,
   WEBHOOK_EVENTS,
@@ -24,6 +25,7 @@ import { getBalance, NjallaError } from "@/lib/domains/njalla";
 import { pingWhm, hostingConfigured, WhmError } from "@/lib/hosting/whm";
 import { invalidateInventoryCache } from "@/lib/servidores/inventario";
 import { ProviderError, verifyToken } from "@/lib/servidores/v4vm";
+import { barrerRenovacionesVps, candidatasARenovar, listarVencimientos } from "@/lib/servicios/renovaciones";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,8 +35,9 @@ export const dynamic = "force-dynamic";
  * versión enmascarada y si están puestos o no.
  */
 function publicView(settings: Settings) {
-  const { stripe, provider, alerts, wise, njalla, hosting } = settings;
+  const { stripe, provider, alerts, wise, njalla, hosting, renovaciones } = settings;
   return {
+    renovaciones: { enabled: renovaciones.enabled, diasAviso: renovaciones.diasAviso },
     // Los umbrales no son secretos: van tal cual, que el formulario los pinta.
     alerts,
     stripe: {
@@ -313,6 +316,14 @@ export async function PUT(req: Request) {
   if (body.section === "wise") return putWise(body);
   if (body.section === "njalla") return putNjalla(body);
   if (body.section === "hosting") return putHosting(body);
+  if (body.section === "renovaciones") {
+    const dias = Number(body.diasAviso);
+    const settings = await updateRenovacionesSettings({
+      ...(typeof body.enabled === "boolean" ? { enabled: body.enabled } : {}),
+      ...(Number.isInteger(dias) && dias >= 1 && dias <= 30 ? { diasAviso: dias } : {}),
+    });
+    return NextResponse.json({ ok: true, warning: null, ...publicView(settings) });
+  }
 
   // `null` borra la clave guardada; ausente o cadena vacía la deja como está.
   const readKey = (v: unknown): string | null | undefined => {
@@ -395,6 +406,33 @@ export async function POST(req: Request) {
       const message = err instanceof NjallaError ? err.message : "Could not reach Njalla.";
       return NextResponse.json({ ok: false, error: message }, { status: 502 });
     }
+  }
+
+  if (target === "renovaciones-barrido") {
+    // Barrido manual (aunque el automático esté apagado): emite las proformas que toquen hoy.
+    const { renovaciones } = await readSettings();
+    const emitidas = await barrerRenovacionesVps(renovaciones.diasAviso);
+    return NextResponse.json({ ok: true, emitidas });
+  }
+
+  if (target === "renovaciones") {
+    // Vista previa: vencimientos de todos los VPS y cuáles se emitirían hoy.
+    const { renovaciones } = await readSettings();
+    const [vencimientos, candidatas] = await Promise.all([listarVencimientos(), candidatasARenovar(renovaciones.diasAviso)]);
+    const hoy = new Set(candidatas.map((c) => c.ficha.id));
+    return NextResponse.json({
+      ok: true,
+      vencimientos: vencimientos.map((v) => ({
+        servidorId: v.ficha.id,
+        remoteId: v.ficha.remoteId,
+        userId: v.ficha.userId,
+        etiqueta: v.ficha.etiqueta,
+        periodoHasta: v.periodoHasta,
+        origen: v.origen,
+        pendiente: v.pendiente ? { invoiceId: v.pendiente.invoiceId, importe: v.pendiente.importe, periodoHasta: v.pendiente.periodoHasta } : null,
+        emitiriaHoy: hoy.has(v.ficha.id),
+      })),
+    });
   }
 
   if (target === "hosting") {

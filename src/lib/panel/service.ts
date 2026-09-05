@@ -3,6 +3,7 @@ import { getManagedForUser } from "@/lib/servidores/cliente";
 import { getVpsDetalle, type VpsDetalle } from "@/lib/provisioner/client";
 import { intentByProvisionOrderId } from "@/lib/provisioner/intents";
 import { tieneCambioAplicado } from "@/lib/provisioner/cambios-plan";
+import { vencimientoDeFicha } from "@/lib/servicios/renovaciones";
 import { getInvoiceById, PAYMENT_METHOD_LABEL, type Invoice } from "@/lib/facturas";
 import { leerMetricas, type Muestra } from "@/lib/servidores/metricas";
 import { readCatalogo, texto } from "@/lib/catalogo/store";
@@ -49,14 +50,16 @@ export async function getPanelServiceForUser(
     throw new PanelUnavailableError((err as Error).message);
   }
 
-  const [agente, factura, nombres, planCambiado] = await Promise.all([
+  const intent = await intentByProvisionOrderId(d.order_id).catch(() => null);
+  const [agente, factura, nombres, planCambiado, vencimiento] = await Promise.all([
     muestraReciente(managed),
-    facturaDeVps(d.order_id),
+    intent ? getInvoiceById(intent.invoiceId).catch(() => null) : Promise.resolve(null),
     nombresCatalogo(d.plan_slug, locale),
     tieneCambioAplicado(managed.id),
+    vencimientoDeFicha(managed, intent),
   ]);
 
-  return construir(managed, d, agente, factura, nombres, planCambiado);
+  return construir(managed, d, agente, factura, nombres, planCambiado, vencimiento.periodoHasta);
 }
 
 /* -------------------------------- Fuentes --------------------------------- */
@@ -75,16 +78,6 @@ async function muestraReciente(m: ManagedServer): Promise<Muestra | null> {
 }
 
 /** Factura enlazada al VPS (vía la intención de aprovisionamiento). */
-async function facturaDeVps(orderId: number): Promise<Invoice | null> {
-  try {
-    const intent = await intentByProvisionOrderId(orderId);
-    if (!intent) return null;
-    return await getInvoiceById(intent.invoiceId);
-  } catch {
-    return null;
-  }
-}
-
 /** Producto y plan legibles desde el catálogo (por el slug del plan). */
 async function nombresCatalogo(
   planSlug: string | null,
@@ -114,6 +107,7 @@ function construir(
   inv: Invoice | null,
   nombres: { producto: string | null; plan: string | null },
   planCambiado = false,
+  periodoHasta: string | null = null,
 ): PanelService {
   const live = d.live;
   const running = live?.status === "running" || (live == null && d.estado === "running");
@@ -186,7 +180,8 @@ function construir(
     altaAt: inv?.emitidaAt ?? d.creado ?? "",
     importeEur,
     ciclo: "mensual",
-    vencimientoAt: inv?.vencimientoAt ?? "",
+    // Fin del periodo pagado (renovaciones), no la fecha límite de pago de la factura.
+    vencimientoAt: periodoHasta ?? inv?.vencimientoAt ?? "",
     metodoPago: inv?.metodoPago ? PAYMENT_METHOD_LABEL[inv.metodoPago] : "",
     nodo: d.node_nombre,
     nombre: d.hostname || m.etiqueta || `vps-${d.vmid}`,

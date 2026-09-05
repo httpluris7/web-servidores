@@ -4,6 +4,7 @@ import { deleteInvoice, setInvoiceStatus, type InvoiceStatus } from "@/lib/factu
 import { emailInvoiceDocument } from "@/lib/invoice-notify";
 import { aprovisionarFacturaPagada } from "@/lib/provisioner/aprovisionar";
 import { aplicarCambiosPlanFacturaPagada } from "@/lib/provisioner/cambios-plan";
+import { aplicarRenovacionesFacturaPagada, cancelarRenovacionesFactura } from "@/lib/servicios/renovaciones";
 import { registrarDominiosFacturaPagada } from "@/lib/domains/registrar";
 import { aprovisionarHostingFacturaPagada } from "@/lib/hosting/registrar";
 
@@ -53,11 +54,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     await aprovisionarFacturaPagada(result.invoice.id);
     // …y en cambios de plan de VPS cobrados por esta factura (ampliaciones). Best-effort.
     await aplicarCambiosPlanFacturaPagada(result.invoice.id);
+    await aplicarRenovacionesFacturaPagada(result.invoice.id);
     // …y el registro de dominios de la factura (CP3). Best-effort e idempotente.
     await registrarDominiosFacturaPagada(result.invoice.id);
     // …y el alta de hosting en cPanel de la factura. Best-effort e idempotente.
     await aprovisionarHostingFacturaPagada(result.invoice.id);
   }
+
+  // Proforma cancelada: la renovación asociada deja de contar como pendiente.
+  if (estado === "cancelada") await cancelarRenovacionesFactura(result.invoice.id);
 
   return NextResponse.json({ ok: true, factura: result.invoice, emailSent });
 }

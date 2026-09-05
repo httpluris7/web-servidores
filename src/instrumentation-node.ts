@@ -2,6 +2,7 @@ import { barrerAgentesCaidos } from "@/lib/servidores/avisos";
 import { comprobarBackupDiario } from "@/lib/backup/planificador";
 import { comprobarWise } from "@/lib/payments/wise-reconcile";
 import { comprobarDominios } from "@/lib/domains/monitor";
+import { comprobarRenovacionesVps } from "@/lib/servicios/renovaciones";
 
 /**
  * Único trabajo periódico de la aplicación: buscar agentes que han dejado de
@@ -38,6 +39,9 @@ const lanzar = () => {
   // Dominios: monitor de saldo del monedero Njalla + barrido de renovaciones
   // (1×/día). No hace nada si Njalla está apagado o sin token.
   void comprobarDominios();
+  // Renovaciones mensuales de VPS: proforma N días antes del fin de periodo
+  // (1×/día). No hace nada con el interruptor apagado.
+  void comprobarRenovacionesVps();
 };
 
 // `unref` para que un temporizador pendiente no mantenga vivo el proceso

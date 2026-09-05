@@ -188,6 +188,17 @@ export type HostingSettings = {
   baseDomain: string;
 };
 
+/**
+ * Renovaciones mensuales de los VPS aprovisionados (módulo
+ * `lib/servicios/renovaciones`). Con el interruptor apagado no se emite nada:
+ * el admin puede ver la vista previa de vencimientos antes de encenderlo.
+ */
+export type RenovacionesSettings = {
+  enabled: boolean;
+  /** Días antes del fin de periodo en que se emite la proforma de renovación. */
+  diasAviso: number;
+};
+
 export type Settings = {
   stripe: StripeSettings;
   provider: ProviderSettings;
@@ -196,7 +207,19 @@ export type Settings = {
   wise: WiseSettings;
   njalla: NjallaSettings;
   hosting: HostingSettings;
+  renovaciones: RenovacionesSettings;
 };
+
+export const DEFAULT_RENOVACIONES: RenovacionesSettings = { enabled: false, diasAviso: 7 };
+
+function normalizeRenovaciones(raw: unknown): RenovacionesSettings {
+  const o = (raw ?? {}) as Partial<Record<keyof RenovacionesSettings, unknown>>;
+  const dias = Number(o.diasAviso);
+  return {
+    enabled: o.enabled === true,
+    diasAviso: Number.isInteger(dias) && dias >= 1 && dias <= 30 ? dias : DEFAULT_RENOVACIONES.diasAviso,
+  };
+}
 
 /** Valores de partida de Wise: apagado y en sandbox (pruebas sin dinero real). */
 export const DEFAULT_WISE: WiseSettings = {
@@ -469,6 +492,7 @@ export async function readSettings(): Promise<Settings> {
       wise: { ...wiseEnv },
       njalla: { ...njallaEnv },
       hosting: { ...hostingEnv },
+      renovaciones: { ...DEFAULT_RENOVACIONES },
     };
   }
   const obj = (parsed ?? {}) as {
@@ -479,6 +503,7 @@ export async function readSettings(): Promise<Settings> {
     wise?: unknown;
     njalla?: unknown;
     hosting?: unknown;
+    renovaciones?: unknown;
   };
   return {
     stripe: normalizeStripe(obj.stripe, env),
@@ -488,6 +513,7 @@ export async function readSettings(): Promise<Settings> {
     wise: normalizeWise(obj.wise, wiseEnv),
     njalla: normalizeNjalla(obj.njalla, njallaEnv),
     hosting: normalizeHosting(obj.hosting, hostingEnv),
+    renovaciones: normalizeRenovaciones(obj.renovaciones),
   };
 }
 
@@ -825,4 +851,14 @@ export function wiseHasCreds(wise: WiseSettings): boolean {
 export async function wiseIsReady(): Promise<boolean> {
   const { wise } = await readSettings();
   return wise.enabled && wiseHasCreds(wise);
+}
+
+export async function updateRenovacionesSettings(patch: Partial<RenovacionesSettings>): Promise<Settings> {
+  const current = await readSettings();
+  const next: Settings = {
+    ...current,
+    renovaciones: normalizeRenovaciones({ ...current.renovaciones, ...patch }),
+  };
+  await writeSettings(next);
+  return next;
 }
