@@ -33,17 +33,14 @@ function deploymentId(): string {
 }
 
 /**
- * Cabeceras de seguridad aplicadas a todas las respuestas.
- *
- * No se incluye una CSP completa de `script-src` porque Next inyecta scripts
- * inline (bootstrap de hidratación, JSON-LD) y una política estricta sin nonces
- * rompería la app. Sí fijamos `frame-ancestors` (anti-clickjacking, clave en
- * login/checkout) más el resto de cabeceras estándar de endurecimiento.
+ * Cabeceras de seguridad aplicadas a todas las respuestas, incluida una CSP
+ * bloqueante (ver más abajo). `script-src` lleva 'unsafe-inline' porque Next
+ * inyecta scripts inline (bootstrap de hidratación, JSON-LD) sin nonces; una
+ * política con nonces exigiría middleware por petición y es un paso posterior.
  */
 const securityHeaders = [
-  // Anti-clickjacking (doble: cabecera legacy + CSP moderna).
+  // Anti-clickjacking legacy (la CSP de abajo lleva además frame-ancestors 'none').
   { key: "X-Frame-Options", value: "DENY" },
-  { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
   // Evita el MIME-sniffing.
   { key: "X-Content-Type-Options", value: "nosniff" },
   // No filtrar la URL completa como referer a otros orígenes.
@@ -55,11 +52,20 @@ const securityHeaders = [
   // mail. y panel.). `preload` deja el dominio listo para hstspreload.org
   // (la inclusión en la lista es un paso aparte y voluntario). Auditoría 3-02.
   { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains; preload" },
-  // CSP estricta en modo SOLO-REPORTE: no bloquea, registra violaciones en la
-  // consola del navegador. Contempla Stripe. Tras validarla (y añadir lo que
-  // reporte Cloudflare/Bot Fight), promoverla a "Content-Security-Policy".
+  // CSP estricta BLOQUEANTE (promovida de Report-Only el 2026-09-05 tras un
+  // rastreo con Chromium de todas las rutas públicas, del área de cliente y del
+  // admin sin una sola violación reportada). Contempla:
+  //  - Stripe Checkout (js/api/hooks.stripe.com) por si se embebe en el futuro;
+  //    hoy el pago redirige a la página alojada de Stripe (no lo afecta la CSP).
+  //  - Cloudflare: Bot Fight Mode / Managed Challenge / Turnstile inyectan
+  //    scripts e iframes desde challenges.cloudflare.com (los de /cdn-cgi/ son
+  //    del mismo origen y ya entran por 'self').
+  //  - La consola noVNC del panel abre un websocket contra el propio host
+  //    (`/console-ws`); Safari no siempre cubre wss: con 'self', por eso va explícito.
+  //  - En desarrollo (`next dev`) React Refresh necesita 'unsafe-eval'.
+  // 'unsafe-inline' sigue siendo necesario: Next inyecta scripts inline sin nonce.
   {
-    key: "Content-Security-Policy-Report-Only",
+    key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
       "base-uri 'self'",
@@ -68,9 +74,9 @@ const securityHeaders = [
       "img-src 'self' data: https:",
       "font-src 'self' data:",
       "style-src 'self' 'unsafe-inline'",
-      "script-src 'self' 'unsafe-inline' https://js.stripe.com",
-      "connect-src 'self' https://api.stripe.com",
-      "frame-src https://js.stripe.com https://hooks.stripe.com",
+      `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'"} https://js.stripe.com https://challenges.cloudflare.com`,
+      "connect-src 'self' wss://viahost.top wss://*.viahost.top https://api.stripe.com https://challenges.cloudflare.com",
+      "frame-src https://js.stripe.com https://hooks.stripe.com https://challenges.cloudflare.com",
       "form-action 'self'",
     ].join("; "),
   },
