@@ -92,7 +92,7 @@ export function DiscosSection({ id }: { id: string }) {
   return (
     <section id="discos" className={`${CARD} scroll-mt-28`}>
       <div className="px-6 pt-6">
-        <p className={SECTION_INDEX}>/12</p>
+        <p className={SECTION_INDEX}>/14</p>
         <h2 className="mt-2 text-lg font-semibold">{t("discos.heading")}</h2>
         <p className="mt-1 text-sm text-[var(--color-fg-muted)]">{t("discos.intro")}</p>
       </div>

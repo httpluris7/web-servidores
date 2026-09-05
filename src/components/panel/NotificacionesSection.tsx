@@ -42,7 +42,7 @@ export function NotificacionesSection({ id }: { id: string }) {
 
   return (
     <section id="notificaciones" className={`${CARD_PAD} scroll-mt-28`}>
-      <p className={SECTION_INDEX}>/14</p>
+      <p className={SECTION_INDEX}>/16</p>
       <h2 className="mt-2 text-lg font-semibold">{t("notif.heading")}</h2>
 
       {error ? (

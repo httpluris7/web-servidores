@@ -596,3 +596,24 @@ export function resizeVpsDiskToPlan(
 ): Promise<{ ok: boolean; size_gb: number; requiere_reinicio: boolean }> {
   return request("POST", `/vps/${vpsId}/disks/${encodeURIComponent(key)}/resize`, undefined, 60_000);
 }
+
+/* ---------------------------- Plantillas y plan ---------------------------- */
+
+export type VpsTemplate = { os_slug: string; vmid: number; usuario: string };
+
+export function vpsTemplates(vpsId: number): Promise<{ ok: boolean; actual: string | null; templates: VpsTemplate[] }> {
+  return request("GET", `/vps/${vpsId}/templates`);
+}
+
+export type PlanChangeResult = {
+  ok: boolean;
+  anterior: string;
+  plan_slug: string;
+  disco_ampliado: boolean;
+  requiere_reinicio: boolean;
+};
+
+/** Cambia el plan del VPS (vCores/RAM en config, disco crece si toca). 409 disk_shrink si el disco no cabe. */
+export function setVpsPlan(vpsId: number, planSlug: string, allowSmallerDisk = false): Promise<PlanChangeResult> {
+  return request("POST", `/vps/${vpsId}/plan`, { plan_slug: planSlug, allow_smaller_disk: allowSmallerDisk }, 60_000);
+}

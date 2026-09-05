@@ -33,14 +33,14 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: "resumen", anchor: "resumen", icon: "gauge" },
       { key: "informacion", anchor: "informacion", icon: "info" },
       { key: "ips", anchor: "ips", icon: "globe" },
-      { key: "plantillas", anchor: "gestion", icon: "layers", soon: true },
+      { key: "plantillas", anchor: "plantillas", icon: "layers" },
     ],
   },
   {
     key: "acciones",
     items: [
       { key: "energia", anchor: "acciones", icon: "power" },
-      { key: "plan", anchor: "gestion", icon: "sliders", soon: true },
+      { key: "plan", anchor: "plan", icon: "sliders" },
     ],
   },
   {

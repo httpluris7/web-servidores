@@ -323,6 +323,38 @@
       "resize": "Ampliar a {size} GB",
       "resized": "Disco ampliado a {size} GB. Reinicia el servidor para que el sistema extienda la partición.",
       "alreadyAtPlan": "El disco ya tiene el tamaño del plan."
+    },
+    "plantillas": {
+      "heading": "Plantillas",
+      "intro": "Sistemas operativos disponibles en tu centro de datos. Reinstalar sustituye todo el disco.",
+      "current": "Instalado",
+      "windows": "Windows (BYOL)",
+      "linux": "Linux",
+      "tooSmall": "Necesita {size} GB de disco",
+      "reinstall": "Reinstalar con esta plantilla",
+      "empty": "Sin plantillas disponibles."
+    },
+    "plan": {
+      "heading": "Ampliar / Reducir plan",
+      "intro": "Cambia las prestaciones de este servidor. Ampliar se cobra por la diferencia de precio mensual y se aplica al pagar la proforma; reducir es inmediato y gratuito y el nuevo precio rige desde el siguiente cobro. El disco nunca se reduce.",
+      "current": "Plan actual",
+      "perMonth": "€/mes",
+      "upgrade": "Ampliar",
+      "downgrade": "Reducir",
+      "same": "Actual",
+      "pending": "Tienes una ampliación pendiente de pago por {importe} €.",
+      "payLink": "Ver y pagar la proforma",
+      "requestUpgrade": "Solicitar ampliación",
+      "confirmDowngrade": "Reducir el plan ahora",
+      "upgradeDone": "Proforma {numero} emitida por {importe} €. La ampliación se aplicará al confirmarse el pago.",
+      "downgradeDone": "Plan reducido. Reinicia el servidor para aplicar las nuevas prestaciones.",
+      "downgradeBody": "La reducción se aplica al instante: el servidor pasará a {cpu} y {ram}, conservando su disco actual ({storage}); el disco nunca se reduce. Hace falta reiniciar. El nuevo precio regirá desde el siguiente cobro.",
+      "errorPending": "Ya hay un cambio de plan pendiente de pago.",
+      "errorBusy": "Hay una operación en curso. Espera a que termine.",
+      "cpu": "CPU",
+      "ram": "RAM",
+      "storage": "Disco",
+      "diskKept": "conserva el disco actual ({size})"
     }
   }
 }

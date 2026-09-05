@@ -323,6 +323,38 @@
       "resize": "Grow to {size} GB",
       "resized": "Disk grown to {size} GB. Reboot the server so the OS extends the partition.",
       "alreadyAtPlan": "The disk already matches the plan size."
+    },
+    "plantillas": {
+      "heading": "Templates",
+      "intro": "Operating systems available in your data centre. Reinstalling replaces the whole disk.",
+      "current": "Installed",
+      "windows": "Windows (BYOL)",
+      "linux": "Linux",
+      "tooSmall": "Needs {size} GB of disk",
+      "reinstall": "Reinstall with this template",
+      "empty": "No templates available."
+    },
+    "plan": {
+      "heading": "Upgrade / Downgrade plan",
+      "intro": "Change this server’s resources. Upgrades are charged as the monthly price difference and applied once the proforma is paid; downgrades are immediate and free, and the new price applies from the next charge. Disk is never shrunk.",
+      "current": "Current plan",
+      "perMonth": "€/month",
+      "upgrade": "Upgrade",
+      "downgrade": "Downgrade",
+      "same": "Current",
+      "pending": "You have an upgrade awaiting payment for €{importe}.",
+      "payLink": "View and pay the proforma",
+      "requestUpgrade": "Request upgrade",
+      "confirmDowngrade": "Downgrade now",
+      "upgradeDone": "Proforma {numero} issued for €{importe}. The upgrade will be applied once payment is confirmed.",
+      "downgradeDone": "Plan downgraded. Reboot the server to apply the new resources.",
+      "downgradeBody": "The downgrade is immediate: the server will move to {cpu} and {ram}, keeping its current disk ({storage}); disk is never shrunk. A reboot is required. The new price applies from the next charge.",
+      "errorPending": "There is already a plan change awaiting payment.",
+      "errorBusy": "There is an operation in progress. Wait for it to finish.",
+      "cpu": "CPU",
+      "ram": "RAM",
+      "storage": "Disk",
+      "diskKept": "keeps current disk ({size})"
     }
   }
 }

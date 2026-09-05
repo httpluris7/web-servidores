@@ -103,7 +103,7 @@ export function FirewallSection({ id }: { id: string }) {
   return (
     <section id="firewall" className={`${CARD} scroll-mt-28`}>
       <div className="px-6 pt-6">
-        <p className={SECTION_INDEX}>/15</p>
+        <p className={SECTION_INDEX}>/17</p>
         <h2 className="mt-2 text-lg font-semibold">{t("firewall.heading")}</h2>
         <p className="mt-1 text-sm text-[var(--color-fg-muted)]">{t("firewall.intro")}</p>
       </div>

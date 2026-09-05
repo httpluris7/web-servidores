@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { ofertablesParaDisco } from "@/lib/provisioner/os";
@@ -30,6 +30,20 @@ export function ReinstalarSection({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+
+  // "Plantillas" preselecciona un SO y abre este formulario (evento panel:reinstalar).
+  useEffect(() => {
+    const onPick = (ev: Event) => {
+      const slug = (ev as CustomEvent<{ slug?: string }>).detail?.slug;
+      if (slug && opciones.some((o) => o.slug === slug)) {
+        setOs(slug);
+        setAbierto(true);
+        setError(null);
+      }
+    };
+    window.addEventListener("panel:reinstalar", onPick);
+    return () => window.removeEventListener("panel:reinstalar", onPick);
+  }, [opciones]);
 
   async function reinstalar() {
     setError(null);
@@ -71,7 +85,7 @@ export function ReinstalarSection({
 
   return (
     <section id="reinstalar" className={`${CARD_PAD} border-[var(--color-danger)]/30 scroll-mt-28`}>
-      <p className={SECTION_INDEX}>/13</p>
+      <p className={SECTION_INDEX}>/15</p>
       <h2 className="mt-2 text-lg font-semibold">{t("reinstalar.heading")}</h2>
       <p className="mt-1 mb-5 text-sm text-[var(--color-fg-muted)]">{t("reinstalar.intro")}</p>
 

@@ -88,7 +88,7 @@ export function TaskHistory({ id }: { id: string }) {
   return (
     <section id="historial" className={`${CARD} scroll-mt-28`}>
       <div className="px-6 pt-6">
-        <p className={SECTION_INDEX}>/06</p>
+        <p className={SECTION_INDEX}>/08</p>
         <h2 className="mt-2 text-lg font-semibold">{t("tasks.heading")}</h2>
       </div>
 

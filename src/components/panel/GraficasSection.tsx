@@ -13,7 +13,7 @@ export function GraficasSection({ id, agenteActivo }: { id: string; agenteActivo
   const t = useTranslations("panel");
   return (
     <section id="graficas" className={`${CARD_PAD} scroll-mt-28`}>
-      <p className={SECTION_INDEX}>/07</p>
+      <p className={SECTION_INDEX}>/09</p>
       {agenteActivo ? (
         <div className="mt-3">
           <MetricasPanel id={id} ambito="cuenta" />

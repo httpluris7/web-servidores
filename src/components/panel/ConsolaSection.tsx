@@ -13,7 +13,7 @@ export function ConsolaSection({ id }: { id: string }) {
   const t = useTranslations("panel");
   return (
     <section id="consola" className={`${CARD_PAD} scroll-mt-28`}>
-      <p className={SECTION_INDEX}>/10</p>
+      <p className={SECTION_INDEX}>/12</p>
       <h2 className="mt-2 text-lg font-semibold">{t("consola.heading")}</h2>
       <p className="mt-1 mb-5 text-sm text-[var(--color-fg-muted)]">{t("consola.intro")}</p>
       <ConsoleView id={id} />

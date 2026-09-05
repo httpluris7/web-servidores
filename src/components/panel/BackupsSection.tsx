@@ -157,7 +157,7 @@ export function BackupsSection({ id, nombre }: { id: string; nombre: string }) {
   return (
     <section id="backups" className={`${CARD} scroll-mt-28`}>
       <div className="px-6 pt-6">
-        <p className={SECTION_INDEX}>/09</p>
+        <p className={SECTION_INDEX}>/11</p>
         <h2 className="mt-2 text-lg font-semibold">{t("backups.heading")}</h2>
         <p className="mt-1 text-sm text-[var(--color-fg-muted)]">{t("backups.intro")}</p>
       </div>

@@ -3,6 +3,7 @@ import { getAdminSession } from "@/lib/admin";
 import { deleteInvoice, setInvoiceStatus, type InvoiceStatus } from "@/lib/facturas";
 import { emailInvoiceDocument } from "@/lib/invoice-notify";
 import { aprovisionarFacturaPagada } from "@/lib/provisioner/aprovisionar";
+import { aplicarCambiosPlanFacturaPagada } from "@/lib/provisioner/cambios-plan";
 import { registrarDominiosFacturaPagada } from "@/lib/domains/registrar";
 import { aprovisionarHostingFacturaPagada } from "@/lib/hosting/registrar";
 
@@ -50,6 +51,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     // Pago por transferencia confirmado a mano: dispara el aprovisionamiento
     // igual que el webhook de tarjeta. Best-effort (no lanza).
     await aprovisionarFacturaPagada(result.invoice.id);
+    // …y en cambios de plan de VPS cobrados por esta factura (ampliaciones). Best-effort.
+    await aplicarCambiosPlanFacturaPagada(result.invoice.id);
     // …y el registro de dominios de la factura (CP3). Best-effort e idempotente.
     await registrarDominiosFacturaPagada(result.invoice.id);
     // …y el alta de hosting en cPanel de la factura. Best-effort e idempotente.

@@ -2,6 +2,7 @@ import { readLeads } from "@/lib/leads";
 import { getInvoiceById, setInvoiceStatus } from "@/lib/facturas";
 import { emailInvoiceDocument } from "@/lib/invoice-notify";
 import { aprovisionarFacturaPagada } from "@/lib/provisioner/aprovisionar";
+import { aplicarCambiosPlanFacturaPagada } from "@/lib/provisioner/cambios-plan";
 import { registrarDominiosFacturaPagada } from "@/lib/domains/registrar";
 import { aprovisionarHostingFacturaPagada } from "@/lib/hosting/registrar";
 import type { PaymentEvent } from "./types";
@@ -87,6 +88,8 @@ export async function fulfillOrder(event: PaymentEvent): Promise<FulfillResult> 
       // El pago se convierte en servidores. Best-effort: `aprovisionarFacturaPagada`
       // no lanza, así que un fallo del provisioner no tumba el webhook.
       await aprovisionarFacturaPagada(inv.id);
+      // …y en cambios de plan de VPS cobrados por esta factura (ampliaciones). Best-effort.
+      await aplicarCambiosPlanFacturaPagada(inv.id);
       // …y en dominios: registra en Njalla los dominios de esta factura (CP3).
       // También best-effort e idempotente.
       await registrarDominiosFacturaPagada(inv.id);

@@ -323,6 +323,38 @@
       "resize": "Agrandir à {size} Go",
       "resized": "Disque agrandi à {size} Go. Redémarrez le serveur pour que le système étende la partition.",
       "alreadyAtPlan": "Le disque a déjà la taille du plan."
+    },
+    "plantillas": {
+      "heading": "Modèles",
+      "intro": "Systèmes d’exploitation disponibles dans votre centre de données. Réinstaller remplace tout le disque.",
+      "current": "Installé",
+      "windows": "Windows (BYOL)",
+      "linux": "Linux",
+      "tooSmall": "Nécessite {size} Go de disque",
+      "reinstall": "Réinstaller avec ce modèle",
+      "empty": "Aucun modèle disponible."
+    },
+    "plan": {
+      "heading": "Augmenter / Réduire le plan",
+      "intro": "Modifiez les ressources de ce serveur. L’augmentation est facturée par la différence de prix mensuel et appliquée au paiement de la proforma ; la réduction est immédiate et gratuite, le nouveau prix s’applique dès le prochain paiement. Le disque n’est jamais réduit.",
+      "current": "Plan actuel",
+      "perMonth": "€/mois",
+      "upgrade": "Augmenter",
+      "downgrade": "Réduire",
+      "same": "Actuel",
+      "pending": "Une augmentation est en attente de paiement pour {importe} €.",
+      "payLink": "Voir et payer la proforma",
+      "requestUpgrade": "Demander l’augmentation",
+      "confirmDowngrade": "Réduire le plan maintenant",
+      "upgradeDone": "Proforma {numero} émise pour {importe} €. L’augmentation sera appliquée à la confirmation du paiement.",
+      "downgradeDone": "Plan réduit. Redémarrez le serveur pour appliquer les nouvelles ressources.",
+      "downgradeBody": "La réduction est immédiate : le serveur passera à {cpu} et {ram}, en conservant son disque actuel ({storage}) ; le disque n’est jamais réduit. Un redémarrage est nécessaire. Le nouveau prix s’applique dès le prochain paiement.",
+      "errorPending": "Un changement de plan est déjà en attente de paiement.",
+      "errorBusy": "Une opération est en cours. Attendez qu’elle se termine.",
+      "cpu": "CPU",
+      "ram": "RAM",
+      "storage": "Disque",
+      "diskKept": "conserve le disque actuel ({size})"
     }
   }
 }

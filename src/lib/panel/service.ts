@@ -2,6 +2,7 @@ import "server-only";
 import { getManagedForUser } from "@/lib/servidores/cliente";
 import { getVpsDetalle, type VpsDetalle } from "@/lib/provisioner/client";
 import { intentByProvisionOrderId } from "@/lib/provisioner/intents";
+import { tieneCambioAplicado } from "@/lib/provisioner/cambios-plan";
 import { getInvoiceById, PAYMENT_METHOD_LABEL, type Invoice } from "@/lib/facturas";
 import { leerMetricas, type Muestra } from "@/lib/servidores/metricas";
 import { readCatalogo, texto } from "@/lib/catalogo/store";
@@ -48,13 +49,14 @@ export async function getPanelServiceForUser(
     throw new PanelUnavailableError((err as Error).message);
   }
 
-  const [agente, factura, nombres] = await Promise.all([
+  const [agente, factura, nombres, planCambiado] = await Promise.all([
     muestraReciente(managed),
     facturaDeVps(d.order_id),
     nombresCatalogo(d.plan_slug, locale),
+    tieneCambioAplicado(managed.id),
   ]);
 
-  return construir(managed, d, agente, factura, nombres);
+  return construir(managed, d, agente, factura, nombres, planCambiado);
 }
 
 /* -------------------------------- Fuentes --------------------------------- */
@@ -111,6 +113,7 @@ function construir(
   a: Muestra | null,
   inv: Invoice | null,
   nombres: { producto: string | null; plan: string | null },
+  planCambiado = false,
 ): PanelService {
   const live = d.live;
   const running = live?.status === "running" || (live == null && d.estado === "running");
@@ -168,7 +171,11 @@ function construir(
     }
   }
 
-  const importeEur = inv?.total ?? (d.precio_mes_eur != null ? d.precio_mes_eur / 100 : 0);
+  // Tras un cambio de plan la factura de alta ya no refleja el precio vigente: manda el plan actual.
+  const importeEur =
+    planCambiado && d.precio_mes_eur != null
+      ? d.precio_mes_eur / 100
+      : (inv?.total ?? (d.precio_mes_eur != null ? d.precio_mes_eur / 100 : 0));
 
   return {
     id: m.id,
