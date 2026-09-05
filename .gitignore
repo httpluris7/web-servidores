@@ -33,3 +33,6 @@ next-env.d.ts
 # editor
 .vscode/
 .idea/
+
+# Identificador del despliegue en curso (lo genera scripts/deploy.sh)
+.deployment-id

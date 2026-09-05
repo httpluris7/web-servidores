@@ -1,7 +1,36 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { execSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
 const withNextIntl = createNextIntlPlugin();
+
+/**
+ * Identificador del despliegue (protección contra desfase de versiones).
+ *
+ * Next lo añade a las URLs de los assets (`?dpl=`) y lo manda en cada petición
+ * RSC / server action. Si un navegador tiene abierta una pestaña con el bundle
+ * de un deploy anterior, el servidor detecta el desfase y el cliente recarga la
+ * página entera en vez de fallar ("Failed to find Server Action", botones que
+ * "desaparecen"). Incidente 2026-09-04 con el alta del 2FA en /cuenta.
+ *
+ * DEBE ser idéntico en `next build` y en `next start`: por eso se lee de un
+ * fichero (`.deployment-id`, lo escribe scripts/deploy.sh antes del build) y
+ * no de la hora. Sin fichero se usa el commit de git; sin git, un valor fijo.
+ */
+function deploymentId(): string {
+  const f = join(process.cwd(), ".deployment-id");
+  if (existsSync(f)) {
+    const v = readFileSync(f, "utf8").trim();
+    if (v) return v;
+  }
+  try {
+    return execSync("git rev-parse --short HEAD", { stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
+  } catch {
+    return "local";
+  }
+}
 
 /**
  * Cabeceras de seguridad aplicadas a todas las respuestas.
@@ -50,6 +79,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  deploymentId: deploymentId(),
   // pdfkit carga sus fuentes .afm desde node_modules en runtime; marcándolo como
   // externo evitamos que el bundler lo empaquete y rompa esas rutas de datos.
   serverExternalPackages: ["pdfkit"],

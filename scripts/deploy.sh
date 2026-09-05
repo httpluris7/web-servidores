@@ -34,18 +34,25 @@ if ! pm2 describe "$PM2_APP" >/dev/null 2>&1; then
   exit 1
 fi
 
-# 1) Build. Si falla, abortamos sin tocar el servidor en marcha.
+# 1) Identificador único del despliegue (lo lee next.config.ts en build y en
+#    start; ver `deploymentId` allí). Se escribe ANTES del build para que el
+#    servidor reiniciado use el mismo valor que los assets recién generados.
+DEPLOY_ID="$(git rev-parse --short HEAD 2>/dev/null || echo nogit)-$(date -u +%Y%m%d%H%M%S)"
+printf '%s\n' "$DEPLOY_ID" > .deployment-id
+echo "▸ deploymentId = $DEPLOY_ID"
+
+# 2) Build. Si falla, abortamos sin tocar el servidor en marcha.
 echo "▸ next build…"
 if ! npm run build; then
   echo "✗ Build fallido. NO se reinicia: el sitio actual sigue sirviéndose."
   exit 1
 fi
 
-# 2) Reinicio del proceso para que cargue el build nuevo (chunks frescos).
+# 3) Reinicio del proceso para que cargue el build nuevo (chunks frescos).
 echo "▸ Reiniciando pm2 '$PM2_APP'…"
 pm2 restart "$PM2_APP" --update-env
 
-# 3) Health check: esperar a que el puerto responda 200.
+# 4) Health check: esperar a que el puerto responda 200.
 echo "▸ Esperando a que :$PORT responda (máx ${HEALTH_TIMEOUT}s)…"
 ok=0
 for ((i = 1; i <= HEALTH_TIMEOUT; i++)); do
@@ -63,7 +70,7 @@ if [ "$ok" -ne 1 ]; then
   exit 1
 fi
 
-# 4) Persistir la lista de procesos pm2 (sobrevive a reinicios del servidor).
+# 5) Persistir la lista de procesos pm2 (sobrevive a reinicios del servidor).
 pm2 save >/dev/null 2>&1 || true
 
 echo "✓ Deploy completado."
