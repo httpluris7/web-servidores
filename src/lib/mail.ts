@@ -669,3 +669,31 @@ export async function sendAlertMail(m: AlertMail): Promise<void> {
 
 /** Buzón al que van los avisos si no se configura ningún destinatario. */
 export const ALERT_FALLBACK_MAILBOX = FALLBACK_MAILBOX;
+
+export type ServiceNoticeMail = {
+  to: string;
+  /** Asunto sin prefijo; se antepone "[ViaHost] ". */
+  asunto: string;
+  /** Cuerpo en texto plano (bilingüe es/en donde toque). */
+  cuerpo: string;
+};
+
+/**
+ * Aviso de servicio al CLIENTE (vencimiento, suspensión, borrado). Texto plano,
+ * remitente de facturación y respuestas a soporte, como las facturas.
+ */
+export async function sendServiceNoticeMail(m: ServiceNoticeMail): Promise<void> {
+  const to = headerSafe(m.to);
+  if (!emailRe.test(to) || /[<>,;"]/.test(to)) throw new Error("destinatario inválido");
+  const headers = [
+    `From: ViaHost <${FROM}>`,
+    `To: ${to}`,
+    `Reply-To: ViaHost Support <${BILLING_REPLY_TO}>`,
+    `Subject: ${encodeHeader(`[ViaHost] ${headerSafe(m.asunto)}`)}`,
+    "Auto-Submitted: auto-generated",
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: 8bit",
+  ].join("\r\n");
+  await pipeSendmail(to, `${headers}\r\n\r\n${m.cuerpo}\n`);
+}

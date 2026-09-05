@@ -25,7 +25,7 @@ import { getBalance, NjallaError } from "@/lib/domains/njalla";
 import { pingWhm, hostingConfigured, WhmError } from "@/lib/hosting/whm";
 import { invalidateInventoryCache } from "@/lib/servidores/inventario";
 import { ProviderError, verifyToken } from "@/lib/servidores/v4vm";
-import { barrerRenovacionesVps, candidatasARenovar, listarVencimientos } from "@/lib/servicios/renovaciones";
+import { barrerRenovacionesVps, candidatasARenovar, listarVencimientos, procesarImpagos } from "@/lib/servicios/renovaciones";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -37,7 +37,7 @@ export const dynamic = "force-dynamic";
 function publicView(settings: Settings) {
   const { stripe, provider, alerts, wise, njalla, hosting, renovaciones } = settings;
   return {
-    renovaciones: { enabled: renovaciones.enabled, diasAviso: renovaciones.diasAviso },
+    renovaciones: { enabled: renovaciones.enabled, diasAviso: renovaciones.diasAviso, diasGracia: renovaciones.diasGracia, borrarImpagados: renovaciones.borrarImpagados },
     // Los umbrales no son secretos: van tal cual, que el formulario los pinta.
     alerts,
     stripe: {
@@ -318,9 +318,12 @@ export async function PUT(req: Request) {
   if (body.section === "hosting") return putHosting(body);
   if (body.section === "renovaciones") {
     const dias = Number(body.diasAviso);
+    const gracia = Number(body.diasGracia);
     const settings = await updateRenovacionesSettings({
       ...(typeof body.enabled === "boolean" ? { enabled: body.enabled } : {}),
+      ...(typeof body.borrarImpagados === "boolean" ? { borrarImpagados: body.borrarImpagados } : {}),
       ...(Number.isInteger(dias) && dias >= 1 && dias <= 30 ? { diasAviso: dias } : {}),
+      ...(Number.isInteger(gracia) && gracia >= 1 && gracia <= 60 ? { diasGracia: gracia } : {}),
     });
     return NextResponse.json({ ok: true, warning: null, ...publicView(settings) });
   }
@@ -412,7 +415,8 @@ export async function POST(req: Request) {
     // Barrido manual (aunque el automático esté apagado): emite las proformas que toquen hoy.
     const { renovaciones } = await readSettings();
     const emitidas = await barrerRenovacionesVps(renovaciones.diasAviso);
-    return NextResponse.json({ ok: true, emitidas });
+    const impagos = await procesarImpagos(renovaciones.diasGracia, renovaciones.borrarImpagados);
+    return NextResponse.json({ ok: true, emitidas, ...impagos });
   }
 
   if (target === "renovaciones") {

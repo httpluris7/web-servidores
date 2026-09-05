@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export type RenovacionesPublicSettings = { enabled: boolean; diasAviso: number };
+export type RenovacionesPublicSettings = { enabled: boolean; diasAviso: number; diasGracia: number; borrarImpagados: boolean };
 
 type Vencimiento = {
   servidorId: string;
@@ -24,6 +24,7 @@ type Vencimiento = {
 export function RenovacionesSettingsForm({ initial }: { initial: RenovacionesPublicSettings }) {
   const [settings, setSettings] = useState(initial);
   const [dias, setDias] = useState(String(initial.diasAviso));
+  const [gracia, setGracia] = useState(String(initial.diasGracia));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -46,6 +47,7 @@ export function RenovacionesSettingsForm({ initial }: { initial: RenovacionesPub
       }
       setSettings(data.renovaciones);
       setDias(String(data.renovaciones.diasAviso));
+      setGracia(String(data.renovaciones.diasGracia));
       setNotice("Guardado.");
     } catch {
       setError("Error de conexión.");
@@ -85,7 +87,7 @@ export function RenovacionesSettingsForm({ initial }: { initial: RenovacionesPub
         setError(data?.error ?? "El barrido falló.");
         return;
       }
-      setNotice(`Barrido ejecutado: ${data.emitidas} proforma(s) emitida(s).`);
+      setNotice(`Barrido ejecutado: ${data.emitidas} proforma(s) emitida(s), ${data.avisados} aviso(s) de vencimiento, ${data.borrados} servicio(s) borrado(s).`);
       await previsualizar();
     } catch {
       setError("Error de conexión.");
@@ -105,7 +107,9 @@ export function RenovacionesSettingsForm({ initial }: { initial: RenovacionesPub
           <p className="mt-1 max-w-2xl text-sm text-[var(--color-fg-muted)]">
             Cada VPS cubre un mes desde el pago de su alta; cada renovación pagada añade otro mes al fin de
             periodo. Los días indicados antes de vencer se emite al cliente una proforma de renovación al
-            precio actual del plan (transferencia, PDF por correo). No hay suspensión automática por impago.
+            precio actual del plan (transferencia, PDF por correo). Al vencer sin pagar se envía un aviso; pasados
+            los días de gracia sin pago, el servidor se suspende y se ELIMINA con sus datos (irreversible) y la
+            proforma se cancela.
           </p>
         </div>
         <span
@@ -131,6 +135,16 @@ export function RenovacionesSettingsForm({ initial }: { initial: RenovacionesPub
           />
           Emitir proformas de renovación automáticamente (1 barrido al día)
         </label>
+        <label className="flex items-center gap-3 text-sm">
+          <input
+            type="checkbox"
+            checked={settings.borrarImpagados}
+            disabled={busy}
+            onChange={(e) => save({ borrarImpagados: e.target.checked })}
+            className="h-4 w-4 accent-[var(--color-danger)]"
+          />
+          Suspender y borrar el servicio si sigue sin pagar tras los días de gracia
+        </label>
         <div className="flex items-end gap-3">
           <div>
             <label htmlFor="renov-dias" className="mono-label block text-[0.6rem]">Días de aviso</label>
@@ -144,10 +158,22 @@ export function RenovacionesSettingsForm({ initial }: { initial: RenovacionesPub
               className="mt-1 w-24 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-2 text-sm focus:border-[var(--color-accent)] focus:outline-none"
             />
           </div>
+          <div>
+            <label htmlFor="renov-gracia" className="mono-label block text-[0.6rem]">Días de gracia</label>
+            <input
+              id="renov-gracia"
+              type="number"
+              min={1}
+              max={60}
+              value={gracia}
+              onChange={(e) => setGracia(e.target.value)}
+              className="mt-1 w-24 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-2 text-sm focus:border-[var(--color-accent)] focus:outline-none"
+            />
+          </div>
           <button
             type="button"
-            disabled={busy || Number(dias) === settings.diasAviso}
-            onClick={() => save({ diasAviso: Number(dias) })}
+            disabled={busy || (Number(dias) === settings.diasAviso && Number(gracia) === settings.diasGracia)}
+            onClick={() => save({ diasAviso: Number(dias), diasGracia: Number(gracia) })}
             className="rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-4 py-2 text-sm transition-colors hover:bg-white/5 disabled:opacity-40"
           >
             Guardar días

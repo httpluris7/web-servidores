@@ -197,6 +197,10 @@ export type RenovacionesSettings = {
   enabled: boolean;
   /** Días antes del fin de periodo en que se emite la proforma de renovación. */
   diasAviso: number;
+  /** Días tras el vencimiento sin pagar antes de suspender y borrar el servicio. */
+  diasGracia: number;
+  /** Interruptor del borrado automático por impago (con aviso al vencer). */
+  borrarImpagados: boolean;
 };
 
 export type Settings = {
@@ -210,14 +214,17 @@ export type Settings = {
   renovaciones: RenovacionesSettings;
 };
 
-export const DEFAULT_RENOVACIONES: RenovacionesSettings = { enabled: false, diasAviso: 7 };
+export const DEFAULT_RENOVACIONES: RenovacionesSettings = { enabled: false, diasAviso: 7, diasGracia: 3, borrarImpagados: true };
 
 function normalizeRenovaciones(raw: unknown): RenovacionesSettings {
   const o = (raw ?? {}) as Partial<Record<keyof RenovacionesSettings, unknown>>;
   const dias = Number(o.diasAviso);
+  const gracia = Number(o.diasGracia);
   return {
     enabled: o.enabled === true,
     diasAviso: Number.isInteger(dias) && dias >= 1 && dias <= 30 ? dias : DEFAULT_RENOVACIONES.diasAviso,
+    diasGracia: Number.isInteger(gracia) && gracia >= 1 && gracia <= 60 ? gracia : DEFAULT_RENOVACIONES.diasGracia,
+    borrarImpagados: o.borrarImpagados !== false,
   };
 }
 

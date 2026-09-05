@@ -92,7 +92,7 @@ export default async function ConfiguracionPage({
 
       <HostingSettingsForm initial={initialHosting} />
 
-      <RenovacionesSettingsForm initial={{ enabled: renovaciones.enabled, diasAviso: renovaciones.diasAviso }} />
+      <RenovacionesSettingsForm initial={renovaciones} />
 
       <AlertSettingsForm initial={alerts} />
     </div>

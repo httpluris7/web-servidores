@@ -3,13 +3,14 @@ import { chmod, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { listManagedServers, type ManagedServer } from "@/lib/servidores/store";
-import { getInvoiceById } from "@/lib/facturas";
+import { getInvoiceById, setInvoiceStatus } from "@/lib/facturas";
 import { intentByProvisionOrderId, type ProvisionIntent } from "@/lib/provisioner/intents";
-import { getVps, getVpsDetalle, ProvisionerError } from "@/lib/provisioner/client";
+import { deleteVps, getVps, getVpsDetalle, vpsAction, ProvisionerError } from "@/lib/provisioner/client";
 import { getPlanById } from "@/data/products";
 import { getPublicUserById } from "@/lib/auth";
 import { checkoutOrder } from "@/lib/payments/checkout";
 import { readSettings } from "@/lib/ajustes";
+import { sendServiceNoticeMail } from "@/lib/mail";
 
 /**
  * Renovaciones mensuales de los VPS aprovisionados (Proxmox).
@@ -20,9 +21,11 @@ import { readSettings } from "@/lib/ajustes";
  * días antes del fin de periodo se emite la proforma de renovación al precio
  * ACTUAL del plan en el catálogo (manda la web) y se envía por correo.
  *
- * Política (2026-09-05): no hay suspensión automática por impago; el vencimiento
- * y las proformas pendientes quedan a la vista del cliente y del admin.
- * Interruptor en ajustes → apagado por defecto (vista previa disponible).
+ * Impago (decisión del usuario, 2026-09-05): al VENCER el periodo sin pagar se
+ * envía un correo de aviso; `diasGracia` días después del vencimiento, si la
+ * proforma sigue sin pagar (y lleva al menos esos días emitida), el servicio
+ * se suspende (parada en frío) y se BORRA: la VM se destruye, la IP vuelve al
+ * pool y la proforma se cancela. Es irreversible; se avisa por correo.
  *
  * Almacén `data/renovaciones-vps.jsonl` (0600): una fila por proforma emitida.
  */
@@ -47,6 +50,10 @@ export type RenovacionVps = {
   estado: "pendiente" | "pagada" | "cancelada";
   creadoAt: string;
   pagadaAt: string | null;
+  /** Cuándo se avisó al cliente de que el periodo venció sin pagar. */
+  avisoVencidoAt?: string | null;
+  /** Cuándo se suspendió y borró el servicio por impago. */
+  borradoAt?: string | null;
 };
 
 async function readAll(): Promise<RenovacionVps[]> {
@@ -169,6 +176,8 @@ export async function comprobarRenovacionesVps(): Promise<void> {
     await guardarEstado({ lastSweepAt: new Date().toISOString() });
     const n = await barrerRenovacionesVps(renovaciones.diasAviso);
     if (n > 0) console.info(`[renovaciones] ${n} proforma(s) de renovación de VPS emitidas`);
+    const r = await procesarImpagos(renovaciones.diasGracia, renovaciones.borrarImpagados);
+    if (r.avisados || r.borrados) console.info(`[renovaciones] impagos: ${r.avisados} avisados, ${r.borrados} borrados`);
   } catch (err) {
     console.error("[renovaciones] fallo en el latido:", err);
   }
@@ -286,3 +295,129 @@ export async function cancelarRenovacionesFactura(invoiceId: string): Promise<vo
     console.error("[renovaciones] no se pudo cancelar la renovación:", invoiceId, err);
   }
 }
+
+/* --------------------------------- Impagos -------------------------------- */
+
+const DIA_MS = 86_400_000;
+
+/**
+ * Vencidos sin pagar: (1) un único correo de aviso al vencer; (2) pasados
+ * `diasGracia` días desde el vencimiento —y desde la emisión de la proforma,
+ * para que el cliente haya tenido ese margen real— se para y se destruye la VM,
+ * se cancela la proforma y se avisa. Devuelve cuántos avisos y borrados.
+ */
+export async function procesarImpagos(
+  diasGracia: number,
+  borrar: boolean,
+  ahora = Date.now(),
+): Promise<{ avisados: number; borrados: number }> {
+  let avisados = 0;
+  let borrados = 0;
+  const vencimientos = await listarVencimientos();
+  for (const v of vencimientos) {
+    const pend = v.pendiente;
+    if (!pend || !v.periodoHasta || !v.ficha.userId) continue;
+    const vencidoMs = ahora - Date.parse(v.periodoHasta);
+    if (vencidoMs < 0) continue; // aún dentro del periodo pagado
+    const emitidaMs = ahora - Date.parse(pend.creadoAt);
+    const user = await getPublicUserById(v.ficha.userId).catch(() => null);
+    if (!user) continue;
+    const inv = await getInvoiceById(pend.invoiceId).catch(() => null);
+    if (!inv || inv.estado !== "pendiente") continue; // pagada/cancelada entretanto: los ganchos ya la marcan
+    const nombre = await nombreDe(v.ficha);
+
+    if (!pend.avisoVencidoAt) {
+      const limite = new Date(Date.parse(v.periodoHasta) + diasGracia * DIA_MS);
+      try {
+        await sendServiceNoticeMail({
+          to: user.email,
+          asunto: `Servicio vencido sin pagar: ${nombre} / Service expired: ${nombre}`,
+          cuerpo: [
+            `Hola ${user.nombre || ""},`.trim(),
+            "",
+            `El periodo de tu servidor ${nombre} terminó el ${fecha(v.periodoHasta)} y la proforma de renovación ${inv.numero} (${inv.total.toFixed(2)} €) sigue sin pagar.`,
+            borrar
+              ? `Si no se recibe el pago antes del ${fecha(limite.toISOString())}, el servidor se suspenderá y se ELIMINARÁ automáticamente con todos sus datos. Esta acción no se puede deshacer.`
+              : "Paga la proforma para mantener el servicio activo.",
+            "",
+            "Puedes pagar desde tu área de cliente: https://viahost.top/es/cuenta/facturas",
+            "",
+            "— — —",
+            "",
+            `Hi ${user.nombre || ""},`.trim(),
+            "",
+            `The service period of your server ${nombre} ended on ${fecha(v.periodoHasta)} and the renewal proforma ${inv.numero} (€${inv.total.toFixed(2)}) is still unpaid.`,
+            borrar
+              ? `If payment is not received before ${fecha(limite.toISOString())}, the server will be suspended and DELETED automatically with all its data. This cannot be undone.`
+              : "Please pay the proforma to keep the service active.",
+            "",
+            "Pay from your client area: https://viahost.top/cuenta/facturas",
+            "",
+            "ViaHost · soporte@viahost.top",
+          ].join("\n"),
+        });
+        await marcarRenovacion(pend.id, { avisoVencidoAt: new Date(ahora).toISOString() });
+        avisados++;
+        console.info(`[renovaciones] aviso de vencimiento enviado: ${nombre} (${inv.numero})`);
+      } catch (err) {
+        console.error(`[renovaciones] no se pudo avisar del vencimiento de ${nombre}:`, err);
+      }
+      continue; // el borrado nunca va en el mismo barrido que el aviso
+    }
+
+    if (!borrar) continue;
+    if (vencidoMs < diasGracia * DIA_MS || emitidaMs < diasGracia * DIA_MS) continue;
+
+    try {
+      // Suspender (parada en frío, best-effort) y destruir: VM + IP al pool.
+      await vpsAction(v.ficha.remoteId, "stop").catch(() => {});
+      await deleteVps(v.ficha.remoteId);
+      await setInvoiceStatus(inv.id, "cancelada");
+      await marcarRenovacion(pend.id, { estado: "cancelada", borradoAt: new Date(ahora).toISOString() });
+      borrados++;
+      console.warn(`[renovaciones] SERVICIO BORRADO por impago: ${nombre} (ficha ${v.ficha.id}, vps ${v.ficha.remoteId}, ${inv.numero})`);
+      try {
+        await sendServiceNoticeMail({
+          to: user.email,
+          asunto: `Servicio eliminado por impago: ${nombre} / Service deleted: ${nombre}`,
+          cuerpo: [
+            `Hola ${user.nombre || ""},`.trim(),
+            "",
+            `El servidor ${nombre} venció el ${fecha(v.periodoHasta)} y, pasados ${diasGracia} días sin recibir el pago de la proforma ${inv.numero}, ha sido suspendido y eliminado junto con sus datos. La proforma queda cancelada.`,
+            "Si quieres volver a contratar un servidor: https://viahost.top/es/vps",
+            "",
+            "— — —",
+            "",
+            `Hi ${user.nombre || ""},`.trim(),
+            "",
+            `Your server ${nombre} expired on ${fecha(v.periodoHasta)} and, ${diasGracia} days later with proforma ${inv.numero} still unpaid, it has been suspended and deleted together with its data. The proforma is now cancelled.`,
+            "To order a new server: https://viahost.top/vps",
+            "",
+            "ViaHost · soporte@viahost.top",
+          ].join("\n"),
+        });
+      } catch (err) {
+        console.error("[renovaciones] no se pudo avisar del borrado:", err);
+      }
+    } catch (err) {
+      console.error(`[renovaciones] no se pudo borrar ${nombre} por impago:`, err instanceof ProvisionerError ? err.message : err);
+    }
+  }
+  return { avisados, borrados };
+}
+
+async function marcarRenovacion(id: string, patch: Partial<RenovacionVps>): Promise<void> {
+  const list = await readAll();
+  await writeAll(list.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+}
+
+async function nombreDe(ficha: ManagedServer): Promise<string> {
+  try {
+    const v = await getVps(ficha.remoteId);
+    return v.hostname || ficha.etiqueta || `vps-${v.vmid}`;
+  } catch {
+    return ficha.etiqueta || `vps #${ficha.remoteId}`;
+  }
+}
+
+const fecha = (iso: string): string => iso.slice(0, 10);
