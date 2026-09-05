@@ -68,7 +68,10 @@
       "copy": "Copiar",
       "copied": "Copiado",
       "resetError": "No se pudo resetear la contraseña. Inténtalo de nuevo.",
-      "resetTooMany": "Demasiados intentos. Espera un poco e inténtalo de nuevo."
+      "resetTooMany": "Demasiados intentos. Espera un poco e inténtalo de nuevo.",
+      "renewsLabel": "Renovación",
+      "renewalPending": "Renovación pendiente de pago ({amount} €).",
+      "payRenewal": "Pagar ahora"
     },
     "banner": {
       "kicker": "Novedad · Hosting Web",

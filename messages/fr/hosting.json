@@ -68,7 +68,10 @@
       "copy": "Copier",
       "copied": "Copié",
       "resetError": "Impossible de réinitialiser le mot de passe. Réessayez.",
-      "resetTooMany": "Trop de tentatives. Patientez un instant et réessayez."
+      "resetTooMany": "Trop de tentatives. Patientez un instant et réessayez.",
+      "renewsLabel": "Renouvellement",
+      "renewalPending": "Renouvellement en attente de paiement ({amount} €).",
+      "payRenewal": "Payer maintenant"
     },
     "banner": {
       "kicker": "Nouveau · Hébergement Web",

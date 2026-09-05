@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { PageHero } from "@/components/ui/PageHero";
 import { getSession } from "@/lib/session";
 import { hostingDeUsuario } from "@/lib/hosting/intents";
+import { vencimientosDeUsuario } from "@/lib/servicios/renovaciones";
 import { getCatalog } from "@/data/products";
 import { readSettings } from "@/lib/ajustes";
 import { HostingPasswordReset } from "@/components/hosting/HostingPasswordReset";
@@ -34,6 +35,7 @@ export default async function MisHostingPage({
   if (!session) redirect("/acceder");
 
   const servicios = await hostingDeUsuario(session.uid).catch(() => []);
+  const renov = await vencimientosDeUsuario(session.uid);
 
   // Nombre del plan (por planId) para pintarlo en cristiano, y host del panel
   // cPanel (hostname del nodo, con cert válido) para el enlace de acceso.
@@ -97,6 +99,23 @@ export default async function MisHostingPage({
                       <dt className="mono-label text-[0.6rem]">{t("mis.createdLabel")}</dt>
                       <dd className="mt-0.5 text-xs text-[var(--color-fg-muted)]">{fecha(s.creadoAt)}</dd>
                     </div>
+                    {renov.get(`hosting:${s.cpanelUser}`)?.periodoHasta && (
+                      <div>
+                        <dt className="mono-label text-[0.6rem]">{t("mis.renewsLabel")}</dt>
+                        <dd className="mt-0.5 text-xs text-[var(--color-fg-muted)]">
+                          {fecha(renov.get(`hosting:${s.cpanelUser}`)!.periodoHasta!)}
+                          {renov.get(`hosting:${s.cpanelUser}`)?.pendiente && (
+                            <>
+                              {" · "}
+                              <span className="text-[var(--color-danger)]">{t("mis.renewalPending", { amount: renov.get(`hosting:${s.cpanelUser}`)!.pendiente!.importe.toFixed(2) })}</span>{" "}
+                              <Link href={`/cuenta/facturas/${renov.get(`hosting:${s.cpanelUser}`)!.pendiente!.invoiceId}`} className="text-[var(--color-accent)] hover:underline">
+                                {t("mis.payRenewal")}
+                              </Link>
+                            </>
+                          )}
+                        </dd>
+                      </div>
+                    )}
                   </dl>
 
                   <div className="mt-5 flex flex-wrap gap-3">

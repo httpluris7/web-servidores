@@ -68,7 +68,10 @@
       "copy": "Copy",
       "copied": "Copied",
       "resetError": "Couldn’t reset the password. Please try again.",
-      "resetTooMany": "Too many attempts. Wait a moment and try again."
+      "resetTooMany": "Too many attempts. Wait a moment and try again.",
+      "renewsLabel": "Renewal",
+      "renewalPending": "Renewal awaiting payment (€{amount}).",
+      "payRenewal": "Pay now"
     },
     "banner": {
       "kicker": "New · Web Hosting",

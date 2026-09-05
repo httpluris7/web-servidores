@@ -25,7 +25,7 @@ import { getBalance, NjallaError } from "@/lib/domains/njalla";
 import { pingWhm, hostingConfigured, WhmError } from "@/lib/hosting/whm";
 import { invalidateInventoryCache } from "@/lib/servidores/inventario";
 import { ProviderError, verifyToken } from "@/lib/servidores/v4vm";
-import { barrerRenovacionesVps, candidatasARenovar, listarVencimientos, procesarImpagos } from "@/lib/servicios/renovaciones";
+import { barrerRenovacionesVps, candidatasARenovar, listarVencimientos, notificarAdmin, procesarImpagos } from "@/lib/servicios/renovaciones";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -416,6 +416,7 @@ export async function POST(req: Request) {
     const { renovaciones } = await readSettings();
     const emitidas = await barrerRenovacionesVps(renovaciones.diasAviso);
     const impagos = await procesarImpagos(renovaciones.diasGracia, renovaciones.borrarImpagados);
+    await notificarAdmin({ emitidas, ...impagos });
     return NextResponse.json({ ok: true, emitidas, ...impagos });
   }
 

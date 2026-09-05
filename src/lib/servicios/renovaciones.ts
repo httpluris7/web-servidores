@@ -12,7 +12,8 @@ import { getPlanById } from "@/data/products";
 import { getPublicUserById } from "@/lib/auth";
 import { checkoutOrder } from "@/lib/payments/checkout";
 import { readSettings } from "@/lib/ajustes";
-import { sendServiceNoticeMail } from "@/lib/mail";
+import { ALERT_FALLBACK_MAILBOX, sendServiceNoticeMail } from "@/lib/mail";
+import { emailRe } from "@/lib/leads";
 
 /**
  * Renovaciones mensuales de los servicios aprovisionados: VPS (Proxmox) y
@@ -167,6 +168,26 @@ async function intentDeFicha(ficha: ManagedServer): Promise<ProvisionIntent | nu
   }
 }
 
+/** Resumen por servicio para el área de cliente: fin de periodo y renovación pendiente. */
+export type ResumenRenovacion = { periodoHasta: string | null; pendiente: { invoiceId: string; importe: number } | null };
+
+export async function vencimientosDeUsuario(userId: string): Promise<Map<string, ResumenRenovacion>> {
+  const out = new Map<string, ResumenRenovacion>();
+  if (!userId) return out;
+  try {
+    const todas = await readAll();
+    const fichas = (await listManagedServers()).filter((f) => f.proveedor === "proxmox" && f.userId === userId);
+    const cuentas = (await cuentasHostingActivas()).filter((c) => c.userId === userId);
+    for (const s of [...fichas.map(servicioDeFicha), ...cuentas.map(servicioDeCuenta)]) {
+      const v = await vencimientoDe(s, todas);
+      out.set(s.id, { periodoHasta: v.periodoHasta, pendiente: v.pendiente ? { invoiceId: v.pendiente.invoiceId, importe: v.pendiente.importe } : null });
+    }
+  } catch (err) {
+    console.error("[renovaciones] vencimientos de usuario:", err);
+  }
+  return out;
+}
+
 /** Vencimientos de todos los servicios con cliente (admin y barrido). */
 export async function listarVencimientos(): Promise<Vencimiento[]> {
   const fichas = (await listManagedServers()).filter((f) => f.proveedor === "proxmox" && f.userId);
@@ -210,6 +231,7 @@ export async function comprobarRenovacionesVps(): Promise<void> {
     if (n > 0) console.info(`[renovaciones] ${n} proforma(s) de renovación emitidas`);
     const r = await procesarImpagos(renovaciones.diasGracia, renovaciones.borrarImpagados);
     if (r.avisados || r.borrados) console.info(`[renovaciones] impagos: ${r.avisados} avisados, ${r.borrados} borrados`);
+    await notificarAdmin({ emitidas: n, ...r });
   } catch (err) {
     console.error("[renovaciones] fallo en el latido:", err);
   }
@@ -302,6 +324,7 @@ async function emitirRenovacion(v: Vencimiento): Promise<RenovacionVps> {
   const list = await readAll();
   await writeAll([...list, r]);
   console.info(`[renovaciones] proforma ${invoice.numero} emitida para ${info.nombre} (${fecha(desde)} → ${fecha(hasta)}, ${info.precio} €)`);
+  anotar(`Proforma ${invoice.numero} (${info.precio} €) para ${s.tipo} ${info.nombre} · ${user.email} · periodo ${fecha(desde)} → ${fecha(hasta)}`);
   return r;
 }
 
@@ -401,6 +424,7 @@ export async function procesarImpagos(
         await marcarRenovacion(pend.id, { avisoVencidoAt: new Date(ahora).toISOString() });
         avisados++;
         console.info(`[renovaciones] aviso de vencimiento enviado: ${nombre} (${inv.numero})`);
+        anotar(`Aviso de vencimiento: ${s.tipo} ${nombre} · ${user.email} · ${inv.numero} sin pagar desde ${fecha(v.periodoHasta)}`);
       } catch (err) {
         console.error(`[renovaciones] no se pudo avisar del vencimiento de ${nombre}:`, err);
       }
@@ -416,6 +440,7 @@ export async function procesarImpagos(
       await marcarRenovacion(pend.id, { estado: "cancelada", borradoAt: new Date(ahora).toISOString() });
       borrados++;
       console.warn(`[renovaciones] SERVICIO BORRADO por impago: ${nombre} (${s.id}, ${inv.numero})`);
+      anotar(`BORRADO por impago: ${s.tipo} ${nombre} · ${user.email} · ${inv.numero} cancelada`);
       try {
         await sendServiceNoticeMail({
           to: user.email,
@@ -466,5 +491,48 @@ async function nombreDe(s: Servicio): Promise<string> {
     return v.hostname || s.etiqueta || `vps-${v.vmid}`;
   } catch {
     return s.etiqueta || `vps #${s.remoteId}`;
+  }
+}
+
+/* ------------------------------ Aviso al admin ---------------------------- */
+
+const diario: string[] = [];
+function anotar(linea: string): void {
+  diario.push(linea);
+}
+
+/**
+ * Resumen del barrido al buzón de administración (destinatarios de los avisos
+ * de recursos, o el buzón por defecto). Solo si ha pasado algo. Nunca lanza.
+ */
+export async function notificarAdmin(r: { emitidas: number; avisados: number; borrados: number }): Promise<void> {
+  if (!r.emitidas && !r.avisados && !r.borrados) {
+    diario.length = 0;
+    return;
+  }
+  try {
+    const { alerts } = await readSettings();
+    const lista = alerts.destinatarios
+      .split(",")
+      .map((x) => x.trim())
+      .filter((x) => emailRe.test(x) && !/[<>,;"]/.test(x));
+    const to = lista.length > 0 ? lista : [ALERT_FALLBACK_MAILBOX];
+    const cuerpo = [
+      `Barrido de renovaciones (${new Date().toISOString().slice(0, 16).replace("T", " ")} UTC):`,
+      "",
+      `Proformas de renovación emitidas: ${r.emitidas}`,
+      `Avisos de vencimiento enviados:   ${r.avisados}`,
+      `Servicios SUSPENDIDOS Y BORRADOS: ${r.borrados}`,
+      "",
+      ...(diario.length ? ["Detalle:", ...diario.map((l) => `  - ${l}`), ""] : []),
+      "Ajustes y vista previa: https://viahost.top/es/admin/configuracion",
+    ].join("\n");
+    for (const dest of to) {
+      await sendServiceNoticeMail({ to: dest, asunto: `Renovaciones: ${r.emitidas} emitidas, ${r.avisados} avisos, ${r.borrados} borrados`, cuerpo });
+    }
+  } catch (err) {
+    console.error("[renovaciones] no se pudo avisar al admin:", err);
+  } finally {
+    diario.length = 0;
   }
 }

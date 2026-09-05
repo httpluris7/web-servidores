@@ -8,6 +8,7 @@ import { ServerStatusBadge } from "@/components/ui/ServerStatusBadge";
 import { getSession } from "@/lib/session";
 import { listServersForUser, type ClientServer } from "@/lib/servidores/cliente";
 import { ProviderError } from "@/lib/servidores/v4vm";
+import { vencimientosDeUsuario } from "@/lib/servicios/renovaciones";
 
 export async function generateMetadata({
   params,
@@ -39,6 +40,8 @@ export default async function ServidoresClientePage({
 
   // Si el proveedor falla, la pantalla lo dice en vez de reventar.
   let servidores: ClientServer[] = [];
+  const renov = await vencimientosDeUsuario(session.uid);
+  const fechaCorta = (iso: string) => new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(iso));
   let error: string | null = null;
   try {
     servidores = await listServersForUser(session.uid);
@@ -109,7 +112,20 @@ export default async function ServidoresClientePage({
                       {remote.diskGb ?? "—"} GB · {remote.location ?? "—"}
                     </p>
                   )}
+                  {renov.get(managed.id)?.periodoHasta && (
+                    <p className="mt-2 text-xs text-[var(--color-fg-muted)]">
+                      {t("servers.renewsOn", { date: fechaCorta(renov.get(managed.id)!.periodoHasta!) })}
+                    </p>
+                  )}
                 </Link>
+                {renov.get(managed.id)?.pendiente && (
+                  <p className="mt-2 text-xs">
+                    <span className="text-[var(--color-danger)]">{t("servers.renewalPending", { amount: renov.get(managed.id)!.pendiente!.importe.toFixed(2) })}</span>{" "}
+                    <Link href={`/cuenta/facturas/${renov.get(managed.id)!.pendiente!.invoiceId}`} className="text-[var(--color-accent)] hover:underline">
+                      {t("servers.payRenewal")}
+                    </Link>
+                  </p>
+                )}
               </li>
             ))}
           </ul>
