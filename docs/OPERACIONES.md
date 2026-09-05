@@ -52,6 +52,17 @@ y `/home/user3100/viahost-provisioner` (API + worker en Docker, Proxmox).
   Necesita 12 h de historial; se resuelve al bajar un 10 % del umbral. Cubre también servidores del
   proveedor sin ficha (en el listado salen enlazados al inventario). 0 desactiva la regla.
 
+## Logs fuera del host (VM `logs01`)
+
+- Todo el journal del host, más `access.log`/`error.log` de nginx y los logs de pm2 (copiados al journal por las
+  unidades `viahost-log-*.service`), se envían con `systemd-journal-upload` a la VM `logs01` (VPS 33 del
+  provisioner, nl-ams, 163.5.85.184). TLS mutuo: nginx en la VM solo acepta el certificado del host
+  (`/etc/ssl/journal-upload/` en el host; CA y claves en `/etc/journal-remote-pki/` de la VM).
+- Acceso a la VM: `ssh -i /root/.ssh/logs01_ed25519 root@163.5.85.184` (solo desde el host). Consultar:
+  `journalctl -D /var/log/journal/remote -t sshd --since -1d`. Retención 90 días / 30 GB (cron diario).
+- Si el envío se corta: `systemctl status systemd-journal-upload` en el host y `systemctl status nginx
+  systemd-journal-remote.socket` en la VM. La VM no tiene ficha de cliente ni renovación: es interna.
+
 ## Copias de seguridad de los clientes
 
 - Cada cliente programa copias automáticas (diarias/semanales, hora UTC, retención) desde su panel; las

@@ -24,6 +24,8 @@ superficie más grande) da acceso al mismo host donde viven `.env`, los datos de
 
 ## Opciones
 
+> ✅ **Opción C ejecutada el 2026-09-05** (fases 1 y 2): web solo en .195 tras Cloudflare, correo solo en .194.
+
 ### A. Correo a su propia VM en el Proxmox de Holanda, con IP dedicada (recomendada)
 - Nueva VM (2 vCPU, 4 GB, 40 GB) en blade6-2 con una de las IPs libres del bloque, p. ej. **45.136.213.195**
   (o una IP del pool de nl-ams, pero entonces cambia la reputación: mejor conservar el bloque).
@@ -56,6 +58,10 @@ superficie más grande) da acceso al mismo host donde viven `.env`, los datos de
 web quede sin ningún secreto de infraestructura.
 
 ## Logging fuera del host
+
+> ✅ **HECHO 2026-09-05** con la opción journald-remote a una VM propia (`logs01`, VPS 33, nl-ams), TLS mutuo
+> vía nginx y retención 90 d/30 GB. Detalle en `OPERACIONES.md`. Grafana Cloud queda como mejora opcional
+> para dashboards y alertas.
 
 Objetivo: que un atacante que borre logs en el host no borre la evidencia, y tener alertas.
 
