@@ -423,18 +423,19 @@ export async function POST(req: Request) {
     // Vista previa: vencimientos de todos los VPS y cuáles se emitirían hoy.
     const { renovaciones } = await readSettings();
     const [vencimientos, candidatas] = await Promise.all([listarVencimientos(), candidatasARenovar(renovaciones.diasAviso)]);
-    const hoy = new Set(candidatas.map((c) => c.ficha.id));
+    const hoy = new Set(candidatas.map((c) => c.servicio.id));
     return NextResponse.json({
       ok: true,
       vencimientos: vencimientos.map((v) => ({
-        servidorId: v.ficha.id,
-        remoteId: v.ficha.remoteId,
-        userId: v.ficha.userId,
-        etiqueta: v.ficha.etiqueta,
+        tipo: v.servicio.tipo,
+        servidorId: v.servicio.id,
+        remoteId: v.servicio.remoteId,
+        userId: v.servicio.userId,
+        etiqueta: v.servicio.etiqueta,
         periodoHasta: v.periodoHasta,
         origen: v.origen,
         pendiente: v.pendiente ? { invoiceId: v.pendiente.invoiceId, importe: v.pendiente.importe, periodoHasta: v.pendiente.periodoHasta } : null,
-        emitiriaHoy: hoy.has(v.ficha.id),
+        emitiriaHoy: hoy.has(v.servicio.id),
       })),
     });
   }

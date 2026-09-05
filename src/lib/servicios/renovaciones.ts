@@ -6,6 +6,8 @@ import { listManagedServers, type ManagedServer } from "@/lib/servidores/store";
 import { getInvoiceById, setInvoiceStatus } from "@/lib/facturas";
 import { intentByProvisionOrderId, type ProvisionIntent } from "@/lib/provisioner/intents";
 import { deleteVps, getVps, getVpsDetalle, vpsAction, ProvisionerError } from "@/lib/provisioner/client";
+import { cuentasHostingActivas, marcarHostingTerminado, type HostingIntent } from "@/lib/hosting/intents";
+import { removeAccount, suspendAccount, WhmError } from "@/lib/hosting/whm";
 import { getPlanById } from "@/data/products";
 import { getPublicUserById } from "@/lib/auth";
 import { checkoutOrder } from "@/lib/payments/checkout";
@@ -13,7 +15,8 @@ import { readSettings } from "@/lib/ajustes";
 import { sendServiceNoticeMail } from "@/lib/mail";
 
 /**
- * Renovaciones mensuales de los VPS aprovisionados (Proxmox).
+ * Renovaciones mensuales de los servicios aprovisionados: VPS (Proxmox) y
+ * cuentas de hosting (cPanel/WHM).
  *
  * Periodo de servicio: el alta cubre UN MES desde la fecha de pago de su
  * proforma; cada renovación pagada añade otro mes al fin de periodo vigente
@@ -24,8 +27,8 @@ import { sendServiceNoticeMail } from "@/lib/mail";
  * Impago (decisión del usuario, 2026-09-05): al VENCER el periodo sin pagar se
  * envía un correo de aviso; `diasGracia` días después del vencimiento, si la
  * proforma sigue sin pagar (y lleva al menos esos días emitida), el servicio
- * se suspende (parada en frío) y se BORRA: la VM se destruye, la IP vuelve al
- * pool y la proforma se cancela. Es irreversible; se avisa por correo.
+ * se suspende y se BORRA: la VM se destruye (IP al pool) o la cuenta de cPanel
+ * se suspende y elimina; la proforma se cancela. Irreversible; se avisa.
  *
  * Almacén `data/renovaciones-vps.jsonl` (0600): una fila por proforma emitida.
  */
@@ -35,10 +38,16 @@ const FILE = path.join(DATA_DIR, "renovaciones-vps.jsonl");
 const ESTADO_FILE = path.join(DATA_DIR, "renovaciones-vps-estado.json");
 /** El barrido corre como mucho una vez cada 20 h (latido cada 5 min). */
 const BARRIDO_MIN_H = 20;
+const DIA_MS = 86_400_000;
+
+export type TipoServicio = "vps" | "hosting";
 
 export type RenovacionVps = {
   id: string;
+  tipo: TipoServicio;
+  /** Ficha del VPS (id interno) o `hosting:<usuario cPanel>`. */
   servidorId: string;
+  /** Id del VPS en el provisioner (0 en hosting). */
   remoteId: number;
   userId: string;
   invoiceId: string;
@@ -68,7 +77,7 @@ async function readAll(): Promise<RenovacionVps[]> {
     if (!line.trim()) continue;
     try {
       const d = JSON.parse(line) as RenovacionVps;
-      if (typeof d.id === "string" && typeof d.servidorId === "string") out.push(d);
+      if (typeof d.id === "string" && typeof d.servidorId === "string") out.push({ ...d, tipo: d.tipo === "hosting" ? "hosting" : "vps" });
     } catch {
       /* línea corrupta */
     }
@@ -82,6 +91,11 @@ async function writeAll(list: RenovacionVps[]): Promise<void> {
   await chmod(FILE, 0o600).catch(() => {});
 }
 
+async function marcarRenovacion(id: string, patch: Partial<RenovacionVps>): Promise<void> {
+  const list = await readAll();
+  await writeAll(list.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+}
+
 /** Un mes natural después (misma hora). */
 export function masUnMes(iso: string): string {
   const d = new Date(iso);
@@ -92,39 +106,55 @@ export function masUnMes(iso: string): string {
   return d.toISOString();
 }
 
+const fecha = (iso: string): string => iso.slice(0, 10);
+
 /* ------------------------------ Vencimientos ------------------------------ */
 
+/** Servicio renovable: un VPS con cliente o una cuenta de hosting creada. */
+export type Servicio =
+  | { tipo: "vps"; id: string; userId: string; remoteId: number; etiqueta: string; ficha: ManagedServer }
+  | { tipo: "hosting"; id: string; userId: string; remoteId: 0; etiqueta: string; cuenta: HostingIntent };
+
 export type Vencimiento = {
-  ficha: ManagedServer;
+  servicio: Servicio;
   /** Fin del periodo pagado (ISO), o null si no se puede determinar. */
   periodoHasta: string | null;
   /** Renovación pendiente de pago para el siguiente periodo, si la hay. */
   pendiente: RenovacionVps | null;
-  /** Origen del dato: factura de alta, renovación pagada o fecha de creación. */
+  /** Origen del dato: renovación pagada, factura de alta o fecha de creación. */
   origen: "renovacion" | "alta" | "ficha";
 };
 
-/** Fin del periodo pagado de una ficha, con la renovación pendiente si existe. */
-export async function vencimientoDeFicha(
-  ficha: ManagedServer,
-  intent?: ProvisionIntent | null,
-  todas?: RenovacionVps[],
-): Promise<Vencimiento> {
-  const lista = (todas ?? (await readAll())).filter((r) => r.servidorId === ficha.id);
+function servicioDeFicha(ficha: ManagedServer): Servicio {
+  return { tipo: "vps", id: ficha.id, userId: ficha.userId ?? "", remoteId: ficha.remoteId, etiqueta: ficha.etiqueta, ficha };
+}
+
+function servicioDeCuenta(c: HostingIntent): Servicio {
+  return { tipo: "hosting", id: `hosting:${c.cpanelUser}`, userId: c.userId ?? "", remoteId: 0, etiqueta: c.domain ?? c.cpanelUser ?? "", cuenta: c };
+}
+
+async function vencimientoDe(s: Servicio, todas: RenovacionVps[], intent?: ProvisionIntent | null): Promise<Vencimiento> {
+  const lista = todas.filter((r) => r.servidorId === s.id);
   const pagadas = lista.filter((r) => r.estado === "pagada").sort((a, b) => b.periodoHasta.localeCompare(a.periodoHasta));
   const pendiente = lista.find((r) => r.estado === "pendiente") ?? null;
-  if (pagadas[0]) return { ficha, periodoHasta: pagadas[0].periodoHasta, pendiente, origen: "renovacion" };
+  if (pagadas[0]) return { servicio: s, periodoHasta: pagadas[0].periodoHasta, pendiente, origen: "renovacion" };
   // Sin renovaciones: un mes desde el pago de la factura de alta.
   try {
-    const it = intent === undefined ? await intentDeFicha(ficha) : intent;
-    if (it) {
-      const inv = await getInvoiceById(it.invoiceId);
-      if (inv?.pagadaAt) return { ficha, periodoHasta: masUnMes(inv.pagadaAt), pendiente, origen: "alta" };
+    const invoiceId = s.tipo === "hosting" ? s.cuenta.invoiceId : (intent === undefined ? await intentDeFicha(s.ficha) : intent)?.invoiceId;
+    if (invoiceId) {
+      const inv = await getInvoiceById(invoiceId);
+      if (inv?.pagadaAt) return { servicio: s, periodoHasta: masUnMes(inv.pagadaAt), pendiente, origen: "alta" };
     }
   } catch {
     /* sin factura localizable: se cae a la fecha de creación */
   }
-  return { ficha, periodoHasta: masUnMes(ficha.creadoAt), pendiente, origen: "ficha" };
+  const creado = s.tipo === "hosting" ? s.cuenta.creadoAt : s.ficha.creadoAt;
+  return { servicio: s, periodoHasta: creado ? masUnMes(creado) : null, pendiente, origen: "ficha" };
+}
+
+/** Fin del periodo pagado de una ficha de VPS (lo usa el panel de cliente). */
+export async function vencimientoDeFicha(ficha: ManagedServer, intent?: ProvisionIntent | null): Promise<Vencimiento> {
+  return vencimientoDe(servicioDeFicha(ficha), await readAll(), intent);
 }
 
 /** El intent de alta se indexa por el order_id del provisioner, que solo trae `/detalle`. */
@@ -137,12 +167,14 @@ async function intentDeFicha(ficha: ManagedServer): Promise<ProvisionIntent | nu
   }
 }
 
-/** Vencimientos de todos los VPS Proxmox con cliente (para el admin y el barrido). */
+/** Vencimientos de todos los servicios con cliente (admin y barrido). */
 export async function listarVencimientos(): Promise<Vencimiento[]> {
   const fichas = (await listManagedServers()).filter((f) => f.proveedor === "proxmox" && f.userId);
+  const cuentas = (await cuentasHostingActivas()).filter((c) => c.userId);
   const todas = await readAll();
   const out: Vencimiento[] = [];
-  for (const f of fichas) out.push(await vencimientoDeFicha(f, undefined, todas));
+  for (const f of fichas) out.push(await vencimientoDe(servicioDeFicha(f), todas));
+  for (const c of cuentas) out.push(await vencimientoDe(servicioDeCuenta(c), todas));
   return out.sort((a, b) => (a.periodoHasta ?? "").localeCompare(b.periodoHasta ?? ""));
 }
 
@@ -175,7 +207,7 @@ export async function comprobarRenovacionesVps(): Promise<void> {
     if (horas < BARRIDO_MIN_H) return;
     await guardarEstado({ lastSweepAt: new Date().toISOString() });
     const n = await barrerRenovacionesVps(renovaciones.diasAviso);
-    if (n > 0) console.info(`[renovaciones] ${n} proforma(s) de renovación de VPS emitidas`);
+    if (n > 0) console.info(`[renovaciones] ${n} proforma(s) de renovación emitidas`);
     const r = await procesarImpagos(renovaciones.diasGracia, renovaciones.borrarImpagados);
     if (r.avisados || r.borrados) console.info(`[renovaciones] impagos: ${r.avisados} avisados, ${r.borrados} borrados`);
   } catch (err) {
@@ -184,20 +216,19 @@ export async function comprobarRenovacionesVps(): Promise<void> {
 }
 
 /**
- * Emite la proforma de renovación de cada VPS cuyo periodo termina en
+ * Emite la proforma de renovación de cada servicio cuyo periodo termina en
  * `diasAviso` días o menos (o ya terminó) y que no tenga ya una pendiente.
- * Devuelve cuántas emitió. `soloVista` no emite: devuelve las candidatas.
+ * Devuelve cuántas emitió.
  */
-export async function barrerRenovacionesVps(diasAviso: number, soloVista = false): Promise<number> {
+export async function barrerRenovacionesVps(diasAviso: number): Promise<number> {
   const candidatas = await candidatasARenovar(diasAviso);
-  if (soloVista) return candidatas.length;
   let emitidas = 0;
   for (const c of candidatas) {
     try {
       await emitirRenovacion(c);
       emitidas++;
     } catch (err) {
-      console.error(`[renovaciones] no se pudo emitir la renovación de ${c.ficha.id}:`, err instanceof ProvisionerError ? err.message : err);
+      console.error(`[renovaciones] no se pudo emitir la renovación de ${c.servicio.id}:`, err instanceof ProvisionerError ? err.message : err);
     }
   }
   return emitidas;
@@ -208,60 +239,69 @@ export async function candidatasARenovar(diasAviso: number): Promise<Vencimiento
   const out: Vencimiento[] = [];
   for (const v of await listarVencimientos()) {
     if (!v.periodoHasta || v.pendiente) continue;
-    const dias = (Date.parse(v.periodoHasta) - ahora) / 86_400_000;
+    const dias = (Date.parse(v.periodoHasta) - ahora) / DIA_MS;
     if (dias <= diasAviso) out.push(v);
   }
   return out;
 }
 
-async function emitirRenovacion(v: Vencimiento): Promise<RenovacionVps> {
-  const ficha = v.ficha;
-  if (!ficha.userId || !v.periodoHasta) throw new Error("ficha sin cliente o sin periodo");
-  const [user, vps] = await Promise.all([getPublicUserById(ficha.userId), getVps(ficha.remoteId)]);
-  if (!user) throw new Error("cliente no encontrado");
+/** Plan, precio y nombre legible del servicio (VPS: plan vigente del provisioner). */
+async function planYNombre(s: Servicio): Promise<{ planSlug: string; precio: number; planNombre: string; nombre: string }> {
+  if (s.tipo === "hosting") {
+    const located = await getPlanById(s.cuenta.planId, "en");
+    if (!located) throw new Error(`plan ${s.cuenta.planId} no está en el catálogo`);
+    return { planSlug: s.cuenta.planId, precio: located.plan.price, planNombre: located.plan.name, nombre: s.cuenta.domain ?? s.cuenta.cpanelUser ?? "hosting" };
+  }
+  const vps = await getVps(s.remoteId);
   if (vps.estado === "destroyed") throw new Error("vps destruido");
   if (!vps.plan_slug) throw new Error("vps sin plan");
   const located = await getPlanById(vps.plan_slug, "en");
   if (!located) throw new Error(`plan ${vps.plan_slug} no está en el catálogo`);
-  const precio = located.plan.price;
-  const nombre = vps.hostname || ficha.etiqueta || `vps-${vps.vmid}`;
+  return { planSlug: vps.plan_slug, precio: located.plan.price, planNombre: located.plan.name, nombre: vps.hostname || s.etiqueta || `vps-${vps.vmid}` };
+}
+
+async function emitirRenovacion(v: Vencimiento): Promise<RenovacionVps> {
+  const s = v.servicio;
+  if (!s.userId || !v.periodoHasta) throw new Error("servicio sin cliente o sin periodo");
+  const [user, info] = await Promise.all([getPublicUserById(s.userId), planYNombre(s)]);
+  if (!user) throw new Error("cliente no encontrado");
   const desde = v.periodoHasta;
   const hasta = masUnMes(desde);
-  const fmt = (iso: string) => iso.slice(0, 10);
   const { invoice } = await checkoutOrder({
-    userId: ficha.userId,
+    userId: s.userId,
     clienteNombre: [user.nombre, user.apellidos].filter(Boolean).join(" ") || user.email,
     clienteEmail: user.email,
     lineas: [
       {
-        concepto: `Renewal ${located.plan.name} · ${nombre}`,
-        descripcion: `Service period ${fmt(desde)} → ${fmt(hasta)} (monthly)`,
+        concepto: `Renewal ${info.planNombre} · ${info.nombre}`,
+        descripcion: `Service period ${fecha(desde)} → ${fecha(hasta)} (monthly)`,
         cantidad: 1,
-        precioUnitario: precio,
-        productId: vps.plan_slug,
+        precioUnitario: info.precio,
+        productId: info.planSlug,
       },
     ],
     metodo: "transferencia",
     locale: "es",
-    cancelPath: "/cuenta/servidores",
+    cancelPath: s.tipo === "hosting" ? "/cuenta/hosting" : "/cuenta/servidores",
   });
   const r: RenovacionVps = {
     id: randomUUID(),
-    servidorId: ficha.id,
-    remoteId: ficha.remoteId,
-    userId: ficha.userId,
+    tipo: s.tipo,
+    servidorId: s.id,
+    remoteId: s.remoteId,
+    userId: s.userId,
     invoiceId: invoice.id,
     periodoDesde: desde,
     periodoHasta: hasta,
-    importe: precio,
-    planSlug: vps.plan_slug,
+    importe: info.precio,
+    planSlug: info.planSlug,
     estado: "pendiente",
     creadoAt: new Date().toISOString(),
     pagadaAt: null,
   };
   const list = await readAll();
   await writeAll([...list, r]);
-  console.info(`[renovaciones] proforma ${invoice.numero} emitida para ${nombre} (${fmt(desde)} → ${fmt(hasta)}, ${precio} €)`);
+  console.info(`[renovaciones] proforma ${invoice.numero} emitida para ${info.nombre} (${fecha(desde)} → ${fecha(hasta)}, ${info.precio} €)`);
   return r;
 }
 
@@ -298,13 +338,11 @@ export async function cancelarRenovacionesFactura(invoiceId: string): Promise<vo
 
 /* --------------------------------- Impagos -------------------------------- */
 
-const DIA_MS = 86_400_000;
-
 /**
  * Vencidos sin pagar: (1) un único correo de aviso al vencer; (2) pasados
  * `diasGracia` días desde el vencimiento —y desde la emisión de la proforma,
- * para que el cliente haya tenido ese margen real— se para y se destruye la VM,
- * se cancela la proforma y se avisa. Devuelve cuántos avisos y borrados.
+ * para que el cliente haya tenido ese margen real— se suspende y se elimina el
+ * servicio, se cancela la proforma y se avisa. Devuelve cuántos avisos y borrados.
  */
 export async function procesarImpagos(
   diasGracia: number,
@@ -313,42 +351,46 @@ export async function procesarImpagos(
 ): Promise<{ avisados: number; borrados: number }> {
   let avisados = 0;
   let borrados = 0;
-  const vencimientos = await listarVencimientos();
-  for (const v of vencimientos) {
+  for (const v of await listarVencimientos()) {
     const pend = v.pendiente;
-    if (!pend || !v.periodoHasta || !v.ficha.userId) continue;
+    const s = v.servicio;
+    if (!pend || !v.periodoHasta || !s.userId) continue;
     const vencidoMs = ahora - Date.parse(v.periodoHasta);
     if (vencidoMs < 0) continue; // aún dentro del periodo pagado
     const emitidaMs = ahora - Date.parse(pend.creadoAt);
-    const user = await getPublicUserById(v.ficha.userId).catch(() => null);
+    const user = await getPublicUserById(s.userId).catch(() => null);
     if (!user) continue;
     const inv = await getInvoiceById(pend.invoiceId).catch(() => null);
     if (!inv || inv.estado !== "pendiente") continue; // pagada/cancelada entretanto: los ganchos ya la marcan
-    const nombre = await nombreDe(v.ficha);
+    const nombre = await nombreDe(s);
+    const queEs = s.tipo === "hosting" ? { es: "tu hosting", en: "your hosting account" } : { es: "tu servidor", en: "your server" };
+    const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
+    const saludo = `Hola ${user.nombre || ""},`.trim();
+    const hi = `Hi ${user.nombre || ""},`.trim();
 
     if (!pend.avisoVencidoAt) {
-      const limite = new Date(Date.parse(v.periodoHasta) + diasGracia * DIA_MS);
+      const limite = fecha(new Date(Date.parse(v.periodoHasta) + diasGracia * DIA_MS).toISOString());
       try {
         await sendServiceNoticeMail({
           to: user.email,
           asunto: `Servicio vencido sin pagar: ${nombre} / Service expired: ${nombre}`,
           cuerpo: [
-            `Hola ${user.nombre || ""},`.trim(),
+            saludo,
             "",
-            `El periodo de tu servidor ${nombre} terminó el ${fecha(v.periodoHasta)} y la proforma de renovación ${inv.numero} (${inv.total.toFixed(2)} €) sigue sin pagar.`,
+            `El periodo de ${queEs.es} ${nombre} terminó el ${fecha(v.periodoHasta)} y la proforma de renovación ${inv.numero} (${inv.total.toFixed(2)} €) sigue sin pagar.`,
             borrar
-              ? `Si no se recibe el pago antes del ${fecha(limite.toISOString())}, el servidor se suspenderá y se ELIMINARÁ automáticamente con todos sus datos. Esta acción no se puede deshacer.`
+              ? `Si no se recibe el pago antes del ${limite}, el servicio se suspenderá y se ELIMINARÁ automáticamente con todos sus datos. Esta acción no se puede deshacer.`
               : "Paga la proforma para mantener el servicio activo.",
             "",
             "Puedes pagar desde tu área de cliente: https://viahost.top/es/cuenta/facturas",
             "",
             "— — —",
             "",
-            `Hi ${user.nombre || ""},`.trim(),
+            hi,
             "",
-            `The service period of your server ${nombre} ended on ${fecha(v.periodoHasta)} and the renewal proforma ${inv.numero} (€${inv.total.toFixed(2)}) is still unpaid.`,
+            `The service period of ${queEs.en} ${nombre} ended on ${fecha(v.periodoHasta)} and the renewal proforma ${inv.numero} (€${inv.total.toFixed(2)}) is still unpaid.`,
             borrar
-              ? `If payment is not received before ${fecha(limite.toISOString())}, the server will be suspended and DELETED automatically with all its data. This cannot be undone.`
+              ? `If payment is not received before ${limite}, the service will be suspended and DELETED automatically with all its data. This cannot be undone.`
               : "Please pay the proforma to keep the service active.",
             "",
             "Pay from your client area: https://viahost.top/cuenta/facturas",
@@ -369,29 +411,27 @@ export async function procesarImpagos(
     if (vencidoMs < diasGracia * DIA_MS || emitidaMs < diasGracia * DIA_MS) continue;
 
     try {
-      // Suspender (parada en frío, best-effort) y destruir: VM + IP al pool.
-      await vpsAction(v.ficha.remoteId, "stop").catch(() => {});
-      await deleteVps(v.ficha.remoteId);
+      await suspenderYBorrar(s);
       await setInvoiceStatus(inv.id, "cancelada");
       await marcarRenovacion(pend.id, { estado: "cancelada", borradoAt: new Date(ahora).toISOString() });
       borrados++;
-      console.warn(`[renovaciones] SERVICIO BORRADO por impago: ${nombre} (ficha ${v.ficha.id}, vps ${v.ficha.remoteId}, ${inv.numero})`);
+      console.warn(`[renovaciones] SERVICIO BORRADO por impago: ${nombre} (${s.id}, ${inv.numero})`);
       try {
         await sendServiceNoticeMail({
           to: user.email,
           asunto: `Servicio eliminado por impago: ${nombre} / Service deleted: ${nombre}`,
           cuerpo: [
-            `Hola ${user.nombre || ""},`.trim(),
+            saludo,
             "",
-            `El servidor ${nombre} venció el ${fecha(v.periodoHasta)} y, pasados ${diasGracia} días sin recibir el pago de la proforma ${inv.numero}, ha sido suspendido y eliminado junto con sus datos. La proforma queda cancelada.`,
-            "Si quieres volver a contratar un servidor: https://viahost.top/es/vps",
+            `${cap(queEs.es)} ${nombre} venció el ${fecha(v.periodoHasta)} y, pasados ${diasGracia} días sin recibir el pago de la proforma ${inv.numero}, ha sido suspendido y eliminado junto con sus datos. La proforma queda cancelada.`,
+            `Si quieres volver a contratar: https://viahost.top/es/${s.tipo === "hosting" ? "hosting" : "vps"}`,
             "",
             "— — —",
             "",
-            `Hi ${user.nombre || ""},`.trim(),
+            hi,
             "",
-            `Your server ${nombre} expired on ${fecha(v.periodoHasta)} and, ${diasGracia} days later with proforma ${inv.numero} still unpaid, it has been suspended and deleted together with its data. The proforma is now cancelled.`,
-            "To order a new server: https://viahost.top/vps",
+            `${cap(queEs.en)} ${nombre} expired on ${fecha(v.periodoHasta)} and, ${diasGracia} days later with proforma ${inv.numero} still unpaid, it has been suspended and deleted together with its data. The proforma is now cancelled.`,
+            `To order again: https://viahost.top/${s.tipo === "hosting" ? "hosting" : "vps"}`,
             "",
             "ViaHost · soporte@viahost.top",
           ].join("\n"),
@@ -400,24 +440,31 @@ export async function procesarImpagos(
         console.error("[renovaciones] no se pudo avisar del borrado:", err);
       }
     } catch (err) {
-      console.error(`[renovaciones] no se pudo borrar ${nombre} por impago:`, err instanceof ProvisionerError ? err.message : err);
+      console.error(`[renovaciones] no se pudo borrar ${nombre} por impago:`, err instanceof ProvisionerError || err instanceof WhmError ? err.message : err);
     }
   }
   return { avisados, borrados };
 }
 
-async function marcarRenovacion(id: string, patch: Partial<RenovacionVps>): Promise<void> {
-  const list = await readAll();
-  await writeAll(list.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+/** Suspende (parada / suspendacct) y elimina el servicio en su proveedor. */
+async function suspenderYBorrar(s: Servicio): Promise<void> {
+  if (s.tipo === "hosting") {
+    const user = s.cuenta.cpanelUser!;
+    await suspendAccount(user, "Unpaid renewal (ViaHost)").catch(() => {});
+    await removeAccount(user);
+    await marcarHostingTerminado(user);
+    return;
+  }
+  await vpsAction(s.remoteId, "stop").catch(() => {});
+  await deleteVps(s.remoteId);
 }
 
-async function nombreDe(ficha: ManagedServer): Promise<string> {
+async function nombreDe(s: Servicio): Promise<string> {
+  if (s.tipo === "hosting") return s.cuenta.domain ?? s.cuenta.cpanelUser ?? "hosting";
   try {
-    const v = await getVps(ficha.remoteId);
-    return v.hostname || ficha.etiqueta || `vps-${v.vmid}`;
+    const v = await getVps(s.remoteId);
+    return v.hostname || s.etiqueta || `vps-${v.vmid}`;
   } catch {
-    return ficha.etiqueta || `vps #${ficha.remoteId}`;
+    return s.etiqueta || `vps #${s.remoteId}`;
   }
 }
-
-const fecha = (iso: string): string => iso.slice(0, 10);

@@ -36,6 +36,8 @@ export type HostingIntent = {
   cpanelUser: string | null;
   /** Dominio primario (temporal) con el que se creó la cuenta. */
   domain: string | null;
+  /** Cuándo se eliminó la cuenta (impago); null = activa. */
+  terminatedAt?: string | null;
 };
 
 export type NuevaHostingIntent = Omit<
@@ -69,6 +71,7 @@ async function readAll(): Promise<HostingIntent[]> {
           provisioned: d.provisioned === true,
           cpanelUser: typeof d.cpanelUser === "string" ? d.cpanelUser : null,
           domain: typeof d.domain === "string" ? d.domain : null,
+          terminatedAt: typeof d.terminatedAt === "string" ? d.terminatedAt : null,
         });
       }
     } catch {
@@ -129,7 +132,18 @@ export async function marcarProvisionado(
 /** Cuentas de hosting ya creadas de un usuario (para "Mis servicios"). */
 export async function hostingDeUsuario(userId: string): Promise<HostingIntent[]> {
   if (!userId) return [];
-  return (await readAll()).filter((d) => d.userId === userId && d.provisioned);
+  return (await readAll()).filter((d) => d.userId === userId && d.provisioned && !d.terminatedAt);
+}
+
+/** Cuentas de hosting creadas y vivas, de todos los clientes (renovaciones). */
+export async function cuentasHostingActivas(): Promise<HostingIntent[]> {
+  return (await readAll()).filter((d) => d.provisioned && !!d.cpanelUser && !d.terminatedAt);
+}
+
+/** Marca la cuenta como eliminada (impago). */
+export async function marcarHostingTerminado(cpanelUser: string): Promise<void> {
+  const list = await readAll();
+  await writeAll(list.map((d) => (d.cpanelUser === cpanelUser && !d.terminatedAt ? { ...d, terminatedAt: new Date().toISOString() } : d)));
 }
 
 /**

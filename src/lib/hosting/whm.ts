@@ -139,6 +139,25 @@ export async function changeAccountPassword(username: string, password: string):
   await call("passwd", { user: username, password, db_pass_update: 0 }, cfg);
 }
 
+/** Suspende una cuenta (el sitio deja de servirse; los datos se conservan). */
+export async function suspendAccount(username: string, reason: string): Promise<void> {
+  const cfg = await config();
+  if (!cfg) throw new WhmError("unconfigured", "Hosting/WHM sin configurar");
+  await call("suspendacct", { user: username, reason: reason.slice(0, 120) }, cfg);
+}
+
+/** ELIMINA una cuenta con todos sus datos (irreversible). Idempotente si ya no existe. */
+export async function removeAccount(username: string): Promise<void> {
+  const cfg = await config();
+  if (!cfg) throw new WhmError("unconfigured", "Hosting/WHM sin configurar");
+  try {
+    await call("removeacct", { user: username, keepdns: 0 }, cfg);
+  } catch (err) {
+    if (err instanceof WhmError && /does not exist|no existe|not exist/i.test(err.message)) return;
+    throw err;
+  }
+}
+
 /** ¿El hosting está configurado y encendido? (para decidir si se aprovisiona). */
 export function hostingConfigured(hosting: HostingSettings): boolean {
   return hostingConfig(hosting) != null;

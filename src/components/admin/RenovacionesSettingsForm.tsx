@@ -5,6 +5,7 @@ import { useState } from "react";
 export type RenovacionesPublicSettings = { enabled: boolean; diasAviso: number; diasGracia: number; borrarImpagados: boolean };
 
 type Vencimiento = {
+  tipo: "vps" | "hosting";
   servidorId: string;
   remoteId: number;
   userId: string | null;
@@ -103,12 +104,12 @@ export function RenovacionesSettingsForm({ initial }: { initial: RenovacionesPub
     <section className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-raised)] p-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold">Renovaciones mensuales de VPS</h2>
+          <h2 className="text-lg font-semibold">Renovaciones mensuales (VPS y hosting)</h2>
           <p className="mt-1 max-w-2xl text-sm text-[var(--color-fg-muted)]">
-            Cada VPS cubre un mes desde el pago de su alta; cada renovación pagada añade otro mes al fin de
+            Cada VPS o cuenta de hosting cubre un mes desde el pago de su alta; cada renovación pagada añade otro mes al fin de
             periodo. Los días indicados antes de vencer se emite al cliente una proforma de renovación al
             precio actual del plan (transferencia, PDF por correo). Al vencer sin pagar se envía un aviso; pasados
-            los días de gracia sin pago, el servidor se suspende y se ELIMINA con sus datos (irreversible) y la
+            los días de gracia sin pago, el servicio se suspende y se ELIMINA con sus datos (VM destruida / cuenta cPanel eliminada; irreversible) y la
             proforma se cancela.
           </p>
         </div>
@@ -203,12 +204,12 @@ export function RenovacionesSettingsForm({ initial }: { initial: RenovacionesPub
       {vista && (
         <div className="mt-5 overflow-x-auto">
           {vista.length === 0 ? (
-            <p className="text-sm text-[var(--color-fg-muted)]">No hay VPS con cliente.</p>
+            <p className="text-sm text-[var(--color-fg-muted)]">No hay servicios con cliente.</p>
           ) : (
             <table className="w-full text-sm">
               <thead className="mono-label text-left text-[0.6rem]">
                 <tr>
-                  <th className="py-2 pr-4">VPS</th>
+                  <th className="py-2 pr-4">Servicio</th>
                   <th className="py-2 pr-4">Fin de periodo</th>
                   <th className="py-2 pr-4">Base del cálculo</th>
                   <th className="py-2 pr-4">Renovación pendiente</th>
@@ -218,7 +219,7 @@ export function RenovacionesSettingsForm({ initial }: { initial: RenovacionesPub
               <tbody>
                 {vista.map((v) => (
                   <tr key={v.servidorId} className="border-t border-[var(--color-line)]">
-                    <td className="py-2 pr-4 font-mono text-xs">#{v.remoteId} {v.etiqueta || ""}</td>
+                    <td className="py-2 pr-4 font-mono text-xs">{v.tipo === "hosting" ? `hosting ${v.etiqueta}` : `VPS #${v.remoteId} ${v.etiqueta || ""}`}</td>
                     <td className="py-2 pr-4">{fecha(v.periodoHasta)}</td>
                     <td className="py-2 pr-4 text-[var(--color-fg-muted)]">{ORIGEN[v.origen]}</td>
                     <td className="py-2 pr-4">{v.pendiente ? `${v.pendiente.importe.toFixed(2)} € hasta ${fecha(v.pendiente.periodoHasta)}` : "—"}</td>
