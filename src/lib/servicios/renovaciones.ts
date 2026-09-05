@@ -97,15 +97,8 @@ async function marcarRenovacion(id: string, patch: Partial<RenovacionVps>): Prom
   await writeAll(list.map((r) => (r.id === id ? { ...r, ...patch } : r)));
 }
 
-/** Un mes natural después (misma hora). */
-export function masUnMes(iso: string): string {
-  const d = new Date(iso);
-  const dia = d.getUTCDate();
-  d.setUTCMonth(d.getUTCMonth() + 1);
-  // 31 de enero + 1 mes → 28/29 de febrero (no 2/3 de marzo).
-  if (d.getUTCDate() !== dia) d.setUTCDate(0);
-  return d.toISOString();
-}
+export { masUnMes } from "./periodo";
+import { masUnMes } from "./periodo";
 
 const fecha = (iso: string): string => iso.slice(0, 10);
 
