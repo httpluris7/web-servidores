@@ -498,3 +498,45 @@ export function getPlans(): Promise<{ plans: PlanProvisioner[] }> {
 export function syncPlans(planes: PlanProvisioner[]): Promise<PlanSyncResult> {
   return request("PUT", "/plans/sync", { plans: planes });
 }
+
+/* --------------------- Backups: programación y restauración ---------------- */
+
+export type VpsBackupSchedule = {
+  vpsId: number;
+  activo: boolean;
+  frecuencia: "daily" | "weekly";
+  diaSemana: number | null;
+  /** Hora UTC (0-23). */
+  hora: number;
+  retencion: number;
+  ultimoRun: string | null;
+  ultimoResultado: string | null;
+};
+
+export type VpsBackupScheduleInput = {
+  activo: boolean;
+  frecuencia: "daily" | "weekly";
+  dia_semana?: number | null;
+  hora: number;
+  retencion: number;
+};
+
+export function vpsBackupSchedule(vpsId: number): Promise<{ ok: boolean; schedule: VpsBackupSchedule | null }> {
+  return request("GET", `/vps/${vpsId}/backups/schedule`);
+}
+
+export function setVpsBackupSchedule(
+  vpsId: number,
+  input: VpsBackupScheduleInput,
+): Promise<{ ok: boolean; schedule: VpsBackupSchedule | null }> {
+  return request("PUT", `/vps/${vpsId}/backups/schedule`, input);
+}
+
+export function deleteVpsBackupSchedule(vpsId: number): Promise<{ ok: boolean }> {
+  return request("DELETE", `/vps/${vpsId}/backups/schedule`);
+}
+
+/** Restaura una copia sobre la VM (destructivo; la para si está encendida). Devuelve el UPID. */
+export function restoreVpsBackup(vpsId: number, volid: string): Promise<{ ok: boolean; upid: string }> {
+  return request("POST", `/vps/${vpsId}/backups/restore`, { volid }, 120_000);
+}

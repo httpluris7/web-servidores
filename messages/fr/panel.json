@@ -118,7 +118,12 @@
       "net": "Réseau",
       "netin": "Entrée",
       "netout": "Sortie",
-      "tf": { "hour": "1 h", "day": "1 j", "week": "1 sem", "month": "1 mois" }
+      "tf": {
+        "hour": "1 h",
+        "day": "1 j",
+        "week": "1 sem",
+        "month": "1 mois"
+      }
     },
     "snapshots": {
       "heading": "Instantanés",
@@ -144,7 +149,43 @@
       "done": "Sauvegarde terminée.",
       "failed": "La sauvegarde s'est terminée en erreur. Consultez l'historique des tâches.",
       "empty": "Aucune sauvegarde pour l'instant.",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "restore": "Restaurer",
+      "restoreTitle": "Restaurer cette sauvegarde",
+      "restoreBody": "Remplace le disque et la configuration actuels par ceux de la sauvegarde. Tout ce qui a été écrit depuis sera perdu et le serveur sera éteint pendant la restauration. Pour confirmer, saisissez le nom du serveur.",
+      "restoreConfirm": "Restaurer la sauvegarde",
+      "restoring": "Restauration en cours… le serveur restera éteint à la fin.",
+      "restored": "Sauvegarde restaurée. Démarrez le serveur depuis Alimentation.",
+      "restoreFailed": "La restauration s’est terminée avec une erreur. Consultez l’historique des tâches.",
+      "auto": "automatique",
+      "schedule": {
+        "heading": "Sauvegardes automatiques",
+        "intro": "Le système sauvegardera à l’heure indiquée (UTC) et ne conservera que les dernières copies automatiques ; les sauvegardes manuelles ne sont jamais touchées.",
+        "enabled": "Activer les sauvegardes automatiques",
+        "frequency": "Fréquence",
+        "daily": "Chaque jour",
+        "weekly": "Chaque semaine",
+        "weekday": "Jour",
+        "hour": "Heure (UTC)",
+        "retention": "Conserver",
+        "retentionUnit": "{count, plural, one {# sauvegarde} other {# sauvegardes}}",
+        "save": "Enregistrer la programmation",
+        "saving": "Enregistrement…",
+        "saved": "Programmation enregistrée.",
+        "remove": "Supprimer la programmation",
+        "lastRun": "Dernière exécution :",
+        "never": "jamais",
+        "invalid": "Vérifiez les valeurs de la programmation.",
+        "day": {
+          "0": "Dimanche",
+          "1": "Lundi",
+          "2": "Mardi",
+          "3": "Mercredi",
+          "4": "Jeudi",
+          "5": "Vendredi",
+          "6": "Samedi"
+        }
+      }
     },
     "red": {
       "heading": "Réseau",
@@ -163,7 +204,12 @@
       "noAgent": "Installez l'agent de métriques pour surveiller les ressources et recevoir des alertes.",
       "error": "Impossible de lire les notifications pour le moment.",
       "since": "depuis",
-      "reglas": { "cpu": "CPU élevé", "memoria": "Mémoire élevée", "disco": "Disque plein", "agente": "Agent ne répond pas" }
+      "reglas": {
+        "cpu": "CPU élevé",
+        "memoria": "Mémoire élevée",
+        "disco": "Disque plein",
+        "agente": "Agent ne répond pas"
+      }
     },
     "reinstalar": {
       "heading": "Réinstallation",
@@ -189,7 +235,13 @@
       "rulesEmpty": "Aucune règle.",
       "addRule": "Ajouter une règle",
       "delete": "Supprimer",
-      "col": { "dir": "Direction", "action": "Action", "proto": "Protocole", "dport": "Port", "source": "Source" }
+      "col": {
+        "dir": "Direction",
+        "action": "Action",
+        "proto": "Protocole",
+        "dport": "Port",
+        "source": "Source"
+      }
     },
     "management": {
       "heading": "Gestion du service",

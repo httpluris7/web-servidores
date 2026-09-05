@@ -92,7 +92,7 @@ async function PanelContent({
       <GraficasSection id={service.id} agenteActivo={service.agenteActivo} />
       <NotificacionesSection id={service.id} />
       <SnapshotsSection id={service.id} nombre={service.nombre} />
-      <BackupsSection id={service.id} />
+      <BackupsSection id={service.id} nombre={service.nombre} />
       <FirewallSection id={service.id} />
       <ConsolaSection id={service.id} />
       <ReinstalarSection id={service.id} nombre={service.nombre} diskGb={service.disco.total} />

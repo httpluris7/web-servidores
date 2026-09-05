@@ -2,16 +2,18 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import type { VpsBackup } from "@/lib/provisioner/client";
+import type { VpsBackup, VpsBackupSchedule } from "@/lib/provisioner/client";
 import { CARD, SECTION_INDEX } from "./ui";
 
 /**
  * Sección "Copias de seguridad" (Fase 4). Lanza copias (vzdump) como tarea
  * asíncrona (UPID + sondeo, como las de energía), lista las existentes y permite
  * borrarlas. Si el nodo no tiene un almacén de backup configurado, se indica.
- * Restaurar (destructivo) todavía pasa por soporte.
+ * Restaurar (destructivo) exige teclear el nombre del servidor, como reinstalar,
+ * y deja el servidor apagado. La programación de copias automáticas la ejecuta
+ * el worker del aprovisionador (hora UTC, retención solo de las automáticas).
  */
-export function BackupsSection({ id }: { id: string }) {
+export function BackupsSection({ id, nombre }: { id: string; nombre: string }) {
   const t = useTranslations("panel");
   const locale = useLocale();
   const [storage, setStorage] = useState<string | null | undefined>(undefined); // undefined = cargando
@@ -20,6 +22,8 @@ export function BackupsSection({ id }: { id: string }) {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [restaurando, setRestaurando] = useState<string | null>(null); // volid con el diálogo abierto
+  const [confirmacion, setConfirmacion] = useState("");
 
   const cargar = useCallback(async () => {
     try {
@@ -44,7 +48,7 @@ export function BackupsSection({ id }: { id: string }) {
   }, [cargar]);
 
   const sondear = useCallback(
-    (upid: string) => {
+    (upid: string, modo: "backup" | "restore" = "backup") => {
       const inicio = Date.now();
       timer.current = setInterval(async () => {
         if (Date.now() - inicio > 15 * 60 * 1000) {
@@ -59,7 +63,15 @@ export function BackupsSection({ id }: { id: string }) {
           if (j?.ok && j.done) {
             if (timer.current) clearInterval(timer.current);
             setBusy(false);
-            setNotice(j.okResult === false ? t("backups.failed") : t("backups.done"));
+            setNotice(
+              modo === "restore"
+                ? j.okResult === false
+                  ? t("backups.restoreFailed")
+                  : t("backups.restored")
+                : j.okResult === false
+                  ? t("backups.failed")
+                  : t("backups.done"),
+            );
             void cargar();
           }
         } catch {
@@ -104,6 +116,38 @@ export function BackupsSection({ id }: { id: string }) {
       setError(t("power.errorConnection"));
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function restaurar(volid: string) {
+    setError(null);
+    setNotice(null);
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/panel/servicios/${id}/backups/restaurar`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ volid, confirmacion }),
+      });
+      const j = await res.json().catch(() => null);
+      if (!res.ok || !j?.ok) {
+        setBusy(false);
+        setError(
+          j?.error === "confirmation_mismatch"
+            ? t("power.errorConfirmation")
+            : j?.error === "busy"
+              ? t("power.errorBusy")
+              : t("power.errorGeneric"),
+        );
+        return;
+      }
+      setRestaurando(null);
+      setConfirmacion("");
+      setNotice(t("backups.restoring"));
+      sondear(j.upid, "restore");
+    } catch {
+      setBusy(false);
+      setError(t("power.errorConnection"));
     }
   }
 
@@ -158,24 +202,247 @@ export function BackupsSection({ id }: { id: string }) {
                             )
                           : "—"}
                       </p>
-                      <p className="font-mono text-xs text-[var(--color-fg-muted)]">{humano(b.size)}</p>
+                      <p className="font-mono text-xs text-[var(--color-fg-muted)]">
+                        {humano(b.size)}
+                        {b.notes === "viahost-auto" && <span className="ml-2 text-[var(--color-accent)]">· {t("backups.auto")}</span>}
+                      </p>
                     </div>
-                    <button
-                      type="button"
-                      disabled={busy}
-                      onClick={() => borrar(b.volid)}
-                      className="text-xs text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-danger)] disabled:opacity-40"
-                    >
-                      {t("backups.delete")}
-                    </button>
+                    <div className="flex items-center gap-4">
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => {
+                          setRestaurando(restaurando === b.volid ? null : b.volid);
+                          setConfirmacion("");
+                          setError(null);
+                        }}
+                        className="text-xs text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-accent)] disabled:opacity-40"
+                      >
+                        {t("backups.restore")}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => borrar(b.volid)}
+                        className="text-xs text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-danger)] disabled:opacity-40"
+                      >
+                        {t("backups.delete")}
+                      </button>
+                    </div>
+                    {restaurando === b.volid && (
+                      <div className="basis-full rounded-[var(--radius-md)] border border-[var(--color-danger)]/40 bg-[var(--color-danger)]/5 p-4">
+                        <p className="text-sm font-medium">{t("backups.restoreTitle")}</p>
+                        <p className="mt-1 text-xs text-[var(--color-fg-muted)]">
+                          {t("backups.restoreBody")}{" "}
+                          <span className="font-mono break-all text-[var(--color-fg)]">{nombre}</span>
+                        </p>
+                        <label htmlFor={`restore-confirm-${b.volid}`} className="mono-label mt-3 block text-[0.6rem]">
+                          {t("power.confirmLabel")}
+                        </label>
+                        <input
+                          id={`restore-confirm-${b.volid}`}
+                          type="text"
+                          value={confirmacion}
+                          onChange={(e) => setConfirmacion(e.target.value)}
+                          autoComplete="off"
+                          className="mt-1 w-full min-w-0 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-2.5 font-mono text-sm focus:border-[var(--color-danger)] focus:outline-none"
+                        />
+                        <div className="mt-3 flex flex-wrap gap-3">
+                          <button
+                            type="button"
+                            disabled={busy || confirmacion.trim() !== nombre}
+                            onClick={() => restaurar(b.volid)}
+                            className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-danger)] px-5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+                          >
+                            {t("backups.restoreConfirm")}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setRestaurando(null);
+                              setConfirmacion("");
+                            }}
+                            className="text-sm text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-fg)]"
+                          >
+                            {t("power.cancel")}
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>
             )}
+
+            <Programacion id={id} />
           </>
         )}
       </div>
     </section>
+  );
+}
+
+/** Formulario de copias automáticas (frecuencia, día, hora UTC, retención). */
+function Programacion({ id }: { id: string }) {
+  const t = useTranslations("panel");
+  const locale = useLocale();
+  const [cargado, setCargado] = useState(false);
+  const [actual, setActual] = useState<VpsBackupSchedule | null>(null);
+  const [activo, setActivo] = useState(false);
+  const [frecuencia, setFrecuencia] = useState<"daily" | "weekly">("daily");
+  const [dia, setDia] = useState(0);
+  const [hora, setHora] = useState(3);
+  const [retencion, setRetencion] = useState(3);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<{ tipo: "ok" | "error"; texto: string } | null>(null);
+
+  const aplicar = useCallback((s: VpsBackupSchedule | null) => {
+    setActual(s);
+    setActivo(s?.activo ?? false);
+    setFrecuencia(s?.frecuencia ?? "daily");
+    setDia(s?.diaSemana ?? 0);
+    setHora(s?.hora ?? 3);
+    setRetencion(s?.retencion ?? 3);
+  }, []);
+
+  useEffect(() => {
+    let vivo = true;
+    fetch(`/api/panel/servicios/${id}/backups/programacion`)
+      .then((r) => r.json())
+      .then((j) => {
+        if (!vivo) return;
+        aplicar(j?.ok ? (j.schedule as VpsBackupSchedule | null) : null);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (vivo) setCargado(true);
+      });
+    return () => {
+      vivo = false;
+    };
+  }, [id, aplicar]);
+
+  async function guardar() {
+    setBusy(true);
+    setMsg(null);
+    try {
+      const res = await fetch(`/api/panel/servicios/${id}/backups/programacion`, {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ activo, frecuencia, dia_semana: frecuencia === "weekly" ? dia : null, hora, retencion }),
+      });
+      const j = await res.json().catch(() => null);
+      if (!res.ok || !j?.ok) {
+        setMsg({ tipo: "error", texto: j?.error === "invalid_schedule" ? t("backups.schedule.invalid") : t("power.errorGeneric") });
+        return;
+      }
+      aplicar(j.schedule as VpsBackupSchedule | null);
+      setMsg({ tipo: "ok", texto: t("backups.schedule.saved") });
+    } catch {
+      setMsg({ tipo: "error", texto: t("power.errorConnection") });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function quitar() {
+    setBusy(true);
+    setMsg(null);
+    try {
+      const res = await fetch(`/api/panel/servicios/${id}/backups/programacion`, { method: "DELETE" });
+      const j = await res.json().catch(() => null);
+      if (!res.ok || !j?.ok) setMsg({ tipo: "error", texto: t("power.errorGeneric") });
+      else aplicar(null);
+    } catch {
+      setMsg({ tipo: "error", texto: t("power.errorConnection") });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const campo =
+    "mt-1 w-full min-w-0 rounded-[var(--radius-md)] border border-[var(--color-line-strong)] bg-[var(--color-bg-base)] px-3 py-2.5 text-sm focus:border-[var(--color-accent)] focus:outline-none disabled:opacity-40";
+  const etiqueta = "mono-label block text-[0.6rem]";
+
+  return (
+    <div className="mt-8 border-t border-[var(--color-line)] pt-6">
+      <h3 className="text-base font-semibold">{t("backups.schedule.heading")}</h3>
+      <p className="mt-1 text-sm text-[var(--color-fg-muted)]">{t("backups.schedule.intro")}</p>
+      {!cargado ? (
+        <span className="mt-4 block h-5 w-1/2 animate-pulse rounded bg-[var(--color-bg-overlay)]" aria-hidden="true" />
+      ) : (
+        <div className="mt-4 grid gap-4">
+          <label className="flex items-center gap-3 text-sm">
+            <input type="checkbox" checked={activo} onChange={(e) => setActivo(e.target.checked)} className="h-4 w-4 accent-[var(--color-accent)]" />
+            {t("backups.schedule.enabled")}
+          </label>
+          <div className="grid gap-4 sm:grid-cols-4">
+            <div>
+              <label htmlFor="bk-freq" className={etiqueta}>{t("backups.schedule.frequency")}</label>
+              <select id="bk-freq" value={frecuencia} disabled={!activo} onChange={(e) => setFrecuencia(e.target.value as "daily" | "weekly")} className={campo}>
+                <option value="daily">{t("backups.schedule.daily")}</option>
+                <option value="weekly">{t("backups.schedule.weekly")}</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="bk-day" className={etiqueta}>{t("backups.schedule.weekday")}</label>
+              <select id="bk-day" value={dia} disabled={!activo || frecuencia !== "weekly"} onChange={(e) => setDia(Number(e.target.value))} className={campo}>
+                {[0, 1, 2, 3, 4, 5, 6].map((d) => (
+                  <option key={d} value={d}>{t(`backups.schedule.day.${d}`)}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="bk-hour" className={etiqueta}>{t("backups.schedule.hour")}</label>
+              <select id="bk-hour" value={hora} disabled={!activo} onChange={(e) => setHora(Number(e.target.value))} className={campo}>
+                {Array.from({ length: 24 }, (_, h) => (
+                  <option key={h} value={h}>{String(h).padStart(2, "0")}:00</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="bk-ret" className={etiqueta}>{t("backups.schedule.retention")}</label>
+              <select id="bk-ret" value={retencion} disabled={!activo} onChange={(e) => setRetencion(Number(e.target.value))} className={campo}>
+                {[1, 2, 3, 5, 7, 14].map((n) => (
+                  <option key={n} value={n}>{t("backups.schedule.retentionUnit", { count: n })}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-4">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={guardar}
+              className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-line-strong)] px-4 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] disabled:opacity-40"
+            >
+              {busy ? t("backups.schedule.saving") : t("backups.schedule.save")}
+            </button>
+            {actual && (
+              <button type="button" disabled={busy} onClick={quitar} className="text-sm text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-danger)] disabled:opacity-40">
+                {t("backups.schedule.remove")}
+              </button>
+            )}
+            {actual && (
+              <p className="text-xs text-[var(--color-fg-muted)]">
+                {t("backups.schedule.lastRun")}{" "}
+                <span className="font-mono">
+                  {actual.ultimoRun
+                    ? new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(actual.ultimoRun))
+                    : t("backups.schedule.never")}
+                  {actual.ultimoResultado ? ` · ${actual.ultimoResultado}` : ""}
+                </span>
+              </p>
+            )}
+          </div>
+          {msg && (
+            <p role={msg.tipo === "error" ? "alert" : "status"} className={`text-sm ${msg.tipo === "error" ? "text-[var(--color-danger)]" : "text-[var(--color-accent)]"}`}>
+              {msg.texto}
+            </p>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 

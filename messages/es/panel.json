@@ -118,7 +118,12 @@
       "net": "Red",
       "netin": "Entrada",
       "netout": "Salida",
-      "tf": { "hour": "1 h", "day": "1 día", "week": "1 sem", "month": "1 mes" }
+      "tf": {
+        "hour": "1 h",
+        "day": "1 día",
+        "week": "1 sem",
+        "month": "1 mes"
+      }
     },
     "snapshots": {
       "heading": "Instantáneas",
@@ -144,7 +149,43 @@
       "done": "Copia completada.",
       "failed": "La copia terminó con error. Revisa el historial de tareas.",
       "empty": "Sin copias todavía.",
-      "delete": "Borrar"
+      "delete": "Borrar",
+      "restore": "Restaurar",
+      "restoreTitle": "Restaurar esta copia",
+      "restoreBody": "Sustituye el disco y la configuración actuales por los de la copia. Se perderá todo lo escrito desde entonces y el servidor se apagará durante la restauración. Para confirmar, escribe el nombre del servidor.",
+      "restoreConfirm": "Restaurar la copia",
+      "restoring": "Restaurando la copia… el servidor quedará apagado al terminar.",
+      "restored": "Copia restaurada. Enciende el servidor desde Energía.",
+      "restoreFailed": "La restauración terminó con error. Revisa el historial de tareas.",
+      "auto": "automática",
+      "schedule": {
+        "heading": "Copias automáticas",
+        "intro": "El sistema hará la copia a la hora indicada (UTC) y conservará solo las últimas automáticas; las copias manuales no se tocan.",
+        "enabled": "Activar copias automáticas",
+        "frequency": "Frecuencia",
+        "daily": "Cada día",
+        "weekly": "Cada semana",
+        "weekday": "Día",
+        "hour": "Hora (UTC)",
+        "retention": "Conservar",
+        "retentionUnit": "{count, plural, one {# copia} other {# copias}}",
+        "save": "Guardar programación",
+        "saving": "Guardando…",
+        "saved": "Programación guardada.",
+        "remove": "Quitar programación",
+        "lastRun": "Última ejecución:",
+        "never": "nunca",
+        "invalid": "Revisa los valores de la programación.",
+        "day": {
+          "0": "Domingo",
+          "1": "Lunes",
+          "2": "Martes",
+          "3": "Miércoles",
+          "4": "Jueves",
+          "5": "Viernes",
+          "6": "Sábado"
+        }
+      }
     },
     "red": {
       "heading": "Red",
@@ -163,7 +204,12 @@
       "noAgent": "Instala el agente de métricas para vigilar los recursos y recibir avisos.",
       "error": "No se pudieron leer las notificaciones ahora mismo.",
       "since": "desde",
-      "reglas": { "cpu": "CPU alta", "memoria": "Memoria alta", "disco": "Disco lleno", "agente": "Agente sin responder" }
+      "reglas": {
+        "cpu": "CPU alta",
+        "memoria": "Memoria alta",
+        "disco": "Disco lleno",
+        "agente": "Agente sin responder"
+      }
     },
     "reinstalar": {
       "heading": "Reinstalación",
@@ -189,7 +235,13 @@
       "rulesEmpty": "Sin reglas.",
       "addRule": "Añadir regla",
       "delete": "Borrar",
-      "col": { "dir": "Dirección", "action": "Acción", "proto": "Protocolo", "dport": "Puerto", "source": "Origen" }
+      "col": {
+        "dir": "Dirección",
+        "action": "Acción",
+        "proto": "Protocolo",
+        "dport": "Puerto",
+        "source": "Origen"
+      }
     },
     "management": {
       "heading": "Gestión del servicio",

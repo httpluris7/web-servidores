@@ -118,7 +118,12 @@
       "net": "Network",
       "netin": "In",
       "netout": "Out",
-      "tf": { "hour": "1 h", "day": "1 day", "week": "1 wk", "month": "1 mo" }
+      "tf": {
+        "hour": "1 h",
+        "day": "1 day",
+        "week": "1 wk",
+        "month": "1 mo"
+      }
     },
     "snapshots": {
       "heading": "Snapshots",
@@ -144,7 +149,43 @@
       "done": "Backup completed.",
       "failed": "The backup ended with an error. Check the task history.",
       "empty": "No backups yet.",
-      "delete": "Delete"
+      "delete": "Delete",
+      "restore": "Restore",
+      "restoreTitle": "Restore this backup",
+      "restoreBody": "Replaces the current disk and configuration with the ones in the backup. Everything written since then will be lost and the server will be powered off during the restore. To confirm, type the server name.",
+      "restoreConfirm": "Restore backup",
+      "restoring": "Restoring the backup… the server will stay powered off when done.",
+      "restored": "Backup restored. Start the server from Power.",
+      "restoreFailed": "The restore finished with an error. Check the task history.",
+      "auto": "automatic",
+      "schedule": {
+        "heading": "Automatic backups",
+        "intro": "The system will back up at the given time (UTC) and keep only the latest automatic copies; manual backups are never touched.",
+        "enabled": "Enable automatic backups",
+        "frequency": "Frequency",
+        "daily": "Every day",
+        "weekly": "Every week",
+        "weekday": "Day",
+        "hour": "Hour (UTC)",
+        "retention": "Keep",
+        "retentionUnit": "{count, plural, one {# backup} other {# backups}}",
+        "save": "Save schedule",
+        "saving": "Saving…",
+        "saved": "Schedule saved.",
+        "remove": "Remove schedule",
+        "lastRun": "Last run:",
+        "never": "never",
+        "invalid": "Check the schedule values.",
+        "day": {
+          "0": "Sunday",
+          "1": "Monday",
+          "2": "Tuesday",
+          "3": "Wednesday",
+          "4": "Thursday",
+          "5": "Friday",
+          "6": "Saturday"
+        }
+      }
     },
     "red": {
       "heading": "Network",
@@ -163,7 +204,12 @@
       "noAgent": "Install the metrics agent to monitor resources and get alerts.",
       "error": "Couldn't read notifications right now.",
       "since": "since",
-      "reglas": { "cpu": "High CPU", "memoria": "High memory", "disco": "Disk full", "agente": "Agent not responding" }
+      "reglas": {
+        "cpu": "High CPU",
+        "memoria": "High memory",
+        "disco": "Disk full",
+        "agente": "Agent not responding"
+      }
     },
     "reinstalar": {
       "heading": "Reinstall",
@@ -189,7 +235,13 @@
       "rulesEmpty": "No rules.",
       "addRule": "Add rule",
       "delete": "Delete",
-      "col": { "dir": "Direction", "action": "Action", "proto": "Protocol", "dport": "Port", "source": "Source" }
+      "col": {
+        "dir": "Direction",
+        "action": "Action",
+        "proto": "Protocol",
+        "dport": "Port",
+        "source": "Source"
+      }
     },
     "management": {
       "heading": "Service management",
