@@ -1,4 +1,4 @@
-import { barrerAgentesCaidos } from "@/lib/servidores/avisos";
+import { barrerAgentesCaidos, barrerTrafico } from "@/lib/servidores/avisos";
 import { comprobarBackupDiario } from "@/lib/backup/planificador";
 import { comprobarWise } from "@/lib/payments/wise-reconcile";
 import { comprobarDominios } from "@/lib/domains/monitor";
@@ -29,6 +29,8 @@ const ESPERA_INICIAL_MS = 60_000;
 
 const lanzar = () => {
   void barrerAgentesCaidos();
+  // Tráfico de los servidores del proveedor v4vm (contadores de su API).
+  void barrerTrafico();
   // La copia diaria comparte el mismo latido: comprueba si ya es su hora y si
   // no se ha hecho hoy. El planificador decide; aquí solo se le da el pulso.
   void comprobarBackupDiario();

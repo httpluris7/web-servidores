@@ -176,11 +176,12 @@ async function putAlerts(body: Record<string, unknown>) {
     sostenido: num(body.sostenido),
     agenteCaido: num(body.agenteCaido),
     recordatorio: num(body.recordatorio),
+    traficoGbDia: num(body.traficoGbDia),
   });
 
-  const { cpu, memoria, disco, agenteCaido } = settings.alerts;
+  const { cpu, memoria, disco, agenteCaido, traficoGbDia } = settings.alerts;
   const warning =
-    settings.alerts.enabled && cpu === 0 && memoria === 0 && disco === 0 && agenteCaido === 0
+    settings.alerts.enabled && cpu === 0 && memoria === 0 && disco === 0 && agenteCaido === 0 && traficoGbDia === 0
       ? "Alerts are on but every threshold is set to 0, so nothing will ever be reported."
       : null;
 

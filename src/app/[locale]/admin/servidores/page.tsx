@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ServerInventory } from "@/components/admin/ServerInventory";
-import { avisosActivos, ETIQUETA, type AvisoActivo } from "@/lib/servidores/avisos";
+import { avisosActivos, ETIQUETA, type AvisoActivo, ID_PROVEEDOR } from "@/lib/servidores/avisos";
 import { buildInventory, type Inventory } from "@/lib/servidores/inventario";
 import { ProviderError } from "@/lib/servidores/v4vm";
 
@@ -66,7 +66,7 @@ export default async function ServidoresPage({
                 className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-[var(--color-line)] pt-2 text-sm first:border-0 first:pt-0"
               >
                 <Link
-                  href={`/admin/servidores/${a.servidorId}`}
+                  href={a.servidorId.startsWith(ID_PROVEEDOR) ? "/admin/servidores" : `/admin/servidores/${a.servidorId}`}
                   className="font-medium break-words hover:text-[var(--color-accent)]"
                 >
                   {a.servidor}
@@ -74,7 +74,9 @@ export default async function ServidoresPage({
                 <span className="font-mono text-xs text-[var(--color-fg-muted)]">
                   {a.regla === "agente"
                     ? t("avisos.openAgent", { min: a.umbral })
-                    : t("avisos.openValue", {
+                    : a.regla === "trafico"
+                      ? t("avisos.openTraffic", { valor: Math.round(a.valor ?? 0), umbral: a.umbral })
+                      : t("avisos.openValue", {
                         metrica: ETIQUETA[a.regla],
                         valor: a.valor === null ? "—" : Math.round(a.valor),
                         umbral: a.umbral,

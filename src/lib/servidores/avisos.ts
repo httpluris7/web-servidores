@@ -5,7 +5,9 @@ import { readSettings, type AlertSettings } from "@/lib/ajustes";
 import { emailRe } from "@/lib/leads";
 import { ALERT_FALLBACK_MAILBOX, sendAlertMail } from "@/lib/mail";
 import { agenteVivo, ultimasMuestras, type Muestra } from "./metricas";
+import { providerServers } from "./inventario";
 import { listManagedServers, type ManagedServer } from "./store";
+import { añadirLectura, trafico24h, GB, type Lectura } from "./trafico-calculo";
 
 /**
  * Avisos por umbral sobre las métricas del agente.
@@ -31,9 +33,12 @@ const FILE = path.join(DATA_DIR, "avisos.json");
 /** Puntos porcentuales que hay que bajar del umbral para darlo por resuelto. */
 const MARGEN = 5;
 
-export type Regla = "cpu" | "memoria" | "disco" | "agente";
+export type Regla = "cpu" | "memoria" | "disco" | "agente" | "trafico";
 
-export const REGLAS: Regla[] = ["cpu", "memoria", "disco", "agente"];
+export const REGLAS: Regla[] = ["cpu", "memoria", "disco", "agente", "trafico"];
+
+/** Prefijo del id de estado de un servidor del proveedor que aún no tiene ficha. */
+export const ID_PROVEEDOR = "v4vm:";
 
 export type EstadoRegla = {
   estado: "ok" | "alerta";
@@ -108,6 +113,7 @@ function umbral(cfg: AlertSettings, regla: Regla): number {
   if (regla === "cpu") return cfg.cpu;
   if (regla === "memoria") return cfg.memoria;
   if (regla === "disco") return cfg.disco;
+  if (regla === "trafico") return cfg.traficoGbDia;
   return cfg.agenteCaido;
 }
 
@@ -116,6 +122,7 @@ export const ETIQUETA: Record<Regla, string> = {
   memoria: "Memoria",
   disco: "Disco",
   agente: "Agente",
+  trafico: "Tráfico",
 };
 
 /** Destinatarios efectivos: los configurados o el buzón de administración. */
@@ -134,8 +141,11 @@ const pct = (v: number | null): string => (v === null ? "" : `${Math.round(v)} %
 
 /* ------------------------------- Transiciones ----------------------------- */
 
+/** Lo que hace falta de un servidor para avisar: sirve la ficha o un servidor del proveedor sin ficha. */
+type Avisable = Pick<ManagedServer, "id" | "etiqueta" | "host">;
+
 type Transicion = {
-  ficha: ManagedServer;
+  ficha: Avisable;
   regla: Regla;
   activa: boolean;
   valor: number | null;
@@ -346,6 +356,112 @@ export async function barrerAgentesCaidos(): Promise<void> {
   }
 }
 
+/* --------------------------- Tráfico del proveedor ------------------------ */
+
+const TRAFICO_FILE = path.join(DATA_DIR, "trafico.json");
+
+type TraficoServidor = { nombre: string; lecturas: Lectura[] };
+type AlmacenTrafico = Record<string, TraficoServidor>;
+
+async function leerTrafico(): Promise<AlmacenTrafico> {
+  try {
+    const raw = JSON.parse(await readFile(TRAFICO_FILE, "utf8")) as unknown;
+    return raw && typeof raw === "object" ? (raw as AlmacenTrafico) : {};
+  } catch {
+    return {};
+  }
+}
+
+async function escribirTrafico(estado: AlmacenTrafico): Promise<void> {
+  await mkdir(DATA_DIR, { recursive: true });
+  await writeFile(TRAFICO_FILE, JSON.stringify(estado), { encoding: "utf8", mode: 0o600 });
+  await chmod(TRAFICO_FILE, 0o600);
+}
+
+/** Histéresis del tráfico: se da por resuelto al bajar un 10 % del umbral. */
+const MARGEN_TRAFICO = 0.1;
+
+/**
+ * Vigila el tráfico de los servidores del proveedor v4vm.
+ *
+ * La API del proveedor solo da contadores acumulados desde la creación, así
+ * que cada barrido apunta la lectura y el tráfico "de las últimas 24 h" es la
+ * diferencia con la lectura de hace un día (ver `trafico-calculo`). No se
+ * juzga nada hasta tener 12 h de historial. El estado se guarda por ficha si
+ * el servidor tiene una, y con el prefijo {@link ID_PROVEEDOR} si no la tiene:
+ * un servidor sin asignar también puede estar desbocado.
+ */
+export async function barrerTrafico(): Promise<void> {
+  try {
+    const { alerts } = await readSettings();
+    if (!alerts.enabled || alerts.traficoGbDia <= 0) return;
+
+    const servidores = await providerServers();
+    if (servidores.length === 0) return;
+    const fichas = await listManagedServers();
+    const fichaPorRemoto = new Map(fichas.filter((f) => f.proveedor === "v4vm").map((f) => [f.remoteId, f]));
+    const ahora = new Date();
+    const iso = ahora.toISOString();
+
+    const transiciones = await enCola(async () => {
+      const [almacen, trafico] = await Promise.all([leer(), leerTrafico()]);
+      const salida: Transicion[] = [];
+      const vistos = new Set<string>();
+
+      for (const s of servidores) {
+        const { trafficInBytes, trafficOutBytes } = s.usage;
+        if (trafficInBytes === null && trafficOutBytes === null) continue;
+        const clave = String(s.id);
+        vistos.add(clave);
+        const previo = trafico[clave]?.lecturas ?? [];
+        const lecturas = añadirLectura(previo, { at: iso, bytes: (trafficInBytes ?? 0) + (trafficOutBytes ?? 0) });
+        trafico[clave] = { nombre: s.name, lecturas };
+
+        const bytes = trafico24h(lecturas, ahora);
+        if (bytes === null) continue;
+        const gb = bytes / GB;
+        const ficha: Avisable = fichaPorRemoto.get(s.id) ?? {
+          id: `${ID_PROVEEDOR}${clave}`,
+          etiqueta: s.name,
+          host: s.ipv4[0] ?? "",
+        };
+        const actual = almacen[ficha.id]?.trafico ?? VACIO;
+        const limite = alerts.traficoGbDia;
+        const supera = actual.estado === "alerta" ? gb > limite * (1 - MARGEN_TRAFICO) : gb > limite;
+        // Sin "sostenido": el valor ya es un acumulado de 24 h, no un pico.
+        const { siguiente, avisar } = transicion(actual, supera, gb, ahora, 0, alerts.recordatorio);
+        almacen[ficha.id] = { ...(almacen[ficha.id] ?? {}), trafico: siguiente };
+        if (avisar) {
+          salida.push({
+            ficha,
+            regla: "trafico",
+            activa: avisar !== "resuelto",
+            valor: gb,
+            umbral: limite,
+            desde: siguiente.desde ?? actual.desde ?? iso,
+            recordatorio: avisar === "recordatorio",
+          });
+        }
+      }
+
+      // Servidores que ya no están en el proveedor: fuera su historial y su estado.
+      for (const clave of Object.keys(trafico)) {
+        if (!vistos.has(clave)) {
+          delete trafico[clave];
+          delete almacen[`${ID_PROVEEDOR}${clave}`];
+        }
+      }
+
+      await Promise.all([escribir(almacen), escribirTrafico(trafico)]);
+      return salida;
+    });
+
+    await notificar(transiciones, alerts);
+  } catch (err) {
+    console.error("[avisos] barrido de tráfico fallido:", err instanceof Error ? err.message : err);
+  }
+}
+
 async function notificar(transiciones: Transicion[], cfg: AlertSettings): Promise<void> {
   if (transiciones.length === 0) return;
   const to = destinatarios(cfg);
@@ -359,10 +475,17 @@ async function notificar(transiciones: Transicion[], cfg: AlertSettings): Promis
         // El aviso del agente no tiene valor que enseñar, así que lleva su
         // propia frase para que el asunto se entienda de un vistazo.
         resumen: t.regla === "agente" ? "el agente ha dejado de enviar datos" : undefined,
-        valor: t.regla === "agente" ? "" : pct(t.valor),
-        umbral: t.regla === "agente" ? `${t.umbral} min sin enviar` : `${t.umbral} %`,
+        valor: t.regla === "agente" ? "" : t.regla === "trafico" ? `${Math.round(t.valor ?? 0)} GB en 24 h` : pct(t.valor),
+        umbral:
+          t.regla === "agente"
+            ? `${t.umbral} min sin enviar`
+            : t.regla === "trafico"
+              ? `${t.umbral} GB en 24 h`
+              : `${t.umbral} %`,
         desde: fecha(t.desde),
-        url: `${site.url}/admin/servidores/${t.ficha.id}`,
+        url: t.ficha.id.startsWith(ID_PROVEEDOR)
+          ? `${site.url}/admin/servidores`
+          : `${site.url}/admin/servidores/${t.ficha.id}`,
         activa: t.activa,
         recordatorio: t.recordatorio,
       });
@@ -383,9 +506,14 @@ export async function avisosActivos(): Promise<AvisoActivo[]> {
   ]);
   const porId = new Map(fichas.map((f) => [f.id, f]));
   const out: AvisoActivo[] = [];
+  const trafico = await leerTrafico();
 
   for (const [id, reglas] of Object.entries(almacen)) {
-    const ficha = porId.get(id);
+    const ficha: Avisable | undefined =
+      porId.get(id) ??
+      (id.startsWith(ID_PROVEEDOR) && trafico[id.slice(ID_PROVEEDOR.length)]
+        ? { id, etiqueta: trafico[id.slice(ID_PROVEEDOR.length)]!.nombre, host: "" }
+        : undefined);
     if (!ficha) continue;
     for (const regla of REGLAS) {
       const e = reglas[regla];

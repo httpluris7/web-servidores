@@ -480,7 +480,8 @@
         "sostenido": "Pendant au moins",
         "agenteCaido": "Agent silencieux pendant",
         "recordatorio": "Répéter l'alerte toutes les",
-        "destinatarios": "Destinataires"
+        "destinatarios": "Destinataires",
+        "traficoGbDia": "Trafic v4vm supérieur à"
       },
       "help": {
         "cpu": "0 désactive l'alerte CPU.",
@@ -489,11 +490,13 @@
         "sostenido": "S'applique au CPU et à la mémoire, pour qu'un pic d'une minute n'envoie pas de courriel.",
         "agenteCaido": "0 : aucune alerte si une machine cesse de transmettre.",
         "recordatorio": "0 : une seule alerte, jusqu'à résolution.",
-        "destinatarios": "Séparés par des virgules. Vide, ils partent vers administrador@viahost.top."
+        "destinatarios": "Séparés par des virgules. Vide, ils partent vers administrador@viahost.top.",
+        "traficoGbDia": "Entrée + sortie sur 24 h selon les compteurs du fournisseur ; 0 désactive. Nécessite 12 h d’historique."
       },
       "openHeading": "{count, plural, one {# alerte ouverte} other {# alertes ouvertes}}",
       "openValue": "{metrica} à {valor} % (seuil {umbral} %)",
-      "openAgent": "Sans données depuis plus de {min} min"
+      "openAgent": "Sans données depuis plus de {min} min",
+      "openTraffic": "Trafic : {valor} Go en 24 h (seuil {umbral} Go)"
     }
   }
 }

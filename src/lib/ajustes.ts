@@ -70,6 +70,11 @@ export type AlertSettings = {
   agenteCaido: number;
   /** Repetir el aviso cada estas horas mientras siga activo (0 = una sola vez). */
   recordatorio: number;
+  /**
+   * Tráfico (entrada + salida) en 24 h, en GB, a partir del cual avisar de un
+   * servidor del proveedor v4vm (contadores de su API). 0 = desactivado.
+   */
+  traficoGbDia: number;
 };
 
 /**
@@ -290,6 +295,7 @@ export const DEFAULT_ALERTS: AlertSettings = {
   sostenido: 15,
   agenteCaido: 20,
   recordatorio: 24,
+  traficoGbDia: 0,
 };
 
 /* --------------------------------- Lectura -------------------------------- */
@@ -367,6 +373,7 @@ function normalizeAlerts(raw: unknown): AlertSettings {
     sostenido: entero(o.sostenido, 1, 720, DEFAULT_ALERTS.sostenido),
     agenteCaido: entero(o.agenteCaido, 0, 1440, DEFAULT_ALERTS.agenteCaido),
     recordatorio: entero(o.recordatorio, 0, 720, DEFAULT_ALERTS.recordatorio),
+    traficoGbDia: entero(o.traficoGbDia, 0, 1_000_000, DEFAULT_ALERTS.traficoGbDia),
   };
 }
 

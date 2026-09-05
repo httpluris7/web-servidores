@@ -480,7 +480,8 @@
         "sostenido": "Sustained for",
         "agenteCaido": "Agent silent for",
         "recordatorio": "Repeat the alert every",
-        "destinatarios": "Recipients"
+        "destinatarios": "Recipients",
+        "traficoGbDia": "v4vm traffic above"
       },
       "help": {
         "cpu": "0 turns the CPU alert off.",
@@ -489,11 +490,13 @@
         "sostenido": "Applies to CPU and memory, so a one-minute spike does not send email.",
         "agenteCaido": "0 means no alert when a machine stops reporting.",
         "recordatorio": "0 reports once, until it clears.",
-        "destinatarios": "Comma separated. Left blank, they go to administrador@viahost.top."
+        "destinatarios": "Comma separated. Left blank, they go to administrador@viahost.top.",
+        "traficoGbDia": "In + out over 24 h from the provider counters; 0 disables. Needs 12 h of history."
       },
       "openHeading": "{count, plural, one {# open alert} other {# open alerts}}",
       "openValue": "{metrica} at {valor} % (threshold {umbral} %)",
-      "openAgent": "No data for over {min} min"
+      "openAgent": "No data for over {min} min",
+      "openTraffic": "Traffic: {valor} GB in 24 h (threshold {umbral} GB)"
     }
   }
 }

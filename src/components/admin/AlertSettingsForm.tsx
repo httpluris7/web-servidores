@@ -60,6 +60,7 @@ export function AlertSettingsForm({ initial }: { initial: AlertSettings }) {
     { k: "sostenido", max: 720, sufijo: "min" },
     { k: "agenteCaido", max: 1440, sufijo: "min" },
     { k: "recordatorio", max: 720, sufijo: "h" },
+    { k: "traficoGbDia", max: 1_000_000, sufijo: "GB/24h" },
   ];
 
   return (

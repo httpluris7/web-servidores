@@ -480,7 +480,8 @@
         "sostenido": "Sostenido durante",
         "agenteCaido": "Agente sin enviar durante",
         "recordatorio": "Repetir el aviso cada",
-        "destinatarios": "Destinatarios"
+        "destinatarios": "Destinatarios",
+        "traficoGbDia": "Tráfico v4vm por encima de"
       },
       "help": {
         "cpu": "0 desactiva el aviso de CPU.",
@@ -489,11 +490,13 @@
         "sostenido": "Se aplica a CPU y memoria, para que un pico de un minuto no genere correo.",
         "agenteCaido": "0 no avisa si una máquina deja de enviar.",
         "recordatorio": "0 avisa una sola vez, hasta que se resuelva.",
-        "destinatarios": "Separados por comas. En blanco, van a administrador@viahost.top."
+        "destinatarios": "Separados por comas. En blanco, van a administrador@viahost.top.",
+        "traficoGbDia": "Entrada + salida en 24 h según los contadores del proveedor; 0 desactiva. Necesita 12 h de historial."
       },
       "openHeading": "{count, plural, one {# aviso abierto} other {# avisos abiertos}}",
       "openValue": "{metrica} al {valor} % (umbral {umbral} %)",
-      "openAgent": "Sin enviar datos desde hace más de {min} min"
+      "openAgent": "Sin enviar datos desde hace más de {min} min",
+      "openTraffic": "Tráfico: {valor} GB en 24 h (umbral {umbral} GB)"
     }
   }
 }

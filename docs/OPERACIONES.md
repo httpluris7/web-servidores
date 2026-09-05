@@ -44,6 +44,14 @@ y `/home/user3100/viahost-provisioner` (API + worker en Docker, Proxmox).
   a mano. Tras cada barrido con actividad llega un resumen al buzón de avisos.
 - Datos: `data/renovaciones-vps.jsonl`, `data/plan-changes.jsonl` (incluidos en las copias de seguridad).
 
+## Avisos por umbral (`/admin/configuracion` → Avisos)
+
+- CPU, memoria y disco salen de las métricas del agente; "agente sin enviar" del silencio del agente.
+- **Tráfico v4vm**: cada 5 min se apuntan los contadores acumulados de la API del proveedor en
+  `data/trafico.json` y se avisa cuando entrada+salida de las últimas 24 h supera el umbral (GB).
+  Necesita 12 h de historial; se resuelve al bajar un 10 % del umbral. Cubre también servidores del
+  proveedor sin ficha (en el listado salen enlazados al inventario). 0 desactiva la regla.
+
 ## Copias de seguridad de los clientes
 
 - Cada cliente programa copias automáticas (diarias/semanales, hora UTC, retención) desde su panel; las
