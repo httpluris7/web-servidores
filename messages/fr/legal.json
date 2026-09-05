@@ -1,108 +1,332 @@
 {
   "legal": {
+    "common": {
+      "kicker": "Légal",
+      "date": "5 septembre 2026",
+      "updated": "Dernière mise à jour : {date}",
+      "contact": "Pour toute question sur ce document, écrivez-nous à {email}."
+    },
+    "notice": {
+      "metaTitle": "Mentions légales",
+      "metaDescription": "Identification de l'éditeur de viahost.top : ViaHost Networks, LLC, coordonnées, canal de signalement des abus et conditions d'utilisation du site.",
+      "index": "/ Mentions légales",
+      "title": "Mentions légales",
+      "intro": "Identification de l'éditeur de ce site web et des services qui y sont proposés, et conditions d'utilisation du site.",
+      "sections": {
+        "owner": {
+          "heading": "Éditeur du site",
+          "paragraphs": [
+            "Le site web viahost.top et les services qui y sont commercialisés appartiennent à ViaHost Networks, LLC, société à responsabilité limitée constituée selon les lois de l'État du Wyoming (États-Unis), numéro d'identification fiscale (EIN) 32-0862114."
+          ],
+          "items": [
+            "Dénomination : ViaHost Networks, LLC",
+            "Juridiction de constitution : Wyoming, États-Unis",
+            "EIN : 32-0862114",
+            "Adresse : 7345 W Sand Lake Rd, Ste 210, Office 3344, Orlando, FL 32819, États-Unis",
+            "Site web : https://viahost.top"
+          ]
+        },
+        "contact": {
+          "heading": "Contact",
+          "paragraphs": [
+            "Vous pouvez nous joindre par courrier électronique. Nous répondons en français, en anglais et en espagnol."
+          ],
+          "items": [
+            "Support technique et service client : soporte@viahost.top (également depuis l'espace client, rubrique Support)",
+            "Renseignements commerciaux : ventas@viahost.top",
+            "Signalement d'abus et sécurité : abuse@viahost.top"
+          ]
+        },
+        "scope": {
+          "heading": "Objet et utilisation du site",
+          "paragraphs": [
+            "Par l'intermédiaire de viahost.top, nous proposons des services d'infrastructure : serveurs privés virtuels (VPS), hébergement web, serveurs dédiés, enregistrement de noms de domaine et protection contre les attaques DDoS, dans des centres de données situés dans l'Union européenne.",
+            "L'accès au site est libre et gratuit. La souscription de services est régie par les Conditions générales et nécessite un compte client. En naviguant sur le site, vous vous engagez à en faire un usage licite et à ne rien entreprendre qui puisse l'endommager, le surcharger ou perturber son fonctionnement."
+          ]
+        },
+        "ip": {
+          "heading": "Propriété intellectuelle",
+          "paragraphs": [
+            "La marque ViaHost, les textes, maquettes, logos, codes et autres contenus de ce site appartiennent à ViaHost Networks, LLC ou à ses concédants et sont protégés par le droit de la propriété intellectuelle et industrielle. Toute reproduction, distribution ou transformation sans autorisation expresse est interdite, sauf pour un usage personnel et privé.",
+            "Les marques de tiers mentionnées (fournisseurs de matériel, de logiciels ou de paiement) appartiennent à leurs propriétaires respectifs."
+          ]
+        },
+        "abuse": {
+          "heading": "Signalement d'abus",
+          "paragraphs": [
+            "Si vous constatez qu'un service hébergé sur notre infrastructure sert à envoyer du spam, à diffuser des logiciels malveillants, à héberger des contenus illicites, à lancer des attaques ou à porter atteinte aux droits de tiers, écrivez à abuse@viahost.top en indiquant l'adresse IP ou le domaine concerné, la date et l'heure (avec le fuseau horaire) et les preuves disponibles (en-têtes de courriel, journaux, URL).",
+            "Nous examinons chaque signalement, répondons à son auteur et agissons vis-à-vis du client responsable conformément à la politique d'utilisation acceptable de nos Conditions générales, ce qui peut inclure la suspension immédiate du service."
+          ]
+        },
+        "links": {
+          "heading": "Liens et contenus de tiers",
+          "paragraphs": [
+            "Ce site peut contenir des liens vers des sites tiers. Nous ne contrôlons pas leur contenu et n'en assumons aucune responsabilité. De même, nous ne sommes pas responsables des contenus que nos clients hébergent sur les services souscrits, sans préjudice de notre obligation d'agir lorsque nous avons une connaissance effective d'une activité illicite."
+          ]
+        },
+        "law": {
+          "heading": "Droit applicable",
+          "paragraphs": [
+            "Les présentes mentions légales sont régies par les lois de l'État du Wyoming et les lois fédérales des États-Unis. Si vous êtes un consommateur résidant dans l'Union européenne, vous conservez la protection que vous accordent les règles impératives de votre pays de résidence."
+          ]
+        }
+      }
+    },
     "privacy": {
       "metaTitle": "Politique de confidentialité",
-      "metaDescription": "Comment ViaHost traite les données personnelles conformément au RGPD pour les clients de l'EEE et à la législation applicable en matière de protection des données.",
+      "metaDescription": "Comment ViaHost Networks, LLC traite les données personnelles de ses clients et visiteurs : données collectées, finalités, conservation, destinataires et droits.",
       "index": "/ Confidentialité",
       "title": "Politique de confidentialité",
-      "intro": "Comment nous collectons, traitons et protégeons vos données personnelles. ViaHost Networks, LLC agit en tant que responsable du traitement ; le RGPD (UE 2016/679) s'applique aux clients de l'Espace économique européen.",
-      "updated": "À FAIRE : date",
+      "intro": "Comment nous collectons, traitons et protégeons vos données personnelles. ViaHost Networks, LLC est le responsable du traitement. Le règlement (UE) 2016/679 (RGPD) s'applique aux clients de l'Espace économique européen.",
       "sections": {
         "controller": {
           "heading": "Responsable du traitement",
-          "todo": "Identité et coordonnées du responsable du traitement : dénomination légale de la LLC, EIN/immatriculation, adresse du siège et représentant dans l'UE / DPO le cas échéant (art. 27 du RGPD pour les sociétés hors UE)."
+          "paragraphs": [
+            "Le responsable du traitement de vos données est ViaHost Networks, LLC, EIN 32-0862114, domiciliée au 7345 W Sand Lake Rd, Ste 210, Office 3344, Orlando, FL 32819, États-Unis.",
+            "Pour toute question relative à la protection des données, y compris l'exercice de vos droits, écrivez à soporte@viahost.top en indiquant « Protection des données » en objet."
+          ]
         },
         "dataCollected": {
-          "heading": "Données que nous collectons",
-          "todo": "Catégories de données : compte, facturation, journaux techniques, cookies. Détailler chaque finalité."
+          "heading": "Données collectées",
+          "paragraphs": [
+            "Nous ne traitons que les données nécessaires pour fournir le service, le facturer et le sécuriser :"
+          ],
+          "items": [
+            "Données de compte : nom et prénom, adresse électronique, mot de passe (conservé uniquement sous forme de hachage) et, si vous activez la vérification en deux étapes, le secret TOTP associé.",
+            "Données de facturation : nom ou raison sociale, adresse postale, pays et identifiant fiscal si vous le fournissez, ainsi que l'historique des commandes, factures pro forma et factures.",
+            "Données de paiement : les paiements par carte sont traités par Stripe et les virements bancaires sont reçus sur notre compte Wise. Nous ne stockons aucun numéro de carte ; nous ne conservons que l'identifiant de l'opération et son état.",
+            "Données du service : nom du serveur, adresses IP attribuées, offre souscrite, système d'exploitation, état et tâches exécutées depuis le panneau (alimentation, réinstallation, sauvegardes, changements d'offre). Si vous installez notre agent de métriques, nous recevons les séries d'utilisation du processeur, de la mémoire, du disque et du réseau du serveur.",
+            "Données de support : les messages que vous nous adressez par le système de tickets ou par courriel et les données que vous y incluez.",
+            "Données techniques de navigation : adresse IP, date et heure, pages demandées, navigateur et système d'exploitation, collectées dans les journaux du serveur web et par notre réseau de diffusion et de protection (Cloudflare).",
+            "Cookies et stockage local : ceux décrits dans la Politique de cookies."
+          ]
         },
         "purpose": {
-          "heading": "Finalité et base juridique",
-          "todo": "Finalités du traitement et base juridique (exécution d'un contrat, consentement, intérêt légitime)."
+          "heading": "Finalités et base juridique",
+          "paragraphs": [
+            "Nous traitons vos données pour les finalités et sur les bases juridiques suivantes :"
+          ],
+          "items": [
+            "Fournir les services souscrits, gérer votre compte et traiter vos demandes de support (exécution du contrat).",
+            "Émettre les factures pro forma et les factures, encaisser les services, rapprocher les paiements et gérer les renouvellements et les impayés (exécution du contrat et respect d'obligations légales, notamment fiscales et comptables).",
+            "Vous adresser les communications nécessaires au service : avis d'échéance, confirmations de paiement, alertes concernant votre serveur, avis de maintenance ou de sécurité (exécution du contrat).",
+            "Assurer la sécurité de la plateforme : prévenir les accès non autorisés, les attaques, la fraude et les abus, et conserver des journaux techniques (intérêt légitime).",
+            "Répondre aux demandes des autorités et aux réclamations de tiers pour usage abusif (obligations légales et intérêt légitime).",
+            "Vous envoyer des informations commerciales sur nos services uniquement si vous nous y avez autorisés ; vous pouvez retirer votre consentement à tout moment (consentement)."
+          ],
+          "after": [
+            "Nous ne prenons aucune décision automatisée produisant des effets juridiques à votre égard et n'établissons aucun profil à des fins publicitaires."
+          ]
         },
         "retention": {
-          "heading": "Conservation des données",
-          "todo": "Durées de conservation par catégorie et critères appliqués."
+          "heading": "Durée de conservation",
+          "paragraphs": [
+            "Nous conservons chaque catégorie de données uniquement pendant la durée nécessaire à sa finalité :"
+          ],
+          "items": [
+            "Données de compte : tant que le compte est actif et jusqu'à 12 mois après sa clôture, sauf obligation légale ou réclamation en cours imposant une conservation plus longue.",
+            "Factures pro forma, factures et enregistrements de paiement : pendant la durée exigée par la réglementation fiscale et comptable applicable.",
+            "Données des serveurs : tant que le service est actif. Un service résilié, y compris supprimé pour impayé, est retiré de l'infrastructure avec son disque ; une référence peut subsister dans les sauvegardes de la plateforme pendant 30 jours au maximum.",
+            "Métriques de l'agent : les données brutes sont agrégées par heure et les séries agrégées sont conservées 46 jours.",
+            "Journaux du serveur web : 14 jours. Journaux système et de sécurité : 90 jours.",
+            "Tickets de support et courriels : jusqu'à 24 mois après leur clôture, afin de pouvoir traiter les incidents récurrents."
+          ]
         },
         "recipients": {
           "heading": "Destinataires et sous-traitants",
-          "todo": "Tiers ayant accès (prestataires de paiement, infrastructure) et transferts internationaux, le cas échéant."
+          "paragraphs": [
+            "Nous ne vendons ni ne cédons vos données. Seuls les prestataires indispensables à la fourniture du service y ont accès, en qualité de sous-traitants ou de responsables indépendants disposant de leurs propres politiques :"
+          ],
+          "items": [
+            "Stripe (paiements par carte) et Wise (compte bancaire pour les virements).",
+            "Cloudflare (réseau de diffusion de contenu, DNS et protection contre les attaques du site et du panneau).",
+            "Les exploitants des centres de données où sont hébergés nos serveurs dans l'Union européenne (Pays-Bas, Allemagne et autres emplacements indiqués sur chaque produit).",
+            "Le bureau d'enregistrement accrédité par lequel les domaines souscrits sont gérés.",
+            "Les fournisseurs de messagerie et de stockage de sauvegardes chiffrées.",
+            "Les autorités publiques, tribunaux ou forces de l'ordre lorsque la loi nous y oblige."
+          ]
+        },
+        "transfers": {
+          "heading": "Transferts internationaux",
+          "paragraphs": [
+            "Nos serveurs et les services que vous souscrivez sont situés dans des centres de données de l'Union européenne. Toutefois, ViaHost Networks, LLC est une société américaine : vos données de compte et de facturation peuvent donc être consultées depuis les États-Unis par notre personnel pour la gestion du service. Certains prestataires (Stripe, Cloudflare) peuvent également traiter des données hors de l'EEE.",
+            "Dans ces cas, nous appliquons les garanties prévues par le RGPD, en particulier les clauses contractuelles types approuvées par la Commission européenne et, lorsque le prestataire y est certifié, le cadre de protection des données UE-États-Unis."
+          ]
         },
         "rights": {
           "heading": "Vos droits",
-          "todo": "Accès, rectification, effacement, opposition, portabilité et limitation ; comment les exercer et déposer une réclamation auprès de l'autorité de contrôle compétente (clients de l'EEE, auprès de leur autorité de protection des données)."
+          "paragraphs": [
+            "Vous pouvez à tout moment exercer vos droits d'accès, de rectification, d'effacement, de limitation du traitement, de portabilité et d'opposition, et retirer le consentement que vous nous avez donné, en écrivant à soporte@viahost.top depuis l'adresse électronique associée à votre compte. Nous répondons dans un délai maximal d'un mois.",
+            "Une grande partie de vos données peut être consultée et modifiée directement dans l'espace client (profil, coordonnées de facturation, vérification en deux étapes, notifications).",
+            "Si vous estimez que vos droits n'ont pas été correctement respectés, vous pouvez introduire une réclamation auprès de l'autorité de contrôle de votre pays de résidence. En France, il s'agit de la CNIL (www.cnil.fr)."
+          ]
         },
         "security": {
           "heading": "Sécurité",
-          "todo": "Mesures techniques et organisationnelles appliquées pour protéger les données."
+          "paragraphs": [
+            "Nous appliquons des mesures techniques et organisationnelles adaptées au risque : chiffrement TLS de toutes les communications avec le site, le panneau et l'API ; mots de passe conservés uniquement sous forme de hachage ; vérification en deux étapes disponible pour tous les comptes et obligatoire pour les administrateurs ; pare-feu applicatif et protection contre les attaques en bordure de réseau ; durcissement et mise à jour réguliers des serveurs ; journaux de sécurité ; sauvegardes chiffrées ; et accès aux données limité au personnel qui en a besoin.",
+            "N'oubliez pas que la sécurité de ce que vous installez dans votre serveur (système d'exploitation, applications, mots de passe d'accès) relève de votre responsabilité."
+          ]
         }
       }
     },
     "terms": {
       "metaTitle": "Conditions générales",
-      "metaDescription": "Conditions d'utilisation et de commande des services ViaHost.",
+      "metaDescription": "Conditions de souscription et d'utilisation des services VPS, hébergement web, noms de domaine et serveurs dédiés de ViaHost Networks, LLC.",
       "index": "/ Conditions",
       "title": "Conditions générales",
-      "intro": "Conditions régissant l'utilisation et la commande des services d'hébergement, VPS, serveur dédié et mitigation DDoS.",
-      "updated": "À FAIRE : date",
+      "intro": "Conditions régissant la souscription et l'utilisation des services de serveurs virtuels, d'hébergement web, de noms de domaine, de serveurs dédiés et de protection DDoS fournis par ViaHost Networks, LLC.",
       "sections": {
         "purpose": {
           "heading": "Objet et acceptation",
-          "todo": "Description des services et acceptation des conditions lors de la commande."
+          "paragraphs": [
+            "Les présentes conditions régissent la relation entre ViaHost Networks, LLC (« ViaHost », « nous ») et la personne physique ou morale qui souscrit ses services (« le client », « vous »). Les services sont : serveurs privés virtuels (VPS) avec panneau de gestion, hébergement web cPanel, enregistrement et gestion de noms de domaine, serveurs dédiés et protection contre les attaques DDoS.",
+            "En créant un compte ou en confirmant une commande, vous acceptez intégralement les présentes conditions, la Politique de confidentialité et la Politique de cookies. Si vous souscrivez au nom d'une entreprise, vous déclarez avoir le pouvoir de l'engager."
+          ]
+        },
+        "account": {
+          "heading": "Compte client",
+          "paragraphs": [
+            "Pour souscrire, vous avez besoin d'un compte avec des informations exactes et une adresse électronique opérationnelle, que nous utiliserons pour toutes les communications liées au service. Vous devez tenir vos coordonnées de facturation à jour.",
+            "Vous êtes responsable de la garde de vos identifiants et de toute activité effectuée depuis votre compte et vos serveurs. Nous vous recommandons d'activer la vérification en deux étapes. Si vous soupçonnez un accès non autorisé, prévenez-nous immédiatement."
+          ]
         },
         "ordering": {
-          "heading": "Commande et paiement",
-          "todo": "Processus d'inscription, moyens de paiement, renouvellement, taxes et politique de remboursement."
+          "heading": "Commande, prix et paiement",
+          "paragraphs": [
+            "Les prix sont affichés en euros ; le montant en dollars est indicatif et l'encaissement se fait toujours en euros. Les prix s'entendent hors taxes : vous êtes responsable des taxes applicables dans votre juridiction.",
+            "Lorsque vous confirmez une commande, nous émettons une facture pro forma. Vous pouvez la régler par carte via Stripe ou par virement bancaire sur le compte indiqué sur la pro forma, en utilisant son numéro comme référence. Le service est activé une fois le paiement confirmé : immédiatement pour la carte et, pour le virement, dès que l'encaissement est rapproché. Au paiement, vous recevez la facture correspondante par courriel.",
+            "Les services sont souscrits par périodes mensuelles, à l'exception des noms de domaine, enregistrés à l'année."
+          ]
+        },
+        "renewal": {
+          "heading": "Renouvellement et conséquences de l'impayé",
+          "paragraphs": [
+            "Sept jours avant la fin de chaque période, nous émettons la pro forma de renouvellement et vous l'envoyons par courriel. Si elle est réglée avant l'échéance, le service continue sans interruption.",
+            "Si la pro forma reste impayée à l'échéance, nous vous envoyons un avis d'échéance. Trois jours après l'échéance, si le paiement n'a pas été reçu, le service est suspendu et supprimé automatiquement de notre infrastructure, y compris son disque et ses sauvegardes. Cette suppression est définitive et irréversible ; il vous appartient donc de conserver des copies de vos données hors du service ou de payer avant ce délai.",
+            "Les noms de domaine suivent les règles de renouvellement et de délai de grâce de leur registre ; une fois le délai de grâce écoulé, le domaine peut être perdu ou nécessiter des frais de récupération plus élevés.",
+            "Vous pouvez annuler le renouvellement de tout service à tout moment en ne réglant pas la pro forma de renouvellement ou en le résiliant depuis l'espace client ; aucune pénalité n'est facturée."
+          ]
+        },
+        "refunds": {
+          "heading": "Droit de rétractation et remboursements",
+          "paragraphs": [
+            "Les services sont provisionnés automatiquement et immédiatement après le paiement. En confirmant la commande, vous consentez expressément à ce que l'exécution commence immédiatement et reconnaissez que, pour les consommateurs de l'Union européenne, le droit de rétractation de quatorze jours est perdu une fois le service pleinement exécuté ou, pour les domaines, une fois ceux-ci enregistrés à votre nom.",
+            "Pour cette raison, les montants payés ne sont en principe pas remboursables. À titre d'exception, nous remboursons l'intégralité du montant si nous ne pouvons pas livrer le service souscrit ou si une défaillance qui nous est imputable en empêche l'utilisation dès le départ. Les réductions d'offre ne donnent lieu à aucun remboursement ; les augmentations sont facturées au prorata de la période restante."
+          ]
         },
         "acceptableUse": {
           "heading": "Utilisation acceptable",
-          "todo": "Comportements interdits (abus, contenu illicite, spam) et conséquences du non-respect."
+          "paragraphs": [
+            "Nos services ne peuvent être utilisés qu'à des fins licites. Il est expressément interdit de :"
+          ],
+          "items": [
+            "Envoyer des courriels de masse non sollicités (spam), héberger ou lier des contenus d'hameçonnage, ou usurper l'identité de tiers.",
+            "Diffuser des logiciels malveillants, héberger une infrastructure de commande et de contrôle, ou utiliser le service pour mener des attaques, des balayages massifs, de la force brute, des dénis de service ou toute intrusion dans des systèmes tiers.",
+            "Héberger des contenus illégaux, en particulier des contenus d'abus sexuels sur mineurs, d'incitation à la violence ou à la haine, ou portant atteinte aux droits de propriété intellectuelle de tiers.",
+            "Miner des cryptomonnaies ou exécuter des charges qui dégradent abusivement les ressources partagées du nœud.",
+            "Revendre les services sans notre autorisation écrite, ou les utiliser pour contourner des sanctions ou embargos applicables.",
+            "Manipuler la facturation, les adresses IP attribuées ou les mesures de sécurité de la plateforme."
+          ],
+          "after": [
+            "Vous êtes responsable du contenu et de l'activité de votre service, y compris ceux de vos propres utilisateurs ou clients."
+          ]
+        },
+        "abuse": {
+          "heading": "Traitement des abus",
+          "paragraphs": [
+            "Les signalements d'abus sont reçus à abuse@viahost.top et transmis au client concerné pour qu'il les résolve dans le délai indiqué au cas par cas. Lorsque la gravité l'exige (attaques en cours, contenu manifestement illicite, inscription de nos réseaux sur des listes de blocage), nous pouvons suspendre le service immédiatement et sans préavis.",
+            "Nous coopérons avec les autorités compétentes en présence d'une demande valable."
+          ]
+        },
+        "backups": {
+          "heading": "Sauvegardes et données",
+          "paragraphs": [
+            "Sauf indication contraire sur le produit, nous ne sauvegardons pas vos serveurs. Le panneau vous permet de programmer des sauvegardes et des instantanés au sein de l'infrastructure ; il s'agit d'une commodité, non d'une garantie, et ils disparaissent avec le service. Vous êtes seul responsable de la conservation de copies externes de vos données.",
+            "Les données que vous hébergez sur le service vous appartiennent. Nous n'y accédons que lorsque vous nous le demandez pour vous assister, lorsque la loi l'exige ou lorsque c'est indispensable pour instruire un signalement d'abus."
+          ]
         },
         "sla": {
-          "heading": "Niveaux de service (SLA)",
-          "todo": "Engagement de disponibilité, exclusions et compensation en cas de non-respect."
+          "heading": "Disponibilité et maintenance",
+          "paragraphs": [
+            "Nous nous efforçons de maintenir l'infrastructure disponible en permanence, avec une alimentation et un réseau redondants et une protection DDoS incluse dans tous les services. Nous publions l'état de la plateforme sur la page d'état et annonçons à l'avance les fenêtres de maintenance programmée susceptibles d'affecter votre service.",
+            "Aucun niveau de disponibilité précis n'est garanti, sauf accord écrit dans un accord de niveau de service spécifique. Sont en tout état de cause exclues les interruptions dues à une maintenance annoncée, au client ou à ses logiciels, à des attaques ciblées dépassant les capacités de protection, à des prestataires externes (bureaux d'enregistrement, réseaux de transit) ou à un cas de force majeure."
+          ]
         },
         "liability": {
           "heading": "Responsabilité",
-          "todo": "Limitation de responsabilité et exclusions applicables."
+          "paragraphs": [
+            "Dans la mesure permise par la loi, notre responsabilité totale envers vous pour toute réclamation découlant des présentes conditions est limitée au montant que vous avez payé pour le service concerné au cours des trois mois précédant le fait générateur. Nous ne répondons pas des dommages indirects, du manque à gagner, de la perte de données ou d'activité, ni des dommages résultant des contenus ou logiciels que vous installez sur votre service.",
+            "Rien de ce qui précède ne limite la responsabilité qui ne peut être légalement exclue, ni les droits impératifs des consommateurs de l'Union européenne."
+          ]
         },
         "termination": {
           "heading": "Suspension et résiliation",
-          "todo": "Motifs et procédure de suspension ou de résiliation du service par l'une ou l'autre des parties."
+          "paragraphs": [
+            "Nous pouvons suspendre ou résilier un service, avec préavis sauf urgence, si vous enfreignez les présentes conditions, si le service n'est pas réglé dans les délais indiqués, si nous recevons une demande légale nous y obligeant ou si le service met en danger la sécurité ou la réputation de notre réseau. La résiliation pour manquement n'ouvre droit à aucun remboursement.",
+            "Vous pouvez clôturer votre compte à tout moment depuis l'espace client ou en nous écrivant ; la clôture du compte entraîne la suppression de tous ses services actifs."
+          ]
+        },
+        "changes": {
+          "heading": "Modifications",
+          "paragraphs": [
+            "Nous pouvons mettre à jour les présentes conditions et les prix des services. Les changements de prix s'appliquent à partir du renouvellement suivant et sont notifiés par courriel au moins trente jours à l'avance. La version en vigueur des conditions est toujours celle publiée sur cette page, avec sa date de mise à jour."
+          ]
         },
         "law": {
           "heading": "Droit applicable et juridiction",
-          "todo": "Droit applicable et juridiction compétente pour la résolution des litiges."
+          "paragraphs": [
+            "Les présentes conditions sont régies par les lois de l'État du Wyoming et les lois fédérales des États-Unis. Tout litige sera soumis aux tribunaux compétents de cet État.",
+            "Si vous êtes un consommateur résidant dans l'Union européenne, ce qui précède ne vous prive ni de la protection des règles impératives de votre pays de résidence ni du droit de saisir les tribunaux de votre domicile. Les consommateurs de l'UE peuvent également recourir à la plateforme européenne de règlement en ligne des litiges."
+          ]
         }
       }
     },
     "cookies": {
-      "metaTitle": "Politique relative aux cookies",
-      "metaDescription": "Quels cookies ViaHost utilise et comment les gérer.",
+      "metaTitle": "Politique de cookies",
+      "metaDescription": "Quels cookies et quel stockage local viahost.top utilise, à quoi ils servent et comment les gérer.",
       "index": "/ Cookies",
-      "title": "Politique relative aux cookies",
-      "intro": "Informations sur les cookies et technologies similaires utilisés par ce site web et sur la manière de les gérer.",
-      "updated": "À FAIRE : date",
+      "title": "Politique de cookies",
+      "intro": "Informations sur les cookies et le stockage local utilisés par ce site web et sur la façon de les gérer. Nous n'utilisons que des cookies techniques : aucun cookie d'analyse ni de publicité.",
       "sections": {
         "what": {
           "heading": "Qu'est-ce qu'un cookie",
-          "todo": "Définition et explication générale des cookies et de leur finalité."
+          "paragraphs": [
+            "Un cookie est un petit fichier que le site web enregistre dans votre navigateur pour vous reconnaître lors des requêtes suivantes, par exemple pour maintenir votre session ouverte ou mémoriser votre langue. Le stockage local du navigateur remplit une fonction similaire, mais n'est pas envoyé au serveur à chaque requête."
+          ]
         },
         "used": {
-          "heading": "Cookies que nous utilisons",
-          "todo": "Tableau pour chaque cookie : nom, type (technique, analytique, etc.), finalité, durée et fournisseur. Le site ne charge actuellement PAS d'analytique ; à compléter lorsqu'elle sera ajoutée."
+          "heading": "Cookies et stockage utilisés",
+          "paragraphs": [
+            "Tous les cookies de ce site sont techniques et nécessaires à son fonctionnement :"
+          ],
+          "items": [
+            "vh_session (propre, 7 jours) : identifie votre session dans l'espace client et le panneau d'administration. Signé et accessible uniquement par le serveur.",
+            "vh_mfa (propre, 5 minutes) : créé entre le mot de passe et le code de vérification en deux étapes ; il identifie seulement la personne à qui le code est demandé.",
+            "NEXT_LOCALE (propre, session) : mémorise la langue choisie (français, anglais ou espagnol).",
+            "__cf_bm et cf_clearance (Cloudflare, de 30 minutes à plusieurs heures) : déposés par notre prestataire de protection pour distinguer le trafic légitime des robots et appliquer des défis de sécurité.",
+            "Cookies Stripe : lors du paiement par carte, vous êtes redirigé vers checkout.stripe.com, où Stripe utilise ses propres cookies de sécurité et de prévention de la fraude conformément à sa politique.",
+            "Stockage local (ce ne sont pas des cookies) : vh_currency conserve la devise affichée, vh_cart le contenu du panier et viahost.cookie-consent votre réponse à l'avis de cookies s'il venait à s'afficher."
+          ]
         },
         "consent": {
           "heading": "Base juridique et consentement",
-          "todo": "Comment le consentement est obtenu pour les cookies non essentiels (bannière) et comment le retirer."
+          "paragraphs": [
+            "Les cookies techniques et de sécurité sont dispensés de consentement car ils sont indispensables à la fourniture du service que vous demandez. C'est pourquoi ce site n'affiche pas de bandeau de cookies.",
+            "Si nous ajoutons à l'avenir des cookies d'analyse ou de marketing, ils ne seront activés qu'après avoir recueilli votre consentement au moyen d'un avis, et vous pourrez le retirer à tout moment depuis cette même option."
+          ]
         },
         "managing": {
           "heading": "Gestion des cookies",
-          "todo": "Instructions pour configurer ou supprimer les cookies dans les principaux navigateurs."
+          "paragraphs": [
+            "Vous pouvez bloquer ou supprimer les cookies depuis les paramètres de votre navigateur (Chrome, Firefox, Safari et Edge disposent chacun d'une rubrique confidentialité à cet effet). Notez que si vous bloquez les cookies techniques, vous ne pourrez ni vous connecter à l'espace client ni finaliser une commande."
+          ]
         },
         "changes": {
           "heading": "Modifications de la politique",
-          "todo": "Comment les futures mises à jour de cette politique seront communiquées."
+          "paragraphs": [
+            "Nous mettrons cette page à jour à chaque changement des cookies utilisés. La date de la dernière révision figure en tête du document."
+          ]
         }
       }
     }

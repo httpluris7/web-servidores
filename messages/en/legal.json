@@ -1,108 +1,332 @@
 {
   "legal": {
+    "common": {
+      "kicker": "Legal",
+      "date": "5 September 2026",
+      "updated": "Last updated: {date}",
+      "contact": "For any question about this document, write to {email}."
+    },
+    "notice": {
+      "metaTitle": "Legal notice",
+      "metaDescription": "Identification of the owner of viahost.top: ViaHost Networks, LLC, contact details, abuse channel and website terms of use.",
+      "index": "/ Legal notice",
+      "title": "Legal notice",
+      "intro": "Identification of the owner of this website and of the services offered on it, and terms of use of the site.",
+      "sections": {
+        "owner": {
+          "heading": "Site owner",
+          "paragraphs": [
+            "The website viahost.top and the services sold through it are owned by ViaHost Networks, LLC, a limited liability company organised under the laws of the State of Wyoming (United States), Employer Identification Number (EIN) 32-0862114."
+          ],
+          "items": [
+            "Legal name: ViaHost Networks, LLC",
+            "Jurisdiction of formation: Wyoming, United States",
+            "EIN: 32-0862114",
+            "Address: 7345 W Sand Lake Rd, Ste 210, Office 3344, Orlando, FL 32819, United States",
+            "Website: https://viahost.top"
+          ]
+        },
+        "contact": {
+          "heading": "Contact",
+          "paragraphs": [
+            "You can reach us by email. We provide support in English, Spanish and French."
+          ],
+          "items": [
+            "Technical support and customer service: soporte@viahost.top (also from the client area, Support section)",
+            "Sales enquiries: ventas@viahost.top",
+            "Abuse and security reports: abuse@viahost.top"
+          ]
+        },
+        "scope": {
+          "heading": "Purpose and use of the site",
+          "paragraphs": [
+            "Through viahost.top we offer infrastructure services: virtual private servers (VPS), web hosting, dedicated servers, domain registration and DDoS mitigation, hosted in data centres located in the European Union.",
+            "Access to the website is free. Purchasing services is governed by the Terms and conditions and requires a client account. By browsing the site you agree to use it lawfully and not to carry out any action that could damage, overload or interfere with its operation."
+          ]
+        },
+        "ip": {
+          "heading": "Intellectual property",
+          "paragraphs": [
+            "The ViaHost brand, the texts, designs, logos, code and other content of this site belong to ViaHost Networks, LLC or its licensors and are protected by intellectual and industrial property laws. Reproduction, distribution or transformation without express authorisation is prohibited, except for personal and private use.",
+            "Third-party trademarks mentioned (hardware, software or payment providers) belong to their respective owners."
+          ]
+        },
+        "abuse": {
+          "heading": "Abuse reports",
+          "paragraphs": [
+            "If you find that a service hosted on our infrastructure is being used to send spam, distribute malware, host unlawful content, launch attacks or infringe third-party rights, write to abuse@viahost.top stating the IP address or domain involved, the date and time (with time zone) and the available evidence (email headers, logs, URLs).",
+            "We review every report, reply to the reporter and act against the responsible client under the acceptable use policy of our Terms and conditions, which may include immediate suspension of the service."
+          ]
+        },
+        "links": {
+          "heading": "Links and third-party content",
+          "paragraphs": [
+            "This site may contain links to third-party websites. We do not control their content and accept no responsibility for it. Likewise, we are not responsible for the content our clients host on the services they purchase, without prejudice to our obligation to act when we obtain actual knowledge of unlawful activity."
+          ]
+        },
+        "law": {
+          "heading": "Governing law",
+          "paragraphs": [
+            "This legal notice is governed by the laws of the State of Wyoming and the federal laws of the United States. If you are a consumer resident in the European Union, you keep the protection granted by the mandatory rules of your country of residence."
+          ]
+        }
+      }
+    },
     "privacy": {
-      "metaTitle": "Privacy Policy",
-      "metaDescription": "How ViaHost processes personal data in accordance with the GDPR for EEA customers and applicable data protection law.",
+      "metaTitle": "Privacy policy",
+      "metaDescription": "How ViaHost Networks, LLC processes the personal data of its clients and visitors: data collected, purposes, retention, recipients and rights.",
       "index": "/ Privacy",
-      "title": "Privacy Policy",
-      "intro": "How we collect, process and protect your personal data. ViaHost Networks, LLC acts as the controller; the GDPR (EU 2016/679) applies to customers in the European Economic Area.",
-      "updated": "TODO: date",
+      "title": "Privacy policy",
+      "intro": "How we collect, process and protect your personal data. ViaHost Networks, LLC is the data controller. Regulation (EU) 2016/679 (GDPR) applies to clients in the European Economic Area.",
       "sections": {
         "controller": {
           "heading": "Data controller",
-          "todo": "Identity and contact details of the controller: LLC legal name, EIN/registration, registered address, and EU representative / DPO if applicable (GDPR art. 27 for companies outside the EU)."
+          "paragraphs": [
+            "The controller of your data is ViaHost Networks, LLC, EIN 32-0862114, with its address at 7345 W Sand Lake Rd, Ste 210, Office 3344, Orlando, FL 32819, United States.",
+            "For any data-protection matter, including exercising your rights, write to soporte@viahost.top with the subject line \"Data protection\"."
+          ]
         },
         "dataCollected": {
           "heading": "Data we collect",
-          "todo": "Data categories: account, billing, technical logs, cookies. Detail each purpose."
+          "paragraphs": [
+            "We only process the data needed to provide the service, bill it and keep it secure:"
+          ],
+          "items": [
+            "Account data: first and last name, email address, password (stored only as a hash) and, if you enable two-step verification, the associated TOTP secret.",
+            "Billing data: name or company name, postal address, country and tax identifier if you provide it, together with your history of orders, proforma invoices and invoices.",
+            "Payment data: card payments are processed by Stripe and bank transfers are received in our Wise account. We do not store card numbers; we only keep the transaction identifier and its status.",
+            "Service data: server name, assigned IP addresses, plan, operating system, status and tasks run from the panel (power, reinstall, backups, plan changes). If you install our metrics agent, we receive CPU, memory, disk and network usage series from the server.",
+            "Support data: the messages you send us through the ticket system or by email and any data you include in them.",
+            "Technical browsing data: IP address, date and time, requested pages, browser and operating system, collected in the web server logs and by our delivery and protection network (Cloudflare).",
+            "Cookies and local storage: as described in the Cookie policy."
+          ]
         },
         "purpose": {
-          "heading": "Purpose and legal basis",
-          "todo": "Processing purposes and legal basis (performance of a contract, consent, legitimate interest)."
+          "heading": "Purposes and legal basis",
+          "paragraphs": [
+            "We process your data for the following purposes and on the following legal bases:"
+          ],
+          "items": [
+            "Providing the services you purchase, managing your account and handling your support requests (performance of the contract).",
+            "Issuing proforma invoices and invoices, collecting payment, reconciling payments and managing renewals and non-payment (performance of the contract and compliance with legal obligations, in particular tax and accounting).",
+            "Sending you necessary service communications: expiry notices, payment confirmations, alerts about your server, maintenance or security notices (performance of the contract).",
+            "Keeping the platform secure: preventing unauthorised access, attacks, fraud and abuse, and keeping technical logs (legitimate interest).",
+            "Responding to requests from authorities and third-party complaints about abusive use (legal obligations and legitimate interest).",
+            "Sending you commercial information about our services only if you have authorised it; you can withdraw consent at any time (consent)."
+          ],
+          "after": [
+            "We do not make automated decisions with legal effects on you, nor do we build profiles for advertising purposes."
+          ]
         },
         "retention": {
           "heading": "Data retention",
-          "todo": "Retention periods by category and applied criteria."
+          "paragraphs": [
+            "We keep each category of data only for as long as its purpose requires:"
+          ],
+          "items": [
+            "Account data: while the account is active and for up to 12 months after it is closed, unless a legal obligation or a pending claim requires keeping it longer.",
+            "Proforma invoices, invoices and payment records: for the period required by the applicable tax and accounting rules.",
+            "Server data: while the service is active. A cancelled service, including deletion for non-payment, is removed from the infrastructure together with its disk; a reference may remain in the platform backups for up to 30 days.",
+            "Agent metrics: raw data is aggregated by the hour and the aggregated series are kept for 46 days.",
+            "Web server logs: 14 days. System and security logs: 90 days.",
+            "Support tickets and emails: up to 24 months after they are closed, so that recurring issues can be handled."
+          ]
         },
         "recipients": {
           "heading": "Recipients and processors",
-          "todo": "Third parties with access (payment providers, infrastructure) and international transfers, if any."
+          "paragraphs": [
+            "We do not sell or share your data. Only the providers essential to delivering the service receive it, acting either as processors or as independent controllers with their own policies:"
+          ],
+          "items": [
+            "Stripe (card payments) and Wise (bank account for transfers).",
+            "Cloudflare (content delivery network, DNS and attack protection for the website and the panel).",
+            "The operators of the data centres where our servers are hosted in the European Union (Netherlands, Germany and the other locations indicated on each product).",
+            "The accredited registrar through which purchased domains are managed.",
+            "Email providers and encrypted backup storage providers.",
+            "Public authorities, courts or law enforcement when the law requires it."
+          ]
+        },
+        "transfers": {
+          "heading": "International transfers",
+          "paragraphs": [
+            "Our servers and the services you purchase are located in data centres in the European Union. However, ViaHost Networks, LLC is a US company, so your account and billing data may be accessed from the United States by our staff to manage the service. Some providers (Stripe, Cloudflare) may also process data outside the EEA.",
+            "In those cases we apply the safeguards provided for in the GDPR, in particular the standard contractual clauses approved by the European Commission and, where the provider is certified, the EU-US Data Privacy Framework."
+          ]
         },
         "rights": {
           "heading": "Your rights",
-          "todo": "Access, rectification, erasure, objection, portability and restriction; how to exercise them and lodge a complaint with the competent supervisory authority (EEA customers, with their data protection authority)."
+          "paragraphs": [
+            "You may at any time exercise your rights of access, rectification, erasure, restriction of processing, portability and objection, and withdraw any consent you have given, by writing to soporte@viahost.top from the email address linked to your account. We will reply within one month at most.",
+            "Much of your data can be viewed and changed directly in the client area (profile, billing details, two-step verification, notifications).",
+            "If you believe we have not handled your rights properly, you may lodge a complaint with the supervisory authority of your country of residence. In Spain this is the Agencia Española de Protección de Datos (www.aepd.es)."
+          ]
         },
         "security": {
           "heading": "Security",
-          "todo": "Technical and organizational measures applied to protect the data."
+          "paragraphs": [
+            "We apply technical and organisational measures appropriate to the risk: TLS encryption on all communications with the website, the panel and the API; passwords stored only as hashes; two-step verification available to every account and mandatory for administrators; web application firewall and attack mitigation at the network edge; regular hardening and updating of the servers; security logs; encrypted backups; and access to data restricted to the staff who need it.",
+            "Remember that the security of whatever you install inside your server (operating system, applications, access passwords) is your responsibility."
+          ]
         }
       }
     },
     "terms": {
-      "metaTitle": "Terms and Conditions",
-      "metaDescription": "Terms of use and ordering for ViaHost services.",
+      "metaTitle": "Terms and conditions",
+      "metaDescription": "Terms of purchase and use of the VPS, web hosting, domain and dedicated server services of ViaHost Networks, LLC.",
       "index": "/ Terms",
-      "title": "Terms and Conditions",
-      "intro": "Terms governing the use and ordering of the hosting, VPS, dedicated server and DDoS mitigation services.",
-      "updated": "TODO: date",
+      "title": "Terms and conditions",
+      "intro": "Terms governing the purchase and use of the virtual server, web hosting, domain, dedicated server and DDoS mitigation services provided by ViaHost Networks, LLC.",
       "sections": {
         "purpose": {
           "heading": "Purpose and acceptance",
-          "todo": "Description of the services and acceptance of the terms upon ordering."
+          "paragraphs": [
+            "These terms govern the relationship between ViaHost Networks, LLC (\"ViaHost\", \"we\") and the natural or legal person purchasing its services (\"the client\", \"you\"). The services are: virtual private servers (VPS) with a management panel, cPanel web hosting, domain registration and management, dedicated servers and DDoS attack mitigation.",
+            "By creating an account or confirming an order you accept these terms, the Privacy policy and the Cookie policy in full. If you purchase on behalf of a company, you declare that you have authority to bind it."
+          ]
+        },
+        "account": {
+          "heading": "Client account",
+          "paragraphs": [
+            "To purchase you need an account with accurate details and a working email address, which we will use for all service communications. You must keep your billing details up to date.",
+            "You are responsible for safeguarding your credentials and for all activity carried out from your account and your servers. We recommend enabling two-step verification. If you suspect unauthorised access, tell us immediately."
+          ]
         },
         "ordering": {
-          "heading": "Ordering and payment",
-          "todo": "Sign-up process, payment methods, renewal, taxes and refund policy."
+          "heading": "Ordering, prices and payment",
+          "paragraphs": [
+            "Prices are shown in euros; the amount in US dollars is indicative and payment is always taken in euros. Prices do not include taxes: you are responsible for any taxes applicable in your jurisdiction.",
+            "When you confirm an order we issue a proforma invoice. You can pay it by card through Stripe or by bank transfer to the account shown on the proforma, using its number as the payment reference. The service is activated once payment is confirmed: immediately for card payments and, for transfers, as soon as the deposit is reconciled. On payment you will receive the corresponding invoice by email.",
+            "Services are purchased for monthly periods, except domains, which are registered by the year."
+          ]
+        },
+        "renewal": {
+          "heading": "Renewal and consequences of non-payment",
+          "paragraphs": [
+            "Seven days before the end of each period we issue the renewal proforma and email it to you. If it is paid before the expiry date, the service continues without interruption.",
+            "If the proforma is still unpaid when the period expires, we send you an expiry notice. Three days after expiry, if payment has not been received, the service is suspended and automatically deleted from our infrastructure, including its disk and its backups. That deletion is final and irreversible, so it is your responsibility to keep copies of your data outside the service or to pay before that deadline.",
+            "Domains follow the renewal and grace-period rules of their registry; once the grace period has passed, the domain may be lost or may require a higher recovery fee.",
+            "You can cancel the renewal of any service at any time by not paying the renewal proforma or by cancelling it from the client area; no penalties are charged."
+          ]
+        },
+        "refunds": {
+          "heading": "Right of withdrawal and refunds",
+          "paragraphs": [
+            "Services are provisioned automatically and immediately after payment. By confirming the order you expressly consent to performance starting immediately and acknowledge that, for consumers in the European Union, the fourteen-day right of withdrawal is lost once the service has been fully performed or, for domains, once they have been registered in your name.",
+            "For that reason, amounts paid are generally non-refundable. As an exception, we will refund the full amount if we are unable to deliver the service purchased or if a failure attributable to us prevents its use from the outset. Plan downgrades do not generate refunds; upgrades are charged pro rata for the remaining period."
+          ]
         },
         "acceptableUse": {
           "heading": "Acceptable use",
-          "todo": "Prohibited conduct (abuse, unlawful content, spam) and consequences of non-compliance."
+          "paragraphs": [
+            "Our services may only be used for lawful purposes. The following is expressly prohibited:"
+          ],
+          "items": [
+            "Sending unsolicited bulk email (spam), hosting or linking to phishing content, or impersonating third parties.",
+            "Distributing malware, hosting command-and-control infrastructure, or using the service to carry out attacks, mass scanning, brute force, denial of service or any intrusion into third-party systems.",
+            "Hosting illegal content, in particular child sexual abuse material, incitement to violence or hatred, or content that infringes third-party intellectual property rights.",
+            "Mining cryptocurrencies or running workloads that abusively degrade the shared resources of the node.",
+            "Reselling the services without our written authorisation, or using them to circumvent applicable sanctions or embargoes.",
+            "Tampering with billing, assigned IP addresses or the security measures of the platform."
+          ],
+          "after": [
+            "You are responsible for the content and activity of your service, including that of your own users or customers."
+          ]
+        },
+        "abuse": {
+          "heading": "Abuse handling",
+          "paragraphs": [
+            "Abuse reports are received at abuse@viahost.top and forwarded to the client concerned so they can resolve them within the deadline indicated in each case. Where severity requires it (ongoing attacks, manifestly unlawful content, listing of our networks on blocklists) we may suspend the service immediately and without prior notice.",
+            "We will cooperate with the competent authorities where a valid request exists."
+          ]
+        },
+        "backups": {
+          "heading": "Backups and data",
+          "paragraphs": [
+            "Unless the product states otherwise, we do not back up your servers. The panel lets you schedule backups and snapshots within the infrastructure; they are a convenience, not a guarantee, and disappear with the service. You alone are responsible for keeping external copies of your data.",
+            "The data you host on the service is yours. We only access it when you ask us to in order to provide support, when the law requires it, or when it is essential to investigate an abuse report."
+          ]
         },
         "sla": {
-          "heading": "Service levels (SLA)",
-          "todo": "Availability commitment, exclusions and compensation for non-compliance."
+          "heading": "Availability and maintenance",
+          "paragraphs": [
+            "We strive to keep the infrastructure continuously available, with redundant power and network and DDoS mitigation included in every service. We publish the platform status on the status page and announce in advance any scheduled maintenance windows that may affect your service.",
+            "No specific availability level is guaranteed unless agreed in writing in a specific service level agreement. In any event, outages caused by announced maintenance, by the client or their software, by targeted attacks exceeding the mitigation capacity, by external providers (registrars, transit networks) or by force majeure are excluded."
+          ]
         },
         "liability": {
           "heading": "Liability",
-          "todo": "Limitation of liability and applicable exclusions."
+          "paragraphs": [
+            "To the extent permitted by law, our total liability to you for any claim arising from these terms is limited to the amount you paid for the affected service during the three months preceding the event giving rise to it. We are not liable for indirect damages, loss of profit, loss of data or business, or damages arising from the content or software you install on your service.",
+            "Nothing above limits liability that cannot be excluded by law, nor the mandatory rights of consumers in the European Union."
+          ]
         },
         "termination": {
           "heading": "Suspension and termination",
-          "todo": "Grounds and procedure for suspension or termination of the service by either party."
+          "paragraphs": [
+            "We may suspend or terminate a service, with prior notice except in urgent cases, if you breach these terms, if the service is not paid within the stated deadlines, if we receive a legal request obliging us to do so, or if the service endangers the security or reputation of our network. Termination for breach does not entitle you to a refund.",
+            "You may close your account at any time from the client area or by writing to us; closing the account deletes all its active services."
+          ]
+        },
+        "changes": {
+          "heading": "Changes",
+          "paragraphs": [
+            "We may update these terms and the prices of the services. Price changes apply from the next renewal and are notified by email at least thirty days in advance. The current version of the terms is always the one published on this page, with its update date."
+          ]
         },
         "law": {
           "heading": "Governing law and jurisdiction",
-          "todo": "Applicable law and competent jurisdiction for dispute resolution."
+          "paragraphs": [
+            "These terms are governed by the laws of the State of Wyoming and the federal laws of the United States. Any dispute shall be submitted to the competent courts of that State.",
+            "If you are a consumer resident in the European Union, the above does not deprive you of the protection of the mandatory rules of your country of residence or of the right to bring proceedings before the courts of your domicile. EU consumers may also use the European online dispute resolution platform."
+          ]
         }
       }
     },
     "cookies": {
-      "metaTitle": "Cookie Policy",
-      "metaDescription": "Which cookies ViaHost uses and how to manage them.",
+      "metaTitle": "Cookie policy",
+      "metaDescription": "Which cookies and local storage viahost.top uses, what they are for and how to manage them.",
       "index": "/ Cookies",
-      "title": "Cookie Policy",
-      "intro": "Information about the cookies and similar technologies used by this website and how you can manage them.",
-      "updated": "TODO: date",
+      "title": "Cookie policy",
+      "intro": "Information about the cookies and local storage used by this website and how you can manage them. We only use technical cookies: there are no analytics or advertising cookies.",
       "sections": {
         "what": {
           "heading": "What cookies are",
-          "todo": "Definition and general explanation of cookies and their purpose."
+          "paragraphs": [
+            "A cookie is a small file that a website stores in your browser to recognise you on subsequent requests, for example to keep you logged in or remember your language. Browser local storage serves a similar purpose but is not sent to the server with every request."
+          ]
         },
         "used": {
-          "heading": "Cookies we use",
-          "todo": "Table for each cookie: name, type (technical, analytics, etc.), purpose, duration and provider. The site currently does NOT load analytics; fill in when added."
+          "heading": "Cookies and storage we use",
+          "paragraphs": [
+            "All cookies on this site are technical and necessary for it to work:"
+          ],
+          "items": [
+            "vh_session (first-party, 7 days): identifies your session in the client area and the admin panel. Signed and accessible only by the server.",
+            "vh_mfa (first-party, 5 minutes): created between the password and the two-step verification code; it only identifies who is being asked for the code.",
+            "NEXT_LOCALE (first-party, session): remembers the language you chose (English, Spanish or French).",
+            "__cf_bm and cf_clearance (Cloudflare, from 30 minutes to several hours): set by our protection provider to tell legitimate traffic from bots and to apply security challenges.",
+            "Stripe cookies: during card payment you are redirected to checkout.stripe.com, where Stripe uses its own security and fraud-prevention cookies under its policy.",
+            "Local storage (not cookies): vh_currency stores the displayed currency, vh_cart the contents of the cart and viahost.cookie-consent your answer to the cookie notice, should it ever be shown."
+          ]
         },
         "consent": {
           "heading": "Legal basis and consent",
-          "todo": "How consent is obtained for non-essential cookies (banner) and how to withdraw it."
+          "paragraphs": [
+            "Technical and security cookies are exempt from consent because they are essential to provide the service you request. That is why this site does not display a cookie banner.",
+            "If we add analytics or marketing cookies in the future, they will only be activated after asking for your consent through a notice, and you will be able to withdraw it at any time from that same option."
+          ]
         },
         "managing": {
           "heading": "Managing cookies",
-          "todo": "Instructions for configuring or deleting cookies in the main browsers."
+          "paragraphs": [
+            "You can block or delete cookies from your browser settings (Chrome, Firefox, Safari and Edge each have a privacy section for this). Note that if you block technical cookies you will not be able to log in to the client area or complete an order."
+          ]
         },
         "changes": {
-          "heading": "Changes to the policy",
-          "todo": "How future updates to this policy will be communicated."
+          "heading": "Changes to this policy",
+          "paragraphs": [
+            "We will update this page whenever the cookies we use change. The date of the last revision appears at the top of the document."
+          ]
         }
       }
     }

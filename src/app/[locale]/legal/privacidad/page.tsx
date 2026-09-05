@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LegalLayout } from "@/components/legal/LegalLayout";
+import { legalSections } from "@/components/legal/sections";
 import { alternatesFor } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -18,15 +19,7 @@ export async function generateMetadata({
   };
 }
 
-const sectionKeys = [
-  "controller",
-  "dataCollected",
-  "purpose",
-  "retention",
-  "recipients",
-  "rights",
-  "security",
-] as const;
+const sectionKeys = ["controller","dataCollected","purpose","retention","recipients","transfers","rights","security"] as const;
 
 export default async function PrivacyPage({
   params,
@@ -40,13 +33,12 @@ export default async function PrivacyPage({
   return (
     <LegalLayout
       index={t("privacy.index")}
+      kicker={t("common.kicker")}
       title={t("privacy.title")}
       intro={t("privacy.intro")}
-      updated={t("privacy.updated")}
-      sections={sectionKeys.map((key) => ({
-        heading: t(`privacy.sections.${key}.heading`),
-        todo: t(`privacy.sections.${key}.todo`),
-      }))}
+      updated={t("common.updated", { date: t("common.date") })}
+      contact={t("common.contact")}
+      sections={legalSections(t, "privacy", sectionKeys)}
     />
   );
 }

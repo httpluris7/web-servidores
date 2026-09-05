@@ -12,16 +12,16 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "legal" });
   return {
-    alternates: alternatesFor(locale, "/legal/terminos"),
-    title: t("terms.metaTitle"),
-    description: t("terms.metaDescription"),
+    alternates: alternatesFor(locale, "/legal/aviso-legal"),
+    title: t("notice.metaTitle"),
+    description: t("notice.metaDescription"),
     robots: { index: true, follow: true },
   };
 }
 
-const sectionKeys = ["purpose","account","ordering","renewal","refunds","acceptableUse","abuse","backups","sla","liability","termination","changes","law"] as const;
+const sectionKeys = ["owner","contact","scope","ip","abuse","links","law"] as const;
 
-export default async function TermsPage({
+export default async function LegalNoticePage({
   params,
 }: {
   params: Promise<{ locale: string }>;
@@ -32,13 +32,13 @@ export default async function TermsPage({
 
   return (
     <LegalLayout
-      index={t("terms.index")}
+      index={t("notice.index")}
       kicker={t("common.kicker")}
-      title={t("terms.title")}
-      intro={t("terms.intro")}
+      title={t("notice.title")}
+      intro={t("notice.intro")}
       updated={t("common.updated", { date: t("common.date") })}
       contact={t("common.contact")}
-      sections={legalSections(t, "terms", sectionKeys)}
+      sections={legalSections(t, "notice", sectionKeys)}
     />
   );
 }

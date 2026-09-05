@@ -41,6 +41,7 @@ export function Footer({ nav }: { nav: NavCatalog }) {
       links: [
         { href: "/sobre-nosotros", label: t("aboutUs") },
         { href: "/contacto", label: t("contact") },
+        { href: "/legal/aviso-legal", label: t("legalNotice") },
         { href: "/legal/privacidad", label: t("privacy") },
         { href: "/legal/terminos", label: t("terms") },
         { href: "/legal/cookies", label: t("cookies") },

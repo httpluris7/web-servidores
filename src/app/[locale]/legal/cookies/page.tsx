@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LegalLayout } from "@/components/legal/LegalLayout";
+import { legalSections } from "@/components/legal/sections";
 import { alternatesFor } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -18,7 +19,7 @@ export async function generateMetadata({
   };
 }
 
-const sectionKeys = ["what", "used", "consent", "managing", "changes"] as const;
+const sectionKeys = ["what","used","consent","managing","changes"] as const;
 
 export default async function CookiesPage({
   params,
@@ -32,13 +33,12 @@ export default async function CookiesPage({
   return (
     <LegalLayout
       index={t("cookies.index")}
+      kicker={t("common.kicker")}
       title={t("cookies.title")}
       intro={t("cookies.intro")}
-      updated={t("cookies.updated")}
-      sections={sectionKeys.map((key) => ({
-        heading: t(`cookies.sections.${key}.heading`),
-        todo: t(`cookies.sections.${key}.todo`),
-      }))}
+      updated={t("common.updated", { date: t("common.date") })}
+      contact={t("common.contact")}
+      sections={legalSections(t, "cookies", sectionKeys)}
     />
   );
 }

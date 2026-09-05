@@ -76,7 +76,8 @@
     "cookies": "Cookies",
     "payment": "Pago",
     "webHosting": "Hosting web",
-    "blog": "Blog"
+    "blog": "Blog",
+    "legalNotice": "Aviso legal"
   },
   "account": {
     "myAccount": "Mi cuenta",
