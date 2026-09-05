@@ -5,11 +5,13 @@ import { isConfigured, syncPlans, type PlanProvisioner, type PlanSyncResult } fr
 /**
  * Sincronización catálogo web → provisioner.
  *
- * El disco, la RAM, los vCores y el precio de cada plan VPS viven en dos sitios:
+ * El disco, la RAM, los vCores, el precio y las ubicaciones de cada plan VPS viven en dos sitios:
  * `data/catalogo.json` (lo que se vende) y la tabla `plans` del provisioner (lo
  * que se crea en Proxmox). Manda la web: cada vez que el admin guarda un
  * producto VPS se empuja su definición al provisioner, y desde /admin/catalogo
- * se puede forzar una sincronización completa para detectar desvíos.
+ * se puede forzar una sincronización completa para detectar desvíos. Un plan
+ * nuevo se crea en el provisioner en ese mismo momento, con su disponibilidad
+ * por ubicación (ver `ubicacionesDePlan`); ya no hace falta `seed:plans`.
  *
  * Las specs del catálogo son texto libre para el escaparate ("120 GB NVMe Gen4",
  * "8 GB DDR4", "4 vCore AMD EPYC"); se toma el primer número con su unidad.
@@ -19,6 +21,7 @@ import { isConfigured, syncPlans, type PlanProvisioner, type PlanSyncResult } fr
 
 export { derivarPlan, type PlanDerivado } from "./planes-parse";
 import { derivarPlan } from "./planes-parse";
+import { ubicacionesDePlan } from "./planes-ubicaciones";
 
 /** Productos que el provisioner debe conocer: los de categorías de tipo `vps`. */
 export function productosVps(catalogo: Catalogo): Producto[] {
@@ -44,17 +47,23 @@ export async function sincronizarConProvisioner(
   soloPlanIds?: string[],
 ): Promise<InformeSync> {
   const filtro = soloPlanIds ? new Set(soloPlanIds) : null;
-  const candidatos = productosVps(catalogo).filter((p) => !filtro || filtro.has(p.planId));
+  const todosVps = productosVps(catalogo);
+  const candidatos = todosVps.filter((p) => !filtro || filtro.has(p.planId));
   const noInterpretables: InformeSync["noInterpretables"] = [];
   const planes: PlanProvisioner[] = [];
   for (const p of candidatos) {
     const d = derivarPlan(p);
-    if (d.ok) planes.push(d.plan);
+    if (d.ok) planes.push({ ...d.plan, ubicaciones: ubicacionesDePlan(p, todosVps, catalogo.ubicaciones) });
     else noInterpretables.push({ planId: d.planId, motivo: d.motivo });
   }
   if (!isConfigured()) return { ok: true, resultado: null, noInterpretables, error: null };
   if (planes.length === 0) {
-    return { ok: true, resultado: { ok: true, actualizados: [], sinCambios: [], desconocidos: [] }, noInterpretables, error: null };
+    return {
+      ok: true,
+      resultado: { ok: true, creados: [], actualizados: [], sinCambios: [], desconocidos: [], disponibilidad: [], ubicacionesDesconocidas: [] },
+      noInterpretables,
+      error: null,
+    };
   }
   try {
     const resultado = await syncPlans(planes);

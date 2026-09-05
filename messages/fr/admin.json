@@ -95,16 +95,20 @@
       "sync": {
         "button": "Synchroniser avec le provisioner",
         "running": "Synchronisation…",
-        "help": "Envoie disque, RAM, vCores et prix des plans VPS au provisioner (le site fait foi).",
+        "help": "Envoie disque, RAM, vCores, prix et emplacements des plans VPS au provisioner (le site fait foi) ; crée les plans manquants.",
         "title": "Provisioner",
         "close": "Fermer",
         "failed": "Synchronisation avec le provisioner impossible :",
         "unconfigured": "Le provisioner n’est pas configuré dans cet environnement ; rien n’a été synchronisé.",
         "unchanged": "{count, plural, one {# plan était déjà à jour} other {# plans étaient déjà à jour}}.",
-        "unknown": "Plans inconnus du provisioner (créez-les avec seed:plans) :",
+        "unknown": "Plans que le provisioner n’a pas pu créer :",
         "unparsable": "Caractéristiques non interprétables (vérifiez le texte CPU, RAM, disque ou prix) :",
         "disk": "Disque (Go)",
-        "priceCents": "Prix (centimes)"
+        "priceCents": "Prix (centimes)",
+        "created": "Plans créés dans le provisioner :",
+        "availabilityOn": "désormais commandable",
+        "availabilityOff": "plus commandable",
+        "unknownLocations": "Emplacements inconnus du provisioner (vérifiez le provisionLocation de la région) :"
       }
     },
     "dashboard": {

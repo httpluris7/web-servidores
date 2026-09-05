@@ -479,22 +479,30 @@ export type PlanProvisioner = {
   ramMb: number;
   discoGb: number;
   precioMesEur: number;
+  /** Slugs de `locations` del provisioner donde el plan es contratable (manda la web). */
+  ubicaciones?: string[];
 };
 
 export type PlanSyncResult = {
   ok: boolean;
+  /** Planes que no existían y se han creado. */
+  creados: string[];
   /** Planes cuya definición cambió, con [antes, después] por campo. */
   actualizados: Array<{ slug: string; cambios: Partial<Record<"vcores" | "ramMb" | "discoGb" | "precioMesEur", [number, number]>> }>;
   sinCambios: string[];
-  /** Slugs que la web ofrece pero el provisioner no conoce (se crean con `seed:plans`). */
+  /** Compatibilidad con provisioners antiguos que no creaban planes. */
   desconocidos: string[];
+  /** Cambios de disponibilidad por ubicación aplicados. */
+  disponibilidad: Array<{ slug: string; ubicacion: string; activo: boolean }>;
+  /** Ubicaciones que la web referencia y el provisioner no tiene dadas de alta. */
+  ubicacionesDesconocidas: string[];
 };
 
 export function getPlans(): Promise<{ plans: PlanProvisioner[] }> {
   return request("GET", "/plans");
 }
 
-/** Empuja la definición de los planes (solo actualiza los que ya existen). */
+/** Empuja la definición y las ubicaciones de los planes (crea los que falten). */
 export function syncPlans(planes: PlanProvisioner[]): Promise<PlanSyncResult> {
   return request("PUT", "/plans/sync", { plans: planes });
 }

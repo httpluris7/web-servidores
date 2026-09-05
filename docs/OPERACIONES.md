@@ -25,7 +25,10 @@ y `/home/user3100/viahost-provisioner` (API + worker en Docker, Proxmox).
 
 - Los planes VPS (disco, RAM, vCores, precio) se editan en `/admin/catalogo`. Al guardar se sincronizan
   solos con el provisioner; el botón "Sincronizar con el provisioner" fuerza una pasada completa y
-  muestra diferencias. Un plan nuevo requiere además `npm run seed:plans` y su disponibilidad por ubicación.
+  muestra diferencias. Un plan nuevo se crea en el provisioner en ese mismo momento, con su
+  disponibilidad por ubicación (plan global = regiones con `provisionLocation` sin gama propia; plan
+  exclusivo = solo su región). Ya no hace falta `seed:plans`; un plan retirado del catálogo no se borra
+  del provisioner (lo siguen usando los VPS creados con él).
 - Cambio de plan desde el panel de cliente: ampliar = proforma por la diferencia mensual, se aplica al
   pagar; reducir = inmediato y gratis, el disco nunca se reduce.
 

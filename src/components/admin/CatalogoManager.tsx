@@ -886,7 +886,11 @@ function Etiqueta({ children }: { children: React.ReactNode }) {
 function InformeProvisioner({ informe, onClose }: { informe: InformeSync; onClose: () => void }) {
   const t = useTranslations("admin");
   const r = informe.resultado;
-  const problema = !informe.ok || informe.noInterpretables.length > 0 || (r?.desconocidos.length ?? 0) > 0;
+  const problema =
+    !informe.ok ||
+    informe.noInterpretables.length > 0 ||
+    (r?.desconocidos?.length ?? 0) > 0 ||
+    (r?.ubicacionesDesconocidas?.length ?? 0) > 0;
   const etiqueta: Record<string, string> = {
     vcores: "vCores",
     ramMb: "RAM (MB)",
@@ -911,6 +915,11 @@ function InformeProvisioner({ informe, onClose }: { informe: InformeSync; onClos
       {informe.ok && r === null && <p className="mt-2">{t("catalog.sync.unconfigured")}</p>}
       {r && (
         <ul className="mt-2 space-y-1">
+          {(r.creados ?? []).length > 0 && (
+            <li>
+              {t("catalog.sync.created")} <span className="font-mono">{r.creados.join(", ")}</span>
+            </li>
+          )}
           {r.actualizados.map((a) => (
             <li key={a.slug}>
               <span className="font-mono">{a.slug}</span>:{" "}
@@ -922,9 +931,20 @@ function InformeProvisioner({ informe, onClose }: { informe: InformeSync; onClos
           {r.sinCambios.length > 0 && (
             <li className="text-[var(--color-fg-muted)]">{t("catalog.sync.unchanged", { count: r.sinCambios.length })}</li>
           )}
-          {r.desconocidos.length > 0 && (
+          {(r.disponibilidad ?? []).map((d) => (
+            <li key={`${d.slug}@${d.ubicacion}`}>
+              <span className="font-mono">{d.slug}</span> @ <span className="font-mono">{d.ubicacion}</span>:{" "}
+              {d.activo ? t("catalog.sync.availabilityOn") : t("catalog.sync.availabilityOff")}
+            </li>
+          ))}
+          {(r.desconocidos ?? []).length > 0 && (
             <li>
               {t("catalog.sync.unknown")} <span className="font-mono">{r.desconocidos.join(", ")}</span>
+            </li>
+          )}
+          {(r.ubicacionesDesconocidas ?? []).length > 0 && (
+            <li>
+              {t("catalog.sync.unknownLocations")} <span className="font-mono">{r.ubicacionesDesconocidas.join(", ")}</span>
             </li>
           )}
         </ul>
