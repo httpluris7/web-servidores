@@ -11,6 +11,7 @@ import { ManagementGrid } from "@/components/panel/ManagementGrid";
 import { InfoTable } from "@/components/panel/InfoTable";
 import { IpTable } from "@/components/panel/IpTable";
 import { RedSection } from "@/components/panel/RedSection";
+import { DiscosSection } from "@/components/panel/DiscosSection";
 import { GraficasSection } from "@/components/panel/GraficasSection";
 import { NotificacionesSection } from "@/components/panel/NotificacionesSection";
 import { SnapshotsSection } from "@/components/panel/SnapshotsSection";
@@ -89,6 +90,7 @@ async function PanelContent({
       <InfoTable service={service} />
       <IpTable ips={service.ips} />
       <RedSection service={service} />
+      <DiscosSection id={service.id} />
       <GraficasSection id={service.id} agenteActivo={service.agenteActivo} />
       <NotificacionesSection id={service.id} />
       <SnapshotsSection id={service.id} nombre={service.nombre} />

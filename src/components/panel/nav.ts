@@ -47,8 +47,8 @@ export const NAV_GROUPS: NavGroup[] = [
     key: "gestion",
     items: [
       { key: "backups", anchor: "backups", icon: "archive" },
-      { key: "backupsSchedule", anchor: "gestion", icon: "clock", soon: true },
-      { key: "discos", anchor: "gestion", icon: "disk", soon: true },
+      { key: "backupsSchedule", anchor: "backups", icon: "clock" },
+      { key: "discos", anchor: "discos", icon: "disk" },
       { key: "firewall", anchor: "firewall", icon: "shield" },
       { key: "firewallOptions", anchor: "firewall", icon: "shieldGear" },
       { key: "graficas", anchor: "graficas", icon: "chart" },

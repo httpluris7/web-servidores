@@ -195,7 +195,20 @@
       "noLimit": "No limit",
       "nicFirewall": "Firewall on interface",
       "on": "On",
-      "off": "Off"
+      "off": "Off",
+      "intro": "Your server’s network interface and its delivered configuration.",
+      "dns": "DNS servers",
+      "configureHeading": "Reconfigure network",
+      "configureIntro": "Interface model and DNS are applied on the next reboot; the interface firewall applies immediately.",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "saved": "Network updated.",
+      "savedRestart": "Network updated. Reboot the server to apply the changes.",
+      "invalidDns": "Invalid DNS: enter one to three IP addresses separated by spaces.",
+      "reset": "Reset to delivered network",
+      "resetBody": "Returns to the configuration the server was delivered with: virtio interface, assigned IP and gateway, default DNS. No data is deleted; a reboot is needed to apply it.",
+      "resetConfirm": "Reset network",
+      "resetDone": "Network reset. Reboot the server to apply it."
     },
     "notif": {
       "heading": "Resource notifications",
@@ -295,6 +308,21 @@
     "error": {
       "title": "Couldn't load the service",
       "body": "We couldn't reach the provisioning server. The service is still active; please try again in a few seconds."
+    },
+    "discos": {
+      "heading": "Disks",
+      "intro": "Your server’s disks, their size and performance options. Disks can only grow.",
+      "empty": "No disks.",
+      "plan": "plan: {size} GB",
+      "noBackup": "excluded from backups",
+      "discard": "TRIM / discard",
+      "ssd": "SSD emulation",
+      "iothread": "IO thread",
+      "saved": "Options saved.",
+      "savedRestart": "Options saved. They apply on the next reboot.",
+      "resize": "Grow to {size} GB",
+      "resized": "Disk grown to {size} GB. Reboot the server so the OS extends the partition.",
+      "alreadyAtPlan": "The disk already matches the plan size."
     }
   }
 }

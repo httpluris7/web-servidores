@@ -195,7 +195,20 @@
       "noLimit": "Sans limite",
       "nicFirewall": "Pare-feu sur l'interface",
       "on": "Actif",
-      "off": "Inactif"
+      "off": "Inactif",
+      "intro": "Interface réseau de votre serveur et sa configuration livrée.",
+      "dns": "Serveurs DNS",
+      "configureHeading": "Reconfigurer le réseau",
+      "configureIntro": "Le modèle d’interface et les DNS s’appliquent au redémarrage ; le pare-feu de l’interface, immédiatement.",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "saved": "Réseau mis à jour.",
+      "savedRestart": "Réseau mis à jour. Redémarrez le serveur pour appliquer les changements.",
+      "invalidDns": "DNS non valides : saisissez une à trois adresses IP séparées par des espaces.",
+      "reset": "Rétablir le réseau livré",
+      "resetBody": "Revient à la configuration de livraison : interface virtio, IP et passerelle attribuées, DNS par défaut. Aucune donnée n’est effacée ; un redémarrage est nécessaire.",
+      "resetConfirm": "Rétablir le réseau",
+      "resetDone": "Réseau rétabli. Redémarrez le serveur pour l’appliquer."
     },
     "notif": {
       "heading": "Notifications de ressources",
@@ -295,6 +308,21 @@
     "error": {
       "title": "Impossible de charger le service",
       "body": "Nous n'avons pas pu joindre le serveur de provisionnement. Le service est toujours actif ; réessayez dans quelques secondes."
+    },
+    "discos": {
+      "heading": "Disques",
+      "intro": "Disques de votre serveur, leur taille et les options de performance. Les disques ne peuvent que grandir.",
+      "empty": "Aucun disque.",
+      "plan": "plan : {size} Go",
+      "noBackup": "exclu des sauvegardes",
+      "discard": "TRIM / discard",
+      "ssd": "Émulation SSD",
+      "iothread": "IO thread",
+      "saved": "Options enregistrées.",
+      "savedRestart": "Options enregistrées. Elles s’appliquent au redémarrage.",
+      "resize": "Agrandir à {size} Go",
+      "resized": "Disque agrandi à {size} Go. Redémarrez le serveur pour que le système étende la partition.",
+      "alreadyAtPlan": "Le disque a déjà la taille du plan."
     }
   }
 }

@@ -540,3 +540,59 @@ export function deleteVpsBackupSchedule(vpsId: number): Promise<{ ok: boolean }>
 export function restoreVpsBackup(vpsId: number, volid: string): Promise<{ ok: boolean; upid: string }> {
   return request("POST", `/vps/${vpsId}/backups/restore`, { volid }, 120_000);
 }
+
+/* ------------------------------- Red y discos ------------------------------ */
+
+export type VpsNetwork = {
+  ok: boolean;
+  nic: { model: string; mac: string | null; bridge: string | null; firewall: boolean; rate_mbps: number | null; vlan: number | null };
+  nameserver: string[];
+  ipconfig: { ip: string; gateway: string; cidr: number } | null;
+  models: readonly string[];
+};
+
+export function vpsNetwork(vpsId: number): Promise<VpsNetwork> {
+  return request("GET", `/vps/${vpsId}/network`);
+}
+
+export function setVpsNetwork(
+  vpsId: number,
+  input: { model?: string; firewall?: boolean; nameserver?: string[] },
+): Promise<{ ok: boolean; requiere_reinicio: boolean }> {
+  return request("PUT", `/vps/${vpsId}/network`, input);
+}
+
+export function resetVpsNetwork(vpsId: number): Promise<{ ok: boolean; requiere_reinicio: boolean }> {
+  return request("POST", `/vps/${vpsId}/network/reset`);
+}
+
+export type VpsDisk = {
+  key: string;
+  volume: string;
+  storage: string | null;
+  sizeGb: number | null;
+  discard: boolean;
+  ssd: boolean;
+  iothread: boolean;
+  cache: string | null;
+  backup: boolean;
+};
+
+export function vpsDisks(vpsId: number): Promise<{ ok: boolean; disks: VpsDisk[]; plan_disco_gb: number | null; storage: string }> {
+  return request("GET", `/vps/${vpsId}/disks`);
+}
+
+export function setVpsDiskOptions(
+  vpsId: number,
+  key: string,
+  opts: { discard?: boolean; ssd?: boolean; iothread?: boolean },
+): Promise<{ ok: boolean; requiere_reinicio: boolean }> {
+  return request("PUT", `/vps/${vpsId}/disks/${encodeURIComponent(key)}`, opts);
+}
+
+export function resizeVpsDiskToPlan(
+  vpsId: number,
+  key: string,
+): Promise<{ ok: boolean; size_gb: number; requiere_reinicio: boolean }> {
+  return request("POST", `/vps/${vpsId}/disks/${encodeURIComponent(key)}/resize`, undefined, 60_000);
+}

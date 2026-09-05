@@ -195,7 +195,20 @@
       "noLimit": "Sin límite",
       "nicFirewall": "Cortafuegos en la interfaz",
       "on": "Activo",
-      "off": "Inactivo"
+      "off": "Inactivo",
+      "intro": "Interfaz de red de tu servidor y su configuración entregada.",
+      "dns": "Servidores DNS",
+      "configureHeading": "Reconfigurar red",
+      "configureIntro": "El modelo de interfaz y los DNS se aplican al reiniciar el servidor; el cortafuegos de la interfaz, al instante.",
+      "save": "Guardar cambios",
+      "saving": "Guardando…",
+      "saved": "Red actualizada.",
+      "savedRestart": "Red actualizada. Reinicia el servidor para aplicar los cambios.",
+      "invalidDns": "DNS no válidos: escribe una a tres direcciones IP separadas por espacios.",
+      "reset": "Restablecer la red entregada",
+      "resetBody": "Vuelve a la configuración con la que se entregó el servidor: interfaz virtio, IP y puerta de enlace asignadas y DNS por defecto. No borra datos; hace falta reiniciar para aplicarla.",
+      "resetConfirm": "Restablecer la red",
+      "resetDone": "Red restablecida. Reinicia el servidor para aplicarla."
     },
     "notif": {
       "heading": "Notificaciones de recursos",
@@ -295,6 +308,21 @@
     "error": {
       "title": "No se pudo cargar el servicio",
       "body": "No hemos podido contactar con el servidor de aprovisionamiento. El servicio sigue activo; vuelve a intentarlo en unos segundos."
+    },
+    "discos": {
+      "heading": "Discos",
+      "intro": "Discos de tu servidor, su tamaño y opciones de rendimiento. Los discos solo pueden crecer.",
+      "empty": "Sin discos.",
+      "plan": "plan: {size} GB",
+      "noBackup": "excluido de copias",
+      "discard": "TRIM / discard",
+      "ssd": "Emulación SSD",
+      "iothread": "IO thread",
+      "saved": "Opciones guardadas.",
+      "savedRestart": "Opciones guardadas. Se aplican al reiniciar el servidor.",
+      "resize": "Ampliar a {size} GB",
+      "resized": "Disco ampliado a {size} GB. Reinicia el servidor para que el sistema extienda la partición.",
+      "alreadyAtPlan": "El disco ya tiene el tamaño del plan."
     }
   }
 }

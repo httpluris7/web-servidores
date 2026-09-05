@@ -71,7 +71,7 @@ export function ReinstalarSection({
 
   return (
     <section id="reinstalar" className={`${CARD_PAD} border-[var(--color-danger)]/30 scroll-mt-28`}>
-      <p className={SECTION_INDEX}>/12</p>
+      <p className={SECTION_INDEX}>/13</p>
       <h2 className="mt-2 text-lg font-semibold">{t("reinstalar.heading")}</h2>
       <p className="mt-1 mb-5 text-sm text-[var(--color-fg-muted)]">{t("reinstalar.intro")}</p>
 
