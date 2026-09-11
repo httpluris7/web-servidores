@@ -60,9 +60,17 @@ export function authVersionFromHash(passwordHash: string): string {
 
 /** Huella de autenticación del usuario indicado (por id), o null si no existe. */
 export async function getUserAuthVersion(id: string): Promise<string | null> {
+  return (await getUserAuthState(id))?.pv ?? null;
+}
+
+/**
+ * Huella de autenticación + email vigente del usuario. La sesión compara ambos:
+ * un cambio de contraseña o de email invalida las cookies emitidas antes.
+ */
+export async function getUserAuthState(id: string): Promise<{ pv: string; email: string } | null> {
   const users = await readAllUsers();
   const user = users.find((u) => u.id === id);
-  return user ? authVersionFromHash(user.passwordHash) : null;
+  return user ? { pv: authVersionFromHash(user.passwordHash), email: user.email } : null;
 }
 
 /**
@@ -206,6 +214,24 @@ export async function updateUserProfile(id: string, input: ProfileInput): Promis
   target.pais = input.pais;
   target.telefono = input.telefono;
   target.codigoPostal = input.codigoPostal;
+  await writeAllUsers(users);
+  return toPublic(target);
+}
+
+/**
+ * Cambia el email de un usuario. Solo debe llamarse tras confirmar la nueva
+ * dirección por enlace (ver email-change-tokens.ts). Lanza `EMAIL_TAKEN` si ya
+ * pertenece a otra cuenta. Devuelve el usuario actualizado o null si no existe.
+ */
+export async function updateUserEmail(id: string, newEmail: string): Promise<PublicUser | null> {
+  const email = newEmail.trim().toLowerCase();
+  const users = await readAllUsers();
+  const target = users.find((u) => u.id === id);
+  if (!target) return null;
+  if (users.some((u) => u.id !== id && u.email.toLowerCase() === email)) {
+    throw new Error("EMAIL_TAKEN");
+  }
+  target.email = email;
   await writeAllUsers(users);
   return toPublic(target);
 }

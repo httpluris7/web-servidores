@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
-import { getUserAuthVersion } from "./auth";
+import { getUserAuthState, getUserAuthVersion } from "./auth";
 import { isMfaEnabled } from "./mfa";
 
 /**
@@ -104,8 +104,12 @@ export async function getSession(): Promise<SessionData | null> {
 
     // Liga la sesión a la contraseña vigente: si cambió (o el usuario ya no
     // existe), la huella deja de coincidir y la sesión queda invalidada.
-    const currentPv = await getUserAuthVersion(payload.uid);
-    if (!currentPv || currentPv !== payload.pv) return null;
+    const current = await getUserAuthState(payload.uid);
+    if (!current || current.pv !== payload.pv) return null;
+    // Y al email vigente: tras cambiarlo, las cookies con el email antiguo
+    // (otros dispositivos) dejan de valer. El dispositivo que confirmó el
+    // cambio recibe una cookie nueva en el mismo paso.
+    if (current.email.toLowerCase() !== (payload.email ?? "").toLowerCase()) return null;
 
     // Con 2FA activo solo vale una sesión que pasó el código.
     if (payload.mfa !== true && (await isMfaEnabled(payload.uid))) return null;

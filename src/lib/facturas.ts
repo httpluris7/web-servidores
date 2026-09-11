@@ -280,6 +280,26 @@ export async function getInvoiceForUser(
   return inv.userId === userId || mismoEmail ? inv : null;
 }
 
+/**
+ * Vincula al usuario las facturas manuales (sin `userId`) emitidas a un email.
+ * Se usa al cambiar el email de la cuenta: sin esto, esas facturas dejarían de
+ * aparecerle porque solo se relacionaban con él por la dirección antigua.
+ * Devuelve cuántas se han vinculado.
+ */
+export async function linkInvoicesToUser(userId: string, email: string): Promise<number> {
+  const target = email.trim().toLowerCase();
+  const list = await readAll();
+  let n = 0;
+  for (const inv of list) {
+    if (!inv.userId && inv.clienteEmail.toLowerCase() === target) {
+      inv.userId = userId;
+      n++;
+    }
+  }
+  if (n > 0) await writeAll(list);
+  return n;
+}
+
 export async function getInvoiceById(id: string): Promise<Invoice | null> {
   const list = await readAll();
   return list.find((i) => i.id === id) ?? null;

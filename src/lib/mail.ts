@@ -697,3 +697,97 @@ export async function sendServiceNoticeMail(m: ServiceNoticeMail): Promise<void>
   ].join("\r\n");
   await pipeSendmail(to, `${headers}\r\n\r\n${m.cuerpo}\n`);
 }
+
+/* ---------------------------- Cambio de email ----------------------------- */
+
+export type EmailChangeMail = {
+  /** Dirección NUEVA: es la que debe demostrar que le pertenece. */
+  to: string;
+  name: string;
+  url: string;
+  text: {
+    subject: string;
+    greeting: string;
+    intro: string;
+    linkLabel: string;
+    expiry: string;
+    ignore: string;
+  };
+};
+
+/** Enlace de confirmación del cambio de email, enviado a la dirección nueva. */
+export async function sendEmailChangeMail(m: EmailChangeMail): Promise<void> {
+  const to = headerSafe(m.to);
+  if (!emailRe.test(to) || to.startsWith("-")) {
+    throw new Error("Invalid recipient address.");
+  }
+
+  const headers = [
+    `From: ViaHost <${FROM}>`,
+    `To: ${to}`,
+    `Reply-To: ${BILLING_REPLY_TO}`,
+    `Subject: ${encodeHeader(m.text.subject)}`,
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: 8bit",
+    "Auto-Submitted: auto-generated",
+  ].join("\r\n");
+
+  const body = [
+    `${m.text.greeting} ${headerSafe(m.name)},`,
+    "",
+    m.text.intro,
+    "",
+    m.text.linkLabel,
+    m.url,
+    "",
+    m.text.expiry,
+    m.text.ignore,
+    "",
+    "—",
+    "ViaHost Networks, LLC",
+    BILLING_REPLY_TO,
+  ].join("\r\n");
+
+  await pipeSendmail(to, `${headers}\r\n\r\n${body}\n`);
+}
+
+export type EmailChangeNoticeMail = {
+  /** Dirección ANTIGUA: se le avisa de que el email de la cuenta ha cambiado. */
+  to: string;
+  name: string;
+  text: { subject: string; greeting: string; body: string; warning: string };
+};
+
+/** Aviso de seguridad al buzón antiguo una vez consumado el cambio. */
+export async function sendEmailChangeNoticeMail(m: EmailChangeNoticeMail): Promise<void> {
+  const to = headerSafe(m.to);
+  if (!emailRe.test(to) || to.startsWith("-")) {
+    throw new Error("Invalid recipient address.");
+  }
+
+  const headers = [
+    `From: ViaHost <${FROM}>`,
+    `To: ${to}`,
+    `Reply-To: ${BILLING_REPLY_TO}`,
+    `Subject: ${encodeHeader(m.text.subject)}`,
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: 8bit",
+    "Auto-Submitted: auto-generated",
+  ].join("\r\n");
+
+  const body = [
+    `${m.text.greeting} ${headerSafe(m.name)},`,
+    "",
+    m.text.body,
+    "",
+    m.text.warning,
+    "",
+    "—",
+    "ViaHost Networks, LLC",
+    BILLING_REPLY_TO,
+  ].join("\r\n");
+
+  await pipeSendmail(to, `${headers}\r\n\r\n${body}\n`);
+}

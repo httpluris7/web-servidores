@@ -45,8 +45,8 @@ export type ProfileFormUser = Values & { email: string };
 
 /**
  * Datos del cliente en /cuenta: se muestran como ficha y, al pulsar "Editar",
- * se convierten en formulario. El email se muestra pero no se edita: es la
- * clave con la que se identifican facturas y permisos.
+ * se convierten en formulario. El email se muestra pero se cambia aparte
+ * (ChangeEmailForm): requiere confirmar la dirección nueva por correo.
  */
 export function ProfileForm({ user }: { user: ProfileFormUser }) {
   const t = useTranslations("auth");
@@ -172,20 +172,9 @@ export function ProfileForm({ user }: { user: ProfileFormUser }) {
             <FieldError>{errors[key]}</FieldError>
           </div>
         ))}
-
-        <div>
-          <Label htmlFor="perfil-email">{t("account.fields.email")}</Label>
-          <Input
-            id="perfil-email"
-            type="email"
-            value={user.email}
-            readOnly
-            disabled
-            className="opacity-60"
-          />
-          <p className="mt-1.5 text-xs text-[var(--color-fg-muted)]">{t("profileForm.emailLocked")}</p>
-        </div>
       </div>
+
+      <p className="text-xs text-[var(--color-fg-muted)]">{t("profileForm.emailHint")}</p>
 
       <div className="flex flex-wrap items-center gap-3">
         <button

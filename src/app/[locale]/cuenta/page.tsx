@@ -6,6 +6,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { LogoutButton } from "@/components/forms/LogoutButton";
 import { ChangePasswordForm } from "@/components/forms/ChangePasswordForm";
 import { ProfileForm } from "@/components/forms/ProfileForm";
+import { ChangeEmailForm } from "@/components/forms/ChangeEmailForm";
 import { MfaSettings } from "@/components/forms/MfaSettings";
 import { estadoMfa } from "@/lib/mfa";
 import { isAdminEmail } from "@/lib/admin";
@@ -216,6 +217,14 @@ export default async function CuentaPage({
           >
             {t("account.supportLink")}
           </Link>
+        </section>
+
+        <section id="email" className="mt-12 scroll-mt-24 border-t border-[var(--color-line)] pt-10">
+          <h2 className="mono-label mb-1">{t("account.emailHeading")}</h2>
+          <p className="mb-6 text-sm text-[var(--color-fg-muted)]">
+            {t("account.emailIntro", { email: user.email })}
+          </p>
+          <ChangeEmailForm currentEmail={user.email} locked={isAdminEmail(user.email)} />
         </section>
 
         <section className="mt-12 border-t border-[var(--color-line)] pt-10">
