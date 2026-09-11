@@ -35,6 +35,9 @@ export type NewUserInput = Omit<StoredUser, "id" | "passwordHash" | "createdAt">
   password: string;
 };
 
+/** Campos del perfil que el propio usuario puede editar desde /cuenta. */
+export type ProfileInput = Omit<StoredUser, "id" | "passwordHash" | "createdAt" | "email">;
+
 /* --------------------------------- Hashing -------------------------------- */
 
 /** Hashea una contraseña con scrypt. Formato: `scrypt$<salt hex>$<hash hex>`. */
@@ -178,13 +181,42 @@ export async function updateUserPassword(id: string, newPassword: string): Promi
   if (!target) return false;
 
   target.passwordHash = hashPassword(newPassword);
-  const content = users.map((u) => JSON.stringify(u)).join("\n") + "\n";
+  await writeAllUsers(users);
+  return true;
+}
 
+/**
+ * Actualiza los datos de perfil (nombre, dirección, teléfono…) de un usuario.
+ * El email NO se toca aquí: es la clave con la que facturas y permisos de
+ * administración identifican al usuario, y cambiarlo exige un flujo aparte
+ * (verificación del nuevo correo).
+ *
+ * Devuelve el usuario público actualizado, o null si no existe.
+ */
+export async function updateUserProfile(id: string, input: ProfileInput): Promise<PublicUser | null> {
+  const users = await readAllUsers();
+  const target = users.find((u) => u.id === id);
+  if (!target) return null;
+
+  target.nombre = input.nombre;
+  target.apellidos = input.apellidos;
+  target.direccion = input.direccion;
+  target.ciudad = input.ciudad;
+  target.estado = input.estado;
+  target.pais = input.pais;
+  target.telefono = input.telefono;
+  target.codigoPostal = input.codigoPostal;
+  await writeAllUsers(users);
+  return toPublic(target);
+}
+
+/** Reescribe el fichero completo de forma atómica (temporal + rename). */
+async function writeAllUsers(users: StoredUser[]): Promise<void> {
+  const content = users.map((u) => JSON.stringify(u)).join("\n") + "\n";
   await mkdir(DATA_DIR, { recursive: true });
   // El temporal nace ya con 0600: el rename conserva sus permisos, así que si
   // naciera abierto dejaría el fichero de usuarios abierto tras cada cambio.
   const tmp = `${USERS_FILE}.${randomUUID()}.tmp`;
   await writeFile(tmp, content, { encoding: "utf8", mode: 0o600 });
   await rename(tmp, USERS_FILE);
-  return true;
 }

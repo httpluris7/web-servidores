@@ -5,6 +5,7 @@ import { site } from "@/data/site";
 import { PageHero } from "@/components/ui/PageHero";
 import { LogoutButton } from "@/components/forms/LogoutButton";
 import { ChangePasswordForm } from "@/components/forms/ChangePasswordForm";
+import { ProfileForm } from "@/components/forms/ProfileForm";
 import { MfaSettings } from "@/components/forms/MfaSettings";
 import { estadoMfa } from "@/lib/mfa";
 import { isAdminEmail } from "@/lib/admin";
@@ -35,18 +36,6 @@ export async function generateMetadata({
 
 // Lee la cookie de sesión: nunca debe cachearse de forma estática.
 export const dynamic = "force-dynamic";
-
-const fieldKeys = [
-  "nombre",
-  "apellidos",
-  "email",
-  "telefono",
-  "direccion",
-  "codigoPostal",
-  "ciudad",
-  "estado",
-  "pais",
-] as const;
 
 export default async function CuentaPage({
   params,
@@ -111,16 +100,21 @@ export default async function CuentaPage({
       />
 
       <section className="container-edge max-w-2xl py-16 md:py-20">
-        <dl className="grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-2">
-          {fieldKeys.map((key) => (
-            <div key={key} className="bg-[var(--color-bg-raised)] px-5 py-4">
-              <dt className="mono-label text-[0.6rem]">{t(`account.fields.${key}`)}</dt>
-              <dd className="mt-1 text-sm text-[var(--color-fg)] break-words">
-                {(user as unknown as Record<string, string>)[key] || "—"}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        {/* Datos del cliente: ficha con botón "Editar" que los convierte en formulario. */}
+        <ProfileForm
+          key={JSON.stringify(user)}
+          user={{
+            email: user.email,
+            nombre: user.nombre,
+            apellidos: user.apellidos,
+            telefono: user.telefono,
+            direccion: user.direccion,
+            codigoPostal: user.codigoPostal,
+            ciudad: user.ciudad,
+            estado: user.estado,
+            pais: user.pais,
+          }}
+        />
 
         {/* Facturas: el cliente entra aquí a ver y pagar lo que tiene emitido. */}
         <section className="mt-12 border-t border-[var(--color-line)] pt-10">
