@@ -240,9 +240,12 @@ async function avisarIngresoSinCasar(
 
     const importe = txn.amount?.value ?? null;
     const d = txn.details ?? {};
+    // La descripción ("Received money from X with reference ") es texto de Wise,
+    // no del ordenante: si los campos de referencia van vacíos, no puso ninguna.
+    const referenciaExplicita = (d.paymentReference || d.reference || "").trim();
     const motivo = ambigua
       ? "la referencia encaja con MÁS DE UNA proforma pendiente"
-      : !ref
+      : !referenciaExplicita
         ? "el ingreso llegó SIN referencia"
         : "la referencia no coincide con ninguna proforma pendiente";
 
@@ -266,7 +269,7 @@ async function avisarIngresoSinCasar(
       txId,
       importe != null ? eur(importe) : "?",
       d.senderName ?? "",
-      ref || "(sin referencia)"
+      referenciaExplicita || "(sin referencia)"
     );
 
     const { alerts } = await readSettings();
