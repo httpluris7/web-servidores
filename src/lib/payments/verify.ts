@@ -79,8 +79,12 @@ function normalizeStripeEvent(raw: unknown): PaymentEvent {
   const currency = typeof obj.currency === "string" ? obj.currency : null;
 
   // "Éxito" según el tipo de evento (y, en checkout, que el pago esté pagado).
+  // Con métodos diferidos (SEPA, transferencia vía Stripe…) `completed` llega
+  // con `payment_status: "unpaid"` y el cobro real lo anuncia después
+  // `async_payment_succeeded`, así que ese también cuenta como pago.
   const succeeded =
     type === "payment_intent.succeeded" ||
+    type === "checkout.session.async_payment_succeeded" ||
     (type === "checkout.session.completed" && obj.payment_status === "paid");
 
   return {

@@ -808,10 +808,16 @@ export const WEBHOOK_URL = `${site.url}${WEBHOOK_PATH}`;
 
 /**
  * Eventos que necesita la integración. `checkout.session.completed` es el que
- * cierra el cobro; `payment_intent.succeeded` es un respaldo por si la sesión
- * no llega, y es inofensivo: la factura ya pagada no se vuelve a emitir.
+ * cierra el cobro; `checkout.session.async_payment_succeeded` lo cierra cuando
+ * el método es diferido (SEPA…) y `completed` llegó aún sin pagar;
+ * `payment_intent.succeeded` es un respaldo por si la sesión no llega, y es
+ * inofensivo: la factura ya pagada no se vuelve a emitir.
  */
-export const WEBHOOK_EVENTS = ["checkout.session.completed", "payment_intent.succeeded"];
+export const WEBHOOK_EVENTS = [
+  "checkout.session.completed",
+  "checkout.session.async_payment_succeeded",
+  "payment_intent.succeeded",
+];
 
 /** ¿Se puede cobrar por Stripe ahora mismo? (activo y con clave de API) */
 export async function stripeIsReady(): Promise<boolean> {
