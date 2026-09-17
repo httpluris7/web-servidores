@@ -27,6 +27,23 @@
     "errExpired": "This link has expired (valid for 24 hours). Ask for the credentials to be resent from your dashboard or from support.",
     "errUnavailable": "The delivery service is unavailable right now. Please try again in a few minutes.",
     "errGeneric": "Something went wrong retrieving the password. Please try again or contact support.",
-    "contactSupport": "Contact support"
+    "contactSupport": "Contact support",
+    "ai": {
+      "readyTitle": "AI Developer VPS created successfully 🤖",
+      "ipv4": "IPv4",
+      "ipv6": "IPv6",
+      "access": "Access",
+      "accessValue": "SSH (port 22) with user and password",
+      "resources": "Resources",
+      "resourcesValue": "{vcores} vCPU AMD EPYC · {ram} GB RAM · {disk} GB NVMe",
+      "stepsTitle": "First steps",
+      "step1": "Connect over SSH",
+      "step2Title": "Claude Code",
+      "step2": "Run claude and connect your Anthropic account.",
+      "step3Title": "OpenAI Codex",
+      "step3": "Run codex and connect your OpenAI / ChatGPT account when prompted.",
+      "tmuxTip": "Tip: run ai-session to work inside a persistent tmux session. Your agents keep running after you close your laptop.",
+      "notIncluded": "Anthropic and OpenAI subscriptions and usage are not included in the VPS price: you use your own account, subscription or API."
+    }
   }
 }

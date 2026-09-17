@@ -234,6 +234,12 @@ export type DeliveryCredentials = {
   hostname: string | null;
   os: string | null;
   ubicacion: string | null;
+  /** ISO del país de la ubicación (DE, NL…). Provisioners antiguos no lo mandan. */
+  pais?: string | null;
+  /** Slug del plan contratado. */
+  plan?: string | null;
+  /** Recursos contratados; la entrega de los AI Developer VPS los muestra. */
+  recursos?: { vcores: number; ram_mb: number; disco_gb: number } | null;
 };
 
 /**

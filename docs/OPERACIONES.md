@@ -32,6 +32,25 @@ y `/home/user3100/viahost-provisioner` (API + worker en Docker, Proxmox).
 - Cambio de plan desde el panel de cliente: ampliar = proforma por la diferencia mensual, se aplica al
   pagar; reducir = inmediato y gratis, el disco nunca se reduce.
 
+## AI Developer VPS (`/ai-developer-vps`, `/claude-code-vps`, `/codex-vps`)
+
+- Familia propia dentro de VPS: categoría `tipo: "ai-vps"` en `data/catalogo.json` con tres planes
+  (`ai-starter`, `ai-developer`, `ai-multi-agent`), exclusivos de la región `germany` (`ubicacionSlug`).
+  Precio, specs, orden, "recomendado" y visibilidad se editan en `/admin/catalogo` como cualquier plan y
+  se sincronizan solos con el provisioner. Ocultar la categoría apaga las tres landings (404), el menú,
+  el banner de la home, el sitemap y `llms.txt`. El alta inicial la hizo `scripts/alta-ai-developer-vps.mjs`.
+- El plan FIJA la imagen (`ubuntu-24-ai-developer`, usuario `developer`) y la región: el cliente no elige
+  SO ni ubicación, y el servidor ignora lo que mande el navegador (`osParaPedido`). Esa imagen no se ofrece
+  a los Cloud VPS normales; un AI Developer VPS sí puede reinstalarse a ella ("de fábrica") o a otro SO.
+  El cambio de plan desde el panel se mueve dentro de la familia AI.
+- Facturación: mensual, como todos los VPS (un mes por pago, renovación mes a mes). No hay ciclos largos.
+- Plantilla Proxmox: VMID `9030` en el nodo alemán (s14, EPYC 7402P). Cómo reconstruirla y registrarla:
+  `viahost-provisioner/templates/ai-developer/README.md`. Tras cada alta el worker comprueba por el agente
+  QEMU que `claude`, `codex` y `docker` responden: `provision.verify_ai` en `audit_log` (si sale `error`,
+  la VM se entrega igual y casi siempre toca reconstruir la plantilla).
+- Textos de las landings: `messages/{en,es,fr}/ai.json`. Las suscripciones de Anthropic/OpenAI NO van
+  incluidas y ViaHost no está afiliada: ese aviso va en las tres landings, el correo y la pantalla de entrega.
+
 ## Renovaciones e impagos (`/admin/configuracion` → Renovaciones)
 
 - Cada VPS o cuenta de hosting cubre un mes desde el pago del alta; cada renovación pagada suma un mes.
