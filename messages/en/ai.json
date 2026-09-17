@@ -1,0 +1,519 @@
+{
+  "ai": {
+    "common": {
+      "badgeLocation": "Location: Germany 🇩🇪",
+      "badgeEpyc": "Powered by AMD EPYC",
+      "from": "From",
+      "perMonth": "/mo",
+      "heroBilling": "Monthly billing · No commitment · Germany 🇩🇪",
+      "recommended": "⭐ Recommended",
+      "orAddToCart": "or add it to the cart",
+      "viewAllPlans": "See the AI Developer VPS plans",
+      "plansKicker": "Plans",
+      "plansTitle": "Three sizes. Same ready-to-code stack.",
+      "plansDescription": "Every plan ships with Claude Code, OpenAI Codex CLI, Docker and the full development toolchain on Ubuntu 24.04 LTS. You only choose how much room your agents get.",
+      "planFeatures": {
+        "ipv4": "1 IPv4",
+        "ipv6": "IPv6 when available",
+        "ssh": "Full SSH access",
+        "docker": "Docker",
+        "claude": "Claude Code",
+        "codex": "OpenAI Codex CLI",
+        "os": "Ubuntu 24.04 LTS",
+        "location": "Location: Germany 🇩🇪"
+      },
+      "plans": {
+        "ai-starter": {
+          "emoji": "🤖",
+          "desc": "Ideal to get started with Claude Code or Codex and keep one or several development projects running 24/7.",
+          "cta": "Start from {price}/mo"
+        },
+        "ai-developer": {
+          "emoji": "🚀",
+          "desc": "Built for developers who use Claude Code, Codex, Docker, databases, builds and several projects at the same time.",
+          "cta": "Choose AI Developer"
+        },
+        "ai-multi-agent": {
+          "emoji": "⚡",
+          "desc": "Designed to run multiple agents, projects, Docker containers, databases and development environments simultaneously.",
+          "cta": "Create AI Multi-Agent",
+          "focusTitle": "Made for",
+          "focus": {
+            "0": "Claude Code + Codex at the same time",
+            "1": "Multiple tmux sessions",
+            "2": "Git worktrees",
+            "3": "Docker",
+            "4": "Several repositories",
+            "5": "Builds",
+            "6": "Testing",
+            "7": "Automations",
+            "8": "Agents working 24/7"
+          }
+        },
+        "fallback": {
+          "emoji": "🤖",
+          "desc": "AI Developer VPS with Claude Code, OpenAI Codex CLI and Docker preinstalled.",
+          "cta": "Choose {name}"
+        }
+      },
+      "billing": {
+        "kicker": "Billing",
+        "title": "The price you see is the price you pay. Every month.",
+        "description": "No promotional prices tied to long contracts. You do not need to commit to 12, 24, 36 or 48 months to get this price.",
+        "monthly": "Monthly payment",
+        "renewal": "Monthly renewal",
+        "noCommitment": "No commitment",
+        "note": "You pay for one month, your VPS is delivered automatically, and it renews month by month at the same price for as long as you want it."
+      },
+      "benefits": {
+        "kicker": "Why an AI Developer VPS",
+        "title": "We are not selling RAM and CPU. We are selling a workstation that never sleeps.",
+        "claude": {
+          "t": "Claude Code Ready",
+          "d": "Claude Code installed and ready to connect your account."
+        },
+        "codex": {
+          "t": "OpenAI Codex Ready",
+          "d": "Codex CLI installed and ready to start."
+        },
+        "epyc": {
+          "t": "AMD EPYC",
+          "d": "Infrastructure based on AMD EPYC 7402P."
+        },
+        "germany": {
+          "t": "Germany datacenter",
+          "d": "Every AI Developer VPS is initially hosted on our German infrastructure."
+        },
+        "docker": {
+          "t": "Docker Ready",
+          "d": "Docker and Docker Compose installed."
+        },
+        "dev": {
+          "t": "Complete development stack",
+          "d": "Node.js, Python, Git, GitHub CLI and build tools."
+        },
+        "agents": {
+          "t": "Agents 24/7",
+          "d": "Sessions keep running even when you close your computer."
+        },
+        "ssh": {
+          "t": "Full SSH",
+          "d": "Total control of your server."
+        },
+        "monthly": {
+          "t": "Monthly billing",
+          "d": "No long-term contracts."
+        }
+      },
+      "stack": {
+        "kicker": "Preinstalled",
+        "title": "Skip the setup afternoon.",
+        "description": "Every server is cloned from our ubuntu-24-ai-developer image and checked after provisioning: the claude and codex commands must answer before we hand it over.",
+        "ai": "Artificial intelligence",
+        "dev": "Development",
+        "docker": "Docker",
+        "terminal": "Persistent terminal",
+        "monitoring": "Basic monitoring",
+        "security": "Base security",
+        "securityItems": {
+          "0": "UFW firewall (only SSH open)",
+          "1": "Fail2ban on SSH",
+          "2": "Automatic security updates",
+          "3": "Hardened SSH, no root password login"
+        },
+        "userNote": "You work as the developer user: its own home, sudo, member of the docker group (no sudo needed for docker), bash shell and a ready /home/developer/projects folder.",
+        "cleanNote": "Every VPS is generated clean. The master image contains no Anthropic or OpenAI API keys, no GitHub credentials and no private tokens."
+      },
+      "useCases": {
+        "kicker": "Use cases",
+        "title": "What developers run on it",
+        "description": "A remote machine that is always on, reachable from a laptop, a tablet or a phone.",
+        "items": {
+          "0": "Claude Code working 24/7",
+          "1": "OpenAI Codex CLI",
+          "2": "Remote development",
+          "3": "Coding from a laptop or phone",
+          "4": "AI coding agents",
+          "5": "GitHub",
+          "6": "Git worktrees",
+          "7": "Multiple repositories",
+          "8": "Docker",
+          "9": "APIs",
+          "10": "Python",
+          "11": "Node.js",
+          "12": "Bots",
+          "13": "Automations",
+          "14": "Testing",
+          "15": "Staging",
+          "16": "Development databases",
+          "17": "Builds",
+          "18": "Isolated environments per project"
+        }
+      },
+      "steps": {
+        "kicker": "How it works",
+        "title": "Buy → connect → authenticate → code.",
+        "s1": {
+          "t": "Buy",
+          "d": "Pick a plan and pay for a single month. No setup fee, no commitment."
+        },
+        "s2": {
+          "t": "Connect",
+          "d": "Your VPS is provisioned automatically. Connect over SSH as developer."
+        },
+        "s3": {
+          "t": "Authenticate",
+          "d": "Type claude or codex and sign in with your own Anthropic or OpenAI account."
+        },
+        "s4": {
+          "t": "Code",
+          "d": "Start working. Your agents keep going when you close your laptop."
+        }
+      },
+      "infra": {
+        "kicker": "Infrastructure",
+        "title": "German hardware, AMD EPYC underneath.",
+        "description": "AI Developer VPS are provisioned exclusively on our German host. Other locations will open when dedicated AI Developer infrastructure exists there.",
+        "cpu": {
+          "k": "Host CPU",
+          "v": "AMD EPYC 7402P · 24 cores / 48 threads"
+        },
+        "ram": {
+          "k": "Memory",
+          "v": "ECC"
+        },
+        "storage": {
+          "k": "Storage",
+          "v": "NVMe"
+        },
+        "virt": {
+          "k": "Virtualization",
+          "v": "Proxmox VE (KVM), shared vCPU"
+        },
+        "location": {
+          "k": "Location",
+          "v": "Germany 🇩🇪"
+        },
+        "os": {
+          "k": "Image",
+          "v": "Ubuntu Server 24.04 LTS · ubuntu-24-ai-developer"
+        }
+      },
+      "delivery": {
+        "kicker": "Delivery",
+        "title": "What you receive when it is ready",
+        "description": "As soon as provisioning finishes you get an email with everything you need. The password never travels by email: you reveal it once through a one-time link.",
+        "items": {
+          "0": "Hostname",
+          "1": "IPv4 (and IPv6 if assigned)",
+          "2": "Location: Germany 🇩🇪",
+          "3": "Operating system: Ubuntu 24.04 LTS",
+          "4": "User: developer",
+          "5": "SSH access method",
+          "6": "Resources of your plan"
+        },
+        "terminalTitle": "first login"
+      },
+      "disclaimer": {
+        "title": "Important: Claude and OpenAI are not included",
+        "p1": "Subscriptions to and usage of Anthropic and OpenAI services are not included in the price of the VPS.",
+        "p2": "You use your own account, subscription or API.",
+        "providesTitle": "ViaHost provides:",
+        "provides": {
+          "0": "infrastructure",
+          "1": "operating system",
+          "2": "installation",
+          "3": "initial configuration",
+          "4": "development tools"
+        },
+        "notProvided": "ViaHost does not provide Claude, ChatGPT or OpenAI subscriptions.",
+        "trademark": "ViaHost is not officially affiliated with Anthropic or OpenAI. Claude, Claude Code, OpenAI, ChatGPT and Codex are trademarks of their respective owners."
+      },
+      "cross": {
+        "title": "Keep reading",
+        "main": {
+          "t": "AI Developer VPS",
+          "d": "The full product: plans, stack, infrastructure and billing."
+        },
+        "claude": {
+          "t": "Claude Code VPS",
+          "d": "Running Claude Code on a server 24/7: sessions, login and the right plan."
+        },
+        "codex": {
+          "t": "Codex VPS",
+          "d": "OpenAI Codex CLI on an always-on server: sign-in on a headless machine and workflows."
+        }
+      },
+      "cta": {
+        "title": "Your AI coding environment, always on.",
+        "subtitle": "monthly billing · no commitment · Germany 🇩🇪",
+        "button": "Create my AI VPS"
+      }
+    },
+    "main": {
+      "metaTitle": "AI Developer VPS — Claude Code + Codex ready 24/7",
+      "metaDescription": "VPS for AI coding: Claude Code, OpenAI Codex CLI, Docker, Git, Node.js and Python preinstalled. AMD EPYC in Germany. From {price}/mo, no commitment.",
+      "kicker": "🤖 AI Developer VPS",
+      "h1A": "Your AI coding environment, ",
+      "h1B": "always available.",
+      "tagline": "Claude Code + OpenAI Codex ready to work 24/7.",
+      "subtext": "Develop from your computer, tablet or phone. Keep your agents, terminals, Docker and projects running even when you close your laptop.",
+      "cta": "Create my AI VPS",
+      "introKicker": "VPS optimized for Claude Code, OpenAI Codex and AI-assisted development",
+      "introTitle": "Turn a VPS into an AI development workstation that is available 24/7.",
+      "intro": {
+        "p1": "ViaHost AI Developer VPS are delivered ready to work with Claude Code, OpenAI Codex CLI, Git, Docker, Python, Node.js and the usual development tools.",
+        "p2": "You simply connect your own Anthropic or OpenAI account, or enter your own credentials or API key where it applies.",
+        "p3": "The server stays available permanently even when you shut down your computer, so development sessions, agents, processes, Docker, builds and projects keep running 24/7."
+      },
+      "faq": {
+        "0": {
+          "q": "What is an AI Developer VPS?",
+          "a": "A virtual private server delivered with Claude Code, OpenAI Codex CLI, Docker, Git, GitHub CLI, Node.js LTS and Python already installed on Ubuntu 24.04 LTS. You connect over SSH, type claude or codex, sign in with your own account and start coding. Because it is a server, your agents and sessions keep running 24/7."
+        },
+        "1": {
+          "q": "Are the Claude or ChatGPT subscriptions included?",
+          "a": "No. Anthropic and OpenAI subscriptions and API usage are not included in the VPS price. You use your own account, subscription or API key. ViaHost provides the infrastructure, the operating system, the installation, the initial configuration and the development tools."
+        },
+        "2": {
+          "q": "Do I have to sign a long contract to get this price?",
+          "a": "No. Billing is monthly and renews monthly, with no commitment. The price shown is the real monthly price; there are no promotional prices tied to 12, 24, 36 or 48-month contracts."
+        },
+        "3": {
+          "q": "Where are the servers located?",
+          "a": "All AI Developer VPS are provisioned in Germany, on AMD EPYC 7402P hosts with ECC memory and NVMe storage, virtualized with Proxmox VE. Other locations cannot be selected until dedicated AI Developer infrastructure exists in other countries."
+        },
+        "4": {
+          "q": "Do my agents keep working if I close my laptop?",
+          "a": "Yes. The VPS is always on and tmux is preinstalled. Run ai-session to open a persistent tmux session, start Claude Code or Codex inside it, and detach. When you reconnect from any device, everything is still there."
+        },
+        "5": {
+          "q": "Are any API keys stored on the server image?",
+          "a": "No. The master template contains no Anthropic or OpenAI API keys, GitHub credentials or private tokens. Each VPS is generated clean and you authorize your own accounts on first use."
+        },
+        "6": {
+          "q": "How is the server secured by default?",
+          "a": "UFW firewall with only SSH open, Fail2ban protecting SSH, automatic security updates and no root password login. Docker publishes container ports on 127.0.0.1 by default, so a development database is not exposed to the Internet by accident."
+        },
+        "7": {
+          "q": "Can I change plan later?",
+          "a": "Yes. You can move between AI Starter, AI Developer and AI Multi-Agent from your control panel. Upgrading bills only the monthly difference; the disk is never reduced."
+        },
+        "kicker": "FAQ",
+        "title": "Frequently asked questions"
+      }
+    },
+    "claude": {
+      "metaTitle": "Claude Code VPS — run Claude Code 24/7",
+      "metaDescription": "VPS for Claude Code, preinstalled with tmux, Git, Docker, Node.js and Python. Sessions survive closing your laptop. Germany, from {price}/mo, no commitment.",
+      "kicker": "Claude Code VPS",
+      "titleA": "A server for Claude Code that ",
+      "titleB": "never closes the session.",
+      "description": "Claude Code hosting done right: a VPS in Germany with Claude Code already installed, tmux to keep it working 24/7 and the full toolchain it needs to build, test and ship your code.",
+      "cta": "Get my Claude Code VPS",
+      "why": {
+        "kicker": "Why a VPS for Claude Code",
+        "title": "Claude Code is at its best when nothing interrupts it.",
+        "items": {
+          "0": {
+            "t": "Long tasks finish",
+            "d": "A refactor or a test-fix loop can run for a long time. On a laptop it dies with the lid; on a VPS inside tmux it simply keeps going."
+          },
+          "1": {
+            "t": "Pick it up from any device",
+            "d": "Start a task at your desk, check it from your phone over SSH, review the diff from a tablet. The session is the same one."
+          },
+          "2": {
+            "t": "Parallel Claudes with Git worktrees",
+            "d": "Open several tmux windows, one Git worktree each, and let different Claude Code sessions work on different branches without stepping on each other."
+          },
+          "3": {
+            "t": "A sandbox that is not your laptop",
+            "d": "Give Claude Code a machine where it can install packages, run Docker and execute tests without touching your personal computer."
+          },
+          "4": {
+            "t": "The toolchain is already there",
+            "d": "Git, GitHub CLI, Node.js LTS, Python 3, build-essential, ripgrep, jq and Docker. Claude Code finds what it needs on the first command."
+          },
+          "5": {
+            "t": "Stable IP and network",
+            "d": "A fixed IPv4 in a German datacenter for webhooks, staging previews and SSH tunnels to your development servers."
+          }
+        }
+      },
+      "how": {
+        "kicker": "From payment to prompt",
+        "title": "Four commands to a working Claude Code server",
+        "steps": {
+          "0": {
+            "t": "Connect over SSH",
+            "d": "Use the IP and the one-time password from your delivery email.",
+            "cmd": "ssh developer@YOUR_SERVER_IP"
+          },
+          "1": {
+            "t": "Open a persistent session",
+            "d": "A tmux session in ~/projects that survives disconnects.",
+            "cmd": "ai-session"
+          },
+          "2": {
+            "t": "Start Claude Code",
+            "d": "Claude Code is installed globally and already on your PATH.",
+            "cmd": "claude"
+          },
+          "3": {
+            "t": "Connect your Anthropic account",
+            "d": "Claude Code prints a sign-in link: open it in any browser, approve, and paste the code back. A Claude subscription or an Anthropic API key both work.",
+            "cmd": "/login"
+          }
+        }
+      },
+      "which": {
+        "kicker": "Which plan",
+        "title": "Which plan for Claude Code?",
+        "p1": "AI Starter is enough for one Claude Code session and a couple of projects. AI Developer is the comfortable choice when Claude Code runs next to Docker, a database and your builds. AI Multi-Agent is for several Claude Code sessions in parallel, Claude Code plus Codex together, or heavy test suites.",
+        "p2": "All of them are billed monthly with no commitment, and you can change plan from the panel."
+      },
+      "faq": {
+        "0": {
+          "q": "Is Claude Code already installed on the VPS?",
+          "a": "Yes. Claude Code is installed globally and verified after provisioning: the claude command must answer before the server is delivered. You only have to sign in with your own account."
+        },
+        "1": {
+          "q": "Is my Claude subscription included?",
+          "a": "No. The Claude subscription or the Anthropic API usage is not included in the price of the VPS. You use your own Anthropic account, subscription or API key. ViaHost is not affiliated with Anthropic."
+        },
+        "2": {
+          "q": "How do I log in to Claude Code on a server without a browser?",
+          "a": "Run claude and use /login. Claude Code shows a URL that you open on any device; after approving, you paste the code back into the terminal. No browser is needed on the server."
+        },
+        "3": {
+          "q": "How do I keep Claude Code running when I disconnect?",
+          "a": "Run it inside tmux. The ai-session command opens or re-attaches a persistent session; detach with Ctrl-b d and Claude Code keeps working. Reconnect later from any device and run ai-session again."
+        },
+        "4": {
+          "q": "Can I run several Claude Code sessions at once?",
+          "a": "Yes. Use one tmux window per session and one Git worktree per task. For several parallel sessions with Docker and tests we recommend AI Developer or AI Multi-Agent."
+        },
+        "5": {
+          "q": "Can I use Claude Code from my phone?",
+          "a": "Yes. Any SSH client on iOS or Android works. Because the session lives in tmux on the server, a mobile connection dropping does not interrupt Claude Code."
+        },
+        "6": {
+          "q": "How do I update Claude Code?",
+          "a": "Run ai-tools-update to upgrade Claude Code and Codex CLI to their latest versions. No sudo is needed: the tools live in a prefix owned by the developer user."
+        },
+        "kicker": "FAQ",
+        "title": "Frequently asked questions"
+      }
+    },
+    "codex": {
+      "metaTitle": "Codex VPS — OpenAI Codex CLI hosting, always on",
+      "metaDescription": "VPS for Codex: OpenAI Codex CLI, Git, Docker, Node.js and Python preinstalled. Run Codex 24/7 in tmux. Germany, AMD EPYC, from {price}/mo, no commitment.",
+      "kicker": "Codex VPS",
+      "titleA": "OpenAI Codex CLI on a server that is ",
+      "titleB": "always on.",
+      "description": "A VPS for Codex with the CLI already installed, a persistent terminal and a real Linux environment where Codex can run commands, containers and tests around the clock.",
+      "cta": "Get my Codex VPS",
+      "why": {
+        "kicker": "Why a VPS for Codex",
+        "title": "Codex CLI works on a real machine. Give it one that does not go to sleep.",
+        "items": {
+          "0": {
+            "t": "A native Linux environment",
+            "d": "Codex CLI runs shell commands, edits files and executes tests. Ubuntu 24.04 with build-essential, Node.js, Python and Docker is exactly the environment it expects."
+          },
+          "1": {
+            "t": "Codex 24/7",
+            "d": "Leave Codex working on a task inside tmux and come back to the result. The server does not suspend, lose Wi-Fi or run out of battery."
+          },
+          "2": {
+            "t": "Codex and Claude Code side by side",
+            "d": "Both CLIs are installed. Let one write and the other review, or run them on different Git worktrees of the same repository."
+          },
+          "3": {
+            "t": "Isolated from your computer",
+            "d": "Codex gets its own machine for installing dependencies, starting containers and running builds, separate from your personal laptop and its files."
+          },
+          "4": {
+            "t": "Automations and bots",
+            "d": "Use Codex non-interactively from scripts and cron jobs on a server with a fixed IP that is always reachable."
+          },
+          "5": {
+            "t": "Monthly and flexible",
+            "d": "Start with AI Starter, move up when your workloads grow. Monthly billing, no long contracts."
+          }
+        }
+      },
+      "how": {
+        "kicker": "From payment to prompt",
+        "title": "Signing in to Codex on a headless server",
+        "steps": {
+          "0": {
+            "t": "Connect over SSH",
+            "d": "Use the IP and the one-time password from your delivery email.",
+            "cmd": "ssh developer@YOUR_SERVER_IP"
+          },
+          "1": {
+            "t": "Open a persistent session",
+            "d": "A tmux session in ~/projects that survives disconnects.",
+            "cmd": "ai-session"
+          },
+          "2": {
+            "t": "Sign in with ChatGPT",
+            "d": "Device authentication prints a link and a code that you approve from the browser on your own computer or phone.",
+            "cmd": "codex login --device-auth"
+          },
+          "3": {
+            "t": "Or use an API key, then start",
+            "d": "If you prefer usage-based billing, pipe your OpenAI API key into codex login --with-api-key. Then launch Codex in your project.",
+            "cmd": "codex"
+          }
+        }
+      },
+      "which": {
+        "kicker": "Which plan",
+        "title": "Which plan for Codex?",
+        "p1": "AI Starter runs Codex CLI comfortably for one or a few projects. AI Developer adds room for Docker, databases and builds running next to Codex. AI Multi-Agent is sized for Codex and Claude Code working at the same time, several repositories and continuous testing.",
+        "p2": "All plans are billed monthly with no commitment and live on AMD EPYC hosts in Germany."
+      },
+      "faq": {
+        "0": {
+          "q": "Is OpenAI Codex CLI already installed?",
+          "a": "Yes. Codex CLI is installed globally and verified after provisioning: the codex command must answer before the server is delivered."
+        },
+        "1": {
+          "q": "Is my ChatGPT plan or OpenAI API usage included?",
+          "a": "No. OpenAI subscriptions and API usage are not included in the VPS price. You sign in with your own ChatGPT account or use your own OpenAI API key. ViaHost is not affiliated with OpenAI."
+        },
+        "2": {
+          "q": "How do I sign in to Codex on a server without a browser?",
+          "a": "Run codex login --device-auth: Codex prints a link and a code that you approve from the browser on any of your devices. Alternatively, sign in with an API key using codex login --with-api-key."
+        },
+        "3": {
+          "q": "Can Codex keep working after I close the SSH connection?",
+          "a": "Yes. Run Codex inside tmux with the ai-session command and detach with Ctrl-b d. The process keeps running on the server and you can re-attach from any device."
+        },
+        "4": {
+          "q": "Can I run Codex and Claude Code on the same VPS?",
+          "a": "Yes, both are preinstalled. For running them simultaneously with Docker and tests, AI Multi-Agent is the plan designed for it."
+        },
+        "5": {
+          "q": "Where is the Codex VPS hosted?",
+          "a": "In Germany, on AMD EPYC 7402P hosts with ECC memory and NVMe storage. AI Developer VPS are currently only available in that location."
+        },
+        "6": {
+          "q": "How do I update Codex CLI?",
+          "a": "Run ai-tools-update to upgrade Codex CLI and Claude Code to their latest versions. Global npm installs work without sudo for the developer user."
+        },
+        "kicker": "FAQ",
+        "title": "Frequently asked questions"
+      }
+    },
+    "banner": {
+      "kicker": "New · AI Developer VPS",
+      "title": "Claude Code + OpenAI Codex, ready to work 24/7.",
+      "subtitle": "A VPS delivered with your AI coding stack installed. Monthly billing, no commitment, Germany 🇩🇪.",
+      "cta": "Create my AI VPS"
+    }
+  }
+}

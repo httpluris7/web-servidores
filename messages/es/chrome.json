@@ -56,7 +56,9 @@
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú",
     "hosting": "Hosting web",
-    "hostingSub": "Alojamiento cPanel sobre NVMe"
+    "hostingSub": "Alojamiento cPanel sobre NVMe",
+    "aiVps": "AI Developer VPS",
+    "aiVpsSub": "Claude Code + OpenAI Codex, listos 24/7"
   },
   "footer": {
     "products": "Productos",
@@ -77,7 +79,10 @@
     "payment": "Pago",
     "webHosting": "Hosting web",
     "blog": "Blog",
-    "legalNotice": "Aviso legal"
+    "legalNotice": "Aviso legal",
+    "aiVps": "AI Developer VPS",
+    "claudeCodeVps": "VPS para Claude Code",
+    "codexVps": "VPS para Codex"
   },
   "account": {
     "myAccount": "Mi cuenta",

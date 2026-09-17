@@ -25,7 +25,7 @@ const navLinks = [
  * un componente de cliente. Ver `getNavCatalog`.
  */
 export function Header({ nav }: { nav: NavCatalog }) {
-  const { regions, lines: dedicatedTypes, hosting } = nav;
+  const { regions, lines: dedicatedTypes, hosting, aiVps } = nav;
   const t = useTranslations("nav");
   const tc = useTranslations("common");
   const [scrolled, setScrolled] = useState(false);
@@ -171,6 +171,23 @@ export function Header({ nav }: { nav: NavCatalog }) {
                         ))}
                       </ul>
                     </div>
+                  )}
+
+                  {/* AI Developer VPS — a lo ancho: VPS con Claude Code y Codex preinstalados */}
+                  {aiVps && (
+                    <Link
+                      href={`/${aiVps.slug}`}
+                      className="col-span-full flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-accent)]/40 px-3 py-2.5 transition-colors hover:border-[var(--color-accent)] hover:bg-white/[0.03]"
+                    >
+                      <span className="shrink-0 text-lg leading-none" aria-hidden="true">🤖</span>
+                      <span className="min-w-0">
+                        <span className="block text-sm font-medium text-[var(--color-fg)]">{t("aiVps")}</span>
+                        <span className="block text-xs text-[var(--color-fg-muted)]">{t("aiVpsSub")}</span>
+                      </span>
+                      <span className="ml-auto whitespace-nowrap font-mono text-xs text-[var(--color-fg-muted)]">
+                        {tc("from")} <Price value={aiVps.priceFrom} />
+                      </span>
+                    </Link>
                   )}
 
                   {/* Hosting web — a lo ancho, bajo VPS por región */}

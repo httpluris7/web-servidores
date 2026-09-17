@@ -20,7 +20,7 @@ const directLinks = [
 type Me = { id: string; nombre: string; email: string } | null;
 
 export function MobileMenu({ nav }: { nav: NavCatalog }) {
-  const { regions, lines: dedicatedTypes, hosting } = nav;
+  const { regions, lines: dedicatedTypes, hosting, aiVps } = nav;
   const t = useTranslations("nav");
   const tc = useTranslations("common");
   const ta = useTranslations("account");
@@ -229,6 +229,23 @@ export function MobileMenu({ nav }: { nav: NavCatalog }) {
                   </div>
                 );
               })}
+
+              {/* AI Developer VPS: VPS con Claude Code y Codex preinstalados */}
+              {aiVps && (
+                <Link
+                  href={`/${aiVps.slug}`}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-between border-b border-[var(--color-line)] py-4 text-lg"
+                >
+                  <span>
+                    <span aria-hidden="true">🤖 </span>
+                    {t("aiVps")}
+                  </span>
+                  <span className="font-mono text-xs text-[var(--color-fg-muted)]">
+                    {tc("from")} <Price value={aiVps.priceFrom} />
+                  </span>
+                </Link>
+              )}
 
               {/* Hosting web: bajo las categorías VPS/Dedicados */}
               {hosting && (

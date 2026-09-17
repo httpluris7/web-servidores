@@ -13,11 +13,14 @@ import { allPosts } from "@/data/blog";
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = site.url;
-  const { regions, dedicatedTypes, hosting } = await getCatalog();
+  const { regions, dedicatedTypes, hosting, aiVps } = await getCatalog();
+  // Familia AI Developer VPS: su landing y las dos landings SEO que cuelgan de ella.
+  const aiPaths = aiVps && aiVps.plans.length ? ["/ai-developer-vps", "/claude-code-vps", "/codex-vps"] : [];
 
   const paths = [
     "",
     "/vps",
+    ...aiPaths,
     ...(hosting && hosting.plans.length ? ["/hosting"] : []),
     "/dominios",
     ...(dedicatedTypes.length > 0 ? ["/dedicados"] : []),
@@ -45,7 +48,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const loc = (locale: string, p: string) =>
     locale === routing.defaultLocale ? `${base}${p}` : `${base}/${locale}${p}`;
 
-  const money = new Set(["/vps", "/hosting", "/dominios"]);
+  const money = new Set(["/vps", "/hosting", "/dominios", "/ai-developer-vps"]);
   const now = new Date();
 
   return paths.map((p) => ({

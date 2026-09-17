@@ -14,6 +14,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { alternatesFor, breadcrumbJsonLd } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { AiVpsBanner } from "@/components/home/AiVpsBanner";
 
 export async function generateMetadata({
   params,
@@ -81,6 +82,9 @@ export default async function VpsPage({
         description={t("vps.plansDescription")}
         plans={vps.plans}
       />
+
+      {/* Subfamilia dentro de VPS: los AI Developer VPS (Claude Code + Codex preinstalados). */}
+      <AiVpsBanner />
 
       {/* Regiones */}
       <section className="border-t border-[var(--color-line)] bg-[var(--color-bg-raised)]">
