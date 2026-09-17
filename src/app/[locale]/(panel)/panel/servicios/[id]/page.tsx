@@ -101,7 +101,12 @@ async function PanelContent({
       <BackupsSection id={service.id} nombre={service.nombre} />
       <FirewallSection id={service.id} />
       <ConsolaSection id={service.id} />
-      <ReinstalarSection id={service.id} nombre={service.nombre} diskGb={service.disco.total} />
+      <ReinstalarSection
+        id={service.id}
+        nombre={service.nombre}
+        diskGb={service.disco.total}
+        imagenPropia={service.imagenPropia ?? null}
+      />
       <TaskHistory id={service.id} />
     </>
   );

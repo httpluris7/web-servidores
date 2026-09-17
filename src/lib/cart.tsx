@@ -169,8 +169,9 @@ export function CartProvider({
         ? // un plan con gama por región se preselecciona en la suya; el resto, en la global.
           (located.plan.ubicacionSlug || defaultRegionRef.current) ?? undefined
         : undefined);
-    // Los VPS nacen con el SO por defecto; el cliente lo cambia en el carrito.
-    const os = located.lineTipo === "vps" ? OS_DEFAULT : undefined;
+    // Los VPS nacen con el SO por defecto (o el que fije el plan); el cliente lo
+    // cambia en el carrito si el plan lo permite.
+    const os = located.lineTipo === "vps" ? (located.plan.osFijo ?? OS_DEFAULT) : undefined;
     setItems((prev) => {
       const existing = prev.find((l) => l.planId === planId);
       if (existing) {
@@ -213,7 +214,7 @@ export function CartProvider({
           planId: l.planId,
           qty: l.qty,
           region: isVps ? l.region : undefined,
-          os: isVps ? l.os || OS_DEFAULT : undefined,
+          os: isVps ? (located.plan.osFijo ?? (l.os || OS_DEFAULT)) : undefined,
           domain: isHosting ? l.domain : undefined,
           plan: located.plan,
           lineTitle: located.lineTitle,

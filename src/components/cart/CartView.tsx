@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { useCart } from "@/lib/cart";
 import type { Region } from "@/data/products";
 import { defaultVpsRegionSlug } from "@/lib/regions";
-import { ofertablesParaDisco, discoGbDeTexto } from "@/lib/provisioner/os";
+import { ofertablesParaDisco, discoGbDeTexto, osLabel } from "@/lib/provisioner/os";
 import { site } from "@/data/site";
 import { eur } from "@/lib/utils";
 import { Price, PriceSum } from "@/components/ui/Price";
@@ -214,8 +214,18 @@ export function CartView({
                 </div>
               </div>
 
-              {/* Región (solo VPS) */}
-              {l.isVps && regions.length > 0 && (
+              {/* Región (solo VPS). Un plan exclusivo de una región (gama alemana,
+                  AI Developer VPS) no deja elegir otra: se muestra fija. */}
+              {l.isVps && l.plan.ubicacionSlug && (
+                <span className="flex items-center gap-2 text-sm">
+                  <span className="mono-label text-[0.6rem]">{t("cartView.region")}</span>
+                  {(() => {
+                    const r = regions.find((x) => x.slug === l.plan.ubicacionSlug);
+                    return r ? `${r.flag} ${r.name} — ${r.city}` : l.plan.ubicacionSlug;
+                  })()}
+                </span>
+              )}
+              {l.isVps && !l.plan.ubicacionSlug && regions.length > 0 && (
                 <label className="flex items-center gap-2 text-sm">
                   <span className="mono-label text-[0.6rem]">{t("cartView.region")}</span>
                   <select
@@ -232,8 +242,15 @@ export function CartView({
                 </label>
               )}
 
-              {/* Sistema operativo (solo VPS): los que caben en el disco del plan */}
-              {l.isVps && (
+              {/* Sistema operativo (solo VPS): los que caben en el disco del plan.
+                  Con imagen fijada por el plan (AI Developer VPS) no hay nada que elegir. */}
+              {l.isVps && l.plan.osFijo && (
+                <span className="flex items-center gap-2 text-sm">
+                  <span className="mono-label text-[0.6rem]">{t("cartView.os")}</span>
+                  {osLabel(l.plan.osFijo)}
+                </span>
+              )}
+              {l.isVps && !l.plan.osFijo && (
                 <label className="flex items-center gap-2 text-sm">
                   <span className="mono-label text-[0.6rem]">{t("cartView.os")}</span>
                   <select

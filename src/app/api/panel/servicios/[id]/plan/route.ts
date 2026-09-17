@@ -40,7 +40,14 @@ async function opcionesPara(remoteId: number, locale: string) {
   const d = await getVpsDetalle(remoteId);
   const catalog = await getCatalog(locale);
   const region = catalog.regions.find((r) => r.provisionLocation === d.location_slug);
-  const planes: Plan[] = region ? vpsPlansForRegion(catalog, region.slug) : catalog.vps.plans;
+  // Un AI Developer VPS cambia de plan DENTRO de su familia (misma imagen y
+  // región); el resto, dentro de la gama Cloud VPS de su región.
+  const esAi = !!catalog.aiVps?.plans.some((p) => p.id === d.plan_slug);
+  const planes: Plan[] = esAi
+    ? (catalog.aiVps?.plans ?? [])
+    : region
+      ? vpsPlansForRegion(catalog, region.slug)
+      : catalog.vps.plans;
   const actual = planes.find((p) => p.id === d.plan_slug) ?? null;
   const precioActual = actual?.price ?? (d.precio_mes_eur != null ? d.precio_mes_eur / 100 : 0);
   const discoActual = d.disco_gb;

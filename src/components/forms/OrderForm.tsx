@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { Plan, Region } from "@/data/products";
 import { site } from "@/data/site";
-import { ofertablesParaDisco, discoGbDeTexto, OS_DEFAULT } from "@/lib/provisioner/os";
+import { ofertablesParaPlan, OS_DEFAULT } from "@/lib/provisioner/os";
 import { defaultVpsRegionSlug } from "@/lib/regions";
 import { eur } from "@/lib/utils";
 import { Price } from "@/components/ui/Price";
@@ -48,7 +48,7 @@ export function OrderForm({
     email: user?.email ?? "",
     // Región provisionable por defecto (nunca una sin Proxmox: ver `regions.ts`).
     region: regions ? defaultVpsRegionSlug(regions) : "",
-    os: OS_DEFAULT,
+    os: plan.osFijo ?? OS_DEFAULT,
     hostname: "",
     domain: "",
   });
@@ -109,7 +109,8 @@ export function OrderForm({
   const selectedRegion = regions?.find((r) => r.slug === values.region);
   const regionName = selectedRegion?.name;
   // SO que caben en el disco de este plan (p. ej. Win 11 exige 64 GB → fuera de Start).
-  const osDisponibles = ofertablesParaDisco(discoGbDeTexto(plan.storage));
+  // Un plan con imagen fijada (AI Developer VPS) solo ofrece la suya.
+  const osDisponibles = ofertablesParaPlan(plan);
   // Solo las regiones conectadas a un Proxmox se entregan al instante: ahí tiene
   // sentido elegir SO y hostname. En las demás el pedido se gestiona a mano.
   const provisionable = !!selectedRegion?.provisionLocation;
@@ -214,9 +215,11 @@ export function OrderForm({
             {regions && regions.length > 0 && (
               <div>
                 <Label htmlFor="region">{t("orderForm.regionLabel")}</Label>
+                {/* Con una sola región posible (plan exclusivo) el selector queda fijo. */}
                 <Select
                   id="region"
                   value={values.region}
+                  disabled={regions.length === 1}
                   onChange={(e) => setValues((v) => ({ ...v, region: e.target.value }))}
                 >
                   {regions.map((r) => (
@@ -235,6 +238,7 @@ export function OrderForm({
                   <Select
                     id="os"
                     value={values.os}
+                    disabled={osDisponibles.length === 1}
                     onChange={(e) => setValues((v) => ({ ...v, os: e.target.value }))}
                   >
                     {osDisponibles.map((o) => (

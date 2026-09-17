@@ -10,7 +10,7 @@ import { registrarIntent } from "@/lib/provisioner/intents";
 import { registrarHostingIntent } from "@/lib/hosting/intents";
 import { paqueteDePlan } from "@/lib/hosting/paquetes";
 import { normalizarDominioHost } from "@/lib/hosting/dominio";
-import { OS_DEFAULT, esOfertableParaDisco, discoGbDeTexto } from "@/lib/provisioner/os";
+import { osParaPedido } from "@/lib/provisioner/os";
 
 /** Hostname url/DNS-safe a partir de lo que teclee el cliente (o null si no da nada). */
 function saneaHostname(raw: string): string | null {
@@ -77,8 +77,8 @@ export async function POST(req: Request) {
 
   // SO acotado a los ofertables y que además quepan en el disco del plan (un
   // slug raro o incompatible cae al de por defecto en vez de tumbar el checkout).
-  const planDisco = discoGbDeTexto(located!.plan.storage);
-  const osSlug = esOfertableParaDisco(osRaw, planDisco) ? osRaw : OS_DEFAULT;
+  // Los planes con imagen fijada (AI Developer VPS) ignoran lo que venga del navegador.
+  const osSlug = osParaPedido(located!.plan, osRaw);
 
   const regionName = regions.find((r) => r.slug === region)?.name ?? region;
   const lineas = [

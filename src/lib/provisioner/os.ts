@@ -26,10 +26,25 @@ export type OsOption = {
    * podría aprovisionarse. 0 = sin restricción (plantillas Linux, muy pequeñas).
    */
   minDiscoGb: number;
+  /**
+   * Imagen EXCLUSIVA de una familia de producto: no sale en los selectores
+   * generales ni se acepta en un plan cualquiera. Hoy solo la usa la imagen de
+   * los AI Developer VPS, que va fijada por el plan (`Plan.osFijo`).
+   */
+  exclusivo?: boolean;
 };
+
+/**
+ * Imagen de los AI Developer VPS: Ubuntu 24.04 LTS con Claude Code, OpenAI Codex
+ * CLI, Docker y el stack de desarrollo preinstalados, usuario `developer`. Es el
+ * `os_slug` de la plantilla `ubuntu-24-ai-developer` del provisioner.
+ */
+export const AI_DEVELOPER_OS = "ubuntu-24-ai-developer";
 
 export const OS_OPTIONS: readonly OsOption[] = [
   { slug: "ubuntu-24.04", label: "Ubuntu 24.04 LTS", familia: "linux", disponible: true, minDiscoGb: 0 },
+  // La plantilla mide 16 GB; los planes AI empiezan en 60 GB.
+  { slug: AI_DEVELOPER_OS, label: "Ubuntu 24.04 LTS · AI Developer (Claude Code + Codex)", familia: "linux", disponible: true, minDiscoGb: 16, exclusivo: true },
   { slug: "ubuntu-22.04", label: "Ubuntu 22.04 LTS", familia: "linux", disponible: true, minDiscoGb: 0 },
   { slug: "debian-12", label: "Debian 12", familia: "linux", disponible: true, minDiscoGb: 0 },
   { slug: "debian-13", label: "Debian 13", familia: "linux", disponible: true, minDiscoGb: 0 },
@@ -48,8 +63,11 @@ export const OS_OPTIONS: readonly OsOption[] = [
 /** SO por defecto si el cliente no elige otro. */
 export const OS_DEFAULT = "ubuntu-24.04";
 
-/** Lo que se ofrece de verdad: SO con plantilla lista. Úsalo en los selectores. */
-export const OS_OFERTABLES: readonly OsOption[] = OS_OPTIONS.filter((o) => o.disponible);
+/**
+ * Lo que se ofrece de verdad en un plan cualquiera: SO con plantilla lista y no
+ * exclusivos de una familia. Úsalo en los selectores.
+ */
+export const OS_OFERTABLES: readonly OsOption[] = OS_OPTIONS.filter((o) => o.disponible && !o.exclusivo);
 
 const SLUGS = new Set(OS_OPTIONS.map((o) => o.slug));
 const OFERTABLES = new Set(OS_OFERTABLES.map((o) => o.slug));
@@ -97,8 +115,53 @@ export function ofertablesParaDisco(discoGb: number | null | undefined): OsOptio
   return OS_OFERTABLES.filter((o) => osCumpleDisco(o, discoGb));
 }
 
-/** ¿Se puede instalar AHORA este SO en un plan/servidor con este disco? */
+/** ¿Se puede instalar AHORA este SO en un plan/servidor cualquiera con este disco? */
 export function esOfertableParaDisco(slug: string, discoGb: number | null | undefined): boolean {
   const o = OS_OPTIONS.find((x) => x.slug === slug);
-  return !!o && o.disponible && osCumpleDisco(o, discoGb);
+  return !!o && o.disponible && !o.exclusivo && osCumpleDisco(o, discoGb);
+}
+
+/* ------------------------- Planes con imagen fijada ------------------------ */
+
+/**
+ * SO que puede elegir quien CONTRATA un plan: si el plan fija imagen (AI
+ * Developer VPS), solo esa; si no, los generales que caben en su disco.
+ */
+export function ofertablesParaPlan(plan: { storage: string; osFijo?: string }): OsOption[] {
+  if (plan.osFijo) return OS_OPTIONS.filter((o) => o.slug === plan.osFijo && o.disponible);
+  return ofertablesParaDisco(discoGbDeTexto(plan.storage));
+}
+
+/**
+ * SO con el que se aprovisiona un pedido: el fijado por el plan manda sobre lo
+ * que llegue del navegador; si no fija ninguno, el elegido si es válido para el
+ * disco del plan, y si no el de por defecto.
+ */
+export function osParaPedido(plan: { storage: string; osFijo?: string }, elegido: string): string {
+  if (plan.osFijo) return plan.osFijo;
+  return esOfertableParaDisco(elegido, discoGbDeTexto(plan.storage)) ? elegido : OS_DEFAULT;
+}
+
+/**
+ * SO a los que se puede REINSTALAR un servidor: los generales que caben en su
+ * disco y, si el servidor es de un plan con imagen propia, también esa (para
+ * volver al entorno AI Developer de fábrica). Cambiar a otro SO sigue permitido.
+ */
+export function ofertablesParaReinstalar(
+  discoGb: number | null | undefined,
+  imagenPropia?: string | null,
+): OsOption[] {
+  const propia = imagenPropia
+    ? OS_OPTIONS.filter((o) => o.slug === imagenPropia && o.disponible && osCumpleDisco(o, discoGb))
+    : [];
+  return [...propia, ...ofertablesParaDisco(discoGb)];
+}
+
+/** ¿Se puede reinstalar AHORA a este SO? (validación en servidor del anterior). */
+export function esReinstalable(
+  slug: string,
+  discoGb: number | null | undefined,
+  imagenPropia?: string | null,
+): boolean {
+  return ofertablesParaReinstalar(discoGb, imagenPropia).some((o) => o.slug === slug);
 }

@@ -38,11 +38,31 @@ export type CatalogLocale = (typeof CATALOG_LOCALES)[number];
 /** Texto en los tres idiomas del sitio. */
 export type Texto = Record<CatalogLocale, string>;
 
-export type CategoriaTipo = "vps" | "dedicados" | "hosting";
+export type CategoriaTipo = "vps" | "dedicados" | "hosting" | "ai-vps";
+
+/**
+ * Familias ÚNICAS con ruta fija (`/vps`, `/hosting`, `/ai-developer-vps`): no se
+ * crean desde el panel, no se borran y su slug no se toca. Solo `dedicados`
+ * admite categorías nuevas (`/dedicados/<slug>`).
+ */
+export function esFamiliaUnica(tipo: CategoriaTipo): boolean {
+  return tipo === "vps" || tipo === "hosting" || tipo === "ai-vps";
+}
+
+/**
+ * ¿Los planes de esta categoría son máquinas virtuales que crea el provisioner?
+ * `vps` (Cloud VPS) y `ai-vps` (AI Developer VPS: mismos VPS con imagen propia).
+ */
+export function esTipoVps(tipo: CategoriaTipo): boolean {
+  return tipo === "vps" || tipo === "ai-vps";
+}
 
 export type Categoria = {
   id: string;
-  /** Ruta pública: `vps` → `/vps`, `hosting` → `/hosting`, `dedicados` → `/dedicados/<slug>`. */
+  /**
+   * Ruta pública: `vps` → `/vps`, `hosting` → `/hosting`, `ai-vps` →
+   * `/ai-developer-vps`, `dedicados` → `/dedicados/<slug>`.
+   */
   tipo: CategoriaTipo;
   slug: string;
   nombre: Texto;
@@ -284,7 +304,7 @@ export async function actualizarCategoria(
   // paramétricas (solo `/dedicados/<slug>` lo es).
   const usados = new Set(catalogo.categorias.filter((c) => c.id !== id).map((c) => c.slug));
   const slug =
-    actual.tipo === "vps" || actual.tipo === "hosting"
+    esFamiliaUnica(actual.tipo)
       ? actual.slug
       : slugLibre(slugify(comoLinea(datos.slug) || nombre.en) || actual.slug, usados);
 
@@ -311,7 +331,7 @@ export async function borrarCategoria(id: string): Promise<Resultado<null>> {
   const actual = catalogo.categorias.find((c) => c.id === id);
   if (!actual) return err("no-encontrado");
   // VPS y Hosting son familias únicas con ruta fija (`/vps`, `/hosting`): no se borran.
-  if (actual.tipo === "vps" || actual.tipo === "hosting") return err("categoria-vps-protegida");
+  if (esFamiliaUnica(actual.tipo)) return err("categoria-vps-protegida");
   // Borrar la categoría dejaría sus planes fuera de toda página pero seguirían
   // contratables por URL: se exige vaciarla antes, que además es reversible.
   if (catalogo.productos.some((p) => p.categoriaId === id)) return err("categoria-con-productos");
@@ -335,7 +355,13 @@ export async function crearProducto(datos: Record<string, unknown>): Promise<Res
   // planes iguales en países distintos no colisionen (`ded-fr-…`/`ded-nl-…`).
   const usados = new Set(catalogo.productos.map((p) => p.planId));
   const prefijo =
-    categoria.tipo === "vps" ? "vps" : categoria.tipo === "hosting" ? "host" : `ded-${categoria.slug}`;
+    categoria.tipo === "vps"
+      ? "vps"
+      : categoria.tipo === "hosting"
+        ? "host"
+        : categoria.tipo === "ai-vps"
+          ? "ai"
+          : `ded-${categoria.slug}`;
   const base = slugify(`${prefijo}-${nombre}`) || "plan";
   const momento = ahora();
 

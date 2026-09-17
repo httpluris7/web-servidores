@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { falloProvisioner, panelGuard } from "@/lib/panel/bff";
 import { vpsTemplates, getVps } from "@/lib/provisioner/client";
 import { OS_OPTIONS, osCumpleDisco } from "@/lib/provisioner/os";
+import { imagenPropiaDePlan } from "@/lib/provisioner/imagen-plan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,7 +18,12 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
   try {
     const [r, info] = await Promise.all([vpsTemplates(g.ficha!.remoteId), getVps(g.ficha!.remoteId)]);
     const disponibles = new Set(r.templates.map((t) => t.os_slug));
-    const plantillas = OS_OPTIONS.filter((o) => disponibles.has(o.slug)).map((o) => ({
+    // Las imágenes exclusivas de una familia (AI Developer VPS) solo las ve el
+    // servidor cuyo plan las lleva; comparten ubicación con los Cloud VPS normales.
+    const propia = await imagenPropiaDePlan(info.plan_slug);
+    const plantillas = OS_OPTIONS.filter(
+      (o) => disponibles.has(o.slug) && (!o.exclusivo || o.slug === propia),
+    ).map((o) => ({
       slug: o.slug,
       label: o.label,
       familia: o.familia,

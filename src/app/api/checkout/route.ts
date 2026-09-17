@@ -11,7 +11,7 @@ import { registrarIntent } from "@/lib/provisioner/intents";
 import { registrarHostingIntent } from "@/lib/hosting/intents";
 import { paqueteDePlan } from "@/lib/hosting/paquetes";
 import { normalizarDominioHost } from "@/lib/hosting/dominio";
-import { OS_DEFAULT, discoGbDeTexto, esOfertableParaDisco } from "@/lib/provisioner/os";
+import { OS_DEFAULT, osParaPedido } from "@/lib/provisioner/os";
 import { transferRef } from "@/lib/facturas";
 
 export const runtime = "nodejs";
@@ -112,9 +112,8 @@ export async function POST(req: Request) {
     // SO elegido en el carrito: se acota a los ofertables que caben en el disco
     // del plan (un slug raro o que no cabe cae al de por defecto, como en /api/pedidos).
     const osRaw = clean(item.os, 40);
-    const osSlug = isVps && esOfertableParaDisco(osRaw, discoGbDeTexto(located.plan.storage))
-      ? osRaw
-      : OS_DEFAULT;
+    // Los planes con imagen fijada (AI Developer VPS) ignoran la del carrito.
+    const osSlug = isVps ? osParaPedido(located.plan, osRaw) : OS_DEFAULT;
 
     // Dominio a alojar (solo hosting): se normaliza/valida; inválido o vacío → temporal.
     const domain = located.lineTipo === "hosting" ? normalizarDominioHost(item.domain) : null;

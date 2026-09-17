@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
-import { ofertablesParaDisco } from "@/lib/provisioner/os";
+import { ofertablesParaReinstalar } from "@/lib/provisioner/os";
 import { CARD_PAD, SECTION_INDEX } from "./ui";
 
 /**
@@ -16,14 +16,17 @@ export function ReinstalarSection({
   id,
   nombre,
   diskGb,
+  imagenPropia = null,
 }: {
   id: string;
   nombre: string;
   diskGb: number | null;
+  /** Imagen propia del plan (AI Developer VPS): se ofrece la primera. */
+  imagenPropia?: string | null;
 }) {
   const t = useTranslations("panel");
   const router = useRouter();
-  const opciones = ofertablesParaDisco(diskGb);
+  const opciones = ofertablesParaReinstalar(diskGb, imagenPropia);
   const [os, setOs] = useState(opciones[0]?.slug ?? "");
   const [confirmacion, setConfirmacion] = useState("");
   const [abierto, setAbierto] = useState(false);

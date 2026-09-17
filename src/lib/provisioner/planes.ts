@@ -1,5 +1,5 @@
 import "server-only";
-import type { Catalogo, Producto } from "@/lib/catalogo/store";
+import { esTipoVps, type Catalogo, type Producto } from "@/lib/catalogo/store";
 import { isConfigured, syncPlans, type PlanProvisioner, type PlanSyncResult } from "./client";
 
 /**
@@ -23,8 +23,20 @@ export { derivarPlan, type PlanDerivado } from "./planes-parse";
 import { derivarPlan } from "./planes-parse";
 import { ubicacionesDePlan } from "./planes-ubicaciones";
 
-/** Productos que el provisioner debe conocer: los de categorías de tipo `vps`. */
+/**
+ * Productos que el provisioner debe conocer: los de categorías que venden
+ * máquinas virtuales (`vps` y `ai-vps`).
+ */
 export function productosVps(catalogo: Catalogo): Producto[] {
+  const vps = new Set(catalogo.categorias.filter((c) => esTipoVps(c.tipo)).map((c) => c.id));
+  return catalogo.productos.filter((p) => vps.has(p.categoriaId));
+}
+
+/**
+ * Los de la gama Cloud VPS: solo ellos deciden qué regiones tienen "gama propia"
+ * (un AI Developer VPS exclusivo de Alemania no saca de allí a los globales).
+ */
+function productosGamaVps(catalogo: Catalogo): Producto[] {
   const vps = new Set(catalogo.categorias.filter((c) => c.tipo === "vps").map((c) => c.id));
   return catalogo.productos.filter((p) => vps.has(p.categoriaId));
 }
@@ -48,12 +60,13 @@ export async function sincronizarConProvisioner(
 ): Promise<InformeSync> {
   const filtro = soloPlanIds ? new Set(soloPlanIds) : null;
   const todosVps = productosVps(catalogo);
+  const gamaVps = productosGamaVps(catalogo);
   const candidatos = todosVps.filter((p) => !filtro || filtro.has(p.planId));
   const noInterpretables: InformeSync["noInterpretables"] = [];
   const planes: PlanProvisioner[] = [];
   for (const p of candidatos) {
     const d = derivarPlan(p);
-    if (d.ok) planes.push({ ...d.plan, ubicaciones: ubicacionesDePlan(p, todosVps, catalogo.ubicaciones) });
+    if (d.ok) planes.push({ ...d.plan, ubicaciones: ubicacionesDePlan(p, gamaVps, catalogo.ubicaciones) });
     else noInterpretables.push({ planId: d.planId, motivo: d.motivo });
   }
   if (!isConfigured()) return { ok: true, resultado: null, noInterpretables, error: null };

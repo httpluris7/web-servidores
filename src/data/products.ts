@@ -15,6 +15,7 @@
 
 import { deployUrl } from "./site";
 import { defaultVpsRegionSlug } from "@/lib/regions";
+import { AI_DEVELOPER_OS } from "@/lib/provisioner/os";
 import {
   readCatalogo,
   texto,
@@ -50,6 +51,11 @@ export type Plan = {
   popular?: boolean;
   /** Región a la que el plan es exclusivo; si falta, es global (ver `Producto`). */
   ubicacionSlug?: string;
+  /**
+   * Imagen de SO fijada por el plan (AI Developer VPS): el cliente no elige SO,
+   * se aprovisiona siempre con esta. Ver `osParaPedido`.
+   */
+  osFijo?: string;
 };
 
 export type ProductLine = {
@@ -83,6 +89,11 @@ export type Catalog = {
   vps: ProductLine;
   /** Familia única de Hosting Web (cPanel); `null` si no está en el catálogo. */
   hosting: ProductLine | null;
+  /**
+   * Familia AI Developer VPS (`/ai-developer-vps`): VPS con Claude Code y Codex
+   * preinstalados, solo en su región. `null` si no está publicada.
+   */
+  aiVps: ProductLine | null;
   dedicatedTypes: DedicatedType[];
   allPlans: LocatedPlan[];
 };
@@ -192,6 +203,26 @@ export async function getCatalog(locale = "en"): Promise<Catalog> {
       plans: planesDe(c),
     }));
 
+  // AI Developer VPS: familia única con landing propia. Sus planes SON VPS
+  // (`lineTipo: "vps"`: región, aprovisionamiento, renovación y panel idénticos)
+  // pero con la imagen fijada y exclusivos de su región; se distinguen de la
+  // gama Cloud VPS por `lineSlug`, y por eso no se cuelan en `/vps/<region>`.
+  const catAi = publicas.find((c) => c.tipo === "ai-vps");
+  const aiPlanes = catAi
+    ? visibles
+        .filter((p) => p.categoriaId === catAi.id)
+        .map((p) => ({ ...aPlan(p), osFijo: AI_DEVELOPER_OS }))
+    : [];
+  const aiVps: ProductLine | null = catAi
+    ? {
+        slug: catAi.slug,
+        title: texto(catAi.nombre, locale),
+        tagline: texto(catAi.descripcion, locale),
+        regions: regions.filter((r) => aiPlanes.some((p) => p.ubicacionSlug === r.slug)),
+        plans: aiPlanes,
+      }
+    : null;
+
   const allPlans: LocatedPlan[] = [
     ...vpsPlanesTodos.map((plan) => ({
       plan,
@@ -199,6 +230,14 @@ export async function getCatalog(locale = "en"): Promise<Catalog> {
       lineTitle: vps.title,
       lineTipo: "vps" as const,
     })),
+    ...(aiVps
+      ? aiVps.plans.map((plan) => ({
+          plan,
+          lineSlug: aiVps.slug,
+          lineTitle: aiVps.title,
+          lineTipo: "vps" as const,
+        }))
+      : []),
     ...(hosting
       ? hosting.plans.map((plan) => ({
           plan,
@@ -217,7 +256,20 @@ export async function getCatalog(locale = "en"): Promise<Catalog> {
     ),
   ];
 
-  return { regions, vps, hosting, dedicatedTypes, allPlans };
+  return { regions, vps, hosting, aiVps, dedicatedTypes, allPlans };
+}
+
+/** Slug de la familia AI Developer VPS: su landing y cómo se la reconoce en `allPlans`. */
+export const AI_VPS_SLUG = "ai-developer-vps";
+
+/** ¿Es un plan de la familia AI Developer VPS? */
+export function esPlanAi(lp: Pick<LocatedPlan, "plan">): boolean {
+  return !!lp.plan.osFijo;
+}
+
+/** La familia AI Developer VPS resuelta a un idioma (o `null` si no está publicada). */
+export async function getAiVpsLine(locale = "en"): Promise<ProductLine | null> {
+  return (await getCatalog(locale)).aiVps;
 }
 
 /** La familia de Hosting Web resuelta a un idioma (o `null` si no está publicada). */
@@ -260,7 +312,9 @@ export async function getPlanById(id: string, locale = "en"): Promise<LocatedPla
 function regionesConGamaPropia(allPlans: LocatedPlan[]): Set<string> {
   const s = new Set<string>();
   for (const lp of allPlans) {
-    if (lp.lineTipo === "vps" && lp.plan.ubicacionSlug) s.add(lp.plan.ubicacionSlug);
+    // Los AI Developer VPS no son "la gama de la región": si lo fueran, tenerlos
+    // en Alemania sacaría de allí a los Cloud VPS globales.
+    if (lp.lineTipo === "vps" && !esPlanAi(lp) && lp.plan.ubicacionSlug) s.add(lp.plan.ubicacionSlug);
   }
   return s;
 }
@@ -271,7 +325,7 @@ function regionesConGamaPropia(allPlans: LocatedPlan[]): Set<string> {
  */
 export function vpsPlansForRegion(catalog: Catalog, regionSlug: string): Plan[] {
   const propios = catalog.allPlans
-    .filter((lp) => lp.lineTipo === "vps" && lp.plan.ubicacionSlug === regionSlug)
+    .filter((lp) => lp.lineTipo === "vps" && !esPlanAi(lp) && lp.plan.ubicacionSlug === regionSlug)
     .map((lp) => lp.plan);
   return propios.length ? propios : catalog.vps.plans;
 }
@@ -331,11 +385,21 @@ export type NavCatalog = {
   lines: { slug: string; title: string; highlight: string }[];
   /** Familia Hosting Web para el menú (o `null` si no hay planes publicados). */
   hosting: { slug: string; title: string; priceFrom: number } | null;
+  /** Familia AI Developer VPS para el menú (o `null` si no hay planes publicados). */
+  aiVps: { slug: string; title: string; priceFrom: number } | null;
 };
 
 export async function getNavCatalog(locale = "en"): Promise<NavCatalog> {
-  const { regions, dedicatedTypes, hosting } = await getCatalog(locale);
+  const { regions, dedicatedTypes, hosting, aiVps } = await getCatalog(locale);
   return {
+    aiVps:
+      aiVps && aiVps.plans.length
+        ? {
+            slug: aiVps.slug,
+            title: aiVps.title,
+            priceFrom: Math.min(...aiVps.plans.map((p) => p.price)),
+          }
+        : null,
     regions: regions.map((r) => ({
       slug: r.slug,
       flag: r.flag,

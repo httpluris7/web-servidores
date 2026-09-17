@@ -42,6 +42,11 @@ export type Usage = {
  */
 export type PanelService = {
   id: string;
+  /**
+   * Imagen de SO propia del plan (AI Developer VPS), o null. El panel la ofrece
+   * al reinstalar además de los SO generales.
+   */
+  imagenPropia?: string | null;
 
   /* Cabecera comercial */
   producto: string;

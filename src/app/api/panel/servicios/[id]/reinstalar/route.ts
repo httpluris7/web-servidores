@@ -4,7 +4,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { esIdInterno } from "@/lib/servidores/store";
 import { getManagedForUser } from "@/lib/servidores/cliente";
 import { getVps, ProvisionerError, reinstallVps } from "@/lib/provisioner/client";
-import { esOfertableParaDisco } from "@/lib/provisioner/os";
+import { esReinstalable } from "@/lib/provisioner/os";
+import { imagenPropiaDePlan } from "@/lib/provisioner/imagen-plan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -45,7 +46,8 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
 
   try {
     const info = await getVps(ficha.remoteId);
-    if (!esOfertableParaDisco(os, info.disco_gb)) {
+    // Además de los SO generales, un AI Developer VPS puede volver a su imagen.
+    if (!esReinstalable(os, info.disco_gb, await imagenPropiaDePlan(info.plan_slug))) {
       return NextResponse.json({ ok: false, error: "invalid_os" }, { status: 422 });
     }
     const nombre = info.hostname || ficha.etiqueta || `vps-${info.vmid}`;
