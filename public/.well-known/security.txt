@@ -1,0 +1,7 @@
+# ViaHost — canal de reporte de vulnerabilidades / vulnerability disclosure
+Contact: mailto:abuse@viahost.top
+Contact: mailto:soporte@viahost.top
+Expires: 2027-09-25T00:00:00.000Z
+Preferred-Languages: es, en, fr
+Canonical: https://viahost.top/.well-known/security.txt
+Policy: https://viahost.top/legal/aviso-legal
