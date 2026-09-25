@@ -2,7 +2,9 @@ import "server-only";
 import { chmod, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import { listManagedServers, type ManagedServer } from "@/lib/servidores/store";
+import { listManagedServers, updateManaged, type ManagedServer, type ServerProvider } from "@/lib/servidores/store";
+import { providerConfig } from "@/lib/servidores/inventario";
+import { stopServer } from "@/lib/servidores/v4vm";
 import { getInvoiceById, setInvoiceStatus } from "@/lib/facturas";
 import { intentByProvisionOrderId, type ProvisionIntent } from "@/lib/provisioner/intents";
 import { deleteVps, getVps, getVpsDetalle, vpsAction, ProvisionerError } from "@/lib/provisioner/client";
@@ -16,8 +18,13 @@ import { ALERT_FALLBACK_MAILBOX, sendServiceNoticeMail } from "@/lib/mail";
 import { emailRe } from "@/lib/leads";
 
 /**
- * Renovaciones mensuales de los servicios aprovisionados: VPS (Proxmox) y
- * cuentas de hosting (cPanel/WHM).
+ * Renovaciones mensuales de los servicios aprovisionados: VPS (Proxmox), VPS
+ * del proveedor v4vm y cuentas de hosting (cPanel/WHM).
+ *
+ * Los VPS de v4vm no tienen plan en el catálogo: su precio mensual es el
+ * `importe` del último registro de renovación de la ficha (el alta se siembra a
+ * mano con ese importe) y, por impago, se PARAN en v4vm pero no se borran (el
+ * proveedor no expone borrado por API): el borrado queda para el administrador.
  *
  * Periodo de servicio: el alta cubre UN MES desde la fecha de pago de su
  * proforma; cada renovación pagada añade otro mes al fin de periodo vigente
@@ -64,6 +71,8 @@ export type RenovacionVps = {
   avisoVencidoAt?: string | null;
   /** Cuándo se suspendió y borró el servicio por impago. */
   borradoAt?: string | null;
+  /** Nombre del plan a mostrar (VPS de v4vm, sin plan en el catálogo). */
+  planNombre?: string;
 };
 
 async function readAll(): Promise<RenovacionVps[]> {
@@ -106,7 +115,7 @@ const fecha = (iso: string): string => iso.slice(0, 10);
 
 /** Servicio renovable: un VPS con cliente o una cuenta de hosting creada. */
 export type Servicio =
-  | { tipo: "vps"; id: string; userId: string; remoteId: number; etiqueta: string; ficha: ManagedServer }
+  | { tipo: "vps"; id: string; userId: string; remoteId: number; etiqueta: string; proveedor: ServerProvider; ficha: ManagedServer }
   | { tipo: "hosting"; id: string; userId: string; remoteId: 0; etiqueta: string; cuenta: HostingIntent };
 
 export type Vencimiento = {
@@ -119,8 +128,13 @@ export type Vencimiento = {
   origen: "renovacion" | "alta" | "ficha";
 };
 
+/** Fichas cuyo servicio renueva ViaHost: nuestro Proxmox y el proveedor v4vm. */
+function esRenovable(f: ManagedServer): boolean {
+  return f.proveedor === "proxmox" || f.proveedor === "v4vm";
+}
+
 function servicioDeFicha(ficha: ManagedServer): Servicio {
-  return { tipo: "vps", id: ficha.id, userId: ficha.userId ?? "", remoteId: ficha.remoteId, etiqueta: ficha.etiqueta, ficha };
+  return { tipo: "vps", id: ficha.id, userId: ficha.userId ?? "", remoteId: ficha.remoteId, etiqueta: ficha.etiqueta, proveedor: ficha.proveedor, ficha };
 }
 
 function servicioDeCuenta(c: HostingIntent): Servicio {
@@ -134,13 +148,24 @@ async function vencimientoDe(s: Servicio, todas: RenovacionVps[], intent?: Provi
   if (pagadas[0]) return { servicio: s, periodoHasta: pagadas[0].periodoHasta, pendiente, origen: "renovacion" };
   // Sin renovaciones: un mes desde el pago de la factura de alta.
   try {
-    const invoiceId = s.tipo === "hosting" ? s.cuenta.invoiceId : (intent === undefined ? await intentDeFicha(s.ficha) : intent)?.invoiceId;
+    const invoiceId =
+      s.tipo === "hosting"
+        ? s.cuenta.invoiceId
+        : s.proveedor !== "proxmox"
+          ? undefined // v4vm: sin intent de alta; su periodo viene siempre de un registro de renovación
+          : (intent === undefined ? await intentDeFicha(s.ficha) : intent)?.invoiceId;
     if (invoiceId) {
       const inv = await getInvoiceById(invoiceId);
       if (inv?.pagadaAt) return { servicio: s, periodoHasta: masUnMes(inv.pagadaAt), pendiente, origen: "alta" };
     }
   } catch {
     /* sin factura localizable: se cae a la fecha de creación */
+  }
+  // Un VPS de v4vm sin registro de renovación no está gestionado por este
+  // módulo (ni precio ni periodo): no se le inventa un vencimiento ni se le
+  // emite nada. Entra cuando el administrador siembra su primer registro.
+  if (s.tipo === "vps" && s.proveedor === "v4vm") {
+    return { servicio: s, periodoHasta: null, pendiente, origen: "ficha" };
   }
   const creado = s.tipo === "hosting" ? s.cuenta.creadoAt : s.ficha.creadoAt;
   return { servicio: s, periodoHasta: creado ? masUnMes(creado) : null, pendiente, origen: "ficha" };
@@ -169,7 +194,7 @@ export async function vencimientosDeUsuario(userId: string): Promise<Map<string,
   if (!userId) return out;
   try {
     const todas = await readAll();
-    const fichas = (await listManagedServers()).filter((f) => f.proveedor === "proxmox" && f.userId === userId);
+    const fichas = (await listManagedServers()).filter((f) => esRenovable(f) && f.userId === userId);
     const cuentas = (await cuentasHostingActivas()).filter((c) => c.userId === userId);
     for (const s of [...fichas.map(servicioDeFicha), ...cuentas.map(servicioDeCuenta)]) {
       const v = await vencimientoDe(s, todas);
@@ -183,7 +208,7 @@ export async function vencimientosDeUsuario(userId: string): Promise<Map<string,
 
 /** Vencimientos de todos los servicios con cliente (admin y barrido). */
 export async function listarVencimientos(): Promise<Vencimiento[]> {
-  const fichas = (await listManagedServers()).filter((f) => f.proveedor === "proxmox" && f.userId);
+  const fichas = (await listManagedServers()).filter((f) => esRenovable(f) && f.userId);
   const cuentas = (await cuentasHostingActivas()).filter((c) => c.userId);
   const todas = await readAll();
   const out: Vencimiento[] = [];
@@ -267,6 +292,14 @@ async function planYNombre(s: Servicio): Promise<{ planSlug: string; precio: num
     if (!located) throw new Error(`plan ${s.cuenta.planId} no está en el catálogo`);
     return { planSlug: s.cuenta.planId, precio: located.plan.price, planNombre: located.plan.name, nombre: s.cuenta.domain ?? s.cuenta.cpanelUser ?? "hosting" };
   }
+  if (s.proveedor === "v4vm") {
+    // Sin plan en el catálogo: manda el último registro de renovación de la ficha.
+    const ultimo = (await readAll())
+      .filter((r) => r.servidorId === s.id && r.estado !== "cancelada")
+      .sort((a, b) => b.creadoAt.localeCompare(a.creadoAt))[0];
+    if (!ultimo || !(ultimo.importe > 0)) throw new Error("vps de v4vm sin precio de renovación registrado");
+    return { planSlug: ultimo.planSlug, precio: ultimo.importe, planNombre: ultimo.planNombre ?? "VPS", nombre: s.etiqueta || `vps #${s.remoteId}` };
+  }
   const vps = await getVps(s.remoteId);
   if (vps.estado === "destroyed") throw new Error("vps destruido");
   if (!vps.plan_slug) throw new Error("vps sin plan");
@@ -312,6 +345,7 @@ async function emitirRenovacion(v: Vencimiento): Promise<RenovacionVps> {
     periodoHasta: hasta,
     importe: info.precio,
     planSlug: info.planSlug,
+    ...(s.tipo === "vps" && s.proveedor === "v4vm" ? { planNombre: info.planNombre } : {}),
     estado: "pendiente",
     creadoAt: new Date().toISOString(),
     pagadaAt: null,
@@ -397,7 +431,9 @@ export async function procesarImpagos(
             "",
             `El periodo de ${queEs.es} ${nombre} terminó el ${fecha(v.periodoHasta)} y la proforma de renovación ${inv.numero} (${inv.total.toFixed(2)} €) sigue sin pagar.`,
             borrar
-              ? `Si no se recibe el pago antes del ${limite}, el servicio se suspenderá y se ELIMINARÁ automáticamente con todos sus datos. Esta acción no se puede deshacer.`
+              ? impagoBorra(s)
+                ? `Si no se recibe el pago antes del ${limite}, el servicio se suspenderá y se ELIMINARÁ automáticamente con todos sus datos. Esta acción no se puede deshacer.`
+                : `Si no se recibe el pago antes del ${limite}, el servicio se suspenderá automáticamente.`
               : "Paga la proforma para mantener el servicio activo.",
             "",
             "Puedes pagar desde tu área de cliente: https://viahost.top/es/cuenta/facturas",
@@ -408,7 +444,9 @@ export async function procesarImpagos(
             "",
             `The service period of ${queEs.en} ${nombre} ended on ${fecha(v.periodoHasta)} and the renewal proforma ${inv.numero} (€${inv.total.toFixed(2)}) is still unpaid.`,
             borrar
-              ? `If payment is not received before ${limite}, the service will be suspended and DELETED automatically with all its data. This cannot be undone.`
+              ? impagoBorra(s)
+                ? `If payment is not received before ${limite}, the service will be suspended and DELETED automatically with all its data. This cannot be undone.`
+                : `If payment is not received before ${limite}, the service will be suspended automatically.`
               : "Please pay the proforma to keep the service active.",
             "",
             "Pay from your client area: https://viahost.top/cuenta/facturas",
@@ -434,23 +472,26 @@ export async function procesarImpagos(
       await setInvoiceStatus(inv.id, "cancelada");
       await marcarRenovacion(pend.id, { estado: "cancelada", borradoAt: new Date(ahora).toISOString() });
       borrados++;
-      console.warn(`[renovaciones] SERVICIO BORRADO por impago: ${nombre} (${s.id}, ${inv.numero})`);
-      anotar(`BORRADO por impago: ${s.tipo} ${nombre} · ${user.email} · ${inv.numero} cancelada`);
+      const borrado = impagoBorra(s);
+      console.warn(`[renovaciones] SERVICIO ${borrado ? "BORRADO" : "PARADO (v4vm, borrar a mano)"} por impago: ${nombre} (${s.id}, ${inv.numero})`);
+      anotar(`${borrado ? "BORRADO" : "PARADO en v4vm (pendiente de borrar a mano)"} por impago: ${s.tipo} ${nombre} · ${user.email} · ${inv.numero} cancelada`);
       try {
         await sendServiceNoticeMail({
           to: user.email,
-          asunto: `Servicio eliminado por impago: ${nombre} / Service deleted: ${nombre}`,
+          asunto: borrado
+            ? `Servicio eliminado por impago: ${nombre} / Service deleted: ${nombre}`
+            : `Servicio suspendido por impago: ${nombre} / Service suspended: ${nombre}`,
           cuerpo: [
             saludo,
             "",
-            `${cap(queEs.es)} ${nombre} venció el ${fecha(v.periodoHasta)} y, pasados ${diasGracia} días sin recibir el pago de la proforma ${inv.numero}, ha sido suspendido y eliminado junto con sus datos. La proforma queda cancelada.`,
+            `${cap(queEs.es)} ${nombre} venció el ${fecha(v.periodoHasta)} y, pasados ${diasGracia} días sin recibir el pago de la proforma ${inv.numero}, ha sido ${borrado ? "suspendido y eliminado junto con sus datos" : "suspendido"}. La proforma queda cancelada.`,
             `Si quieres volver a contratar: https://viahost.top/es/${s.tipo === "hosting" ? "hosting" : "vps"}`,
             "",
             "— — —",
             "",
             hi,
             "",
-            `${cap(queEs.en)} ${nombre} expired on ${fecha(v.periodoHasta)} and, ${diasGracia} days later with proforma ${inv.numero} still unpaid, it has been suspended and deleted together with its data. The proforma is now cancelled.`,
+            `${cap(queEs.en)} ${nombre} expired on ${fecha(v.periodoHasta)} and, ${diasGracia} days later with proforma ${inv.numero} still unpaid, it has been ${borrado ? "suspended and deleted together with its data" : "suspended"}. The proforma is now cancelled.`,
             `To order again: https://viahost.top/${s.tipo === "hosting" ? "hosting" : "vps"}`,
             "",
             "ViaHost · soporte@viahost.top",
@@ -475,12 +516,28 @@ async function suspenderYBorrar(s: Servicio): Promise<void> {
     await marcarHostingTerminado(user);
     return;
   }
+  if (s.proveedor === "v4vm") {
+    // v4vm no expone borrado por API: se para el servidor y se deja anotado
+    // en la ficha para que el administrador lo borre en el proveedor.
+    const cfg = await providerConfig();
+    if (!cfg) throw new Error("proveedor v4vm no configurado");
+    await stopServer(cfg, s.remoteId, true);
+    const nota = `Parado por impago el ${fecha(new Date().toISOString())} (renovación sin pagar). Pendiente de borrar en v4vm.`;
+    await updateManaged(s.id, { notas: [s.ficha.notas, nota].filter(Boolean).join(" · ") });
+    return;
+  }
   await vpsAction(s.remoteId, "stop").catch(() => {});
   await deleteVps(s.remoteId);
 }
 
+/** ¿El impago borra el servicio (Proxmox, hosting) o solo lo para (v4vm)? */
+function impagoBorra(s: Servicio): boolean {
+  return !(s.tipo === "vps" && s.proveedor === "v4vm");
+}
+
 async function nombreDe(s: Servicio): Promise<string> {
   if (s.tipo === "hosting") return s.cuenta.domain ?? s.cuenta.cpanelUser ?? "hosting";
+  if (s.proveedor === "v4vm") return s.etiqueta || `vps #${s.remoteId}`;
   try {
     const v = await getVps(s.remoteId);
     return v.hostname || s.etiqueta || `vps-${v.vmid}`;
