@@ -51,6 +51,12 @@ y `/home/user3100/viahost-provisioner` (API + worker en Docker, Proxmox).
 - Textos de las landings: `messages/{en,es,fr}/ai.json`. Las suscripciones de Anthropic/OpenAI NO van
   incluidas y ViaHost no está afiliada: ese aviso va en las tres landings, el correo y la pantalla de entrega.
 
+## Segunda instancia / importar WHMCS
+
+- `scripts/importar-whmcs.mjs` vuelca clientes, facturas, servicios, dominios, tickets y catálogo de un
+  WHMCS (BD o volcado) a `data/`. Simulación por defecto, `--aplicar` para escribir, idempotente.
+  Receta completa y límites en `docs/IMPORTAR-WHMCS.md`.
+
 ## Renovaciones e impagos (`/admin/configuracion` → Renovaciones)
 
 - Cada VPS o cuenta de hosting cubre un mes desde el pago del alta; cada renovación pagada suma un mes.
