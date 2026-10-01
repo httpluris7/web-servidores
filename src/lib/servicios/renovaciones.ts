@@ -73,6 +73,13 @@ export type RenovacionVps = {
   borradoAt?: string | null;
   /** Nombre del plan a mostrar (VPS de v4vm, sin plan en el catálogo). */
   planNombre?: string;
+  /**
+   * Precio mensual FIJADO para este servicio (€), que manda sobre el del
+   * catálogo mientras el servicio siga en el mismo plan. Lo pone el
+   * administrador para respetar a un cliente su precio tras una subida; cada
+   * renovación emitida lo hereda. Cambiar de plan lo deja sin efecto.
+   */
+  precioFijo?: number;
 };
 
 async function readAll(): Promise<RenovacionVps[]> {
@@ -286,7 +293,7 @@ export async function candidatasARenovar(diasAviso: number): Promise<Vencimiento
 }
 
 /** Plan, precio y nombre legible del servicio (VPS: plan vigente del provisioner). */
-async function planYNombre(s: Servicio): Promise<{ planSlug: string; precio: number; planNombre: string; nombre: string }> {
+async function planYNombre(s: Servicio): Promise<{ planSlug: string; precio: number; planNombre: string; nombre: string; precioFijo?: number }> {
   if (s.tipo === "hosting") {
     const located = await getPlanById(s.cuenta.planId, "en");
     if (!located) throw new Error(`plan ${s.cuenta.planId} no está en el catálogo`);
@@ -305,7 +312,31 @@ async function planYNombre(s: Servicio): Promise<{ planSlug: string; precio: num
   if (!vps.plan_slug) throw new Error("vps sin plan");
   const located = await getPlanById(vps.plan_slug, "en");
   if (!located) throw new Error(`plan ${vps.plan_slug} no está en el catálogo`);
-  return { planSlug: vps.plan_slug, precio: located.plan.price, planNombre: located.plan.name, nombre: vps.hostname || s.etiqueta || `vps-${vps.vmid}` };
+  const fijo = precioFijoDe(await readAll(), s.id, vps.plan_slug);
+  return { planSlug: vps.plan_slug, precio: fijo ?? located.plan.price, precioFijo: fijo ?? undefined, planNombre: located.plan.name, nombre: vps.hostname || s.etiqueta || `vps-${vps.vmid}` };
+}
+
+/**
+ * Precio fijado vigente de un servicio: el del último registro de renovación no
+ * cancelado, y solo si sigue en el MISMO plan (tras un cambio de plan manda el
+ * catálogo). `null` si no hay precio fijado.
+ */
+function precioFijoDe(todas: RenovacionVps[], servidorId: string, planSlug: string): number | null {
+  const ultimo = todas
+    .filter((r) => r.servidorId === servidorId && r.estado !== "cancelada")
+    .sort((a, b) => b.creadoAt.localeCompare(a.creadoAt))[0];
+  if (!ultimo || ultimo.planSlug !== planSlug) return null;
+  return typeof ultimo.precioFijo === "number" && ultimo.precioFijo > 0 ? ultimo.precioFijo : null;
+}
+
+/** Precio fijado vigente de una ficha (para mostrarlo en el panel), o null. */
+export async function precioFijoDeFicha(fichaId: string, planSlug: string | null): Promise<number | null> {
+  if (!planSlug) return null;
+  try {
+    return precioFijoDe(await readAll(), fichaId, planSlug);
+  } catch {
+    return null;
+  }
 }
 
 async function emitirRenovacion(v: Vencimiento): Promise<RenovacionVps> {
@@ -346,6 +377,7 @@ async function emitirRenovacion(v: Vencimiento): Promise<RenovacionVps> {
     importe: info.precio,
     planSlug: info.planSlug,
     ...(s.tipo === "vps" && s.proveedor === "v4vm" ? { planNombre: info.planNombre } : {}),
+    ...(info.precioFijo ? { precioFijo: info.precioFijo } : {}),
     estado: "pendiente",
     creadoAt: new Date().toISOString(),
     pagadaAt: null,

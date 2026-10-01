@@ -4,7 +4,7 @@ import { getVpsDetalle, type VpsDetalle } from "@/lib/provisioner/client";
 import { intentByProvisionOrderId } from "@/lib/provisioner/intents";
 import { tieneCambioAplicado } from "@/lib/provisioner/cambios-plan";
 import { imagenPropiaDePlan } from "@/lib/provisioner/imagen-plan";
-import { vencimientoDeFicha } from "@/lib/servicios/renovaciones";
+import { precioFijoDeFicha, vencimientoDeFicha } from "@/lib/servicios/renovaciones";
 import { getInvoiceById, PAYMENT_METHOD_LABEL, type Invoice } from "@/lib/facturas";
 import { leerMetricas, type Muestra } from "@/lib/servidores/metricas";
 import { readCatalogo, texto } from "@/lib/catalogo/store";
@@ -52,17 +52,21 @@ export async function getPanelServiceForUser(
   }
 
   const intent = await intentByProvisionOrderId(d.order_id).catch(() => null);
-  const [agente, factura, nombres, planCambiado, vencimiento, imagenPropia] = await Promise.all([
+  const [agente, factura, nombres, planCambiado, vencimiento, imagenPropia, precioFijo] = await Promise.all([
     muestraReciente(managed),
     intent ? getInvoiceById(intent.invoiceId).catch(() => null) : Promise.resolve(null),
     nombresCatalogo(d.plan_slug, locale),
     tieneCambioAplicado(managed.id),
     vencimientoDeFicha(managed, intent),
     imagenPropiaDePlan(d.plan_slug),
+    precioFijoDeFicha(managed.id, d.plan_slug),
   ]);
 
+  const servicio = construir(managed, d, agente, factura, nombres, planCambiado, vencimiento.periodoHasta);
   return {
-    ...construir(managed, d, agente, factura, nombres, planCambiado, vencimiento.periodoHasta),
+    ...servicio,
+    // Precio fijado por el administrador para este servicio: es lo que se le cobra al renovar.
+    ...(precioFijo != null ? { importeEur: precioFijo } : {}),
     imagenPropia,
   };
 }
