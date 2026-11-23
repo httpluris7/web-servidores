@@ -36,17 +36,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, errors }, { status: 422 });
   }
 
-  // Anti-fuerza bruta: limitamos por IP+email (8 intentos / 5 min). La clave por
-  // email evita que, tras un proxy sin IP fiable, un bucket compartido bloquee a
-  // todos a la vez.
-  const limit = rateLimit(`login:${clientIp(req)}:${email}`, {
-    limit: 8,
-    windowMs: 5 * 60_000,
-  });
-  if (!limit.ok) {
+  // Anti-fuerza bruta en tres capas (vuln-0009):
+  //  - IP+email (8 / 5 min): el caso normal de equivocarse de contraseña.
+  //  - IP sola (40 / 15 min): quien barre muchos emails desde una máquina.
+  //  - email solo (20 / 15 min): quien ataca UNA cuenta rotando de IP. Más
+  //    holgado que el anterior para que un atacante no pueda dejar fuera al
+  //    titular con cuatro intentos, pero suficiente para frenar el diccionario.
+  const ip = clientIp(req);
+  const limits = [
+    rateLimit(`login:${ip}:${email}`, { limit: 8, windowMs: 5 * 60_000 }),
+    rateLimit(`login-ip:${ip}`, { limit: 40, windowMs: 15 * 60_000 }),
+    rateLimit(`login-mail:${email}`, { limit: 20, windowMs: 15 * 60_000 }),
+  ];
+  const bloqueado = limits.find((l) => !l.ok);
+  if (bloqueado) {
     return NextResponse.json(
       { ok: false, error: "Too many attempts. Please try again in a few minutes." },
-      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+      { status: 429, headers: { "Retry-After": String(bloqueado.retryAfter) } }
     );
   }
 
