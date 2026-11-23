@@ -17,12 +17,24 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "expired" }, { status: 401 });
   }
 
-  // 6 dígitos = 1e6 combinaciones: sin este límite el código se adivina.
-  const limit = rateLimit(`mfa:${reto.uid}:${clientIp(req)}`, { limit: 6, windowMs: 5 * 60_000 });
-  if (!limit.ok) {
+  // 6 dígitos = 1e6 combinaciones: sin estos límites el código se adivina.
+  //  - por usuario+IP (6 / 5 min): el caso normal de teclear mal.
+  //  - por usuario (15 / 15 min): rotar de IP no multiplica los intentos.
+  //  - por IP (30 / 15 min): una máquina no prueba contra muchas cuentas.
+  // Superar cualquiera bloquea temporalmente (hasta que vence la ventana).
+  // Los códigos TOTP ya son de un solo uso (anti-replay por paso) y la
+  // comparación es en tiempo constante (ver lib/mfa.ts y lib/totp.ts).
+  const ip = clientIp(req);
+  const limits = [
+    rateLimit(`mfa:${reto.uid}:${ip}`, { limit: 6, windowMs: 5 * 60_000 }),
+    rateLimit(`mfa-user:${reto.uid}`, { limit: 15, windowMs: 15 * 60_000 }),
+    rateLimit(`mfa-ip:${ip}`, { limit: 30, windowMs: 15 * 60_000 }),
+  ];
+  const bloqueado = limits.find((l) => !l.ok);
+  if (bloqueado) {
     return NextResponse.json(
       { ok: false, error: "Too many attempts. Please try again in a few minutes." },
-      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+      { status: 429, headers: { "Retry-After": String(bloqueado.retryAfter) } }
     );
   }
 

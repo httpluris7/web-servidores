@@ -35,8 +35,14 @@ export function jsonLdScript(data: unknown): string {
  * Evita open-redirects al usar `?next=` para volver tras registro/login.
  */
 export function safeInternalPath(next: unknown): string | null {
-  if (typeof next !== "string") return null;
-  if (!next.startsWith("/") || next.startsWith("//")) return null;
+  if (typeof next !== "string" || next.length === 0 || next.length > 2048) return null;
+  // Solo rutas relativas al propio origen: deben empezar por "/" y no por "//"
+  // (protocol-relative) ni "/\" (los navegadores normalizan "\" a "/", así
+  // que "/\evil.com" acabaría en "//evil.com"). Fuera también cualquier "\",
+  // caracteres de control o espacios en blanco, y esquemas incrustados.
+  if (!next.startsWith("/") || next.startsWith("//") || next.startsWith("/\\")) return null;
+  if (/[\\\u0000-\u001f\u007f\s]/.test(next)) return null;
+  if (/^\/+[a-z][a-z0-9+.-]*:/i.test(next)) return null;
   return next;
 }
 
