@@ -200,11 +200,12 @@ export function OrderForm({
                 <Label htmlFor="email" required>
                   {t("orderForm.emailLabel")}
                 </Label>
+                {/* El servidor factura SIEMPRE al email de la cuenta (vuln-0004): se muestra, no se edita. */}
                 <Input
                   id="email"
                   type="email"
                   value={values.email}
-                  onChange={(e) => setValues((v) => ({ ...v, email: e.target.value }))}
+                  readOnly
                   placeholder="tu@email.com"
                   aria-invalid={!!errors.email}
                 />

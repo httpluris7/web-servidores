@@ -3,6 +3,7 @@ import { saveLead, clean, emailRe } from "@/lib/leads";
 import { getCatalog, regionsForPlan } from "@/data/products";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { getSession } from "@/lib/session";
+import { getPublicUserById } from "@/lib/auth";
 import { checkoutOrder, type CheckoutMethod } from "@/lib/payments/checkout";
 import { findDuplicateOrder } from "@/lib/payments/duplicados";
 import { transferRef } from "@/lib/facturas";
@@ -28,8 +29,28 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
-  // Anti-abuso: cada POST persiste un lead en disco. Tope por IP.
+  // vuln-0004: contratar exige cuenta. La comprobación va AQUÍ, dentro del
+  // handler (el middleware solo enruta idiomas y no protege /api), de modo que
+  // ningún salto del middleware (p. ej. CVE-2025-29927) deje este endpoint
+  // abierto. Sin sesión válida no se emite proforma ni referencia de pago.
+  const session = await getSession();
+  const user = session ? await getPublicUserById(session.uid) : null;
+  if (!session || !user) {
+    return NextResponse.json(
+      { ok: false, error: "You need to be logged in to complete the order." },
+      { status: 401 }
+    );
+  }
+
+  // Anti-abuso: cada POST persiste un lead en disco. Tope por IP y por cuenta.
   const limit = rateLimit(`pedidos:${clientIp(req)}`, { limit: 10, windowMs: 10 * 60_000 });
+  const limitUser = rateLimit(`pedidos-user:${user.id}`, { limit: 10, windowMs: 10 * 60_000 });
+  if (!limitUser.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many attempts. Please try again in a few minutes." },
+      { status: 429, headers: { "Retry-After": String(limitUser.retryAfter) } }
+    );
+  }
   if (!limit.ok) {
     return NextResponse.json(
       { ok: false, error: "Too many attempts. Please try again in a few minutes." },
@@ -44,8 +65,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Invalid JSON." }, { status: 400 });
   }
 
-  const name = clean(body.name, 120);
-  const email = clean(body.email, 200);
+  // Identidad del comprador: SIEMPRE la de la cuenta autenticada. El cuerpo
+  // puede traer name/email (el formulario los muestra), pero se ignoran: así
+  // nadie emite proformas a nombre de terceros ni a correos ajenos.
+  const name = [user.nombre, user.apellidos].filter(Boolean).join(" ").trim() || clean(body.name, 120);
+  const email = user.email;
   const planId = clean(body.planId, 60);
   const region = clean(body.region, 60);
   // SO y hostname del VPS. El SO se acota a la lista conocida (un slug raro se
@@ -97,6 +121,7 @@ export async function POST(req: Request) {
 
   try {
     await saveLead("pedido", {
+      userId: user.id,
       name,
       email,
       region,
@@ -113,37 +138,14 @@ export async function POST(req: Request) {
     );
   }
 
-  // Proforma del pedido (y cobro con tarjeta si lo eligió). Aquí puede no haber
-  // sesión: si la hay, la factura queda ligada al cliente; si no, va suelta y el
-  // panel la vinculará por email.
+  // Proforma del pedido (y cobro con tarjeta si lo eligió), ligada siempre al
+  // cliente autenticado.
   const metodo: CheckoutMethod = body.metodo === "tarjeta" ? "tarjeta" : "transferencia";
   const locale = clean(body.locale, 5) || undefined;
-  const session = await getSession();
-
-  // Emitir la proforma manda un PDF con nuestra marca a una dirección que aquí
-  // NO está verificada: sin sesión, este formulario es un pulsador para que
-  // viahost.top escriba a quien sea, con el nombre que elija quien lo pulse.
-  // El tope por IP no basta (las IPs rotan), así que se limita también por
-  // destinatario y en conjunto. El pedido queda guardado igualmente: lo único
-  // que se corta es el correo automático, y el panel lo ve.
-  //
-  // Un pedido repetido no gasta cupo: no emite proforma ni manda correo, solo
-  // devuelve la que ya existe.
-  if (!session && !duplicado) {
-    const porDestinatario = rateLimit(`proforma-mail:${email.toLowerCase()}`, {
-      limit: 3,
-      windowMs: 60 * 60_000,
-    });
-    const enConjunto = rateLimit("proforma-anon", { limit: 30, windowMs: 60 * 60_000 });
-    if (!porDestinatario.ok || !enConjunto.ok) {
-      console.warn("[pedidos] proforma anónima limitada para", email);
-      return NextResponse.json({ ok: true, numero: null, paymentUrl: null });
-    }
-  }
 
   try {
     const { invoice, paymentUrl } = await checkoutOrder({
-      userId: session?.uid ?? null,
+      userId: user.id,
       clienteNombre: name,
       clienteEmail: email,
       lineas,
@@ -165,7 +167,7 @@ export async function POST(req: Request) {
         await registrarIntent({
           invoiceId: invoice.id,
           planSlug: planId,
-          userId: session?.uid ?? null,
+          userId: user.id,
           email,
           locationSlug,
           osSlug,
@@ -187,7 +189,7 @@ export async function POST(req: Request) {
             invoiceId: invoice.id,
             planId,
             cpanelPackage: pkg,
-            userId: session?.uid ?? null,
+            userId: user.id,
             email,
             nombre: name,
             idioma: locale?.startsWith("es") ? "es" : "en",
