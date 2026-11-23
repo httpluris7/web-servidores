@@ -48,7 +48,14 @@ const lanzar = () => {
 
 // `unref` para que un temporizador pendiente no mantenga vivo el proceso
 // cuando pm2 le pida cerrar.
-setTimeout(() => {
-  lanzar();
-  setInterval(lanzar, BARRIDO_MS).unref();
-}, ESPERA_INICIAL_MS).unref();
+// `VIAHOST_JOBS=off` apaga los trabajos de fondo (instancias de prueba o
+// staging que comparten datos/credenciales con producción: así no cobran,
+// conciliaban ni copian por duplicado). En producción no se define.
+if (process.env.VIAHOST_JOBS === "off") {
+  console.warn("[jobs] trabajos de fondo desactivados por VIAHOST_JOBS=off");
+} else {
+  setTimeout(() => {
+    lanzar();
+    setInterval(lanzar, BARRIDO_MS).unref();
+  }, ESPERA_INICIAL_MS).unref();
+}
