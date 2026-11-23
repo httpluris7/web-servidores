@@ -106,6 +106,9 @@ export async function getSession(): Promise<SessionData | null> {
     // existe), la huella deja de coincidir y la sesión queda invalidada.
     const current = await getUserAuthState(payload.uid);
     if (!current || current.pv !== payload.pv) return null;
+    // Cuenta pendiente de verificar el email (vuln-0006): sin sesión válida en
+    // ningún sitio, aunque alguien consiguiera una cookie firmada para ella.
+    if (!current.verified) return null;
     // Y al email vigente: tras cambiarlo, las cookies con el email antiguo
     // (otros dispositivos) dejan de valer. El dispositivo que confirmó el
     // cambio recibe una cookie nueva en el mismo paso.

@@ -27,12 +27,28 @@ export type StoredUser = {
   telefono: string;
   codigoPostal: string;
   createdAt: string;
+  /**
+   * Verificación del email (vuln-0006).
+   *  - string ISO: verificado en esa fecha.
+   *  - null: cuenta PENDIENTE (registrada, pero el dueño del buzón aún no
+   *    abrió el enlace). Sin sesión, pedidos ni tickets hasta entonces.
+   *  - ausente: cuenta anterior a la verificación por correo; se considera
+   *    verificada (clientes con facturas y servicios ya en marcha).
+   */
+  emailVerifiedAt?: string | null;
 };
+
+/** ¿La cuenta puede operar? (ver `emailVerifiedAt`). */
+export function isEmailVerified(user: Pick<StoredUser, "emailVerifiedAt">): boolean {
+  return user.emailVerifiedAt !== null;
+}
 
 export type PublicUser = Omit<StoredUser, "passwordHash">;
 
-export type NewUserInput = Omit<StoredUser, "id" | "passwordHash" | "createdAt"> & {
+export type NewUserInput = Omit<StoredUser, "id" | "passwordHash" | "createdAt" | "emailVerifiedAt"> & {
   password: string;
+  /** false (por defecto): la cuenta nace pendiente de verificar el email. */
+  emailVerified?: boolean;
 };
 
 /** Campos del perfil que el propio usuario puede editar desde /cuenta. */
@@ -67,10 +83,14 @@ export async function getUserAuthVersion(id: string): Promise<string | null> {
  * Huella de autenticación + email vigente del usuario. La sesión compara ambos:
  * un cambio de contraseña o de email invalida las cookies emitidas antes.
  */
-export async function getUserAuthState(id: string): Promise<{ pv: string; email: string } | null> {
+export async function getUserAuthState(
+  id: string
+): Promise<{ pv: string; email: string; verified: boolean } | null> {
   const users = await readAllUsers();
   const user = users.find((u) => u.id === id);
-  return user ? { pv: authVersionFromHash(user.passwordHash), email: user.email } : null;
+  return user
+    ? { pv: authVersionFromHash(user.passwordHash), email: user.email, verified: isEmailVerified(user) }
+    : null;
 }
 
 /**
@@ -157,13 +177,15 @@ export async function createUser(input: NewUserInput): Promise<PublicUser> {
   if (await findUserByEmail(input.email)) {
     throw new Error("EMAIL_TAKEN");
   }
-  const { password, ...rest } = input;
+  const { password, emailVerified = false, ...rest } = input;
+  const now = new Date().toISOString();
   const user: StoredUser = {
     id: randomUUID(),
     ...rest,
     email: input.email.trim().toLowerCase(),
     passwordHash: hashPassword(password),
-    createdAt: new Date().toISOString(),
+    createdAt: now,
+    emailVerifiedAt: emailVerified ? now : null,
   };
   await mkdir(DATA_DIR, { recursive: true });
   await appendFile(USERS_FILE, JSON.stringify(user) + "\n", { encoding: "utf8", mode: 0o600 });
@@ -172,6 +194,21 @@ export async function createUser(input: NewUserInput): Promise<PublicUser> {
   // chmod es lo que garantiza que un fichero ya existente quede cerrado.
   await chmod(USERS_FILE, 0o600);
   return toPublic(user);
+}
+
+/**
+ * Marca el email de la cuenta como verificado (tras canjear el token del
+ * correo). Devuelve el usuario público, o null si no existe. Idempotente.
+ */
+export async function markEmailVerified(id: string): Promise<PublicUser | null> {
+  const users = await readAllUsers();
+  const target = users.find((u) => u.id === id);
+  if (!target) return null;
+  if (!isEmailVerified(target)) {
+    target.emailVerifiedAt = new Date().toISOString();
+    await writeAllUsers(users);
+  }
+  return toPublic(target);
 }
 
 /**

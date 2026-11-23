@@ -10,7 +10,9 @@ import { BANK_LABEL_EN, bankReferenceNoteEn, bankRows } from "@/lib/bank";
  * dominio para que SPF/DKIM/DMARC aliñen.
  */
 
-const SENDMAIL = "/usr/sbin/sendmail";
+// Sobrescribible por entorno SOLO para entornos de prueba (capturar el correo
+// en un fichero en vez de entregarlo). En producción no se define.
+const SENDMAIL = process.env.SENDMAIL_PATH || "/usr/sbin/sendmail";
 
 /**
  * Remitente del sobre. Dirección dedicada del propio dominio (no es buzón de
@@ -783,6 +785,99 @@ export async function sendEmailChangeNoticeMail(m: EmailChangeNoticeMail): Promi
     m.text.body,
     "",
     m.text.warning,
+    "",
+    "—",
+    "ViaHost Networks, LLC",
+    BILLING_REPLY_TO,
+  ].join("\r\n");
+
+  await pipeSendmail(to, `${headers}\r\n\r\n${body}\n`);
+}
+
+/* ------------------------ Verificación de email (alta) ------------------------ */
+
+export type VerifyEmailMail = {
+  to: string;
+  name: string;
+  url: string;
+  text: { subject: string; greeting: string; intro: string; linkLabel: string; expiry: string; ignore: string };
+};
+
+/**
+ * Enlace de verificación tras registrarse (vuln-0006). La cuenta queda
+ * pendiente hasta que el dueño del buzón lo abre; el token viaja solo aquí.
+ */
+export async function sendVerifyEmailMail(m: VerifyEmailMail): Promise<void> {
+  const to = headerSafe(m.to);
+  if (!emailRe.test(to) || to.startsWith("-")) {
+    throw new Error("Invalid recipient address.");
+  }
+
+  const headers = [
+    `From: ViaHost <${FROM}>`,
+    `To: ${to}`,
+    `Reply-To: ${BILLING_REPLY_TO}`,
+    `Subject: ${encodeHeader(m.text.subject)}`,
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: 8bit",
+    "Auto-Submitted: auto-generated",
+  ].join("\r\n");
+
+  const body = [
+    `${m.text.greeting} ${headerSafe(m.name)},`,
+    "",
+    m.text.intro,
+    "",
+    m.text.linkLabel,
+    m.url,
+    "",
+    m.text.expiry,
+    m.text.ignore,
+    "",
+    "—",
+    "ViaHost Networks, LLC",
+    BILLING_REPLY_TO,
+  ].join("\r\n");
+
+  await pipeSendmail(to, `${headers}\r\n\r\n${body}\n`);
+}
+
+export type RegistrationAttemptMail = {
+  /** Dueño actual de la cuenta: se le avisa de que alguien intentó registrarla de nuevo. */
+  to: string;
+  name: string;
+  text: { subject: string; greeting: string; body: string; hint: string };
+};
+
+/**
+ * Aviso al titular cuando alguien intenta registrarse con su email (vuln-0009).
+ * El formulario responde igual exista o no la cuenta; este correo es lo único
+ * que distingue el caso, y solo lo recibe el dueño del buzón.
+ */
+export async function sendRegistrationAttemptMail(m: RegistrationAttemptMail): Promise<void> {
+  const to = headerSafe(m.to);
+  if (!emailRe.test(to) || to.startsWith("-")) {
+    throw new Error("Invalid recipient address.");
+  }
+
+  const headers = [
+    `From: ViaHost <${FROM}>`,
+    `To: ${to}`,
+    `Reply-To: ${BILLING_REPLY_TO}`,
+    `Subject: ${encodeHeader(m.text.subject)}`,
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: 8bit",
+    "Auto-Submitted: auto-generated",
+  ].join("\r\n");
+
+  const body = [
+    `${m.text.greeting} ${headerSafe(m.name)},`,
+    "",
+    m.text.body,
+    "",
+    m.text.hint,
     "",
     "—",
     "ViaHost Networks, LLC",

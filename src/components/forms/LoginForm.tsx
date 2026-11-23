@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter, Link } from "@/i18n/navigation";
 import { Label, Input, FieldError } from "./Field";
 import { emailRe } from "@/lib/password";
@@ -10,6 +10,7 @@ type Errors = Partial<Record<"email" | "password", string>>;
 
 export function LoginForm({ next }: { next?: string }) {
   const t = useTranslations("auth");
+  const locale = useLocale();
   const router = useRouter();
   const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
@@ -17,7 +18,7 @@ export function LoginForm({ next }: { next?: string }) {
   const [formError, setFormError] = useState<string | null>(null);
   // Segundo paso (TOTP): tras la contraseña, si la cuenta tiene 2FA, el servidor
   // deja un reto de 5 min y aquí se pide el código de la app (o uno de recuperación).
-  const [step, setStep] = useState<"credentials" | "code">("credentials");
+  const [step, setStep] = useState<"credentials" | "code" | "pending">("credentials");
   const [code, setCode] = useState("");
 
   function validate(): boolean {
@@ -38,7 +39,7 @@ export function LoginForm({ next }: { next?: string }) {
       const res = await fetch("/api/login", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({ ...values, locale }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
@@ -48,6 +49,13 @@ export function LoginForm({ next }: { next?: string }) {
         return;
       }
       const data = await res.json().catch(() => null);
+      if (data?.pending) {
+        // Contraseña correcta pero email sin verificar: el servidor ha reenviado
+        // el enlace de activación. Sin sesión hasta abrirlo.
+        setStatus("idle");
+        setStep("pending");
+        return;
+      }
       if (data?.mfa) {
         setStatus("idle");
         setStep("code");
@@ -96,6 +104,24 @@ export function LoginForm({ next }: { next?: string }) {
       setFormError(t("loginForm.errorConnection"));
       setStatus("idle");
     }
+  }
+
+  if (step === "pending") {
+    return (
+      <div className="rounded-[var(--radius-lg)] border border-[var(--color-accent)] bg-[var(--color-bg-raised)] p-8 glow-accent">
+        <h2 className="text-xl font-semibold">{t("loginForm.pendingTitle")}</h2>
+        <p className="mt-2 text-sm text-[var(--color-fg-muted)]">{t("loginForm.pendingText")}</p>
+        <p className="mt-6 text-sm">
+          <button
+            type="button"
+            onClick={() => { setStep("credentials"); setFormError(null); }}
+            className="text-[var(--color-accent)] underline"
+          >
+            {t("loginForm.mfaBack")}
+          </button>
+        </p>
+      </div>
+    );
   }
 
   if (step === "code") {

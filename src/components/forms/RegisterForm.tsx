@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
-import { useRouter, Link } from "@/i18n/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { Label, Input, FieldError } from "./Field";
 import { emailRe, isPhoneValid, passwordRules, failedPasswordRules } from "@/lib/password";
 
@@ -36,11 +36,11 @@ const empty: Values = {
 
 export function RegisterForm({ next }: { next?: string }) {
   const t = useTranslations("auth");
-  const router = useRouter();
+  const locale = useLocale();
   const [values, setValues] = useState<Values>(empty);
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
-  const [status, setStatus] = useState<"idle" | "sending">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [formError, setFormError] = useState<string | null>(null);
 
   const set = (k: FieldKey) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -75,23 +75,50 @@ export function RegisterForm({ next }: { next?: string }) {
       const res = await fetch("/api/registro", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({ ...values, locale }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        if (data?.errors) setErrors(data.errors as Errors);
+        if (data?.errors) {
+          const srv = data.errors as Errors;
+          // Buzón del dominio propio: texto traducido (el servidor manda un código).
+          if (srv.email === "reserved") srv.email = t("registerForm.errorReserved");
+          setErrors(srv);
+        }
         setFormError(data?.error ?? t("registerForm.errorGeneric"));
         setStatus("idle");
         return;
       }
-      // Registro correcto: ya hay sesión iniciada → volvemos a `next` (p. ej. el
-      // carrito para completar el pedido) o, por defecto, al área de cuenta.
-      router.push(next || "/cuenta");
-      router.refresh();
+      // La cuenta queda pendiente: sin sesión hasta abrir el enlace del correo.
+      // La respuesta es la misma exista o no ya la cuenta (anti-enumeración).
+      setStatus("sent");
     } catch {
       setFormError(t("registerForm.errorConnection"));
       setStatus("idle");
     }
+  }
+
+  if (status === "sent") {
+    return (
+      <div className="rounded-[var(--radius-lg)] border border-[var(--color-accent)] bg-[var(--color-bg-raised)] p-8 glow-accent">
+        <p className="mono-label text-[var(--color-accent)]">{t("registerForm.sentKicker")}</p>
+        <h2 className="mt-2 text-xl font-semibold">{t("registerForm.sentTitle")}</h2>
+        <p className="mt-2 text-sm text-[var(--color-fg-muted)]">
+          {t("registerForm.sentText", { email: values.email.trim() })}
+        </p>
+        <p className="mt-2 text-sm text-[var(--color-fg-muted)]">{t("registerForm.sentSpam")}</p>
+        <p className="mt-6 text-sm text-[var(--color-fg-muted)]">
+          {t("registerForm.sentLogin")}{" "}
+          <Link
+            href={next ? `/acceder?next=${encodeURIComponent(next)}` : "/acceder"}
+            className="text-[var(--color-accent)] underline"
+          >
+            {t("registerForm.logIn")}
+          </Link>
+          .
+        </p>
+      </div>
+    );
   }
 
   return (
