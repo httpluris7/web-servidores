@@ -31,8 +31,8 @@
         "a": "Des images d'Ubuntu, Debian, AlmaLinux, Rocky et Windows Server, ainsi que des modèles avec Docker préinstallé. Vous pouvez aussi téléverser votre propre ISO."
       },
       "4": {
-        "q": "Le trafic est-il vraiment illimité ?",
-        "a": "Le trafic n'est pas facturé au volume. L'uplink de 10 Gbps est partagé de manière équitable ; aucun overselling de port ni bridage selon l'usage."
+        "q": "Quel port réseau ont les VPS ?",
+        "a": "Chaque VPS est connecté à un port 10 Gbps, avec protection DDoS incluse et sans overselling de port."
       },
       "5": {
         "q": "Y a-t-il une durée d'engagement minimale ?",
